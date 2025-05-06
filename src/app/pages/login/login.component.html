@@ -1,0 +1,93 @@
+<div class="parent"> 
+    <div class="container" [ngClass]="isSignDivVisiable ? 'active' :'' " id="container">
+        <div class="form-container sign-up" >
+            <form [formGroup]="signUpForm" (ngSubmit)="onRegister()">
+                <h1 style="font-size:30px">Crear una cuenta</h1>
+                <div style="align-self: start">              
+                  <div id="googleBtn1" class="google-icon-button">
+                    <img src="https://static.cdnlogo.com/logos/g/35/google-icon.svg">
+                  </div>
+                  <div class="fb-icon-button" (click)="facebookLogin()">
+                    <img src="../../../assets/images/facebook.png" alt="Facebook" width="24" />
+                    <span>Iniciar Sesión con Facebook</span>
+                  </div>
+                </div>
+                <span>O usa tu email para registrarte</span>
+                <input type="text" placeholder="Email" formControlName="Email" />
+                <div *ngIf="signUpForm.get('Email')?.invalid && signUpForm.get('Email')?.touched">
+                  <small *ngIf="signUpForm.get('Email')?.errors?.['required']">Email es requerido</small>
+                  <small *ngIf="signUpForm.get('Email')?.errors?.['Email']">Formato de email invalido</small>
+                </div>
+                <input type="text" placeholder="Nombres" formControlName="FirstName" />
+                <div *ngIf="signUpForm.get('FirstName')?.invalid && signUpForm.get('FirstName')?.touched">
+                  <small>El nombre es requerido</small>
+                </div>
+                <input type="text" placeholder="Apellidos" formControlName="LastName" />
+                <div *ngIf="signUpForm.get('LastName')?.invalid && signUpForm.get('LastName')?.touched">
+                  <small>Last name is required</small>
+                </div>
+
+                <input type="password" placeholder="Contraseña" formControlName="Password" />
+                <div *ngIf="signUpForm.get('Password')?.invalid && signUpForm.get('Password')?.touched">
+                  <small>Password is required and must be at least 6 characters</small>
+                </div>
+
+                <input type="password" placeholder="Repite Contraseña" formControlName="Password2" />
+                <div *ngIf="signUpForm.get('Password2')?.invalid && signUpForm.get('Password2')?.touched">
+                  <small>Password is required and must be at least 6 characters</small>
+                </div>
+                <div class="button-container">
+                  <button [disabled]="isLoading" [class.disabled-state]="isLoading" type="reset">Limpiar</button>
+                  <button [disabled]="isLoading" [class.disabled-state]="isLoading" type="submit">Registrar</button>
+                  <img *ngIf="isLoading" src="../../../assets/images/loading.gif" width="32px" height="32px"/>
+                </div>                               
+            </form>
+        </div>
+        <div class="form-container sign-in" >
+            <form [formGroup]="signInForm" (ngSubmit)="onLogin()">
+                <h1>Ingresar</h1><br />
+                <div style="align-self: start">              
+                  <div id="googleBtn2" class="google-icon-button">
+                    <img src="https://static.cdnlogo.com/logos/g/35/google-icon.svg">
+                  </div>
+                  <div class="fb-icon-button" (click)="facebookLogin()">
+                    <img src="../../../assets/images/facebook.png" alt="Facebook" width="24" />
+                    <span>Iniciar Sesión con Facebook</span>
+                  </div>
+                </div><br />
+                <span>O usa tu Email y Contraseña</span>
+                <input type="text" placeholder="Nombre de Usuario" formControlName="UserName" />
+                <div *ngIf="signInForm.get('UserName')?.invalid && signInForm.get('UserName')?.touched">
+                  <small *ngIf="signInForm.get('UserName')?.errors?.['required']">Nombre de Usuario es requerido</small>
+                  <small *ngIf="signInForm.get('UserName')?.errors?.['UserName']">Formato de email invalido</small>
+                </div>
+                <input type="password" placeholder="Contraseña" formControlName="Password" />
+                <div *ngIf="signInForm.get('Password')?.invalid && signInForm.get('Password')?.touched">
+                  <small *ngIf="signInForm.get('Password')?.errors?.['required']">Password es requerido</small>
+                </div>
+                <div (click)="onForgotClick()" style="cursor: pointer;">→ Olvidaste tu Contraseña? ←</div>
+                <div style="display: flex; align-items: center; gap: 8px;" *ngIf="isForgotVisible">
+                  <input type="text" placeholder="Email de recuperación" id="forgotEmail"/>
+                  <button (click)="forgotPassword()" [disabled]="isLoading" [class.disabled-state]="isLoading">Enviar</button>
+                  <img *ngIf="isLoading" src="../../../assets/images/loading.gif" width="32px" height="32px"/>                  
+                </div>
+                <button type="submit" [disabled]="isLoading" [class.disabled-state]="isLoading">Ingresar</button>
+            </form>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle">
+                <div class="toggle-panel toggle-left">
+                    <h1>Hola Nuevamente</h1>
+                    <p>Da click aqui para ingresar si ya tienes cuenta</p>
+                    <button type="button" class="hidden" id="login" (click)="isSignDivVisiable = false">Ingresar</button>
+                </div>
+                <div class="toggle-panel toggle-right">
+                    <h1>Hola</h1>
+                    <p>Da click aqui para crear una cuenta de acceso</p>
+                    <button type="button" class="hidden" id="register" (click)="isSignDivVisiable = true">Crear cuenta</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

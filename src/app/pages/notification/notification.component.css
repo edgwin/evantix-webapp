@@ -1,0 +1,15 @@
+.notification {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  text-align: center;
+  z-index: 1000;
+  color: #fff;
+  font-weight: bold;
+}
+.notification.info { background-color: #2196F3; }
+.notification.success { background-color: #4CAF50; }
+.notification.warning { background-color: #FF9800; }
+.notification.error { background-color: #F44336; }
