@@ -1,7 +1,7 @@
 import { Component, AfterViewInit, OnInit  } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService, UserCreateRequest, UserLoginRequest, ForgotPassRequest } from '../../services/user.service';
 import { NotificationService } from '../../services/notification.service';
 import { ActivatedRoute } from '@angular/router';
@@ -57,58 +57,58 @@ export class LoginComponent implements AfterViewInit, OnInit {
         this.notificationService.show('info','Usuario confirmado exitosamente, ahora puede ingresar a su nueva cuenta');
       }
     });
-    this.loadFacebookSDK();
+    // this.loadFacebookSDK();
   }
   
-  loadFacebookSDK(): Promise<void> {
-    return new Promise((resolve) => {
-      // Si ya está inicializado (FB y FB.init), salimos
-      if (typeof FB !== 'undefined' && FB.init) {
-        resolve();
-        return;
-      }
+  //loadFacebookSDK(): Promise<void> {
+    // return new Promise((resolve) => {
+    //   // Si ya está inicializado (FB y FB.init), salimos
+    //   if (typeof FB !== 'undefined' && FB.init) {
+    //     resolve();
+    //     return;
+    //   }
   
-      // Si el script ya está en el DOM, solo espera a que esté listo
-      if (document.getElementById('facebook-jssdk')) {
-        const interval = setInterval(() => {
-          if (typeof FB !== 'undefined') {
-            clearInterval(interval);
-            resolve();
-          }
-        }, 100);
-        return;
-      }
+    //   // Si el script ya está en el DOM, solo espera a que esté listo
+    //   if (document.getElementById('facebook-jssdk')) {
+    //     const interval = setInterval(() => {
+    //       if (typeof FB !== 'undefined') {
+    //         clearInterval(interval);
+    //         resolve();
+    //       }
+    //     }, 100);
+    //     return;
+    //   }
   
-      // fbAsyncInit solo se define una vez
-      (window as any).fbAsyncInit = () => {
-        FB.init({
-          appId: '616411058067807',
-          cookie: true,
-          xfbml: true,
-          version: 'v22.0'
-        });
-        resolve();
-      };
+    //   // fbAsyncInit solo se define una vez
+    //   (window as any).fbAsyncInit = () => {
+    //     FB.init({
+    //       appId: '616411058067807',
+    //       cookie: true,
+    //       xfbml: true,
+    //       version: 'v22.0'
+    //     });
+    //     resolve();
+    //   };
   
-      // Cargar el script si no existe
-      const script = document.createElement('script');
-      script.id = 'facebook-jssdk';
-      script.src = 'https://connect.facebook.net/en_US/sdk.js';
-      script.async = true;
-      script.defer = true;
-      document.body.appendChild(script);
-    });
-  }
+    //   // Cargar el script si no existe
+    //   const script = document.createElement('script');
+    //   script.id = 'facebook-jssdk';
+    //   script.src = 'https://connect.facebook.net/en_US/sdk.js';
+    //   script.async = true;
+    //   script.defer = true;
+    //   document.body.appendChild(script);
+    // });
+  //}
 
   facebookLogin() {
-    this.loadFacebookSDK().then(() => {
-      FB.login((res: any) => {
-        if (res.authResponse) {
-          console.log('Access Token:', res.authResponse.accessToken);
-          this.sendToBackend('facebook', res.authResponse.accessToken);
-        }
-      }, { scope: 'email,public_profile' });
-    });
+    // this.loadFacebookSDK().then(() => {
+    //   FB.login((res: any) => {
+    //     if (res.authResponse) {
+    //       console.log('Access Token:', res.authResponse.accessToken);
+    //       this.sendToBackend('facebook', res.authResponse.accessToken);
+    //     }
+    //   }, { scope: 'email,public_profile' });
+    // });
   }
   
   sendToBackend(provider: 'google' | 'facebook', token: string) {
