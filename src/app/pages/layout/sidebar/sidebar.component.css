@@ -1,0 +1,41 @@
+.topbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  background-color: #0f1d29;
+  flex-direction: column-reverse;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.avatar {
+  border-radius: 50%;
+  margin-right: 50px;
+}
+
+.username {
+  font-weight: bold;
+}
+
+span{
+  color:white;
+}
+
+.sideBar {
+  width: 280px;
+  padding-left: 5px; 
+  padding-right: 10px; 
+  background-color: #0f1d29; 
+  height: 100%;
+}
+
+.submenu {
+  padding-left: 32px;
+}
+
+.expand-icon {
+  margin-left: auto;
+  color: white;
+}

@@ -5,7 +5,8 @@ import { LayoutComponent } from './pages/layout/layout.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { PrivacidadComponent } from './pages/privacidad/privacidad.component';
 import { AuthGuard } from './auth.guard';
-import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component'
+import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
+import { CondicionesComponent } from './pages/condiciones/condiciones.component';
 
 const routes: Routes = [
   {
@@ -22,18 +23,20 @@ const routes: Routes = [
     component: PrivacidadComponent
   },
   {
+    path:'condiciones',
+    component: CondicionesComponent
+  },
+  {
     path:'forgotPassword',
     component: ForgotPasswordComponent
   },
   {
-    path:'',
+    path: '',
     component: LayoutComponent,
+    canActivate: [AuthGuard], // opcional: proteger todo
     children: [
-      {
-        path:'dashboard',
-        component:DashboardComponent,
-        canActivate: [AuthGuard]
-      }
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: DashboardComponent }
     ]
   },
   { path: '**', redirectTo: 'login' }

@@ -48,9 +48,13 @@ export class LoginComponent implements AfterViewInit, OnInit {
   
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
-      const signIn = params['signIn'];      
+      const signIn = params['signIn'];
+      const confirmed = params['confirmed'];
       if (signIn !== undefined) {
         this.isSignDivVisiable = !(signIn === 'true');
+      }
+      if (confirmed === "true") {
+        this.notificationService.show('info','Usuario confirmado exitosamente, ahora puede ingresar a su nueva cuenta');
       }
     });
     this.loadFacebookSDK();
@@ -58,22 +62,35 @@ export class LoginComponent implements AfterViewInit, OnInit {
   
   loadFacebookSDK(): Promise<void> {
     return new Promise((resolve) => {
-      // Solo cargamos el SDK si no existe aún
-      if (document.getElementById('facebook-jssdk')) {
+      // Si ya está inicializado (FB y FB.init), salimos
+      if (typeof FB !== 'undefined' && FB.init) {
         resolve();
         return;
       }
   
+      // Si el script ya está en el DOM, solo espera a que esté listo
+      if (document.getElementById('facebook-jssdk')) {
+        const interval = setInterval(() => {
+          if (typeof FB !== 'undefined') {
+            clearInterval(interval);
+            resolve();
+          }
+        }, 100);
+        return;
+      }
+  
+      // fbAsyncInit solo se define una vez
       (window as any).fbAsyncInit = () => {
         FB.init({
           appId: '616411058067807',
           cookie: true,
           xfbml: true,
-          version: 'v22.0' // Asegúrate que esta versión esté disponible en tu app
+          version: 'v22.0'
         });
         resolve();
       };
   
+      // Cargar el script si no existe
       const script = document.createElement('script');
       script.id = 'facebook-jssdk';
       script.src = 'https://connect.facebook.net/en_US/sdk.js';
@@ -87,6 +104,7 @@ export class LoginComponent implements AfterViewInit, OnInit {
     this.loadFacebookSDK().then(() => {
       FB.login((res: any) => {
         if (res.authResponse) {
+          console.log('Access Token:', res.authResponse.accessToken);
           this.sendToBackend('facebook', res.authResponse.accessToken);
         }
       }, { scope: 'email,public_profile' });
@@ -133,7 +151,7 @@ export class LoginComponent implements AfterViewInit, OnInit {
         let userData: UserCreateRequest = this.signUpForm.value;
         userData.AppId = 1605;
         userData.IsEnabled = true;
-        userData.Role = 'Usuario';
+        userData.Role = 'User';
 
         this.userService.createUser(userData).subscribe({
           next: (res) => {
@@ -154,17 +172,20 @@ export class LoginComponent implements AfterViewInit, OnInit {
   onLogin() {    
     if (this.signInForm.status == 'VALID') {
       this.errorMessage = '';
-
+      this.isLoading = true;
       let userData: UserLoginRequest = this.signInForm.value;
       userData.AppId = 1605;
       
       this.userService.loginUser(userData).subscribe({
-        next: (res: any) => {
+        next: (res: any) => {          
           localStorage.setItem('access_token', res.access_token);    
           localStorage.setItem('loggedUser', JSON.stringify(res.user));
-          this.router.navigateByUrl('/dashboard');
+          this.router.navigateByUrl('/dashboard');          
         },        
-        error: err => this.notificationService.show('error',err.error)
+        error: err => {
+          this.notificationService.show('error',err.error)
+          this.isLoading = false;
+        }
       });
     }
   }

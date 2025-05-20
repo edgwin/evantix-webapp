@@ -12,6 +12,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { NotificationComponent } from './pages/notification/notification.component';
 import { PrivacidadComponent } from './pages/privacidad/privacidad.component';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { TopbarComponent } from './pages/layout/topbar/topbar.component';
+import { SidebarComponent } from './pages/layout/sidebar/sidebar.component';
+import { MatIconModule } from '@angular/material/icon';
+import { CondicionesComponent } from './pages/condiciones/condiciones.component';
 
 
 @NgModule({
@@ -22,16 +30,25 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
     DashboardComponent,
     NotificationComponent,
     PrivacidadComponent,
-    ForgotPasswordComponent
+    ForgotPasswordComponent,
+    TopbarComponent,
+    SidebarComponent,
+    CondicionesComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    MatListModule,
+    MatIconModule
   ],
-  providers: [],
+  providers: [
+    provideAnimationsAsync()
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
