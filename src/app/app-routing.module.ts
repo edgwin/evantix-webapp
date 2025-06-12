@@ -7,6 +7,10 @@ import { PrivacidadComponent } from './pages/privacidad/privacidad.component';
 import { AuthGuard } from './auth.guard';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 import { CondicionesComponent } from './pages/condiciones/condiciones.component';
+import { InvitacionesComponent } from './pages/invitaciones/invitaciones.component';
+import { InvitadosComponent } from './pages/invitados/invitados.component';
+import { MesasComponent } from './pages/mesas/mesas.component';
+import { NuevoEventoComponent } from './pages/nuevo-evento/nuevo-evento.component';
 
 const routes: Routes = [
   {
@@ -36,7 +40,11 @@ const routes: Routes = [
     canActivate: [AuthGuard], // opcional: proteger todo
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: DashboardComponent }
+      { path: 'dashboard', component: DashboardComponent },
+      { path: 'invitaciones', component: InvitacionesComponent },
+      { path: 'invitados', component: InvitadosComponent },
+      { path: 'mesas', component: MesasComponent },
+      { path: 'nuevoEvento', component: NuevoEventoComponent },
     ]
   },
   { path: '**', redirectTo: 'login' }

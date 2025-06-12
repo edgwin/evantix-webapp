@@ -1,1 +1,13 @@
-<p>dashboard works!</p>
+<div class="header-row">
+  <div><h1>Mis Eventos</h1></div>
+  <div><button class="btn btn-primary" type="button" routerLink="/nuevoEvento">Nuevo Evento</button></div>
+</div>
+<ag-grid-angular
+  class="ag-theme-alpine inventory-grid"
+  style="width: 90%; height: 500px;"
+  [rowData]="rowData"
+  [columnDefs]="columnDefs"
+  [defaultColDef]="{ sortable: true, filter: true, resizable: true }"
+  [enableBrowserTooltips]="true"
+>
+</ag-grid-angular>

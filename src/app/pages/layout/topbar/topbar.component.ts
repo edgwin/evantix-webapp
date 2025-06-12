@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
+import { SocialAuthService } from '@abacritt/angularx-social-login';
 
 @Component({
   selector: 'app-topbar',
@@ -14,7 +15,7 @@ export class TopbarComponent {
 
   loggedUser: any;
   
-  constructor(private router: Router, private authService: AuthService, private sanitizer: DomSanitizer) {
+  constructor(private router: Router, private authService: AuthService, private sanitizer: DomSanitizer, private socialAuthService: SocialAuthService) {
     const localUser = localStorage.getItem('loggedUser');
     if(localUser != null) {
       this.loggedUser = JSON.parse(localUser);
@@ -34,6 +35,7 @@ export class TopbarComponent {
   onLogoff() {
     localStorage.removeItem('loggedUser');
     this.authService.logout();
+    this.socialAuthService.signOut();
     this.router.navigateByUrl('/login')
   }
 }

@@ -1,0 +1,45 @@
+<form (ngSubmit)="onSubmit()" #eventoForm="ngForm">
+  <h2>Datos del Evento</h2>
+
+  <label>Nombre del Evento</label>
+  <input type="text" name="nombre" [(ngModel)]="evento.nombre" required>
+
+  <label>Fecha y Hora del Evento</label>
+  <input type="datetime-local" name="fecha" [(ngModel)]="evento.fecha" required>
+
+  <label>Lugar del Evento</label>
+  <input type="text" name="lugar" [(ngModel)]="evento.lugar" required>
+
+  <label>Número WhatsApp</label>
+  <input type="tel" name="whatsapp" [(ngModel)]="evento.whatsapp" required>
+
+  <label>Email</label>
+  <input type="email" name="email" [(ngModel)]="evento.email" required>
+
+  <label>Imagen Aluciva al evento</label>
+  <input type="file" name="imagen" (change)="onFileChange($event)">
+
+  <label>Selecciona un Plan</label>
+  <swiper-container
+    slides-per-view="1"
+    navigation="true"
+    pagination="true"
+    loop="true"
+    #swiperRef>
+    
+    <swiper-slide *ngFor="let plan of planes; let i = index" [attr.data-plan]="plan.nombre" (click)="seleccionarPlan(plan)">
+      <div class="plan-card" [class.selected]="evento.plan === plan.nombre">
+        <img [src]="plan.imagen" [alt]="plan.nombre" />
+        <h3>{{ plan.nombre | titlecase }}</h3>
+      </div>
+    </swiper-slide>
+  </swiper-container>
+
+  <p *ngIf="evento.plan">Plan seleccionado: <strong>{{ evento.plan | titlecase }}</strong></p>
+
+  <div class="button-group">
+    <button type="submit">Guardar</button>
+    <button type="button" (click)="cancelar()">Cancelar</button>
+  </div>
+</form>
+

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -20,6 +20,15 @@ import { TopbarComponent } from './pages/layout/topbar/topbar.component';
 import { SidebarComponent } from './pages/layout/sidebar/sidebar.component';
 import { MatIconModule } from '@angular/material/icon';
 import { CondicionesComponent } from './pages/condiciones/condiciones.component';
+import { FacebookLoginProvider, SocialAuthServiceConfig, SocialLoginModule } from '@abacritt/angularx-social-login';
+import { InvitacionesComponent } from './pages/invitaciones/invitaciones.component';
+import { InvitadosComponent } from './pages/invitados/invitados.component';
+import { MesasComponent } from './pages/mesas/mesas.component';
+import { AgGridModule } from 'ag-grid-angular';
+import { AccionesCellRendererComponent } from './pages/dashboard/acciones-cell-renderer.component';
+import { NuevoEventoComponent } from './pages/nuevo-evento/nuevo-evento.component';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 
 @NgModule({
@@ -33,7 +42,12 @@ import { CondicionesComponent } from './pages/condiciones/condiciones.component'
     ForgotPasswordComponent,
     TopbarComponent,
     SidebarComponent,
-    CondicionesComponent
+    CondicionesComponent,
+    InvitacionesComponent,
+    InvitadosComponent,
+    MesasComponent,
+    AccionesCellRendererComponent,
+    NuevoEventoComponent,
   ],
   imports: [
     BrowserModule,
@@ -44,9 +58,33 @@ import { CondicionesComponent } from './pages/condiciones/condiciones.component'
     MatToolbarModule,
     MatSidenavModule,
     MatListModule,
-    MatIconModule
+    MatIconModule,
+    SocialLoginModule,
+    AgGridModule
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        lang: 'en',
+        providers: [
+          {
+            id: FacebookLoginProvider.PROVIDER_ID,
+            provider: new FacebookLoginProvider('616411058067807')
+          }
+        ],
+        onError: (err) => {
+          console.error(err);
+        }
+      } as SocialAuthServiceConfig,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
     provideAnimationsAsync()
   ],
   bootstrap: [AppComponent]

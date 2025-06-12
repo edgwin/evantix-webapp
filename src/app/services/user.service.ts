@@ -14,7 +14,7 @@ export interface UserCreateRequest {
 
 export interface UserLoginRequest {
   UserName: string;
-  FirstName: string;
+  Password: string;
   AppId: Number;  
 }
 

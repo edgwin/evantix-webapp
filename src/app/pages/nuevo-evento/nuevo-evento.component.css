@@ -1,0 +1,49 @@
+form {
+  background-color: white;
+  padding: 20px;
+  max-width: 600px;
+  margin: auto;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+input, button {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  box-sizing: border-box;
+}
+
+.plan-card {
+  text-align: center;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  padding: 10px;
+  transition: border-color 0.3s;
+  cursor: pointer;
+  background: #f9f9f9;
+}
+
+.plan-card img {
+  max-width: 100%;
+  height: 600px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.plan-card.selected {
+  border-color: #007bff;
+  background-color: #eaf4ff;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}

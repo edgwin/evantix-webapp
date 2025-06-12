@@ -7,11 +7,22 @@
       <span>Invitaciones</span>
       <mat-icon class="expand-icon">{{ submenuInvitacionesOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
     </mat-list-item>
-    <div *ngIf="submenuInvitacionesOpen" class="submenu">
-      <a mat-list-item routerLink="/profile"><span>Mis Eventos</span></a>
-      <a mat-list-item routerLink="/account"><span>Mis Invitaciones</span></a>
-      <a mat-list-item routerLink="/account"><span>Mis Invitados</span></a>
-      <a mat-list-item routerLink="/account"><span>Acomodo de Mesas</span></a>
+    <div *ngIf="!submenuInvitacionesOpen" class="submenu">
+      <a mat-list-item routerLink="/dashboard" 
+            [ngClass]="{ 'selected': selectedRoute === '/dashboard' }"
+            (click)="selectRoute('/dashboard')">
+          <span>Mis Eventos</span>
+      </a>
+      <a mat-list-item routerLink="/invitaciones" 
+            [ngClass]="{ 'selected': selectedRoute === '/invitaciones' }"
+            (click)="selectRoute('/invitaciones')">
+          <span>Mis Invitaciones</span></a>
+      <a mat-list-item routerLink="/invitados" 
+          [ngClass]="{ 'selected': selectedRoute === '/invitados' }"
+          (click)="selectRoute('/invitados')"><span>Mis Invitados</span></a>
+      <a mat-list-item routerLink="/mesas" 
+          [ngClass]="{ 'selected': selectedRoute === '/mesas' }"
+          (click)="selectRoute('/mesas')"><span>Acomodo de Mesas</span></a>
     </div>
     <mat-list-item (click)="toggleConfirmacionesSubmenu()">
       <span>Confirmaciones</span>

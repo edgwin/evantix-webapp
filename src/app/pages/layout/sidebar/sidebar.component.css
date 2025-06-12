@@ -39,3 +39,7 @@ span{
   margin-left: auto;
   color: white;
 }
+
+.selected {
+  background-color: black !important;  
+}
