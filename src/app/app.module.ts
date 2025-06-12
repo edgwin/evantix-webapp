@@ -29,6 +29,7 @@ import { AccionesCellRendererComponent } from './pages/dashboard/acciones-cell-r
 import { NuevoEventoComponent } from './pages/nuevo-evento/nuevo-evento.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { RouterModule } from '@angular/router';
 
 
 @NgModule({
@@ -50,6 +51,7 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     NuevoEventoComponent,
   ],
   imports: [
+    RouterModule,
     BrowserModule,
     AppRoutingModule,
     FormsModule,

@@ -8,4 +8,4 @@ import { AllCommunityModule } from 'ag-grid-community';
 platformBrowserDynamic().bootstrapModule(AppModule)
   .catch(err => console.error(err));
 
-  ModuleRegistry.registerModules([AllCommunityModule]);  
+ModuleRegistry.registerModules([AllCommunityModule]); 

@@ -1,10 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ColDef } from 'ag-grid-community';
 import { EventService } from './../../services/event.service';
 import { AccionesCellRendererComponent } from './acciones-cell-renderer.component';
 import { NotificationService } from '../../services/notification.service';
 import { MercadoPagoService } from '../../services/mercado-pago.service.service';
 import { ActivatedRoute } from '@angular/router';
+import {
+  ModuleRegistry,
+  themeAlpine,
+  themeBalham,
+  themeMaterial,
+  themeQuartz,
+} from "ag-grid-community";
+import { myTheme } from '../../helpers/ag-grid-theme-builder'
 
 interface Evento {
   nombre: string;
@@ -18,10 +26,11 @@ interface Evento {
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css'
+  styleUrl: './dashboard.component.css',
+  encapsulation: ViewEncapsulation.None
 })
 
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit {  
   loggedUser: any;
   constructor(private eventService: EventService, private notificationService: NotificationService, private mercadoPago: MercadoPagoService, private route: ActivatedRoute)
   {
@@ -30,6 +39,8 @@ export class DashboardComponent implements OnInit {
       this.loggedUser = JSON.parse(localUser);
     }
   }
+  
+  theme = themeQuartz;
 
   ngOnInit(): void {
     const userId = this.loggedUser.userId; 
@@ -55,12 +66,23 @@ export class DashboardComponent implements OnInit {
           }
         });
       }
-    });
-    
+    });    
   }
 
   columnDefs: ColDef<Evento>[] = [
-    { headerName: 'Nombre del Evento', field: 'nombre', flex: 2},
+    { headerName: 'Nombre del Evento', field: 'nombre', flex: 2,
+      cellRenderer: (params: any) => {
+          const nombre = params.value;
+          const imagen = params.data?.imagen;
+
+          return `
+            <div style="display: flex; align-items: center;">
+              <img src="${imagen}" alt="imagen" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 10px;" />
+              <span style="font-weight: 500;">${nombre}</span>
+            </div>
+          `;
+        }
+    },
     { headerName: 'Fecha', field: 'fecha', flex: 1 },
     { headerName: 'Lugar', field: 'lugar', flex: 1 },
     { headerName: 'Plan', field: 'plan',  flex: 1 },
@@ -104,7 +126,7 @@ export class DashboardComponent implements OnInit {
       headerName: 'Acciones',
       cellRenderer: AccionesCellRendererComponent,
       width: 160,
-      suppressSizeToFit: true,
+      suppressSizeToFit: true, cellClass: 'ag-center-cols-container',
       cellRendererParams: {
         onEdit: this.onEdit.bind(this),
         onDelete: this.onDelete.bind(this),

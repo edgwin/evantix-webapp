@@ -14,7 +14,7 @@ declare const FB: any;
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements AfterViewInit, OnInit {
   isLoading = false;
