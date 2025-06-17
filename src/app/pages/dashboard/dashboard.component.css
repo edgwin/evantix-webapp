@@ -9,3 +9,7 @@
 h1{
   font-size: 35px;
 }
+
+td span[title] {
+  cursor: help;
+}

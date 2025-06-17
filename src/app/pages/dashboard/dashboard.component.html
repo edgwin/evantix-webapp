@@ -2,14 +2,11 @@
   <div><h1>Mis Eventos</h1></div>
   <div><button class="btn btn-primary" type="button" routerLink="/nuevoEvento">Nuevo Evento</button></div>
 </div>
-<ag-grid-angular
-  
-  style="width: 90%; height: 500px;" 
-  [rowData]="rowData"
-  [columnDefs]="columnDefs"
-  [defaultColDef]="{ sortable: true, filter: true, resizable: true }"
-  [enableBrowserTooltips]="true"
-  [rowAnimation]="true"
-  [theme]="theme"
->
-</ag-grid-angular>
+<div style="width: 90%; height: 500px;">
+<app-edgwin-grid
+  [columns]="columns"
+  [data]="rowData"
+  (action)="onActionHandler($event)">
+</app-edgwin-grid>
+</div>
+

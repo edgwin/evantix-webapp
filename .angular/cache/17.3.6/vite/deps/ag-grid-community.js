@@ -153,6 +153,7 @@ import {
   _combineAttributesAndGridOptions,
   _convertColumnEventSourceType,
   _createCellId,
+  _createColumnTree,
   _createColumnTreeWithIds,
   _createElement,
   _createGlobalRowEvent,
@@ -367,7 +368,7 @@ import {
   themeBalham,
   themeMaterial,
   themeQuartz
-} from "./chunk-CO7QNOMK.js";
+} from "./chunk-UL3X7VZ7.js";
 import "./chunk-J4B6MK7R.js";
 export {
   ALWAYS_SYNC_GLOBAL_EVENTS,
@@ -524,6 +525,7 @@ export {
   _combineAttributesAndGridOptions,
   _convertColumnEventSourceType,
   _createCellId,
+  _createColumnTree,
   _createColumnTreeWithIds,
   _createElement,
   _createGlobalRowEvent,

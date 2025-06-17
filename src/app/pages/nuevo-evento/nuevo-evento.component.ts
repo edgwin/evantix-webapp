@@ -25,7 +25,7 @@ export class NuevoEventoComponent implements AfterViewInit {
   };
 
   planes = [
-    { nombre: 'basico', imagen: 'assets/PlanBasico.jpg' },
+    { nombre: 'basic', imagen: 'assets/PlanBasico.jpg' },
     { nombre: 'pro', imagen: 'assets/PlanPro.jpg' },
     { nombre: 'gold', imagen: 'assets/PlanGold.jpg' },
     { nombre: 'black', imagen: 'assets/PlanBlack.jpg' }
@@ -75,7 +75,7 @@ export class NuevoEventoComponent implements AfterViewInit {
     formData.append('Plan', this.evento.plan);
     let costo = 0;
     switch (this.evento.plan) {
-      case 'basico': { costo = 1699; break; }
+      case 'basic': { costo = 1699; break; }
       case 'pro': { costo = 2299; break; }
       case 'gold': { costo = 3499; break; }
       case 'black': { costo = 4499; break; }

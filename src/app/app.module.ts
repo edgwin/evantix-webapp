@@ -30,6 +30,7 @@ import { NuevoEventoComponent } from './pages/nuevo-evento/nuevo-evento.componen
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { RouterModule } from '@angular/router';
+import { EdgwinGridComponent } from './component/edgwin-grid/edgwin-grid.component';
 
 
 @NgModule({
@@ -49,6 +50,7 @@ import { RouterModule } from '@angular/router';
     MesasComponent,
     AccionesCellRendererComponent,
     NuevoEventoComponent,
+    EdgwinGridComponent,
   ],
   imports: [
     RouterModule,

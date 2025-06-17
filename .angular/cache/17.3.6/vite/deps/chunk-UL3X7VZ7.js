@@ -847,7 +847,7 @@ function _defaultComparator(valueA, valueB, accentedCompare = false) {
   }
 }
 var BASE_URL = "https://www.ag-grid.com";
-var VERSION = "33.3.0";
+var VERSION = "33.3.2";
 var MAX_URL_LENGTH = 2e3;
 var MIN_PARAM_LENGTH = 100;
 var VERSION_PARAM_NAME = "_version_";
@@ -8498,6 +8498,12 @@ var RowNode = class {
       this.dispatchRowEvent("uiLevelChanged");
     }
   }
+  getFirstChild() {
+    if (this.childStore) {
+      return this.childStore.getFirstNode();
+    }
+    return this.childrenAfterSort?.[0] ?? null;
+  }
 };
 function _createGlobalRowEvent(rowNode, gos, type) {
   return _addGridCommonParams(gos, {
@@ -12713,19 +12719,25 @@ var GridBodyCtrl = class extends BeanStub {
     });
   }
   addBodyViewportListener() {
-    const { popupSvc, touchSvc } = this.beans;
+    const {
+      eBodyViewport,
+      eStickyTop,
+      eStickyBottom,
+      eTop,
+      eBottom,
+      beans: { popupSvc, touchSvc }
+    } = this;
     const listener = this.onBodyViewportContextMenu.bind(this);
-    this.addManagedElementListeners(this.eBodyViewport, { contextmenu: listener });
+    this.addManagedElementListeners(eBodyViewport, { contextmenu: listener });
     touchSvc?.mockBodyContextMenu(this, listener);
-    this.addManagedElementListeners(this.eBodyViewport, {
+    this.addManagedElementListeners(eBodyViewport, {
       wheel: this.onBodyViewportWheel.bind(this, popupSvc)
     });
     const onStickyWheel = this.onStickyWheel.bind(this);
-    this.addManagedElementListeners(this.eStickyTop, { wheel: onStickyWheel });
-    this.addManagedElementListeners(this.eStickyBottom, { wheel: onStickyWheel });
-    this.addManagedElementListeners(this.eTop, { wheel: onStickyWheel });
-    this.addManagedElementListeners(this.eBottom, { wheel: onStickyWheel });
-    const onHorizontalWheel = (e) => this.onStickyWheel(e, true);
+    for (const container of [eStickyTop, eStickyBottom, eTop, eBottom]) {
+      this.addManagedElementListeners(container, { wheel: onStickyWheel });
+    }
+    const onHorizontalWheel = this.onHorizontalWheel.bind(this);
     for (const container of ["left", "right", "topLeft", "topRight", "bottomLeft", "bottomRight"]) {
       this.addManagedElementListeners(this.ctrlsSvc.get(container).eContainer, {
         wheel: onHorizontalWheel
@@ -12745,16 +12757,18 @@ var GridBodyCtrl = class extends BeanStub {
       this.scrollGridBodyToMatchEvent(e);
     }
   }
-  onStickyWheel(e, allowHorizontalScroll = false) {
+  onStickyWheel(e) {
+    const { deltaY } = e;
+    e.preventDefault();
+    this.scrollVertically(deltaY);
+  }
+  onHorizontalWheel(e) {
     const { deltaX, deltaY, shiftKey } = e;
     const isHorizontalScroll = shiftKey || Math.abs(deltaX) > Math.abs(deltaY);
-    const target = e.target;
     if (!isHorizontalScroll) {
-      e.preventDefault();
-      this.scrollVertically(deltaY);
-    } else if (this.eStickyTopFullWidthContainer.contains(target) || this.eStickyBottomFullWidthContainer.contains(target) || allowHorizontalScroll) {
-      this.scrollGridBodyToMatchEvent(e);
+      return;
     }
+    this.scrollGridBodyToMatchEvent(e);
   }
   scrollGridBodyToMatchEvent(e) {
     const { deltaX, deltaY } = e;
@@ -33957,13 +33971,13 @@ var RowRenderer = class extends BeanStub {
       indexesToDraw.push(i);
     }
     const pagination = this.beans.pagination;
-    const focusedRow = this.beans.focusSvc?.getFocusedCell()?.rowIndex;
-    if (focusedRow != null && (focusedRow < this.firstRenderedRow || focusedRow > this.lastRenderedRow) && (!pagination || pagination.isRowInPage(focusedRow))) {
-      indexesToDraw.push(focusedRow);
+    const focusedRowIndex = this.beans.focusSvc?.getFocusedCell()?.rowIndex;
+    if (focusedRowIndex != null && (focusedRowIndex < this.firstRenderedRow || focusedRowIndex > this.lastRenderedRow) && (!pagination || pagination.isRowInPage(focusedRowIndex)) && focusedRowIndex < this.rowModel.getRowCount()) {
+      indexesToDraw.push(focusedRowIndex);
     }
     const checkRowToDraw = (rowComp) => {
       const index = rowComp.rowNode.rowIndex;
-      if (index == null || index === focusedRow) {
+      if (index == null || index === focusedRowIndex) {
         return;
       }
       if (index < this.firstRenderedRow || index > this.lastRenderedRow) {
@@ -36276,6 +36290,7 @@ var BaseGridSerializingSession = class {
           isFullWidthGroup ? void 0 : column,
           // full width group doesn't have a column
           pointer,
+          true,
           true
         );
         concatenatedGroupValue = ` -> ${valueFormatted2 ?? value2 ?? ""}${concatenatedGroupValue}`;
@@ -36287,7 +36302,7 @@ var BaseGridSerializingSession = class {
         valueFormatted: concatenatedGroupValue
       };
     }
-    const { value, valueFormatted } = valueService.getValueForDisplay(column, node, true);
+    const { value, valueFormatted } = valueService.getValueForDisplay(column, node, true, true);
     return {
       value: value ?? "",
       valueFormatted
@@ -43501,9 +43516,8 @@ var SelectionService = class extends BaseSelectionService {
     });
   }
   canSelectAll() {
-    const { gos, rowModel } = this.beans;
+    const { gos } = this.beans;
     if (!_isClientSideRowModel(gos)) {
-      _error(100, { rowModelType: rowModel.getType() });
       return false;
     }
     return true;
@@ -49940,6 +49954,7 @@ export {
   _convertColumnEventSourceType,
   _columnsMatch,
   _createColumnTreeWithIds,
+  _createColumnTree,
   _updateColumnState,
   _addColumnDefaultAndTypes,
   _applyColumnState,
@@ -50173,4 +50188,4 @@ export {
   RowAutoHeightModule,
   AllCommunityModule
 };
-//# sourceMappingURL=chunk-CO7QNOMK.js.map
+//# sourceMappingURL=chunk-UL3X7VZ7.js.map
