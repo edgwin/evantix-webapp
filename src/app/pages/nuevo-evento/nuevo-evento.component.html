@@ -1,25 +1,73 @@
 <form (ngSubmit)="onSubmit()" #eventoForm="ngForm">
   <h2>Datos del Evento</h2>
+<table style="width: 100%;">
+  <tr>
+    <td>
+      <mat-form-field appearance="fill">
+        <mat-label>Nombre del Evento</mat-label>
+        <input matInput name="nombre" [(ngModel)]="evento.nombre" required>
+      </mat-form-field>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <mat-form-field appearance="fill">
+        <mat-label>Fecha y Hora</mat-label>
+        <input matInput [matDatepicker]="picker" [(ngModel)]="evento.fecha" name="fecha" required>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker touchUi="true"></mat-datepicker>
+      </mat-form-field>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <mat-form-field appearance="fill">
+        <mat-label>Lugar del Evento</mat-label>
+        <input matInput name="lugar" [(ngModel)]="evento.lugar" required>
+      </mat-form-field>
+    </td>
+  </tr>
+  <tr>
+  <td colspan="2">
+    <div style="display: flex; gap: 16px;">
+      <mat-form-field appearance="fill" style="flex: 1; width: 20%;">
+        <mat-label>País</mat-label>
+        <mat-select [(ngModel)]="evento.codigoPais" name="codigoPais" required>
+          <mat-option *ngFor="let pais of codigosPais" [value]="pais.dialCode">
+            {{ pais.name }} ({{ pais.dialCode }})
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
 
-  <label>Nombre del Evento</label>
-  <input type="text" name="nombre" [(ngModel)]="evento.nombre" required>
-
-  <label>Fecha y Hora del Evento</label>
-  <input type="datetime-local" name="fecha" [(ngModel)]="evento.fecha" required>
-
-  <label>Lugar del Evento</label>
-  <input type="text" name="lugar" [(ngModel)]="evento.lugar" required>
-
-  <label>Número WhatsApp</label>
-  <input type="tel" name="whatsapp" [(ngModel)]="evento.whatsapp" required>
-
-  <label>Email</label>
-  <input type="email" name="email" [(ngModel)]="evento.email" required>
-
-  <label>Imagen Aluciva al evento</label>
-  <input type="file" name="imagen" (change)="onFileChange($event)">
-
-  <label>Selecciona un Plan</label>
+      <mat-form-field appearance="fill" style="flex: 2; width: 80%;">
+        <mat-label>Número de WhatsApp</mat-label>
+        <input
+          matInput
+          name="numero"
+          [(ngModel)]="evento.whatsapp"
+          required
+          type="tel"
+          pattern="[0-9]*"
+          maxlength="15" />
+      </mat-form-field>
+    </div>
+  </td>
+</tr>
+  <tr>
+    <td>
+      <mat-form-field appearance="fill">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" name="email" [(ngModel)]="evento.email" required>
+      </mat-form-field>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <label>Imagen alusiva al evento</label>
+      <input type="file" name="imagen" (change)="onFileChange($event)" /> 
+    </td>
+  </tr>
+</table>  
   <swiper-container
     slides-per-view="1"
     navigation="true"
@@ -38,8 +86,7 @@
   <p *ngIf="evento.plan">Plan seleccionado: <strong>{{ evento.plan | titlecase }}</strong></p>
 
   <div class="button-group">
-    <button type="submit">Guardar</button>
-    <button type="button" (click)="cancelar()">Cancelar</button>
+    <button class="btn btn-primary" type="submit" style="padding-left: 50px;padding-right: 50px;">Guardar</button>
+    <button class="btn btn-primary" type="button" style="padding-left: 50px;padding-right: 50px;" (click)="cancelar()">Cancelar</button>
   </div>
 </form>
-

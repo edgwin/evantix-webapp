@@ -1,10 +1,10 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { ColDef } from 'ag-grid-community';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { EventService } from './../../services/event.service';
-import { AccionesCellRendererComponent } from './acciones-cell-renderer.component';
 import { NotificationService } from '../../services/notification.service';
 import { MercadoPagoService } from '../../services/mercado-pago.service.service';
 import { ActivatedRoute } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { PagoDialogComponent } from '../../component/pago-dialog/pago-dialog.component';
 
 interface Evento {
   nombre: string;
@@ -26,7 +26,8 @@ export class DashboardComponent
   //implements OnInit 
   {  
   loggedUser: any;
-  constructor(private eventService: EventService, private notificationService: NotificationService, private mercadoPago: MercadoPagoService, private route: ActivatedRoute)
+  constructor(private eventService: EventService, private notificationService: NotificationService, private mercadoPago: MercadoPagoService, 
+                private route: ActivatedRoute, private dialog: MatDialog)
   {
     const localUser = localStorage.getItem('loggedUser');
     if(localUser != null) {
@@ -95,11 +96,24 @@ export class DashboardComponent
   }
 
   onPay(event: any) {
-    this.mercadoPago.createPreference(event).subscribe({
-      next: (res:any ) => {
-        window.open(res.init_point, '_blank');
-      },
-      error: err => console.error('Error creando preferencia', err)
+    const dialogRef = this.dialog.open(PagoDialogComponent, {
+      width: '400px',
+      data: { evento: event }
+    });
+
+    dialogRef.afterClosed().subscribe((porcentaje: number | null) => {
+      if (porcentaje !== null) {
+        const eventoClonado = { ...event };
+        eventoClonado.costo = Math.floor(eventoClonado.costo * porcentaje);
+        this.notificationService.show('info',`Redirigiendo a mercadopago, espere un momento`);
+
+        this.mercadoPago.createPreference(eventoClonado).subscribe({
+          next: (res: any) => {
+            window.open(res.init_point, '_blank');
+          },
+          error: err => console.error('Error creando preferencia', err)
+        });
+      }
     });
   }
 }

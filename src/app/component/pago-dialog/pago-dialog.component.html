@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>Selecciona el tipo de pago</h2>
+<mat-dialog-content>
+  <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Tipo de pago</mat-label>
+    <mat-select [(value)]="opcionSeleccionada">
+      <mat-option *ngFor="let opcion of opcionesPago" [value]="opcion.valor">
+        {{ opcion.label }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancelar()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="confirmar()">Pagar</button>
+</mat-dialog-actions>

@@ -31,6 +31,15 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { RouterModule } from '@angular/router';
 import { EdgwinGridComponent } from './component/edgwin-grid/edgwin-grid.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { PagoDialogComponent } from './component/pago-dialog/pago-dialog.component';
+
 
 
 @NgModule({
@@ -51,6 +60,7 @@ import { EdgwinGridComponent } from './component/edgwin-grid/edgwin-grid.compone
     AccionesCellRendererComponent,
     NuevoEventoComponent,
     EdgwinGridComponent,
+    PagoDialogComponent
   ],
   imports: [
     RouterModule,
@@ -64,7 +74,14 @@ import { EdgwinGridComponent } from './component/edgwin-grid/edgwin-grid.compone
     MatListModule,
     MatIconModule,
     SocialLoginModule,
-    AgGridModule
+    AgGridModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatDialogModule,    
+    MatButtonModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
