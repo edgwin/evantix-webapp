@@ -2,7 +2,12 @@
   <div><h1>Mis Eventos</h1></div>
   <div><button class="btn btn-primary" type="button" routerLink="/nuevoEvento">Nuevo Evento</button></div>
 </div>
-<div style="width: 90%; height: 500px;">
+<!-- LOADING GIF -->
+<div *ngIf="loading" class="loading-container">
+  <img src="../../../assets/images/loading2.gif" alt="Cargando..." />
+</div>
+
+<div *ngIf="!loading" style="width: 90%; height: 500px;">
 <app-edgwin-grid
   [columns]="columns"
   [data]="rowData"

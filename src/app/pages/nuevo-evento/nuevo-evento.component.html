@@ -84,7 +84,12 @@
   </swiper-container>
 
   <p *ngIf="evento.plan">Plan seleccionado: <strong>{{ evento.plan | titlecase }}</strong></p>
-
+  <table style="width:100%">
+    <tr>
+      <td style="padding-bottom: 18px;"><input name="condiciones" type="checkbox"></td>
+      <td><p>He leido los <a style="cursor:pointer" (click)="openPopup()">terminos y condicioness</a></p></td>
+    </tr>
+  </table>
   <div class="button-group">
     <button class="btn btn-primary" type="submit" style="padding-left: 50px;padding-right: 50px;">Guardar</button>
     <button class="btn btn-primary" type="button" style="padding-left: 50px;padding-right: 50px;" (click)="cancelar()">Cancelar</button>

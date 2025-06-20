@@ -13,3 +13,12 @@ h1{
 td span[title] {
   cursor: help;
 }
+
+.loading-container {
+  text-align: center;
+  margin: 40px 0;
+}
+.loading-container img {
+  width: 50px;
+  height: 50px;
+}

@@ -22,10 +22,10 @@ interface Evento {
   encapsulation: ViewEncapsulation.None
 })
 
-export class DashboardComponent 
-  //implements OnInit 
+export class DashboardComponent
   {  
   loggedUser: any;
+  loading: boolean = true;
   constructor(private eventService: EventService, private notificationService: NotificationService, private mercadoPago: MercadoPagoService, 
                 private route: ActivatedRoute, private dialog: MatDialog)
   {
@@ -40,10 +40,11 @@ export class DashboardComponent
     this.eventService.getEventsByUserId(userId).subscribe({
       next: (res) => {
         this.rowData = res;
-        console.log(this.rowData);       
+        this.loading = false;
       },
       error: err => {
         this.notificationService.show('error',`Hubo un error al obtener los eventos del usuario ${err.message}`);
+        this.loading = false;
       }
     });
     this.route.queryParams.subscribe(params => {
