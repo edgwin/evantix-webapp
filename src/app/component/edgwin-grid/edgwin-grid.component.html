@@ -47,8 +47,8 @@
         <!-- Acciones -->
         <td style="text-align: center;">
           <div class="action-buttons">
-            <button (click)="onAction('edit', row)" class="icon-button" title="Editar">✏️</button>
-            <button (click)="onAction('delete', row)" class="icon-button" title="Eliminar">🗑️</button>
+            <button (click)="onAction('edit', row)" class="icon-button" title="Editar" [disabled]="isDisabled(!row.showPayment)">✏️</button>
+            <button (click)="onAction('delete', row)" class="icon-button" title="Eliminar" [disabled]="isDisabled(!row.showPayment)">🗑️</button>
             <button (click)="onAction('pay', row)" class="icon-button" title="Pagar" [disabled]="isDisabled(!row.showPayment)">💳</button>
           </div>
         </td>

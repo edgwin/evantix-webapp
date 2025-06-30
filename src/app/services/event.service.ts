@@ -8,7 +8,8 @@ export class EventService {
   private apiUrl = 'https://localhost:7282/';
   private eventCreate = 'api/Event/Create';
   private getEventByUserId = 'api/Event/GetUserEvents/';
-  private getEventById = 'api/Event/GetEventById/'
+  private getEventById = 'api/Event/GetEventById/';
+  private getTermsAndConditions = 'api/Event/GetTermsAndConditions';
 
   constructor(private http: HttpClient) {}
 
@@ -41,6 +42,17 @@ export class EventService {
     });
 
     const url = `${this.apiUrl}${this.getEventById}${eventId}`;
+    return this.http.get(url, { headers });
+  }
+
+  getTermsAndCoditions(){
+    const token = localStorage.getItem('access_token');
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    const url = `${this.apiUrl}${this.getTermsAndConditions}`;
     return this.http.get(url, { headers });
   }
 }

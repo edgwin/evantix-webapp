@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { EventService } from './../../services/event.service';
 import { NotificationService } from '../../services/notification.service';
 import { Router } from '@angular/router';
@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   templateUrl: './nuevo-evento.component.html',
   styleUrls: ['./nuevo-evento.component.css']
 })
-export class NuevoEventoComponent implements AfterViewInit {
+export class NuevoEventoComponent implements AfterViewInit, OnInit {
   @ViewChild('swiperRef', { static: false }) swiperRef!: ElementRef;
   
   loggedUser: any;
@@ -16,6 +16,7 @@ export class NuevoEventoComponent implements AfterViewInit {
   evento = {
     nombre: '',
     fecha: '',
+    hora: '',
     lugar: '',
     codigoPais: '+52',
     whatsapp: '',
@@ -49,6 +50,22 @@ export class NuevoEventoComponent implements AfterViewInit {
       this.loggedUser = JSON.parse(localUser);
     }
    }
+  
+  terminosHtml = "";
+  terminosId = "";
+  ngOnInit(): void {
+    const userId = this.loggedUser.userId; 
+    this.eventService.getTermsAndCoditions().subscribe({
+      next: (res:any) => {
+        this.terminosHtml = res.text;
+        localStorage.setItem('terms_id', res.id);
+        localStorage.setItem('terms_text', res.text);
+      },
+      error: err => {
+        
+      }
+    });
+  }
 
   ngAfterViewInit() {
     const swiperEl = this.swiperRef.nativeElement;
@@ -72,15 +89,28 @@ export class NuevoEventoComponent implements AfterViewInit {
     }
   }
 
+  getLocalDateTimeString(fecha: Date): string {
+    const year = fecha.getFullYear();
+    const month = String(fecha.getMonth() + 1).padStart(2, '0');
+    const day = String(fecha.getDate()).padStart(2, '0');
+    const hours = String(fecha.getHours()).padStart(2, '0');
+    const minutes = String(fecha.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  }
+
   onSubmit() {
     if (!this.evento.plan) {
       alert('Por favor selecciona un plan.');
       return;
     }
+    const fecha = new Date(this.evento.fecha);
+    const [hora, minutos] = this.evento.hora.split(':');
+    fecha.setHours(+hora);
+    fecha.setMinutes(+minutos);
     const formData = new FormData();
     formData.append('UserId', this.loggedUser.userId);
     formData.append('Nombre', this.evento.nombre);
-    formData.append('Fecha', this.evento.fecha);
+    formData.append('Fecha', this.getLocalDateTimeString(fecha));
     formData.append('Lugar', this.evento.lugar); //
     formData.append('WhatsApp', this.evento.whatsapp);
     formData.append('Email', this.evento.email);
@@ -97,6 +127,8 @@ export class NuevoEventoComponent implements AfterViewInit {
       formData.append('Imagen', this.evento.imagen);
     }
 
+    this.terminosId = localStorage.getItem('terms_id') ?? "";
+    formData.append('TermsAndConditionsId', this.terminosId)
     this.eventService.crearEvento(formData).subscribe({
       next: () => {
         this.notificationService.show('info',`Evento ${this.evento.nombre} creado`);        
@@ -114,6 +146,7 @@ export class NuevoEventoComponent implements AfterViewInit {
     this.evento = {
       nombre: '',
       fecha: '',
+      hora: '',
       lugar: '',
       whatsapp: '',
       email: '',
@@ -123,5 +156,16 @@ export class NuevoEventoComponent implements AfterViewInit {
       codigoPais: '+52'
     };
     this.router.navigateByUrl('/dashboard');
+  }
+  
+  showPopup = false;
+  disabledSaveBtn = true;
+
+  openPopup() {
+    this.showPopup = true;
+  }
+
+  checkBoxClick(){
+    this.disabledSaveBtn = !this.disabledSaveBtn
   }
 }

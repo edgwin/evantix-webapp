@@ -3,8 +3,6 @@ import { EventService } from './../../services/event.service';
 import { NotificationService } from '../../services/notification.service';
 import { MercadoPagoService } from '../../services/mercado-pago.service.service';
 import { ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
-import { PagoDialogComponent } from '../../component/pago-dialog/pago-dialog.component';
 
 interface Evento {
   nombre: string;
@@ -27,7 +25,7 @@ export class DashboardComponent
   loggedUser: any;
   loading: boolean = true;
   constructor(private eventService: EventService, private notificationService: NotificationService, private mercadoPago: MercadoPagoService, 
-                private route: ActivatedRoute, private dialog: MatDialog)
+                private route: ActivatedRoute)
   {
     const localUser = localStorage.getItem('loggedUser');
     if(localUser != null) {
@@ -97,24 +95,25 @@ export class DashboardComponent
   }
 
   onPay(event: any) {
-    const dialogRef = this.dialog.open(PagoDialogComponent, {
-      width: '400px',
-      data: { evento: event }
-    });
-
-    dialogRef.afterClosed().subscribe((porcentaje: number | null) => {
-      if (porcentaje !== null) {
-        const eventoClonado = { ...event };
-        eventoClonado.costo = Math.floor(eventoClonado.costo * porcentaje);
-        this.notificationService.show('info',`Redirigiendo a mercadopago, espere un momento`);
-
-        this.mercadoPago.createPreference(eventoClonado).subscribe({
+    this.mercadoPago.createPreference(event).subscribe({
           next: (res: any) => {
             window.open(res.init_point, '_blank');
           },
           error: err => console.error('Error creando preferencia', err)
         });
-      }
-    });
+    // const dialogRef = this.dialog.open(PagoDialogComponent, {
+    //   width: '400px',
+    //   data: { evento: event }
+    // });
+
+    // dialogRef.afterClosed().subscribe((porcentaje: number | null) => {
+    //   if (porcentaje !== null) {
+    //     const eventoClonado = { ...event };
+    //     eventoClonado.costo = Math.floor(eventoClonado.costo * porcentaje);
+    //     this.notificationService.show('info',`Redirigiendo a mercadopago, espere un momento`);
+
+        
+    //   }
+    // });
   }
 }

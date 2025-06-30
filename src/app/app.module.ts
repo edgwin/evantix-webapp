@@ -39,6 +39,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { PagoDialogComponent } from './component/pago-dialog/pago-dialog.component';
+import { PopupHtmlComponent } from './component/popup-html/popup-html.component';
 
 
 
@@ -82,6 +83,7 @@ import { PagoDialogComponent } from './component/pago-dialog/pago-dialog.compone
     MatNativeDateModule,
     MatDialogModule,    
     MatButtonModule,
+    PopupHtmlComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
