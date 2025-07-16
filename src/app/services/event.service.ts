@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,7 @@ export class EventService {
   private getEventByUserId = 'api/Event/GetUserEvents/';
   private getEventById = 'api/Event/GetEventById/';
   private getTermsAndConditions = 'api/Event/GetTermsAndConditions';
+  private getEventForInvitationById = 'api/Event/GetUserEventsForInvitations/';
 
   constructor(private http: HttpClient) {}
 
@@ -55,4 +57,20 @@ export class EventService {
     const url = `${this.apiUrl}${this.getTermsAndConditions}`;
     return this.http.get(url, { headers });
   }
+
+  getEventsForInvitationsById(eventId: string){
+    const token = localStorage.getItem('access_token');
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    const url = `${this.apiUrl}${this.getEventForInvitationById}${eventId}`;
+    return this.http.get(url, { headers });
+  }
+
+  guardarInvitacion(data: FormData): Observable<any> {
+    return this.http.post('/api/invitaciones', data);
+  }
+
 }

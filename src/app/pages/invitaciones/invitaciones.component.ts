@@ -1,10 +1,455 @@
-import { Component } from '@angular/core';
+import { ViewChildren, QueryList, ElementRef, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { EventService } from '../../services/event.service';
 
 @Component({
   selector: 'app-invitaciones',
   templateUrl: './invitaciones.component.html',
   styleUrl: './invitaciones.component.css'
 })
-export class InvitacionesComponent {
 
+export class InvitacionesComponent implements OnInit {
+  loading: boolean = true;
+  notificationService: any;
+  loggedUser: any;
+  rowData:any = [];
+  eventList:any = null;
+  selectedElement: any = null;
+  codigosPais = [
+    { name: 'México', dialCode: '+52' },
+    { name: 'Estados Unidos', dialCode: '+1' },
+    { name: 'Colombia', dialCode: '+57' },
+    { name: 'Argentina', dialCode: '+54' },
+    { name: 'España', dialCode: '+34' },
+    { name: 'Chile', dialCode: '+56' },
+    { name: 'Perú', dialCode: '+51' },
+    { name: 'Ecuador', dialCode: '+593' },
+    // agrega los que necesites
+  ];
+  indicaciones: { titulo: string; descripcion: string }[] = [
+    { titulo: '', descripcion: '' }
+  ];
+  itinerario: { actividad: string; descripcion: string; fechaHora: string }[] = [
+    { actividad: '', descripcion: '', fechaHora: '' }
+  ];
+  dondeCuando: {
+    actividad: string;
+    lugar: string;
+    ubicacion: string;
+    fechaHora: string;
+    direccion: string;
+  }[] = [
+    { actividad: '', lugar: '', ubicacion: '', fechaHora: '', direccion: '' }
+  ];
+  mesaRegalos: { opcion: string; descripcion: string; imagen: string }[] = [
+    { opcion: '', descripcion: '', imagen: '' }
+  ];  
+  personaFavorita: { imagen: any; nombre: string; parentesco: string }[] = [
+    { imagen: null, nombre: '', parentesco: '' }
+  ];
+  video: any = null;
+  socialNetwork: { red: string; url: string }[] = [
+    { red: '', url: '' }
+  ];
+  
+  hospedajes: {
+    nombreLugar: string;
+    direccion: string;
+    url: string;
+    telefono: string;
+  }[] = [
+    { nombreLugar: '', direccion: '', url: '', telefono: ''}
+  ];
+
+  contactos: { nombre: string; codigoPais:string; whatsapp: string }[] = [
+    { nombre: '', codigoPais: '', whatsapp: '' }
+  ];
+
+  festejados: { imagen: any; nombre: string; frase: string } = { imagen: null, nombre: '', frase: '' };
+  imagenPortada: { imagen: any; } = { imagen: null };
+
+  @ViewChildren('festejadoInput') festejadoInputs!: QueryList<ElementRef<HTMLInputElement>>;
+  @ViewChildren('indicacionesInput') indicacionesInputs!: QueryList<ElementRef<HTMLInputElement>>;
+  @ViewChildren('actividadInput') actividadInputs!: QueryList<ElementRef<HTMLInputElement>>;
+  @ViewChildren('dondeCuandoInput') dondeCuandoInputs!: QueryList<ElementRef<HTMLInputElement>>;
+  @ViewChildren('mesaRegalosInputs') mesaRegalosInputs!: QueryList<ElementRef<HTMLInputElement>>;
+  @ViewChildren('personaFavoritaInputs') personaFavoritaInputs!: QueryList<ElementRef<HTMLInputElement>>;
+  @ViewChildren('socialNetworks') socialNetworksInputs!: QueryList<ElementRef<HTMLInputElement>>;
+  @ViewChildren('hospedajeInputs') hospedajeInputs!: QueryList<ElementRef<HTMLInputElement>>;
+  @ViewChildren('contactoInputs') contactoInputs!: QueryList<ElementRef<HTMLInputElement>>;
+  @ViewChildren('portadaFileInput') portadaFileInput!: QueryList<ElementRef<HTMLInputElement>>;
+  @ViewChildren('festejadosFileInput') festejadosFileInput!: QueryList<ElementRef<HTMLInputElement>>;  
+  @ViewChild('galleryFileInput', { static: false }) fileInput!: ElementRef<HTMLInputElement>;
+
+  constructor(private eventService: EventService){
+    const localUser = localStorage.getItem('loggedUser');
+    if(localUser != null) {
+      this.loggedUser = JSON.parse(localUser);
+    }
+  }
+
+  ngOnInit(): void {
+    const userId = this.loggedUser.userId; 
+    this.eventService.getEventsForInvitationsById(userId).subscribe({
+      next: (res) => {
+        this.rowData = res;
+        this.loading = false;
+        if (this.rowData.length > 0) {
+          this.eventList = this.rowData[0].id;
+          this.selectedElement = this.rowData[0];
+      }
+      },
+      error: (err) => {
+        this.notificationService.show('error',`Hubo un error al obtener los eventos del usuario ${err.message}`);
+        this.loading = false;
+      }
+    });
+  }
+
+  agregarIndicaciones(): void {
+    if (this.indicaciones.length >= 3) return;
+
+    this.indicaciones = [...this.indicaciones, { titulo: '', descripcion: '' }];
+
+    setTimeout(() => {
+      const lastInput = this.indicacionesInputs.last;
+      if (lastInput) {
+        lastInput.nativeElement.focus();
+      }
+    }, 0);
+  }
+
+  eliminarIndicaciones(index: number): void {
+    const nuevaLista = [...this.indicaciones];
+    nuevaLista.splice(index, 1);
+    this.indicaciones = nuevaLista;
+  } 
+
+  trackByIndex(index: number, item: any): number {
+    return index;
+  }  
+
+  onIndicacionEnter(event: any): void {
+    event.preventDefault();
+    this.agregarIndicaciones();
+  }
+
+  agregarActividad(): void {
+    if (this.itinerario.length >= 8) return;
+
+    this.itinerario = [...this.itinerario, { actividad: '', descripcion: '', fechaHora: '' }];
+
+    setTimeout(() => {
+      const lastInput = this.actividadInputs?.last;
+      if (lastInput) {
+        lastInput.nativeElement.focus();
+      }
+    }, 0);
+  }
+
+  eliminarActividad(index: number): void {
+    const nuevaLista = [...this.itinerario];
+    nuevaLista.splice(index, 1);
+    this.itinerario = nuevaLista;
+  }
+
+  agregarDondeCuando(): void {
+    if (this.dondeCuando.length >= 5) return;
+
+    this.dondeCuando = [...this.dondeCuando, { actividad: '', lugar: '', fechaHora: '', direccion: '', ubicacion: '' }];
+
+    setTimeout(() => {
+      const lastInput = this.dondeCuandoInputs?.last;
+      if (lastInput) {
+        lastInput.nativeElement.focus();
+      }
+    }, 0);
+  }
+
+  eliminarDondeCuando(index: number): void {
+    const lista = [...this.dondeCuando];
+    lista.splice(index, 1);
+    this.dondeCuando = lista;
+  }
+
+  agregarMesaRegalos(): void {
+    if (this.mesaRegalos.length >= 3) return;
+
+    this.mesaRegalos = [
+      ...this.mesaRegalos,
+      { opcion: '', descripcion: '', imagen: ''}
+    ];
+
+    setTimeout(() => {
+      const lastInput = this.mesaRegalosInputs?.last;
+      if (lastInput) lastInput.nativeElement.focus();
+    }, 0);
+  }
+
+  eliminarMesaRegalos(index: number): void {
+    const nuevaLista = [...this.mesaRegalos];
+    nuevaLista.splice(index, 1);
+    this.mesaRegalos = nuevaLista;
+  }
+
+  agregarPersonaFavorita(): void {
+    if (this.personaFavorita.length >= 6) return;
+    this.personaFavorita = [
+      ...this.personaFavorita,
+      { imagen: '', nombre: '', parentesco: ''}
+    ];
+
+    setTimeout(() => {
+      const lastInput = this.personaFavoritaInputs?.last;
+      if (lastInput) lastInput.nativeElement.focus();
+    }, 0);
+  }
+
+  eliminarPersonaFavorita(index: number): void {
+    const nuevaLista = [...this.personaFavorita];
+    nuevaLista.splice(index, 1);
+    this.personaFavorita = nuevaLista;
+  }
+
+  agregarSocialNetwork(): void {
+    if (this.socialNetwork.length >= 5) return;
+
+    this.socialNetwork = [...this.socialNetwork, { red: '', url: '' }];
+
+    setTimeout(() => {
+      const lastInput = this.socialNetworksInputs?.last;
+      if (lastInput) {
+        lastInput.nativeElement.focus();
+      }
+    }, 0);
+  }
+
+  eliminarSocialNetwork(index: number): void {
+    const nuevaLista = [...this.socialNetwork];
+    nuevaLista.splice(index, 1);
+    this.socialNetwork = nuevaLista;
+  }
+
+  agregarHospedaje(): void {
+    if (this.hospedajes.length >= 3) return;
+
+    this.hospedajes = [...this.hospedajes, { nombreLugar: '', url: '', direccion: '', telefono: ''}];
+
+    setTimeout(() => {
+      const lastInput = this.hospedajeInputs?.last;
+      if (lastInput) {
+        lastInput.nativeElement.focus();
+      }
+    }, 0);
+  }
+
+  eliminarHospedaje(index: number): void {
+    const lista = [...this.hospedajes];
+    lista.splice(index, 1);
+    this.hospedajes = lista;
+  }
+
+  agregarContacto(): void {
+    if (this.contactos.length >= 2) return;
+
+    this.contactos = [...this.contactos, { nombre: '', codigoPais: '', whatsapp: '' }];
+
+    setTimeout(() => {
+      const lastInput = this.contactoInputs.last;
+      if (lastInput) {
+        lastInput.nativeElement.focus();
+      }
+    }, 0);
+  }
+
+  eliminarContacto(index: number): void {
+    const nuevaLista = [...this.contactos];
+    nuevaLista.splice(index, 1);
+    this.contactos = nuevaLista;
+  } 
+
+  //******************************************************/
+
+  imagenPersonaFavNames: string[] = [];
+
+  onFileSelected(event: Event, index: number): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      this.imagenPersonaFavNames[index] = file.name;
+      this.personaFavorita[index].imagen = file;
+    } else {
+      this.imagenPersonaFavNames[index] = '';
+      this.personaFavorita[index].imagen = null;
+    }
+  }
+
+  imagenFestejados: string = '';
+
+  onFileSelectedFestejados(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      this.imagenFestejados = file.name;
+      this.festejados.imagen = file;
+    } else {
+      this.imagenFestejados = '';
+      this.festejados.imagen = null;
+    }
+  }
+
+  imagenPortadaSelected: string = '';
+  onFileSelectedPortada(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      this.imagenPortadaSelected = file.name;
+      this.imagenPortada.imagen = file;
+    } else {
+      this.imagenPortadaSelected = '';
+      this.imagenPortada.imagen = null;
+    }
+  }
+
+  isHovering = false;
+  previewImages: string[] = [];
+  selectedFiles: File[] = [];
+
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    this.isHovering = true;
+  }
+
+  onDragLeave(event: DragEvent) {
+    this.isHovering = false;
+  }
+
+  onDrop(event: DragEvent) {
+    event.preventDefault();
+    this.isHovering = false;
+    if (event.dataTransfer?.files) {
+      this.processFiles(event.dataTransfer.files);
+    }
+  }
+
+  onFilesSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files) {
+      this.processFiles(input.files);
+    }
+  }
+
+  processFiles(files: FileList) {
+    Array.from(files).forEach(file => {
+      if (file.type.startsWith('image/')) {
+        this.selectedFiles.push(file);
+        const reader = new FileReader();
+        reader.onload = (e: any) => this.previewImages.push(e.target.result);
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  removeImage(index: number) {
+    this.selectedFiles.splice(index, 1);
+    this.previewImages.splice(index, 1);
+
+    // Si ya no hay archivos, resetea el input
+    if (this.selectedFiles.length === 0 && this.fileInput) {
+      this.fileInput.nativeElement.value = '';
+    }
+  }
+
+  videoUrl: string = '';
+  urlPattern: string =
+    '^(https?:\\/\\/)?' + // http:// o https://
+    '((([a-zA-Z\\d]([a-zA-Z\\d-]*[a-zA-Z\\d])*)\\.)+[a-zA-Z]{2,})' + // dominio
+    '(\\:\\d+)?(\\/[-a-zA-Z\\d%_.~+]*)*' + // puerto y ruta
+    '(\\?[;&a-zA-Z\\d%_.~+=-]*)?' + // query string
+    '(\\#[-a-zA-Z\\d_]*)?$'; // fragmento
+
+  submitForm() {
+    const formData = new FormData();
+    formData.append('eventoId', this.eventList);
+    formData.append('videoUrl', this.videoUrl);
+    formData.append('portadaImg', this.imagenPortada.imagen);
+    formData.append(`festejados.nombre`, this.festejados.nombre);
+    formData.append(`festejados.frase`, this.festejados.frase);
+    if (this.festejados.imagen instanceof File) {
+      formData.append(`festejados.imagen`, this.festejados.imagen);
+    }
+    // 📋 Indicaciones
+    this.indicaciones.forEach((item, index) => {
+      formData.append(`indicaciones[${index}][titulo]`, item.titulo);
+      formData.append(`indicaciones[${index}][descripcion]`, item.descripcion);
+    });
+
+    // 📆 Itinerario
+    this.itinerario.forEach((item, index) => {
+      formData.append(`itinerario[${index}][actividad]`, item.actividad);
+      formData.append(`itinerario[${index}][descripcion]`, item.descripcion);
+      formData.append(`itinerario[${index}][fechaHora]`, item.fechaHora);
+    });
+
+    // 📍 Donde y Cuándo
+    this.dondeCuando.forEach((item, index) => {
+      formData.append(`dondeCuando[${index}][actividad]`, item.actividad);
+      formData.append(`dondeCuando[${index}][lugar]`, item.lugar);
+      formData.append(`dondeCuando[${index}][ubicacion]`, item.ubicacion);
+      formData.append(`dondeCuando[${index}][fechaHora]`, item.fechaHora);
+      formData.append(`dondeCuando[${index}][direccion]`, item.direccion);
+    });
+
+    // 🎁 Mesa de Regalos
+    this.mesaRegalos.forEach((item, index) => {
+      formData.append(`mesaRegalos[${index}][opcion]`, item.opcion);
+      formData.append(`mesaRegalos[${index}][descripcion]`, item.descripcion);
+      formData.append(`mesaRegalos[${index}][imagen]`, item.imagen);
+    });
+
+
+    this.personaFavorita.forEach((p, i) => {
+      formData.append(`personaFavorita[${i}].nombre`, p.nombre);
+      formData.append(`personaFavorita[${i}].parentesco`, p.parentesco);
+      if (p.imagen instanceof File) {
+        formData.append(`personaFavorita[${i}].imagen`, p.imagen);
+      }
+    });
+
+    // 📷 Galería
+    this.selectedFiles.forEach((file, index) => {
+      formData.append(`galeriaFotos`, file);
+    });
+
+    // 🌐 Redes Sociales
+    this.socialNetwork.forEach((item, index) => {
+      formData.append(`socialNetwork[${index}][red]`, item.red);
+      formData.append(`socialNetwork[${index}][url]`, item.url);
+    });
+
+    // 🏨 Hospedajes
+    this.hospedajes.forEach((item, index) => {
+      formData.append(`hospedajes[${index}][nombreLugar]`, item.nombreLugar);
+      formData.append(`hospedajes[${index}][direccion]`, item.direccion);
+      formData.append(`hospedajes[${index}][url]`, item.url);
+      formData.append(`hospedajes[${index}][telefono]`, item.telefono);
+    });
+
+    // ☎ Contactos
+    this.contactos.forEach((item, index) => {
+      formData.append(`contactos[${index}][nombre]`, item.nombre);
+      formData.append(`contactos[${index}][codigoPais]`, item.codigoPais);
+      formData.append(`contactos[${index}][whatsapp]`, item.whatsapp);
+    });
+
+    // 🌐 Llamar a servicio que conecta con el backend
+    this.eventService.guardarInvitacion(formData).subscribe({
+      next: () => {
+        alert('Formulario enviado con éxito');
+      },
+      error: (err) => {
+        alert('Error al enviar formulario: ' + err.message);
+      }
+    });
+  } 
 }

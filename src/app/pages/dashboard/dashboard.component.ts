@@ -3,6 +3,7 @@ import { EventService } from './../../services/event.service';
 import { NotificationService } from '../../services/notification.service';
 import { MercadoPagoService } from '../../services/mercado-pago.service.service';
 import { ActivatedRoute } from '@angular/router';
+import { LocalStorageService } from '../../services/local-storage.service';
 
 interface Evento {
   nombre: string;
@@ -24,8 +25,9 @@ export class DashboardComponent
   {  
   loggedUser: any;
   loading: boolean = true;
+  noDataMsg: boolean = false;
   constructor(private eventService: EventService, private notificationService: NotificationService, private mercadoPago: MercadoPagoService, 
-                private route: ActivatedRoute)
+                private route: ActivatedRoute, private localStorageService: LocalStorageService)
   {
     const localUser = localStorage.getItem('loggedUser');
     if(localUser != null) {
@@ -39,6 +41,8 @@ export class DashboardComponent
       next: (res) => {
         this.rowData = res;
         this.loading = false;
+        const pagadoItem = this.rowData.find((item: any) => item.estatus?.trim().toLowerCase() === 'pagado');
+        this.localStorageService.setShowInvitaciones(!!pagadoItem);
       },
       error: err => {
         this.notificationService.show('error',`Hubo un error al obtener los eventos del usuario ${err.message}`);

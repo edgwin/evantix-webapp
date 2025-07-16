@@ -1,1 +1,599 @@
-<p>invitaciones works!</p>
+<div style="display: flex; justify-content: flex-start; width: 100%;">
+  <mat-form-field appearance="fill" style="width: 50%;">
+    <mat-label>Selecciona un Evento</mat-label>
+    <mat-select [(ngModel)]="eventList" name="eventList" required>
+      <mat-option *ngFor="let data of rowData" [value]="data.id">
+        {{ data.nombre }} - {{ data.fecha }} - {{ data.lugar }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+<div style="text-align: center">
+  <p>Empezemos a crear tu invitacion</p>
+</div>
+<div style="width: 95%; margin: 0 auto">
+  <form>
+    <div class="form-section">
+      <h3>Seccion Portada</h3>
+      <p>Titulo del Evento: <b>{{ selectedElement.nombre }}</b></p>
+      <p>Fecha del Evento: <b>{{ selectedElement.fecha }}</b></p>
+      <p>Lugar del Evento: <b>{{ selectedElement.lugar }}</b></p>
+      <div class="form-group">
+        <div class="custom-file-input">
+            <label for="imagenFestejados">Sube la imagen que se mostrará como portada</label> <!-- Agregar required GPT-->
+
+            <!-- Botón personalizado -->
+            <button type="button" class="file-btn" (click)="portadaFileInput.click()">Seleccionar archivo</button>
+
+            <!-- Leyenda personalizada -->
+            <span class="file-label">
+              {{ imagenPortadaSelected || 'Sin selección' }}
+            </span>
+
+            <!-- Input oculto -->
+            <input
+              type="file"
+              id="imagenPortada"
+              name="imagenPortada"
+              #portadaFileInput
+              (change)="onFileSelectedPortada($event)"
+              hidden
+            />
+        </div>        
+      </div>
+    </div>
+    <div class="form-section">
+      <h3>Seccion Festejados (maximo 5)</h3>
+      <div class="form-group">
+        <mat-form-field appearance="fill" class="festejado-field">
+          <mat-label>Nombre del o los Festejados</mat-label>
+          <input #festejadoInput matInput [(ngModel)]="festejados.nombre" name="festejado" maxlength="50" required>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Escribe una frase o dedicatoria</mat-label>
+          <input matInput [(ngModel)]="festejados.frase" name="dedicatoria" maxlength="200" required>
+        </mat-form-field>
+        <label for="imagen" class="form-label">
+          Foto del festejado o los festejados
+        </label>
+        <div class="custom-file-input">
+            <!-- Agregar required GPT-->
+            <!-- Botón personalizado -->
+            <button type="button" class="file-btn" (click)="festejadosFileInput.click()">Seleccionar archivo</button>
+
+            <!-- Leyenda personalizada -->
+            <span class="file-label">
+              {{ imagenFestejados || 'Sin selección' }}
+            </span>
+
+            <!-- Input oculto -->
+            <input
+              type="file"
+              id="imagenFestejados"
+              name="imagenFestejados"
+              #festejadosFileInput
+              (change)="onFileSelectedFestejados($event)"
+              hidden
+            />
+        </div>
+      </div>
+    </div>
+    <div class="form-section">
+      <h3>Sección Indicaciones para el Evento (maximo 3)</h3>
+      <div class="form-group">
+          <div
+            *ngFor="let indicacion of indicaciones; let i = index; trackBy: trackByIndex"
+            class="indicacion-row"
+          >
+            <mat-form-field appearance="fill" class="indicacion-field">
+              <mat-label>Indicación {{ indicaciones.length > 1 ? i + 1 : '' }}</mat-label>
+              <input
+                #indicacionesInput
+                matInput
+                [(ngModel)]="indicacion.titulo"
+                name="indicacionTitulo{{i}}"
+                maxlength="50"
+                required
+                (keydown.enter)="onIndicacionEnter($event)"
+              />
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="descripcion-field">
+              <mat-label>Descripción</mat-label>
+              <input
+                matInput
+                [(ngModel)]="indicacion.descripcion"
+                name="indicacionDescripcion{{i}}"
+                maxlength="100"
+              />
+            </mat-form-field>
+
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="eliminarIndicaciones(i)"
+              *ngIf="indicaciones.length > 1"
+            >
+              <mat-icon>remove_circle</mat-icon>
+            </button>
+          </div>
+
+          <button mat-mini-fab color="primary" (click)="agregarIndicaciones()">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+    </div>
+    <div class="form-section"> <!-- TODO Agregar una foto por cada actividad -->
+      <h3>Sección Itinerario (maximo 8)</h3>
+      <div class="form-group">
+        <div
+          *ngFor="let item of itinerario; let i = index; trackBy: trackByIndex"
+          class="itinerario-row"
+        >
+          <mat-form-field appearance="fill" class="actividad-field">
+            <mat-label>Actividad</mat-label>
+            <input
+              #actividadInput
+              matInput
+              [(ngModel)]="item.actividad"
+              name="actividad{{i}}"
+              maxlength="50"
+              required
+            />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="descripcion-field">
+            <mat-label>Descripción</mat-label>
+            <input
+              matInput
+              [(ngModel)]="item.descripcion"
+              name="descripcionActividad{{i}}"
+              maxlength="100"              
+            />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="fecha-field">
+            <mat-label>Fecha y Hora</mat-label>
+            <input
+              matInput
+              [(ngModel)]="item.fechaHora"
+              name="fechaHora{{i}}"
+              type="datetime-local"
+              required
+            />
+          </mat-form-field>
+
+          <button mat-icon-button color="warn" (click)="eliminarActividad(i)" *ngIf="itinerario.length > 1">
+            <mat-icon>remove_circle</mat-icon>
+          </button>
+        </div>
+
+        <button mat-mini-fab color="primary" (click)="agregarActividad()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="form-section">
+      <h3>Sección Dónde y Cuándo</h3>
+          <div class="form-group">
+            <div
+              *ngFor="let item of dondeCuando; let i = index; trackBy: trackByIndex"
+              class="cinco-campos-row"
+            >
+              <mat-form-field appearance="fill" class="campo-1">
+                <mat-label>Actividad</mat-label>
+                <input
+                  #dondeCuandoInput
+                  matInput
+                  [(ngModel)]="item.actividad"
+                  name="actividadDC{{i}}"
+                  maxlength="50"
+                  required
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="fill" class="campo-2">
+                <mat-label>Lugar</mat-label>
+                <input
+                  matInput
+                  [(ngModel)]="item.lugar"
+                  name="lugarDC{{i}}"
+                  maxlength="100"
+                  required
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="fill" class="campo-3">
+                <mat-label>Ubicación (mapa)</mat-label>
+                <input
+                  matInput
+                  [(ngModel)]="item.ubicacion"
+                  name="ubicacionDC{{i}}"
+                  maxlength="200"
+                  placeholder="https://maps.app.goo.gl/..."
+                  required
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="fill" class="campo-4">
+                <mat-label>Fecha y hora</mat-label>
+                <input
+                  matInput
+                  [(ngModel)]="item.fechaHora"
+                  name="fechaHoraDC{{i}}"
+                  type="datetime-local"
+                  required
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="fill" class="campo-5">
+                <mat-label>Dirección</mat-label>
+                <input
+                  matInput
+                  [(ngModel)]="item.direccion"
+                  name="direccionDC{{i}}"
+                  maxlength="150"
+                  required
+                />
+              </mat-form-field>
+
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="eliminarDondeCuando(i)"
+                *ngIf="dondeCuando.length > 1"
+              >
+                <mat-icon>remove_circle</mat-icon>
+              </button>
+            </div>
+            <button mat-mini-fab color="primary" (click)="agregarDondeCuando()">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+    </div>
+    <div class="form-section">
+      <h3>Mesa de Regalos</h3>
+      <div class="form-group">
+        <div
+          *ngFor="let item of mesaRegalos; let i = index; trackBy: trackByIndex"
+          class="itinerario-row"
+        >
+          <!-- Opcion -->
+          <mat-form-field appearance="fill" class="actividad-field">
+            <mat-label>Opción {{ i + 1 }}</mat-label>
+            <input
+              matInput
+              [(ngModel)]="item.opcion"
+              name="opcion{{ i }}"
+              maxlength="50"
+              required
+            />
+          </mat-form-field>
+
+          <!-- Descripcion -->
+          <mat-form-field appearance="fill" class="descripcion-field">
+            <mat-label>Descripción</mat-label>
+            <input
+              matInput
+              [(ngModel)]="item.descripcion"
+              name="descripcionMesa{{i}}"
+              maxlength="100"
+            />
+          </mat-form-field>
+
+          <!-- Imagen (solo imagenes como opciones) -->
+          <mat-form-field appearance="fill" class="image-drop-field">
+            <mat-label>Imagen</mat-label>
+            <mat-select [(ngModel)]="item.imagen" name="imagen{{i}}" required>
+              <mat-option [value]="'assets/images/regalo.png'">
+                <img src="assets/images/regalo.png" alt="Regalo" style="height: 40px;" />
+              </mat-option>
+              <mat-option [value]="'assets/images/Mesa.png'">
+                <img src="assets/images/Mesa.png" alt="Mesa" style="height: 40px;" />
+              </mat-option>
+              <mat-option [value]="'assets/images/sobres.png'">
+                <img src="assets/images/sobres.png" alt="Sobre" style="height: 40px;" />
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- ✅ Vista previa de imagen alineada -->
+          <div class="imagen-preview">
+            <img
+              *ngIf="item.imagen"
+              [src]="item.imagen"
+              alt="vista previa"
+              style="max-width: 100%; max-height: 100%; object-fit: contain;"
+            />
+          </div>
+
+          <!-- Botón eliminar -->
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="eliminarMesaRegalos(i)"
+            *ngIf="mesaRegalos.length > 1"
+            style="align-self: flex-start;"
+          >
+            <mat-icon>remove_circle</mat-icon>
+          </button>
+        </div>
+
+        <button mat-mini-fab color="primary" (click)="agregarMesaRegalos()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="form-section">
+      <h3>Sección Personas Favoritas</h3>
+      <div class="form-group">
+        <div
+          *ngFor="let item of personaFavorita; let i = index; trackBy: trackByIndex"
+          class="itinerario-row"
+        >
+          <mat-form-field appearance="fill" class="actividad-field">
+            <mat-label>Nombre(s) (ej. Maria y Jose)</mat-label>
+            <input
+              #personaFavoritaInputs
+              matInput
+              [(ngModel)]="item.nombre"
+              name="nombre{{i}}"
+              maxlength="50"
+              required
+            />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="descripcion-field">
+            <mat-label>Parentesco (ej. Padrinos)</mat-label>
+            <input
+              matInput
+              [(ngModel)]="item.parentesco"
+              name="parentesco{{i}}"
+              maxlength="100"
+              required
+            />
+          </mat-form-field>
+          <div class="custom-file-input">
+            <label for="imagenPersonaFav">Foto</label> <!-- Agregar required GPT-->
+
+            <!-- Botón personalizado -->
+            <button type="button" class="file-btn" (click)="fileInput.click()">Seleccionar archivo</button>
+
+            <!-- Leyenda personalizada -->
+            <span class="file-label">
+              {{ imagenPersonaFavNames[i] || 'Sin selección' }}
+            </span>
+
+            <!-- Input oculto -->
+            <input
+              type="file"
+              id="imagenPersonaFav{{i}}"
+              name="imagenPersonaFav{{i}}"
+              #fileInput
+              (change)="onFileSelected($event, i)"
+              hidden
+            />
+          </div>
+
+          <button mat-icon-button color="warn" (click)="eliminarPersonaFavorita(i)" *ngIf="personaFavorita.length > 1">
+            <mat-icon>remove_circle</mat-icon>
+          </button>
+        </div>
+
+        <button mat-mini-fab color="primary" (click)="agregarPersonaFavorita()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="form-section">
+      <h3>Seccion, galeria de fotos (Maximo XX)</h3>
+
+      <!-- Zona de arrastrar y soltar -->
+      <div
+        class="drop-zone"
+        (dragover)="onDragOver($event)"
+        (drop)="onDrop($event)"
+        (dragleave)="onDragLeave($event)"
+        [class.drop-zone-hover]="isHovering"
+      >
+        <p>Arrastra y suelta tus imágenes aquí</p>
+        <p>o</p>
+        <input
+          #galleryFileInput
+          type="file"
+          multiple
+          accept="image/*"
+          name="galeriaFotos"
+          (change)="onFilesSelected($event)"          
+        />
+      </div>
+
+      <!-- Vista previa -->
+      <div class="image-preview">
+        <div *ngFor="let img of previewImages; let i = index" class="preview-item">
+          <img [src]="img" />
+          <button mat-icon-button color="warn" (click)="removeImage(i)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="form-section">
+      <h3>Seccion Video</h3>
+      <div class="form-group">
+        <mat-form-field appearance="fill" class="festejado-field">
+          <mat-label>URL del video a mostrar</mat-label>
+          <input
+            matInput
+            name="video"
+            [(ngModel)]="videoUrl"
+            #videoUrlModel="ngModel"
+            maxlength="255"
+            required
+            [pattern]="urlPattern"
+          />
+          <mat-error *ngIf="videoUrlModel.invalid && videoUrlModel.touched">
+            Ingresa una URL válida (ej. https://...)
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="form-section">
+      <h3>Sección Redes Sociales (maximo 4)</h3>
+      <div class="form-group">
+        <div
+          *ngFor="let item of socialNetwork; let i = index; trackBy: trackByIndex"
+          class="itinerario-row"
+        >          
+          <mat-form-field appearance="fill" class="image-drop-field-SN">
+            <mat-label>Red Social</mat-label>
+            <mat-select [(ngModel)]="item.red" name="imagenRed{{i}}">
+              <mat-option [value]="'assets/images/Insta.png'">
+                <div style="display: flex; align-items: center;">
+                  <img src="assets/images/Insta.png" alt="Instagram" style="height: 24px; margin-right: 8px;" />
+                  Instagram
+                </div>
+              </mat-option>
+              <mat-option [value]="'assets/images/face.png'">
+                <div style="display: flex; align-items: center;">
+                  <img src="assets/images/face.png" alt="Facebook" style="height: 24px; margin-right: 8px;" />
+                  Facebook
+                </div>
+              </mat-option>
+              <mat-option [value]="'assets/images/tiktok.png'">
+                <div style="display: flex; align-items: center;">
+                  <img src="assets/images/tiktok.png" alt="TikTok" style="height: 24px; margin-right: 8px;" />
+                  TikTok
+                </div>
+              </mat-option>
+              <mat-option [value]="'assets/images/twitter.png'">
+                <div style="display: flex; align-items: center;">
+                  <img src="assets/images/twitter.png" alt="X" style="height: 24px; margin-right: 8px;" />
+                  X
+                </div>
+              </mat-option>
+              <mat-option [value]="'assets/images/youtube.png'">
+                <div style="display: flex; align-items: center;">
+                  <img src="assets/images/youtube.png" alt="Youtube" style="height: 24px; margin-right: 8px;" />
+                  Youtube
+                </div>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+
+          <mat-form-field appearance="fill" class="descripcion-field">
+            <mat-label>URL</mat-label>
+            <input
+              matInput
+              [(ngModel)]="item.url"
+              name="urlRedSocial{{i}}"
+              maxlength="100"
+            />
+          </mat-form-field>
+
+          <button mat-icon-button color="warn" (click)="eliminarSocialNetwork(i)" *ngIf="socialNetwork.length > 1">
+            <mat-icon>remove_circle</mat-icon>
+          </button>
+        </div>
+
+        <button mat-mini-fab color="primary" (click)="agregarSocialNetwork()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="form-section">
+      <h3>Seccion Hospedaje Recomendado (maximo 3)</h3>
+        <div class="form-group">
+          <label for="imagen" class="form-label">
+            Imagen aluciva a recomendacion de hospedaje (puede ser una foto del o los festejados)
+          </label>
+          <input
+              type="file"
+              id="imagenHospedaje"
+              name="imagenHospedaje"
+              class="form-control-file"
+          />
+          <div *ngFor="let hospedaje of hospedajes; let i = index; trackBy: trackByIndex" class="cuatro-campos-row">
+            <mat-form-field appearance="fill" class="c-campo-1">
+              <mat-label>Nombre Hospedaje {{ hospedajes.length > 1 ? i + 1 : '' }}</mat-label>
+              <input #hospedajeInputs matInput [(ngModel)]="hospedaje.nombreLugar" name="nombreHospedaje{{i}}" maxlength="50">
+            </mat-form-field>
+            <mat-form-field appearance="fill" class="c-campo-2">
+              <mat-label>Direccion {{ hospedajes.length > 1 ? i + 1 : '' }}</mat-label>
+              <input matInput [(ngModel)]="hospedaje.direccion" name="direccionHospedaje{{i}}" maxlength="250">
+            </mat-form-field>
+            <mat-form-field appearance="fill" class="c-campo-3">
+              <mat-label>Url del hospedaje {{ hospedajes.length > 1 ? i + 1 : '' }}</mat-label>
+              <input matInput [(ngModel)]="hospedaje.url" name="url{{i}}" maxlength="250">
+            </mat-form-field>
+            <mat-form-field appearance="fill" class="c-campo-4">
+              <mat-label>Telefono {{ hospedajes.length > 1 ? i + 1 : '' }}</mat-label>
+              <input matInput [(ngModel)]="hospedaje.telefono" name="telefono{{i}}" maxlength="15">
+            </mat-form-field>
+
+            <button mat-icon-button color="warn" (click)="eliminarHospedaje(i)" *ngIf="hospedajes.length > 1">
+              <mat-icon>remove_circle</mat-icon>
+            </button>
+          </div>
+
+          <button mat-mini-fab color="primary" (click)="agregarHospedaje()">
+            <mat-icon>add</mat-icon>
+          </button>          
+        </div>
+    </div>
+    <div class="form-section">
+      <h3>Sección Contacto (Maximo 2)</h3>
+      <div class="form-group">
+          <div
+            *ngFor="let contacto of contactos; let i = index; trackBy: trackByIndex"
+            class="itinerario-row"
+          >
+            <mat-form-field appearance="fill" class="descripcion-field">
+              <mat-label>Nombre del contacto {{ contactos.length > 1 ? i + 1 : '' }}</mat-label>
+              <input
+                #contactoInput
+                matInput
+                [(ngModel)]="contacto.nombre"
+                name="contacto{{i}}"
+                maxlength="50"
+              />
+            </mat-form-field>            
+            <mat-form-field appearance="fill" class="actividad-field">
+              <mat-label>País</mat-label>
+              <mat-select [(ngModel)]="contacto.codigoPais" name="codigoPais{{i}}" required>
+                <mat-option *ngFor="let pais of codigosPais" [value]="pais.dialCode">
+                  {{ pais.name }} ({{ pais.dialCode }})
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="fecha-field">
+              <mat-label>Número de WhatsApp</mat-label>
+              <input
+                matInput
+                name="numero{{i}}"
+                [(ngModel)]="contacto.whatsapp"
+                required
+                type="tel"
+                pattern="[0-9]*"
+                maxlength="15" />
+            </mat-form-field>
+
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="eliminarContacto(i)"
+              *ngIf="contactos.length > 1"
+            >
+              <mat-icon>remove_circle</mat-icon>
+            </button>
+          </div>
+
+          <button mat-mini-fab color="primary" (click)="agregarContacto()">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+    </div>
+  </form>
+</div>

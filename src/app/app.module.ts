@@ -40,6 +40,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { PagoDialogComponent } from './component/pago-dialog/pago-dialog.component';
 import { PopupHtmlComponent } from './component/popup-html/popup-html.component';
+import { UploadImagesComponent } from './component/upload-images/upload-images.component';
 
 
 
@@ -61,7 +62,8 @@ import { PopupHtmlComponent } from './component/popup-html/popup-html.component'
     AccionesCellRendererComponent,
     NuevoEventoComponent,
     EdgwinGridComponent,
-    PagoDialogComponent
+    PagoDialogComponent,
+    UploadImagesComponent
   ],
   imports: [
     RouterModule,
@@ -85,6 +87,7 @@ import { PopupHtmlComponent } from './component/popup-html/popup-html.component'
     MatButtonModule,
     PopupHtmlComponent
   ],
+  exports: [UploadImagesComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
     {

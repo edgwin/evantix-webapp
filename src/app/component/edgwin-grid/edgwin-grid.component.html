@@ -3,7 +3,8 @@
   <div style="margin-bottom: 10px; width: 150px;">
     <input type="text" [(ngModel)]="filterText" placeholder="Filtrar..." class="form-control" />
   </div>
-
+  
+  <div *ngIf="data && data.length > 0; else noData">
   <table>
     <thead>
       <tr>
@@ -55,7 +56,14 @@
       </tr>
     </tbody>
   </table>
-
+  </div>
+      <!-- Si no hay registros, muestra este mensaje -->
+  <ng-template #noData>
+    <div style="margin-top: 20px; text-align: center; font-style: italic;">
+      No existen registros para mostrar.<br />
+      Para crear un evento, da clic en el botón <strong>"Crear Evento"</strong>.
+    </div>
+  </ng-template>
   <!-- PAGINACIÓN -->
   <div style="margin-top: 10px; display: flex; justify-content: right; gap: 8px;">
     <button (click)="changePage(-1)" [disabled]="currentPage === 1">Anterior</button>
