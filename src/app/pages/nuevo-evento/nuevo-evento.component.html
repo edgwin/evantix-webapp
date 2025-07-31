@@ -18,23 +18,7 @@
         <mat-datepicker #picker touchUi="true"></mat-datepicker>
       </mat-form-field>
     </td>
-  </tr>
-  <tr>
-    <td>
-      <mat-form-field appearance="fill">
-        <mat-label>Hora</mat-label>
-        <input matInput type="time" [(ngModel)]="evento.hora" name="hora" required>
-      </mat-form-field>    
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <mat-form-field appearance="fill">
-        <mat-label>Lugar del Evento</mat-label>
-        <input matInput name="lugar" [(ngModel)]="evento.lugar" required>
-      </mat-form-field>
-    </td>
-  </tr>
+  </tr> 
   <tr>
   <td colspan="2">
     <div style="display: flex; gap: 16px;">
@@ -75,19 +59,24 @@
       <input type="file" name="imagen" (change)="onFileChange($event)" /> 
     </td>
   </tr>
-</table>  
+</table> <br />
+  <h4>Seleccion de plan</h4>
+  <p>De click sobre el plan que mas se acomode a sus necesidades</p>
   <swiper-container
     slides-per-view="1"
     navigation="true"
     pagination="true"
     loop="true"
     #swiperRef>
-    
-    <swiper-slide *ngFor="let plan of planes; let i = index" [attr.data-plan]="plan.nombre" (click)="seleccionarPlan(plan)">
-      <div class="plan-card" [class.selected]="evento.plan === plan.nombre">
-        <img [src]="plan.imagen" [alt]="plan.nombre" />
-        <h3>{{ plan.nombre | titlecase }}</h3>
-      </div>
+
+    <swiper-slide *ngFor="let plan of plans" (click)="seleccionarPlan(plan)">
+      <app-plan-card
+        [planTitle]="plan.title"
+        [price]="plan.price"
+        [features]="plan.features"
+        [headerColor]="plan.color"
+        [planSubtitle]="plan.subtitle">
+      </app-plan-card>
     </swiper-slide>
   </swiper-container>
 
@@ -97,12 +86,14 @@
       <td style="padding-bottom: 18px;"><input name="condiciones" type="checkbox" (click)="checkBoxClick()"></td>
       <td><p>He leido los <a style="cursor:pointer;
      color:blue;
-     text-decoration:underline;" (click)="openPopup()">terminos y condicioness</a></p></td>
+     text-decoration:underline;" (click)="openPopup()">terminos y condiciones</a></p></td>
     </tr>
   </table>
+  <div *ngIf="loading" class="loading-container">
+    <img src="../../../assets/images/loading2.gif" alt="Cargando..." />
+  </div>
   <div class="button-group">
-    <button class="btn btn-primary" type="submit" style="padding-left: 50px;padding-right: 50px;" [disabled]="disabledSaveBtn">Guardar</button>
-    <button class="btn btn-primary" type="button" style="padding-left: 50px;padding-right: 50px;" (click)="cancelar()">Cancelar</button>
+    <button class="btn btn-primary" type="submit" style="padding-left: 50px;padding-right: 50px;" [disabled]="!isFormValid">Guardar Evento</button>
   </div>
   <app-popup-html
     [visible]="showPopup"

@@ -12,18 +12,18 @@ export class SidebarComponent implements OnInit, OnDestroy {
   submenuInvitacionesOpen = false;
   submenuConfirmacionesOpen = false;
   selectedRoute: string = '';
-  showInvitaciones: boolean = true;
+  showInvitados: boolean = false;
 
   private sub: Subscription = new Subscription();
 
   constructor(private router: Router, private storageService: LocalStorageService) {}
 
   ngOnInit(): void {
-    this.sub.add(
-      this.storageService.showInvitaciones$.subscribe(value => {
-        this.showInvitaciones = value;
-      })
-    );
+     this.sub.add(
+       this.storageService.showInvitados$.subscribe(value => {
+         this.showInvitados = value;
+       })
+     );
 
     this.selectedRoute = this.router.url;
     this.sub.add(
@@ -44,7 +44,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   selectRoute(route: string) {
-    if (route === '/invitaciones' && !this.showInvitaciones) return;
+    if (route === '/invitados') return;
     this.selectedRoute = route;
   }
 

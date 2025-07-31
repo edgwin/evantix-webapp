@@ -12,6 +12,8 @@ export class EventService {
   private getEventById = 'api/Event/GetEventById/';
   private getTermsAndConditions = 'api/Event/GetTermsAndConditions';
   private getEventForInvitationById = 'api/Event/GetUserEventsForInvitations/';
+  private postNewInvitationData = 'api/invitaciones'
+  private getPlansData = 'api/Event/GetPlans'
 
   constructor(private http: HttpClient) {}
 
@@ -58,6 +60,17 @@ export class EventService {
     return this.http.get(url, { headers });
   }
 
+  getPlans(){
+    const token = localStorage.getItem('access_token');
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    const url = `${this.apiUrl}${this.getPlansData}`;
+    return this.http.get(url, { headers });
+  }
+
   getEventsForInvitationsById(eventId: string){
     const token = localStorage.getItem('access_token');
 
@@ -70,7 +83,13 @@ export class EventService {
   }
 
   guardarInvitacion(data: FormData): Observable<any> {
-    return this.http.post('/api/invitaciones', data);
-  }
+    const token = localStorage.getItem('access_token');
 
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    const url = `${this.apiUrl}${this.postNewInvitationData}`;
+    return this.http.post(url, data, { headers });
+  }
 }

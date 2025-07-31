@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { EventService } from './../../services/event.service';
 import { NotificationService } from '../../services/notification.service';
 import { Router } from '@angular/router';
@@ -8,16 +8,15 @@ import { Router } from '@angular/router';
   templateUrl: './nuevo-evento.component.html',
   styleUrls: ['./nuevo-evento.component.css']
 })
-export class NuevoEventoComponent implements AfterViewInit, OnInit {
+export class NuevoEventoComponent implements OnInit {
   @ViewChild('swiperRef', { static: false }) swiperRef!: ElementRef;
   
   loggedUser: any;
-
+  loading = false;
+  titlecase:string = 'Sin selecciona';
   evento = {
     nombre: '',
     fecha: '',
-    hora: '',
-    lugar: '',
     codigoPais: '+52',
     whatsapp: '',
     email: '',
@@ -37,14 +36,10 @@ export class NuevoEventoComponent implements AfterViewInit, OnInit {
     { name: 'Ecuador', dialCode: '+593' },
     // agrega los que necesites
   ];
-  planes = [
-    { nombre: 'basic', imagen: 'assets/PlanBasico.jpg' },
-    { nombre: 'pro', imagen: 'assets/PlanPro.jpg' },
-    { nombre: 'gold', imagen: 'assets/PlanGold.jpg' },
-    { nombre: 'black', imagen: 'assets/PlanBlack.jpg' }
-  ];
+  
+  plans: any = [];
 
-   constructor(private eventService: EventService, private notificationService: NotificationService, private router: Router) {
+  constructor(private eventService: EventService, private notificationService: NotificationService, private router: Router) {
     const localUser = localStorage.getItem('loggedUser');
     if(localUser != null) {
       this.loggedUser = JSON.parse(localUser);
@@ -54,34 +49,33 @@ export class NuevoEventoComponent implements AfterViewInit, OnInit {
   terminosHtml = "";
   terminosId = "";
   ngOnInit(): void {
-    const userId = this.loggedUser.userId; 
     this.eventService.getTermsAndCoditions().subscribe({
       next: (res:any) => {
         this.terminosHtml = res.text;
         localStorage.setItem('terms_id', res.id);
         localStorage.setItem('terms_text', res.text);
       },
-      error: err => {
-        
+      error: () => {
+        this.notificationService.show('error',`Hubo un error favor de comunicarse a soporte`);
+      }
+    });
+    //
+    this.eventService.getPlans().subscribe({
+      next: (res:any) => {
+        this.plans = res;
+
+        // if (this.plans.length > 0) {
+        //   const defaultPlan = this.plans[0];
+        //   this.evento.plan = defaultPlan.title;
+        //   this.evento.costo = defaultPlan.price;
+        // }
+      },
+      error: () => {
+        this.notificationService.show('error',`Hubo un error favor de comunicarse a soporte`);
       }
     });
   }
 
-  ngAfterViewInit() {
-    const swiperEl = this.swiperRef.nativeElement;
-
-    // Escuchar evento personalizado
-    swiperEl.addEventListener('slidechange', (event: any) => {
-      const activeIndex = swiperEl.swiper?.activeIndex || 0;
-      const selectedPlan = this.planes[activeIndex % this.planes.length];
-      this.evento.plan = selectedPlan.nombre;
-    });
-  }
-
-  seleccionarPlan(plan: any) {
-    this.evento.plan = plan.nombre;
-  }
-  
   onFileChange(event: any) {
     const file = event.target.files[0];
     if (file) {
@@ -90,39 +84,38 @@ export class NuevoEventoComponent implements AfterViewInit, OnInit {
   }
 
   getLocalDateTimeString(fecha: Date): string {
+    const months = [
+      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+    ];
+
+    const day = fecha.getDate();
+    const monthName = months[fecha.getMonth()];
     const year = fecha.getFullYear();
-    const month = String(fecha.getMonth() + 1).padStart(2, '0');
-    const day = String(fecha.getDate()).padStart(2, '0');
-    const hours = String(fecha.getHours()).padStart(2, '0');
-    const minutes = String(fecha.getMinutes()).padStart(2, '0');
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
+
+    return `${day} de ${monthName} del ${year}`;
+  }
+
+  seleccionarPlan(plan: any) {
+    this.evento.plan = plan.title;
+    this.evento.costo = plan.price;
   }
 
   onSubmit() {
+    this.loading = true;
     if (!this.evento.plan) {
       alert('Por favor selecciona un plan.');
       return;
     }
     const fecha = new Date(this.evento.fecha);
-    const [hora, minutos] = this.evento.hora.split(':');
-    fecha.setHours(+hora);
-    fecha.setMinutes(+minutos);
     const formData = new FormData();
     formData.append('UserId', this.loggedUser.userId);
     formData.append('Nombre', this.evento.nombre);
     formData.append('Fecha', this.getLocalDateTimeString(fecha));
-    formData.append('Lugar', this.evento.lugar); //
     formData.append('WhatsApp', this.evento.whatsapp);
     formData.append('Email', this.evento.email);
-    formData.append('Plan', this.evento.plan);
-    let costo = 0;
-    switch (this.evento.plan) {
-      case 'basic': { costo = 1699; break; }
-      case 'pro': { costo = 2299; break; }
-      case 'gold': { costo = 3499; break; }
-      case 'black': { costo = 4499; break; }
-    }
-    formData.append('Costo', costo.toString());
+    formData.append('Plan', this.evento.plan);    
+    formData.append('Costo', this.evento.costo.toString());
     if (this.evento.imagen) {
       formData.append('Imagen', this.evento.imagen);
     }
@@ -132,12 +125,13 @@ export class NuevoEventoComponent implements AfterViewInit, OnInit {
     this.eventService.crearEvento(formData).subscribe({
       next: () => {
         this.notificationService.show('info',`Evento ${this.evento.nombre} creado`);        
+        this.loading = false;
         this.cancelar();
-        this.router.navigateByUrl('/dashboard');
+        this.router.navigateByUrl('/dashboard');        
       },
-      error: err => {
-        console.error('Error al crear evento', err);
-        this.notificationService.show('error',`Hubo un error al crear el evento ${this.evento.nombre}`);         
+      error: (err) => {        
+        this.notificationService.show('error',`Hubo un error al crear el evento ${this.evento.nombre}. \n ${err.error}`);
+        this.loading = false;
       }
     });
   }
@@ -146,8 +140,6 @@ export class NuevoEventoComponent implements AfterViewInit, OnInit {
     this.evento = {
       nombre: '',
       fecha: '',
-      hora: '',
-      lugar: '',
       whatsapp: '',
       email: '',
       plan: '',
@@ -159,13 +151,25 @@ export class NuevoEventoComponent implements AfterViewInit, OnInit {
   }
   
   showPopup = false;
-  disabledSaveBtn = true;
 
   openPopup() {
     this.showPopup = true;
   }
-
-  checkBoxClick(){
-    this.disabledSaveBtn = !this.disabledSaveBtn
+  
+  checkBoxClick() {
+    this.aceptaTerminos = !this.aceptaTerminos;
   }
+
+  aceptaTerminos = false;
+  get isFormValid(): boolean {
+    return (
+      this.evento.nombre.trim() !== '' &&
+      this.evento.fecha !== '' &&
+      this.evento.whatsapp.trim() !== '' &&
+      this.evento.email.trim() !== '' &&
+      this.evento.plan.trim() !== '' &&
+      this.aceptaTerminos
+    );
+  }
+
 }

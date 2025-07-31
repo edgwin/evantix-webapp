@@ -1,6 +1,7 @@
-import { ViewChildren, QueryList, ElementRef, AfterViewInit, ViewChild } from '@angular/core';
+import { ViewChildren, QueryList, ElementRef, ViewChild } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { EventService } from '../../services/event.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-invitaciones',
@@ -12,7 +13,7 @@ export class InvitacionesComponent implements OnInit {
   loading: boolean = true;
   notificationService: any;
   loggedUser: any;
-  rowData:any = [];
+  rowData:any;
   eventList:any = null;
   selectedElement: any = null;
   codigosPais = [
@@ -29,9 +30,6 @@ export class InvitacionesComponent implements OnInit {
   indicaciones: { titulo: string; descripcion: string }[] = [
     { titulo: '', descripcion: '' }
   ];
-  itinerario: { actividad: string; descripcion: string; fechaHora: string }[] = [
-    { actividad: '', descripcion: '', fechaHora: '' }
-  ];
   dondeCuando: {
     actividad: string;
     lugar: string;
@@ -41,8 +39,8 @@ export class InvitacionesComponent implements OnInit {
   }[] = [
     { actividad: '', lugar: '', ubicacion: '', fechaHora: '', direccion: '' }
   ];
-  mesaRegalos: { opcion: string; descripcion: string; imagen: string }[] = [
-    { opcion: '', descripcion: '', imagen: '' }
+  mesaRegalos: { opcion: string; descripcion: string; imagen: any }[] = [
+    { opcion: '', descripcion: '', imagen: null }
   ];  
   personaFavorita: { imagen: any; nombre: string; parentesco: string }[] = [
     { imagen: null, nombre: '', parentesco: '' }
@@ -67,6 +65,7 @@ export class InvitacionesComponent implements OnInit {
 
   festejados: { imagen: any; nombre: string; frase: string } = { imagen: null, nombre: '', frase: '' };
   imagenPortada: { imagen: any; } = { imagen: null };
+  imagenHospedaje: { imagen: any; } = { imagen: null };
 
   @ViewChildren('festejadoInput') festejadoInputs!: QueryList<ElementRef<HTMLInputElement>>;
   @ViewChildren('indicacionesInput') indicacionesInputs!: QueryList<ElementRef<HTMLInputElement>>;
@@ -79,9 +78,10 @@ export class InvitacionesComponent implements OnInit {
   @ViewChildren('contactoInputs') contactoInputs!: QueryList<ElementRef<HTMLInputElement>>;
   @ViewChildren('portadaFileInput') portadaFileInput!: QueryList<ElementRef<HTMLInputElement>>;
   @ViewChildren('festejadosFileInput') festejadosFileInput!: QueryList<ElementRef<HTMLInputElement>>;  
+  @ViewChildren('hospedajeFileInput') hospedajeFileInput!: QueryList<ElementRef<HTMLInputElement>>;
   @ViewChild('galleryFileInput', { static: false }) fileInput!: ElementRef<HTMLInputElement>;
 
-  constructor(private eventService: EventService){
+  constructor(private eventService: EventService, private route: ActivatedRoute){
     const localUser = localStorage.getItem('loggedUser');
     if(localUser != null) {
       this.loggedUser = JSON.parse(localUser);
@@ -89,20 +89,22 @@ export class InvitacionesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const userId = this.loggedUser.userId; 
-    this.eventService.getEventsForInvitationsById(userId).subscribe({
-      next: (res) => {
-        this.rowData = res;
-        this.loading = false;
-        if (this.rowData.length > 0) {
-          this.eventList = this.rowData[0].id;
-          this.selectedElement = this.rowData[0];
-      }
-      },
-      error: (err) => {
-        this.notificationService.show('error',`Hubo un error al obtener los eventos del usuario ${err.message}`);
-        this.loading = false;
-      }
+    this.route.queryParams.subscribe(params => {
+      const eventId: any = params['id'];
+      this.eventService.getEventsById(eventId).subscribe({
+        next: (res) => {
+          this.rowData = res;
+          this.loading = false;
+          if (this.rowData !== null) {
+            this.eventList = this.rowData.id;
+            this.selectedElement = this.rowData;
+        }
+        },
+        error: (err) => {
+          this.notificationService.show('error',`Hubo un error al obtener los eventos del usuario ${err.message}`);
+          this.loading = false;
+        }
+      });
     });
   }
 
@@ -132,26 +134,7 @@ export class InvitacionesComponent implements OnInit {
   onIndicacionEnter(event: any): void {
     event.preventDefault();
     this.agregarIndicaciones();
-  }
-
-  agregarActividad(): void {
-    if (this.itinerario.length >= 8) return;
-
-    this.itinerario = [...this.itinerario, { actividad: '', descripcion: '', fechaHora: '' }];
-
-    setTimeout(() => {
-      const lastInput = this.actividadInputs?.last;
-      if (lastInput) {
-        lastInput.nativeElement.focus();
-      }
-    }, 0);
-  }
-
-  eliminarActividad(index: number): void {
-    const nuevaLista = [...this.itinerario];
-    nuevaLista.splice(index, 1);
-    this.itinerario = nuevaLista;
-  }
+  } 
 
   agregarDondeCuando(): void {
     if (this.dondeCuando.length >= 5) return;
@@ -177,7 +160,7 @@ export class InvitacionesComponent implements OnInit {
 
     this.mesaRegalos = [
       ...this.mesaRegalos,
-      { opcion: '', descripcion: '', imagen: ''}
+      { opcion: '', descripcion: '', imagen: null}
     ];
 
     setTimeout(() => {
@@ -193,7 +176,7 @@ export class InvitacionesComponent implements OnInit {
   }
 
   agregarPersonaFavorita(): void {
-    if (this.personaFavorita.length >= 6) return;
+    if (this.personaFavorita.length >= 8) return;
     this.personaFavorita = [
       ...this.personaFavorita,
       { imagen: '', nombre: '', parentesco: ''}
@@ -311,6 +294,19 @@ export class InvitacionesComponent implements OnInit {
     }
   }
 
+  imagenHospedajeSelected: string = '';
+  onFileSelectedHospedaje(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      this.imagenHospedajeSelected = file.name;
+      this.imagenHospedaje.imagen = file;
+    } else {
+      this.imagenHospedajeSelected = '';
+      this.imagenHospedaje.imagen = null;
+    }
+  }
+
   isHovering = false;
   previewImages: string[] = [];
   selectedFiles: File[] = [];
@@ -373,8 +369,11 @@ export class InvitacionesComponent implements OnInit {
     formData.append('eventoId', this.eventList);
     formData.append('videoUrl', this.videoUrl);
     formData.append('portadaImg', this.imagenPortada.imagen);
+    formData.append('hospedajeImg', this.imagenHospedaje.imagen);
     formData.append(`festejados.nombre`, this.festejados.nombre);
     formData.append(`festejados.frase`, this.festejados.frase);
+
+    // Festejados
     if (this.festejados.imagen instanceof File) {
       formData.append(`festejados.imagen`, this.festejados.imagen);
     }
@@ -382,14 +381,7 @@ export class InvitacionesComponent implements OnInit {
     this.indicaciones.forEach((item, index) => {
       formData.append(`indicaciones[${index}][titulo]`, item.titulo);
       formData.append(`indicaciones[${index}][descripcion]`, item.descripcion);
-    });
-
-    // 📆 Itinerario
-    this.itinerario.forEach((item, index) => {
-      formData.append(`itinerario[${index}][actividad]`, item.actividad);
-      formData.append(`itinerario[${index}][descripcion]`, item.descripcion);
-      formData.append(`itinerario[${index}][fechaHora]`, item.fechaHora);
-    });
+    });   
 
     // 📍 Donde y Cuándo
     this.dondeCuando.forEach((item, index) => {
@@ -403,11 +395,11 @@ export class InvitacionesComponent implements OnInit {
     // 🎁 Mesa de Regalos
     this.mesaRegalos.forEach((item, index) => {
       formData.append(`mesaRegalos[${index}][opcion]`, item.opcion);
-      formData.append(`mesaRegalos[${index}][descripcion]`, item.descripcion);
-      formData.append(`mesaRegalos[${index}][imagen]`, item.imagen);
-    });
+      formData.append(`mesaRegalos[${index}][descripcion]`, item.descripcion);      
+      formData.append(`mesaRegalos[${index}][imagen]`, item.imagen);      
+    });    
 
-
+    // Personas Favoritas
     this.personaFavorita.forEach((p, i) => {
       formData.append(`personaFavorita[${i}].nombre`, p.nombre);
       formData.append(`personaFavorita[${i}].parentesco`, p.parentesco);

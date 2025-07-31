@@ -2,13 +2,14 @@ import { Component, ViewEncapsulation } from '@angular/core';
 import { EventService } from './../../services/event.service';
 import { NotificationService } from '../../services/notification.service';
 import { MercadoPagoService } from '../../services/mercado-pago.service.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStorageService } from '../../services/local-storage.service';
+import { MatDialog } from '@angular/material/dialog';
+import { PagoDialogComponent } from '../../component/pago-dialog/pago-dialog.component';
 
 interface Evento {
   nombre: string;
   fecha: string;
-  lugar: string;
   estatus: string;
   plan: string;
   estatusDescripcion: string;
@@ -25,9 +26,11 @@ export class DashboardComponent
   {  
   loggedUser: any;
   loading: boolean = true;
+  showPopup: boolean = false;
   noDataMsg: boolean = false;
+  terminosHtml = "";
   constructor(private eventService: EventService, private notificationService: NotificationService, private mercadoPago: MercadoPagoService, 
-                private route: ActivatedRoute, private localStorageService: LocalStorageService)
+                private route: ActivatedRoute, private localStorageService: LocalStorageService, private router: Router, private dialog: MatDialog)
   {
     const localUser = localStorage.getItem('loggedUser');
     if(localUser != null) {
@@ -41,8 +44,8 @@ export class DashboardComponent
       next: (res) => {
         this.rowData = res;
         this.loading = false;
-        const pagadoItem = this.rowData.find((item: any) => item.estatus?.trim().toLowerCase() === 'pagado');
-        this.localStorageService.setShowInvitaciones(!!pagadoItem);
+        const showInvitations = this.rowData.find((item: any) => item.showInvitation === true).showInvitation;
+        this.localStorageService.setShowInvitaciones(!!showInvitations);
       },
       error: err => {
         this.notificationService.show('error',`Hubo un error al obtener los eventos del usuario ${err.message}`);
@@ -74,7 +77,6 @@ export class DashboardComponent
         imageField: 'imagen'
       },
       { headerName: 'Fecha', field: 'fecha', type: 'text' },
-      { headerName: 'Lugar', field: 'lugar', type: 'text' },
       { headerName: 'Plan', field: 'plan', type: 'text' },
       { headerName: 'Estatus', field: 'estatus', type: 'status' }
   ] ;
@@ -82,16 +84,16 @@ export class DashboardComponent
   rowData:any = [];
 
   onActionHandler(event: { type: string, row: Evento }) {
-    if (event.type === 'edit') {
-      this.onEdit(event.row);
+    if (event.type === 'invitacion') {
+      this.onInvitacion(event.row);
     } else if (event.type === 'delete') {
       this.onDelete(event.row);
     } else if (event.type === 'pay') {
       this.onPay(event.row);
     }
   }
-  onEdit(evento: any) {
-    console.log('Editar', evento);
+  onInvitacion(evento: any) {
+    this.router.navigateByUrl(`/invitaciones?id=${evento.id}`);
   }
 
   onDelete(evento: any) {
@@ -99,25 +101,27 @@ export class DashboardComponent
   }
 
   onPay(event: any) {
-    this.mercadoPago.createPreference(event).subscribe({
-          next: (res: any) => {
-            window.open(res.init_point, '_blank');
-          },
-          error: err => console.error('Error creando preferencia', err)
-        });
-    // const dialogRef = this.dialog.open(PagoDialogComponent, {
-    //   width: '400px',
-    //   data: { evento: event }
-    // });
+    // this.mercadoPago.createPreference(event).subscribe({
+    //       next: (res: any) => {
+    //         window.open(res.init_point, '_blank');
+    //       },
+    //       error: err => console.error('Error creando preferencia', err)
+    //     });
+    const dialogRef = this.dialog.open(PagoDialogComponent, {
+       width: '500px',
+       data: { evento: event }
+    });
 
-    // dialogRef.afterClosed().subscribe((porcentaje: number | null) => {
-    //   if (porcentaje !== null) {
-    //     const eventoClonado = { ...event };
-    //     eventoClonado.costo = Math.floor(eventoClonado.costo * porcentaje);
-    //     this.notificationService.show('info',`Redirigiendo a mercadopago, espere un momento`);
-
-        
-    //   }
-    // });
+    dialogRef.afterClosed().subscribe((metodoPago: string | null) => {
+       if (metodoPago !== null && metodoPago.toLowerCase() === 'mercado pago') {
+          this.notificationService.show('info',`Redirigiendo a mercadopago, espere un momento`);
+          this.mercadoPago.createPreference(event).subscribe({
+            next: (res: any) => {
+              window.open(res.init_point, '_blank');
+            },
+            error: err => console.error('Error creando preferencia', err)
+          });
+       }
+    });
   }
 }

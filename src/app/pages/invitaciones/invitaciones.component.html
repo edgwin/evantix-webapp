@@ -1,12 +1,5 @@
 <div style="display: flex; justify-content: flex-start; width: 100%;">
-  <mat-form-field appearance="fill" style="width: 50%;">
-    <mat-label>Selecciona un Evento</mat-label>
-    <mat-select [(ngModel)]="eventList" name="eventList" required>
-      <mat-option *ngFor="let data of rowData" [value]="data.id">
-        {{ data.nombre }} - {{ data.fecha }} - {{ data.lugar }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+  
 </div>
 <div style="text-align: center">
   <p>Empezemos a crear tu invitacion</p>
@@ -17,7 +10,6 @@
       <h3>Seccion Portada</h3>
       <p>Titulo del Evento: <b>{{ selectedElement.nombre }}</b></p>
       <p>Fecha del Evento: <b>{{ selectedElement.fecha }}</b></p>
-      <p>Lugar del Evento: <b>{{ selectedElement.lugar }}</b></p>
       <div class="form-group">
         <div class="custom-file-input">
             <label for="imagenFestejados">Sube la imagen que se mostrará como portada</label> <!-- Agregar required GPT-->
@@ -104,7 +96,7 @@
                 matInput
                 [(ngModel)]="indicacion.descripcion"
                 name="indicacionDescripcion{{i}}"
-                maxlength="100"
+                maxlength="200"
               />
             </mat-form-field>
 
@@ -122,56 +114,6 @@
             <mat-icon>add</mat-icon>
           </button>
         </div>
-    </div>
-    <div class="form-section"> <!-- TODO Agregar una foto por cada actividad -->
-      <h3>Sección Itinerario (maximo 8)</h3>
-      <div class="form-group">
-        <div
-          *ngFor="let item of itinerario; let i = index; trackBy: trackByIndex"
-          class="itinerario-row"
-        >
-          <mat-form-field appearance="fill" class="actividad-field">
-            <mat-label>Actividad</mat-label>
-            <input
-              #actividadInput
-              matInput
-              [(ngModel)]="item.actividad"
-              name="actividad{{i}}"
-              maxlength="50"
-              required
-            />
-          </mat-form-field>
-
-          <mat-form-field appearance="fill" class="descripcion-field">
-            <mat-label>Descripción</mat-label>
-            <input
-              matInput
-              [(ngModel)]="item.descripcion"
-              name="descripcionActividad{{i}}"
-              maxlength="100"              
-            />
-          </mat-form-field>
-
-          <mat-form-field appearance="fill" class="fecha-field">
-            <mat-label>Fecha y Hora</mat-label>
-            <input
-              matInput
-              [(ngModel)]="item.fechaHora"
-              name="fechaHora{{i}}"
-              type="datetime-local"
-              required
-            />
-          </mat-form-field>
-
-          <button mat-icon-button color="warn" (click)="eliminarActividad(i)" *ngIf="itinerario.length > 1">
-            <mat-icon>remove_circle</mat-icon>
-          </button>
-        </div>
-
-        <button mat-mini-fab color="primary" (click)="agregarActividad()">
-          <mat-icon>add</mat-icon>
-        </button>
-      </div>
     </div>
     <div class="form-section">
       <h3>Sección Dónde y Cuándo</h3>
@@ -428,7 +370,7 @@
             name="video"
             [(ngModel)]="videoUrl"
             #videoUrlModel="ngModel"
-            maxlength="255"
+            maxlength="2000"
             required
             [pattern]="urlPattern"
           />
@@ -488,7 +430,7 @@
               matInput
               [(ngModel)]="item.url"
               name="urlRedSocial{{i}}"
-              maxlength="100"
+              maxlength="2000"
             />
           </mat-form-field>
 
@@ -505,15 +447,27 @@
     <div class="form-section">
       <h3>Seccion Hospedaje Recomendado (maximo 3)</h3>
         <div class="form-group">
-          <label for="imagen" class="form-label">
-            Imagen aluciva a recomendacion de hospedaje (puede ser una foto del o los festejados)
-          </label>
-          <input
-              type="file"
-              id="imagenHospedaje"
-              name="imagenHospedaje"
-              class="form-control-file"
-          />
+          <div class="custom-file-input">
+              <label for="imagenFestejados">Imagen aluciva a recomendacion de hospedaje (puede ser una foto del o los festejados)</label> <!-- Agregar required GPT-->
+
+              <!-- Botón personalizado -->
+              <button type="button" class="file-btn" (click)="hospedajeFileInput.click()">Seleccionar archivo</button>
+
+              <!-- Leyenda personalizada -->
+              <span class="file-label">
+                {{ imagenHospedajeSelected || 'Sin selección' }}
+              </span>
+
+              <!-- Input oculto -->
+              <input
+                type="file"
+                id="imagenHospedaje"
+                name="imagenHospedaje"
+                #hospedajeFileInput
+                (change)="onFileSelectedHospedaje($event)"
+                hidden
+              />
+          </div>          
           <div *ngFor="let hospedaje of hospedajes; let i = index; trackBy: trackByIndex" class="cuatro-campos-row">
             <mat-form-field appearance="fill" class="c-campo-1">
               <mat-label>Nombre Hospedaje {{ hospedajes.length > 1 ? i + 1 : '' }}</mat-label>
@@ -525,7 +479,7 @@
             </mat-form-field>
             <mat-form-field appearance="fill" class="c-campo-3">
               <mat-label>Url del hospedaje {{ hospedajes.length > 1 ? i + 1 : '' }}</mat-label>
-              <input matInput [(ngModel)]="hospedaje.url" name="url{{i}}" maxlength="250">
+              <input matInput [(ngModel)]="hospedaje.url" name="url{{i}}" maxlength="2000">
             </mat-form-field>
             <mat-form-field appearance="fill" class="c-campo-4">
               <mat-label>Telefono {{ hospedajes.length > 1 ? i + 1 : '' }}</mat-label>
@@ -594,6 +548,11 @@
             <mat-icon>add</mat-icon>
           </button>
         </div>
+    </div>
+    <div style="text-align: center; margin-top: 20px;">
+      <button mat-raised-button color="primary" type="button" (click)="submitForm()">
+        Guardar Invitación
+      </button>
     </div>
   </form>
 </div>

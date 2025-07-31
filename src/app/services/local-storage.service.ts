@@ -5,18 +5,18 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class LocalStorageService {
-  private showInvitacionesSubject = new BehaviorSubject<boolean>(
-    localStorage.getItem('showInvitaciones') !== 'false'
+  private showInvitadosSubject = new BehaviorSubject<boolean>(
+    localStorage.getItem('showInvitados') !== 'false'
   );
 
-  showInvitaciones$ = this.showInvitacionesSubject.asObservable();
+  showInvitados$ = this.showInvitadosSubject.asObservable();
 
   setShowInvitaciones(value: boolean) {
     localStorage.setItem('showInvitaciones', value.toString());
-    this.showInvitacionesSubject.next(value);
+    this.showInvitadosSubject.next(value);
   }
 
   getShowInvitaciones(): boolean {
-    return this.showInvitacionesSubject.value;
+    return this.showInvitadosSubject.value;
   }
 }

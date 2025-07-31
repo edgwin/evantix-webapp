@@ -13,21 +13,28 @@
             (click)="selectRoute('/dashboard')">
           <span>Mis Eventos</span>
       </a>
-      <a mat-list-item
+      <!-- <a mat-list-item
         *ngIf="showInvitaciones; else invitacionesDisabled"
         routerLink="/invitaciones"
         [ngClass]="{ 'selected': selectedRoute === '/invitaciones' }"
         (click)="selectRoute('/invitaciones')">
         <span>Mis Invitaciones</span>
-      </a>
-      <ng-template #invitacionesDisabled>
+      </a> -->
+      <!-- <ng-template #invitacionesDisabled>
         <a mat-list-item class="disabled-link" style="pointer-events: none; opacity: 0.5;" title="Funcionalidad no disponible con tu plan">
           <span>Mis Invitaciones</span>
         </a>
-      </ng-template>
-      <a mat-list-item routerLink="/invitados" 
+      </ng-template> -->
+      <a mat-list-item 
+          *ngIf="showInvitados; else invitadosDisabled"
+          routerLink="/invitados" 
           [ngClass]="{ 'selected': selectedRoute === '/invitados' }"
           (click)="selectRoute('/invitados')"><span>Mis Invitados</span></a>
+      <ng-template #invitadosDisabled>
+        <a mat-list-item class="disabled-link" style="pointer-events: none; opacity: 0.5;" title="Funcionalidad disponible una vez que una de sus invitaciones este publicada">
+          <span>Mis Invitados</span>
+        </a>
+      </ng-template>
       <a mat-list-item routerLink="/mesas" 
           [ngClass]="{ 'selected': selectedRoute === '/mesas' }"
           (click)="selectRoute('/mesas')"><span>Acomodo de Mesas</span></a>

@@ -15,3 +15,10 @@
 </app-edgwin-grid>
 </div>
 
+<app-popup-html
+    [visible]="showPopup"
+    [htmlContent]="terminosHtml"
+    [title]="'Seleccione su metodo de pago'"
+    (closed)="showPopup = false">
+</app-popup-html>
+

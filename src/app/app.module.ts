@@ -41,8 +41,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { PagoDialogComponent } from './component/pago-dialog/pago-dialog.component';
 import { PopupHtmlComponent } from './component/popup-html/popup-html.component';
 import { UploadImagesComponent } from './component/upload-images/upload-images.component';
-
-
+import { PlanCardComponent } from './component/plan-card/plan-card.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +62,8 @@ import { UploadImagesComponent } from './component/upload-images/upload-images.c
     NuevoEventoComponent,
     EdgwinGridComponent,
     PagoDialogComponent,
-    UploadImagesComponent
+    UploadImagesComponent,
+    PlanCardComponent
   ],
   imports: [
     RouterModule,

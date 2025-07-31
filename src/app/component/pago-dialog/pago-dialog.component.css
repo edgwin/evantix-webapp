@@ -1,0 +1,86 @@
+body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f6fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(to right, #2a0054, #2a0054);
+      padding: 20px 0;
+      text-align: center;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 30px auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .payment-option {
+      background-color: #f8f8ff;
+      border-radius: 12px;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+      cursor: pointer;
+    }
+
+    .payment-resume {
+      background-color: #f8f8ff;
+      border-radius: 12px;
+      padding: 15px 20px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .payment-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .payment-left img.card-icon {
+      width: 40px;
+    }
+
+    .payment-left .method-name {
+      font-weight: bold;
+    }
+
+    .payment-left .card-number {
+      font-weight: bold;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .brand {
+      font-weight: bold;
+      color: #357edd;
+      text-decoration: none;
+      margin-left: 8px;
+    }
+
+    .logos img {
+      height: 32px;
+      margin-left: 8px;
+    }
+
+.close-button {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #555;
+  z-index: 10;
+}
+
+.close-button:hover {
+  color: #d00;
+}
