@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
+import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { AuthService } from './services/auth.service';
 
 @Injectable({
@@ -11,7 +11,15 @@ export class AuthGuard implements CanActivate {
     @Inject(Router) private router: Router
   ) {}
 
-  canActivate(): boolean {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    const url = state.url;
+
+    // ✅ Permitir rutas de invitación sin sesión
+    if (url.startsWith('/invitacion')) {
+      return true;
+    }
+
+    // 🚫 Bloquear el resto si no está logueado
     if (this.auth.isLoggedIn()) {
       return true;
     } else {

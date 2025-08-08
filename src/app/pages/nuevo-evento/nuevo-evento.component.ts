@@ -17,6 +17,7 @@ export class NuevoEventoComponent implements OnInit {
   evento = {
     nombre: '',
     fecha: '',
+    tipoEvento: '',
     codigoPais: '+52',
     whatsapp: '',
     email: '',
@@ -36,6 +37,14 @@ export class NuevoEventoComponent implements OnInit {
     { name: 'Ecuador', dialCode: '+593' },
     // agrega los que necesites
   ];
+
+  tipoEventoTxtHidden :boolean = true;
+  tipoEventoTxt = "";
+  tipoEvento = [
+    {name: 'Boda'}, {name:'XV Años'}, {name: 'Graduacion'}, {name:'Cumpleaños'}, {name:'Bautizo'},
+    {name:'Primera Comunion'}, {name:'Confirmacion'}, {name:'Bodas de Oro'}, {name:'Bodas de Plata'}, 
+    {name:'Bodas de Bronce'}, {name:'Otro'}
+  ]
   
   plans: any = [];
 
@@ -63,12 +72,6 @@ export class NuevoEventoComponent implements OnInit {
     this.eventService.getPlans().subscribe({
       next: (res:any) => {
         this.plans = res;
-
-        // if (this.plans.length > 0) {
-        //   const defaultPlan = this.plans[0];
-        //   this.evento.plan = defaultPlan.title;
-        //   this.evento.costo = defaultPlan.price;
-        // }
       },
       error: () => {
         this.notificationService.show('error',`Hubo un error favor de comunicarse a soporte`);
@@ -111,6 +114,7 @@ export class NuevoEventoComponent implements OnInit {
     const formData = new FormData();
     formData.append('UserId', this.loggedUser.userId);
     formData.append('Nombre', this.evento.nombre);
+    formData.append('TipoEvento', this.evento.tipoEvento);
     formData.append('Fecha', this.getLocalDateTimeString(fecha));
     formData.append('WhatsApp', this.evento.whatsapp);
     formData.append('Email', this.evento.email);
@@ -140,6 +144,7 @@ export class NuevoEventoComponent implements OnInit {
     this.evento = {
       nombre: '',
       fecha: '',
+      tipoEvento: '',
       whatsapp: '',
       email: '',
       plan: '',
@@ -172,4 +177,12 @@ export class NuevoEventoComponent implements OnInit {
     );
   }
 
+  tipoEventoChange(event:any){    
+    if (event.value.toLowerCase() === "otro"){
+      this.tipoEventoTxtHidden = false;
+      this.evento.tipoEvento = "";
+      return
+    }
+    this.evento.tipoEvento = event.value;
+  }
 }

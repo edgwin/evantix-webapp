@@ -39,19 +39,7 @@ export class DashboardComponent
   }
   
   ngOnInit(): void {
-    const userId = this.loggedUser.userId; 
-    this.eventService.getEventsByUserId(userId).subscribe({
-      next: (res) => {
-        this.rowData = res;
-        this.loading = false;
-        const showInvitations = this.rowData.find((item: any) => item.showInvitation === true).showInvitation;
-        this.localStorageService.setShowInvitaciones(!!showInvitations);
-      },
-      error: err => {
-        this.notificationService.show('error',`Hubo un error al obtener los eventos del usuario ${err.message}`);
-        this.loading = false;
-      }
-    });
+    this.loadData();
     this.route.queryParams.subscribe(params => {
       const status = params['status'];
       const paymentId = params['payment_id'];
@@ -62,11 +50,28 @@ export class DashboardComponent
             this.notificationService.show('info',`Pago del evento ${res.nombre} fue ${status}. Id del Pago: ${paymentId}`);
           },
           error: err => {
-            this.notificationService.show('error',`Hubo un error al obtener la informacion del evento ${err.message}`);
+            this.notificationService.show('error',`Hubo un error al obtener la informacion del evento ${eventId}`);
           }
-        });
+        });    
       }
     });    
+  }
+
+  loadData(){
+    this.loading = true;
+    const userId = this.loggedUser.userId; 
+    this.eventService.getEventsByUserId(userId).subscribe({
+      next: (res) => {
+        this.rowData = res;
+        this.loading = false;
+        const showInvitations = this.rowData.find((item: any) => item.showInvitation === true)?.showInvitation ?? false;
+        this.localStorageService.setShowInvitaciones(!!showInvitations);
+      },
+      error: err => {
+        this.notificationService.show('error',`Hubo un error al obtener los eventos del usuario ${err.message}`);
+        this.loading = false;
+      }
+    });
   }
 
   columns = [
@@ -90,23 +95,41 @@ export class DashboardComponent
       this.onDelete(event.row);
     } else if (event.type === 'pay') {
       this.onPay(event.row);
+    } else if (event.type === 'verInvitacion') {
+      this.onVerInvitacion(event.row);
     }
   }
+
   onInvitacion(evento: any) {
     this.router.navigateByUrl(`/invitaciones?id=${evento.id}`);
   }
 
+  onVerInvitacion(evento:any){
+    //this.router.navigateByUrl(`/invitacion/${this.replaceNameForUrl(evento.nombre)}/${evento.id}`);
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['/invitacion', `${this.replaceNameForUrl(evento.nombre)}`, `${evento.id}`])
+    );
+
+    window.open(url, '_blank');
+  }
+
+  replaceNameForUrl(name:string){
+    return name.replace(/\s+/g, '_');
+  }
+
   onDelete(evento: any) {
-    console.log('Eliminar', evento);
+    this.eventService.DeleteEvent(evento.id).subscribe({
+      next: () => {
+        this.notificationService.show('info',`Evento eliminado con exito`);
+        this.loadData();
+      },
+      error: () => {
+        this.notificationService.show('error',`Hubo un error al intentar eliminar el Evento, favor de contactar a soporte`); 
+      }
+    });
   }
 
   onPay(event: any) {
-    // this.mercadoPago.createPreference(event).subscribe({
-    //       next: (res: any) => {
-    //         window.open(res.init_point, '_blank');
-    //       },
-    //       error: err => console.error('Error creando preferencia', err)
-    //     });
     const dialogRef = this.dialog.open(PagoDialogComponent, {
        width: '500px',
        data: { evento: event }
@@ -117,7 +140,7 @@ export class DashboardComponent
           this.notificationService.show('info',`Redirigiendo a mercadopago, espere un momento`);
           this.mercadoPago.createPreference(event).subscribe({
             next: (res: any) => {
-              window.open(res.init_point, '_blank');
+              window.open(res.init_point, '_self');
             },
             error: err => console.error('Error creando preferencia', err)
           });

@@ -1,7 +1,10 @@
 import { ViewChildren, QueryList, ElementRef, ViewChild } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { EventService } from '../../services/event.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NotificationService } from '../../services/notification.service';
+import { InvitationService } from '../../services/invitation.service';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-invitaciones',
@@ -11,7 +14,7 @@ import { ActivatedRoute } from '@angular/router';
 
 export class InvitacionesComponent implements OnInit {
   loading: boolean = true;
-  notificationService: any;
+  saveBtnDisabled: boolean = false;
   loggedUser: any;
   rowData:any;
   eventList:any = null;
@@ -36,8 +39,15 @@ export class InvitacionesComponent implements OnInit {
     ubicacion: string;
     fechaHora: string;
     direccion: string;
+    imagen: any;
   }[] = [
-    { actividad: '', lugar: '', ubicacion: '', fechaHora: '', direccion: '' }
+    { actividad: '', lugar: '', ubicacion: '', fechaHora: '', direccion: '', imagen: null }
+  ];
+  intinerario: {
+    actividad: string;    
+    fecha: string;
+  }[] = [
+    { actividad: '', fecha: '' }
   ];
   mesaRegalos: { opcion: string; descripcion: string; imagen: any }[] = [
     { opcion: '', descripcion: '', imagen: null }
@@ -71,17 +81,19 @@ export class InvitacionesComponent implements OnInit {
   @ViewChildren('indicacionesInput') indicacionesInputs!: QueryList<ElementRef<HTMLInputElement>>;
   @ViewChildren('actividadInput') actividadInputs!: QueryList<ElementRef<HTMLInputElement>>;
   @ViewChildren('dondeCuandoInput') dondeCuandoInputs!: QueryList<ElementRef<HTMLInputElement>>;
+  @ViewChildren('intinerarioInput') intinerarioInputs!: QueryList<ElementRef<HTMLInputElement>>;
   @ViewChildren('mesaRegalosInputs') mesaRegalosInputs!: QueryList<ElementRef<HTMLInputElement>>;
   @ViewChildren('personaFavoritaInputs') personaFavoritaInputs!: QueryList<ElementRef<HTMLInputElement>>;
   @ViewChildren('socialNetworks') socialNetworksInputs!: QueryList<ElementRef<HTMLInputElement>>;
   @ViewChildren('hospedajeInputs') hospedajeInputs!: QueryList<ElementRef<HTMLInputElement>>;
   @ViewChildren('contactoInputs') contactoInputs!: QueryList<ElementRef<HTMLInputElement>>;
   @ViewChildren('portadaFileInput') portadaFileInput!: QueryList<ElementRef<HTMLInputElement>>;
+  @ViewChildren('dondeYCuandoFileInput') dondeYCuandoFileInput!: QueryList<ElementRef<HTMLInputElement>>;
   @ViewChildren('festejadosFileInput') festejadosFileInput!: QueryList<ElementRef<HTMLInputElement>>;  
   @ViewChildren('hospedajeFileInput') hospedajeFileInput!: QueryList<ElementRef<HTMLInputElement>>;
   @ViewChild('galleryFileInput', { static: false }) fileInput!: ElementRef<HTMLInputElement>;
 
-  constructor(private eventService: EventService, private route: ActivatedRoute){
+  constructor(private eventService: EventService, private invitationService: InvitationService, private route: ActivatedRoute, private router: Router, private notificationService: NotificationService){
     const localUser = localStorage.getItem('loggedUser');
     if(localUser != null) {
       this.loggedUser = JSON.parse(localUser);
@@ -101,6 +113,7 @@ export class InvitacionesComponent implements OnInit {
         }
         },
         error: (err) => {
+          console.log(err);
           this.notificationService.show('error',`Hubo un error al obtener los eventos del usuario ${err.message}`);
           this.loading = false;
         }
@@ -136,23 +149,52 @@ export class InvitacionesComponent implements OnInit {
     this.agregarIndicaciones();
   } 
 
-  agregarDondeCuando(): void {
+  agregarDondeCuando(hacerFocus: boolean = true): void {
     if (this.dondeCuando.length >= 5) return;
 
-    this.dondeCuando = [...this.dondeCuando, { actividad: '', lugar: '', fechaHora: '', direccion: '', ubicacion: '' }];
+    this.dondeCuando = [
+      ...this.dondeCuando,
+      { actividad: '', lugar: '', fechaHora: '', direccion: '', ubicacion: '', imagen: null }
+    ];
 
-    setTimeout(() => {
-      const lastInput = this.dondeCuandoInputs?.last;
-      if (lastInput) {
-        lastInput.nativeElement.focus();
-      }
-    }, 0);
+    if (hacerFocus) {
+      setTimeout(() => {
+        const lastInput = this.dondeCuandoInputs?.last;
+        if (lastInput) {
+          lastInput.nativeElement.focus();
+        }
+      }, 0);
+    }
   }
 
   eliminarDondeCuando(index: number): void {
     const lista = [...this.dondeCuando];
     lista.splice(index, 1);
     this.dondeCuando = lista;
+  }
+
+  agregarIntinerario(hacerFocus: boolean = true): void {
+    if (this.intinerario.length >= 5) return;
+
+    this.intinerario = [
+      ...this.intinerario,
+      { actividad: '', fecha: '' }
+    ];
+
+    if (hacerFocus) {
+      setTimeout(() => {
+        const lastInput = this.intinerarioInputs?.last;
+        if (lastInput) {
+          lastInput.nativeElement.focus();
+        }
+      }, 0);
+    }
+  }
+
+  eliminarIntinerario(index: number): void {
+    const lista = [...this.intinerario];
+    lista.splice(index, 1);
+    this.intinerario = lista;
   }
 
   agregarMesaRegalos(): void {
@@ -251,6 +293,17 @@ export class InvitacionesComponent implements OnInit {
     this.contactos = nuevaLista;
   } 
 
+  sincronizarInput(index: number, valor: string, destino: any[], propiedad: string): void {
+    if (destino && destino[index] && propiedad in destino[index]) {
+      destino[index][propiedad] = valor;
+    }
+  }
+  
+  reordenarIntinerario(event: CdkDragDrop<any[]>): void {
+    moveItemInArray(this.intinerario, event.previousIndex, event.currentIndex);
+  }
+
+
   //******************************************************/
 
   imagenPersonaFavNames: string[] = [];
@@ -291,6 +344,19 @@ export class InvitacionesComponent implements OnInit {
     } else {
       this.imagenPortadaSelected = '';
       this.imagenPortada.imagen = null;
+    }
+  }
+
+  imagenDondeYCuandoSelected: string[] = [];
+  onFileSelectedDondeYCuando(event: Event, index: number): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      this.imagenDondeYCuandoSelected[index] = file.name;
+      this.dondeCuando[index].imagen = file;
+    } else {
+      this.imagenDondeYCuandoSelected[index] = '';
+      this.dondeCuando[index].imagen = null;
     }
   }
 
@@ -365,6 +431,8 @@ export class InvitacionesComponent implements OnInit {
     '(\\#[-a-zA-Z\\d_]*)?$'; // fragmento
 
   submitForm() {
+    this.loading = true;
+    this.saveBtnDisabled = true;  
     const formData = new FormData();
     formData.append('eventoId', this.eventList);
     formData.append('videoUrl', this.videoUrl);
@@ -390,6 +458,13 @@ export class InvitacionesComponent implements OnInit {
       formData.append(`dondeCuando[${index}][ubicacion]`, item.ubicacion);
       formData.append(`dondeCuando[${index}][fechaHora]`, item.fechaHora);
       formData.append(`dondeCuando[${index}][direccion]`, item.direccion);
+      formData.append(`dondeCuando[${index}][imagen]`, item.imagen);     
+    });
+
+    // 📍 Intinerario
+    this.intinerario.forEach((item, index) => {
+      formData.append(`dondeCuando[${index}][actividad]`, item.actividad);            
+      formData.append(`dondeCuando[${index}][fechaHora]`, item.fecha);      
     });
 
     // 🎁 Mesa de Regalos
@@ -435,12 +510,17 @@ export class InvitacionesComponent implements OnInit {
     });
 
     // 🌐 Llamar a servicio que conecta con el backend
-    this.eventService.guardarInvitacion(formData).subscribe({
+    this.invitationService.guardarInvitacion(formData).subscribe({
       next: () => {
-        alert('Formulario enviado con éxito');
+        this.loading = false;
+        this.saveBtnDisabled = false;
+        this.notificationService.show('info',`Se cargo la informacion de su invitacion con exito`);
+        this.router.navigateByUrl('/dashboard'); 
       },
       error: (err) => {
-        alert('Error al enviar formulario: ' + err.message);
+        this.loading = false;
+        this.saveBtnDisabled = false;
+        this.notificationService.show('error',`Hubo un error al cargar la informacion del usuario, intente mas tarde`); 
       }
     });
   } 

@@ -42,6 +42,8 @@ import { PagoDialogComponent } from './component/pago-dialog/pago-dialog.compone
 import { PopupHtmlComponent } from './component/popup-html/popup-html.component';
 import { UploadImagesComponent } from './component/upload-images/upload-images.component';
 import { PlanCardComponent } from './component/plan-card/plan-card.component';
+import { InvitacionComponent } from './pages/invitacion/invitacion.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
@@ -63,7 +65,8 @@ import { PlanCardComponent } from './component/plan-card/plan-card.component';
     EdgwinGridComponent,
     PagoDialogComponent,
     UploadImagesComponent,
-    PlanCardComponent
+    PlanCardComponent,
+    InvitacionComponent
   ],
   imports: [
     RouterModule,
@@ -85,7 +88,8 @@ import { PlanCardComponent } from './component/plan-card/plan-card.component';
     MatNativeDateModule,
     MatDialogModule,    
     MatButtonModule,
-    PopupHtmlComponent
+    PopupHtmlComponent,
+    DragDropModule,
   ],
   exports: [UploadImagesComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

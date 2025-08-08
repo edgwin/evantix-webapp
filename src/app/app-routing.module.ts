@@ -11,6 +11,7 @@ import { InvitacionesComponent } from './pages/invitaciones/invitaciones.compone
 import { InvitadosComponent } from './pages/invitados/invitados.component';
 import { MesasComponent } from './pages/mesas/mesas.component';
 import { NuevoEventoComponent } from './pages/nuevo-evento/nuevo-evento.component';
+import { InvitacionComponent } from './pages/invitacion/invitacion.component';
 
 const routes: Routes = [
   {
@@ -34,6 +35,8 @@ const routes: Routes = [
     path:'forgotPassword',
     component: ForgotPasswordComponent
   },
+  { path: 'invitacion/:name/:idEvent', component: InvitacionComponent  },
+  { path: 'invitacion/:name/:idEvent/:idInvitado', component: InvitacionComponent  },
   {
     path: '',
     component: LayoutComponent,
@@ -44,10 +47,9 @@ const routes: Routes = [
       { path: 'invitaciones', component: InvitacionesComponent },
       { path: 'invitados', component: InvitadosComponent },
       { path: 'mesas', component: MesasComponent },
-      { path: 'nuevoEvento', component: NuevoEventoComponent },
+      { path: 'nuevoEvento', component: NuevoEventoComponent }
     ]
-  },
-  { path: '**', redirectTo: 'login' }
+  }
 ];
 
 @NgModule({

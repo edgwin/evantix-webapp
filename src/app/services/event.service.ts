@@ -1,6 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +11,8 @@ export class EventService {
   private getEventById = 'api/Event/GetEventById/';
   private getTermsAndConditions = 'api/Event/GetTermsAndConditions';
   private getEventForInvitationById = 'api/Event/GetUserEventsForInvitations/';
-  private postNewInvitationData = 'api/invitaciones'
-  private getPlansData = 'api/Event/GetPlans'
+  private getPlansData = 'api/Event/GetPlans';
+  private deleteEventById = 'api/Event/Delete/';
 
   constructor(private http: HttpClient) {}
 
@@ -81,15 +80,15 @@ export class EventService {
     const url = `${this.apiUrl}${this.getEventForInvitationById}${eventId}`;
     return this.http.get(url, { headers });
   }
-
-  guardarInvitacion(data: FormData): Observable<any> {
+  
+  DeleteEvent(eventId:string){
     const token = localStorage.getItem('access_token');
 
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
 
-    const url = `${this.apiUrl}${this.postNewInvitationData}`;
-    return this.http.post(url, data, { headers });
+    const url = `${this.apiUrl}${this.deleteEventById}${eventId}`;
+    return this.http.delete(url, { headers });
   }
 }
