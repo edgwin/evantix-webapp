@@ -1,4 +1,9 @@
+<div *ngIf="loading" class="loading-container">
+  <img src="../../../assets/images/loading.gif" alt="Cargando..." />
+</div>
+
 <header
+  *ngIf="!loading"
   id="fh5co-header"
   class="fh5co-cover"
   role="banner"
@@ -13,8 +18,8 @@
   data-stellar-background-ratio="0.5"
 >
   <div class="editImage"> 
-	<img src="../../../../assets/editarImagen.png" alt="" height="64px" width="64px" title="Click para editar imagen de fondo" (click)="triggerImageUpload()" *ngIf="!loading">
-	<img src="../../../../assets/images/loading.gif" alt="" height="64px" width="64px" *ngIf="loading">
+	<img src="../../../../assets/editarImagen.png" alt="" height="64px" width="64px" title="Click para editar imagen de fondo" (click)="triggerImageUpload()" *ngIf="!loadingImg">
+	<div class="loader" *ngIf="loadingImg"></div>
   </div>
   
   <div class="text-center titulos">

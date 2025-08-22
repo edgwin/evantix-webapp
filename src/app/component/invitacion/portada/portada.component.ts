@@ -14,7 +14,7 @@ import { MatNativeDateModule } from '@angular/material/core';
   selector: 'app-portada',
   standalone: true,
   templateUrl: './portada.component.html',
-  styleUrls: ['./../portada.component.css'],
+  styleUrls: ['./../invitacion.component.css'],
   imports: [CommonModule, 
             CountdownTimerComponent, 
             FormsModule,
@@ -25,6 +25,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 })
 export class PortadaComponent {
   loading: boolean = false;
+  loadingImg: boolean = false;
   data: any = null;
   newData: any = null;
   newDate: string = '';
@@ -133,7 +134,7 @@ export class PortadaComponent {
     input.onchange = (event: any) => {
       const file = event.target.files[0];
       if (file) {
-        this.loading = true;
+        this.loadingImg = true;
         this.uploadImage('Portada','IdEvento', this.eventId, 'Imagen', file);
       }
     };
@@ -144,10 +145,10 @@ export class PortadaComponent {
     this.invitationService.updateTableFieldImagen(tableName, searchField, eventId, field, file).subscribe({
       next: (res) => {
         this.data.imagen = res;
-        this.loading = false;
+        this.loadingImg = false;
       },
       error: (err) => {
-        this.loading = false;
+        this.loadingImg = false;
         this.notificationService.show(
            'error',
           `Error al subir imagen: ${err.message}`
