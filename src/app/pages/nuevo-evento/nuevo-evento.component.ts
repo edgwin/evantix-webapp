@@ -86,19 +86,6 @@ export class NuevoEventoComponent implements OnInit {
     }
   }
 
-  getLocalDateTimeString(fecha: Date): string {
-    const months = [
-      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
-    ];
-
-    const day = fecha.getDate();
-    const monthName = months[fecha.getMonth()];
-    const year = fecha.getFullYear();
-
-    return `${day} de ${monthName} del ${year}`;
-  }
-
   seleccionarPlan(plan: any) {
     this.evento.plan = plan.title;
     this.evento.costo = plan.price;
@@ -110,12 +97,12 @@ export class NuevoEventoComponent implements OnInit {
       alert('Por favor selecciona un plan.');
       return;
     }
-    const fecha = new Date(this.evento.fecha);
+    const fechaISO = new Date(this.evento.fecha).toISOString();
     const formData = new FormData();
     formData.append('UserId', this.loggedUser.userId);
     formData.append('Nombre', this.evento.nombre);
     formData.append('TipoEvento', this.evento.tipoEvento);
-    formData.append('Fecha', this.getLocalDateTimeString(fecha));
+    formData.append('Fecha', fechaISO);
     formData.append('WhatsApp', this.evento.whatsapp);
     formData.append('Email', this.evento.email);
     formData.append('Plan', this.evento.plan);    

@@ -1,0 +1,83 @@
+<header
+  id="fh5co-header"
+  class="fh5co-cover"
+  role="banner"
+  [ngStyle]="{
+    'background-image':
+      'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(' +
+      data?.imagen +
+      ')',
+    'background-size': 'cover',
+    'background-position': 'center'
+  }"  
+  data-stellar-background-ratio="0.5"
+>
+  <div class="editImage"> 
+	<img src="../../../../assets/editarImagen.png" alt="" height="64px" width="64px" title="Click para editar imagen de fondo" (click)="triggerImageUpload()" *ngIf="!loading">
+	<img src="../../../../assets/images/loading.gif" alt="" height="64px" width="64px" *ngIf="loading">
+  </div>
+  
+  <div class="text-center titulos">
+    <div class="display-t">
+      <div class="display-tc">
+        <!-- Título -->
+        <div *ngIf="!editingTitle; else editTitle" (click)="enableTitleEdit()" style="margin-top:100px">
+          <h1>{{ data?.titulo }}</h1>
+        </div>
+        <ng-template #editTitle>
+          <input
+            [(ngModel)]="tempTitle"
+            (blur)="saveTitle()"
+            class="form-control"
+            autofocus
+			style="margin-top:100px"
+          />
+        </ng-template>
+
+        <!-- Subtítulo -->
+        <div
+          *ngIf="!editingSubtitle; else editSubtitle"
+          (click)="enableSubtitleEdit()"
+        >
+          <h2>{{ data?.subTitulo }}</h2>
+        </div>
+        <ng-template #editSubtitle>
+          <input
+            [(ngModel)]="tempSubtitle"
+            (blur)="saveSubtitle()"
+            class="form-control"
+            autofocus
+          />
+        </ng-template>
+		<!-- Fecha -->
+		<div class="divFechas">
+			<div class="fechaTxt"
+				*ngIf="!editingDate; else editDate"
+				(click)="enableDateEdit()">
+				{{newDate}}
+			</div>
+			<ng-template #editDate>
+			<mat-form-field appearance="fill">
+				<input 
+				matInput 
+				[matDatepicker]="picker" 
+				[(ngModel)]="tempDate" 
+				name="fecha" 
+				required
+				(dateChange)="saveDate()" />
+				
+				<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+				<mat-datepicker #picker touchUi="true"></mat-datepicker>
+			</mat-form-field>
+			</ng-template>
+			<!-- Countdown -->
+			<app-countdown-timer
+			*ngIf="data?.fecha"
+			[targetDate]="data?.fecha"
+			[showLabels]="true"
+			></app-countdown-timer>
+		</div>
+      </div>
+    </div>
+  </div>
+</header>

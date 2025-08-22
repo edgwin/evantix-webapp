@@ -174,7 +174,7 @@ export class InvitacionesComponent implements OnInit {
   }
 
   agregarIntinerario(hacerFocus: boolean = true): void {
-    if (this.intinerario.length >= 5) return;
+    if (this.intinerario.length >= 8) return;
 
     this.intinerario = [
       ...this.intinerario,
@@ -453,18 +453,21 @@ export class InvitacionesComponent implements OnInit {
 
     // 📍 Donde y Cuándo
     this.dondeCuando.forEach((item, index) => {
-      formData.append(`dondeCuando[${index}][actividad]`, item.actividad);
-      formData.append(`dondeCuando[${index}][lugar]`, item.lugar);
-      formData.append(`dondeCuando[${index}][ubicacion]`, item.ubicacion);
-      formData.append(`dondeCuando[${index}][fechaHora]`, item.fechaHora);
-      formData.append(`dondeCuando[${index}][direccion]`, item.direccion);
-      formData.append(`dondeCuando[${index}][imagen]`, item.imagen);     
+      formData.append(`DondeCuando[${index}].Actividad`, item.actividad);
+      formData.append(`DondeCuando[${index}].Lugar`, item.lugar);
+      formData.append(`DondeCuando[${index}].Ubicacion`, item.ubicacion);
+      formData.append(`DondeCuando[${index}].FechaHora`, item.fechaHora);
+      formData.append(`DondeCuando[${index}].Direccion`, item.direccion);
+
+      if (item.imagen) {
+        formData.append(`DondeCuando[${index}].Imagen`, item.imagen);
+      }
     });
 
     // 📍 Intinerario
     this.intinerario.forEach((item, index) => {
-      formData.append(`dondeCuando[${index}][actividad]`, item.actividad);            
-      formData.append(`dondeCuando[${index}][fechaHora]`, item.fecha);      
+      formData.append(`intinerario[${index}][actividad]`, item.actividad);            
+      formData.append(`intinerario[${index}][fecha]`, item.fecha);      
     });
 
     // 🎁 Mesa de Regalos

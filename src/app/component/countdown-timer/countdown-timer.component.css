@@ -1,0 +1,46 @@
+.countdown {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.time-box {
+  text-align: center;
+  background: #222;
+  color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  min-width: 60px;
+}
+
+.number {
+  display: block;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .countdown {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        font-size: 10px;
+    }
+    .time-box {
+        text-align: center;
+        background: #222;
+        color: #fff;
+        padding: 10px;
+        border-radius: 8px;
+        min-width: 20px;
+        width: 45px;
+    }
+
+    .number {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+}

@@ -42,7 +42,6 @@ import { PagoDialogComponent } from './component/pago-dialog/pago-dialog.compone
 import { PopupHtmlComponent } from './component/popup-html/popup-html.component';
 import { UploadImagesComponent } from './component/upload-images/upload-images.component';
 import { PlanCardComponent } from './component/plan-card/plan-card.component';
-import { InvitacionComponent } from './pages/invitacion/invitacion.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
@@ -65,8 +64,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     EdgwinGridComponent,
     PagoDialogComponent,
     UploadImagesComponent,
-    PlanCardComponent,
-    InvitacionComponent
+    PlanCardComponent
   ],
   imports: [
     RouterModule,
