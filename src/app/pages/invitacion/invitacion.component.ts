@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { PortadaComponent } from '../../component/invitacion/portada/portada.component'
+import { FestejadosComponent } from '../../component/invitacion/festejados/festejados.component'
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -8,7 +9,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   templateUrl: './invitacion.component.html',
   styleUrl: './invitacion.component.css',
-  imports: [PortadaComponent, CommonModule],  
+  imports: [PortadaComponent, CommonModule, FestejadosComponent],  
 })
 
 export class InvitacionComponent {

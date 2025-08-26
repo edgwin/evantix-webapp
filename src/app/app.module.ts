@@ -43,6 +43,7 @@ import { PopupHtmlComponent } from './component/popup-html/popup-html.component'
 import { UploadImagesComponent } from './component/upload-images/upload-images.component';
 import { PlanCardComponent } from './component/plan-card/plan-card.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -88,6 +89,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatButtonModule,
     PopupHtmlComponent,
     DragDropModule,
+    BrowserAnimationsModule,
   ],
   exports: [UploadImagesComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

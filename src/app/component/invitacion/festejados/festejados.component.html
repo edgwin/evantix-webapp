@@ -1,0 +1,43 @@
+<div *ngIf="!loading">
+    <div class="container">
+        <div class="row">
+            <div *ngIf="!editingTitle; else editTitle" class="text-center fh5co-heading" (click)="enableTitleEdit()">
+                <h2>{{data.titulo}}</h2>			
+            </div>
+        </div>				
+    </div>
+    <ng-template #editTitle>
+        <input
+        [(ngModel)]="tempTitle"
+        (blur)="saveTitle()"
+        class="form-control"
+        autofocus
+        style="margin-top:100px"
+        />
+    </ng-template>
+
+    <div>
+        <div class="editImageFrase"> 
+            <img src="../../../../assets/editarImagen.png" alt="" height="64px" width="64px" (click)="triggerImageUpload()" title="Click para editar imagen" *ngIf="!loadingImg">
+            <div class="loader" *ngIf="loadingImg"></div>
+        </div>
+        <div style="text-align: center;">
+            <img [src]="data.imagen" alt="" class="img-frase" *ngIf="!loading" @fadeInScale>
+        </div>
+        
+        <div>
+            <div class="frase-txt" *ngIf="!editingFrase; else editFrase" (click)="enableFrase()">
+                <p>{{data.frase}}</p>
+            </div>		
+            <ng-template #editFrase>
+                <input
+                [(ngModel)]="tempFrase"
+                (blur)="saveFrase()"
+                class="form-control"
+                autofocus
+                style="margin-top:100px"
+                />
+            </ng-template>
+        </div>
+    </div>
+</div>

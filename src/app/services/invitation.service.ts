@@ -14,6 +14,7 @@ export class InvitationService {
   private getPortada = 'portada/'
   private updateEntry = 'UpdateEntry/'
   private updateEntryImage = 'UpdateEntry/Image/'
+  private getFestejados = 'festejados/'
 
   guardarInvitacion(data: FormData): Observable<any> {
       const token = localStorage.getItem('access_token');
@@ -59,4 +60,8 @@ export class InvitationService {
       return this.http.patch(`${this.apiUrl}${this.getInvitationData}${this.updateEntryImage}${eventId}`, formData);
   }
 
+  getInvitacionFestejados(eventId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.getFestejados}${eventId}`;
+    return this.http.get(url);
+  }
 }

@@ -795,7 +795,6 @@ h1, h2, h3, h4, h5, h6, figure {
   left: 0;
   top: .05em;
   font-family: 'icomoon';
-  speak: none;
   font-style: normal;
   font-weight: normal;
   font-variant: normal;
@@ -1477,7 +1476,6 @@ form label {
   position: absolute;
   right: 0px;
   font-family: 'icomoon';
-  speak: none;
   font-style: normal;
   font-weight: normal;
   font-variant: normal;
@@ -1892,6 +1890,13 @@ form label {
   margin-top: 25vh;
 }
 
+.editImageFrase {
+  position:absolute;
+  top: 110vh;
+  left: 55vw;
+  cursor: pointer;  
+}
+
 @media screen and (min-width: 200px) and (max-width: 767px) {
   .editImage {
     position:absolute;
@@ -1909,6 +1914,13 @@ form label {
   .divFechas {
     margin-top: 15vh;
   }
+
+  .editImageFrase {
+    position:absolute;
+    top: 80vh;
+    left: 68vw;
+    cursor: pointer;  
+  }
 }
 
 .loader {
@@ -1925,5 +1937,44 @@ form label {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+.img-frase {
+  border-radius: 50%;
+  object-fit: cover;
+  width: 300px;
+  height: 300px;
+}
+
+.frase-txt{
+    text-align: center;
+    width: 50%;
+    margin: 0 auto;
+    font-size: 24px;
+    line-height: 40px;
+    font-style: italic;
+    margin-top: 10px;
+    text-shadow: 1px 1px 2px black;
+}
+
+@media screen and (min-width: 200px) and (max-width: 767px) {
+  .img-frase {
+    border-radius: 50%;
+    object-fit: cover;
+    width: 300px;
+    height: 300px;
+  }
+
+  .frase-txt{
+      text-align: center;
+      width: 75%;
+      margin: 0 auto;
+      font-size: 18px;
+      line-height: 40px;
+      font-style: italic;
+      margin-top: 10px;
+      text-shadow: 1px 1px 2px black;
+  }  
+}
+
 
 /*# sourceMappingURL=style.css.map */
