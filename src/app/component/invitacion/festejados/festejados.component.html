@@ -17,27 +17,39 @@
     </ng-template>
 
     <div>
-        <div class="editImageFrase"> 
-            <img src="../../../../assets/editarImagen.png" alt="" height="64px" width="64px" (click)="triggerImageUpload()" title="Click para editar imagen" *ngIf="!loadingImg">
-            <div class="loader" *ngIf="loadingImg"></div>
-        </div>
-        <div style="text-align: center;">
-            <img [src]="data.imagen" alt="" class="img-frase" *ngIf="!loading" @fadeInScale>
-        </div>
-        
+        <div class="image-container">
+            <!-- Imagen principal -->
+            <img [src]="data.imagen" 
+                alt="" 
+                class="img-frase" 
+                *ngIf="!loading" 
+                @fadeInScale>
+
+            <!-- Botón de editar (arriba a la derecha) -->
+            <img src="../../../../assets/editarImagen.png" 
+                alt="editar imagen" 
+                class="edit-image-btn"
+                (click)="triggerImageUpload()" 
+                title="Click para editar imagen" 
+                *ngIf="!loadingImg">
+            <div class="loaderFestejados" *ngIf="loadingImg"></div>                
+        </div>        
+
+        <!-- Texto editable -->
         <div>
             <div class="frase-txt" *ngIf="!editingFrase; else editFrase" (click)="enableFrase()">
-                <p>{{data.frase}}</p>
-            </div>		
+            <p>{{data.frase}}</p>
+            </div>
             <ng-template #editFrase>
-                <input
+            <input
                 [(ngModel)]="tempFrase"
                 (blur)="saveFrase()"
                 class="form-control"
                 autofocus
                 style="margin-top:100px"
-                />
+            />
             </ng-template>
         </div>
     </div>
+
 </div>

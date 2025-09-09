@@ -405,19 +405,36 @@ h1, h2, h3, h4, h5, h6, figure {
 #fh5co-event .event-wrap {
   border: 2px solid rgba(255, 255, 255, 0.5);
   padding: 30px;
+  padding-top: 80px;  
   width: 100%;
   float: left;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   -ms-border-radius: 4px;
   border-radius: 4px;
+  min-height: 25vw;         /* altura mínima obligatoria */
+  height: auto;             /* deja que crezca según contenido */
+  position: relative;
+  overflow: hidden;
 }
+
+.event-wrap > div {
+  margin-bottom: 1rem; /* ajusta el valor según el espacio que quieras */
+}
+
 @media screen and (max-width: 768px) {
   #fh5co-counter .event-wrap,
   #fh5co-event .event-wrap {
     margin-bottom: 10px;
+    min-height: 70vw;         /* altura mínima obligatoria */
+    height: auto;             /* deja que crezca según contenido */
+    padding-bottom: calc(10vw); /* margen adicional si el contenido aumenta */
+  }
+  .event-wrap > div {
+    margin-bottom: 1rem; /* ajusta el valor según el espacio que quieras */
   }
 }
+
 #fh5co-counter .event-wrap h3,
 #fh5co-event .event-wrap h3 {
   font-size: 20px;
@@ -428,12 +445,14 @@ h1, h2, h3, h4, h5, h6, figure {
   text-transform: uppercase;
   letter-spacing: 2px;
   text-shadow: 1px 1px 2px black;
+  margin-bottom: 1rem;
 }
+
 #fh5co-counter .event-wrap p, #fh5co-counter .event-wrap span,
 #fh5co-event .event-wrap p,
 #fh5co-event .event-wrap span {
   display: block;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255);
   text-shadow: 1px 1px 2px black;
 }
 #fh5co-counter .event-wrap i,
@@ -445,6 +464,7 @@ h1, h2, h3, h4, h5, h6, figure {
 #fh5co-counter .event-wrap .event-col,
 #fh5co-event .event-wrap .event-col {
   width: 50%;
+  height: 50px;
   float: left;
   margin-bottom: 30px;
 }
@@ -1390,7 +1410,7 @@ form label {
 #fh5co-started .form-inline .form-group .form-control {
   width: 100%;
 }
-#fh5co-started .fh5co-heading {
+#fh5co-started .fh5co-heading {  
   margin-bottom: 30px;
 }
 #fh5co-started .fh5co-heading h2 {
@@ -1880,6 +1900,36 @@ form label {
   cursor: pointer;  
 }
 
+.editDondeCuandoImage {
+  position: absolute;
+  top: 10px;   /* separación desde arriba */
+  left: 10px;  /* separación desde la izquierda */
+  width: 40px; /* ajusta tamaño si quieres más chico */
+  height: 40px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  z-index: 10; /* para que quede encima del contenido */
+}
+
+.editDondeCuandoImage:hover {
+  transform: scale(1.1);
+}
+
+.editDondeCuandoDelete {
+  position: absolute;
+  top: 10px;   /* separación desde arriba */
+  right: 10px;  /* separación desde la izquierda */
+  width: 40px; /* ajusta tamaño si quieres más chico */
+  height: 40px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  z-index: 10; /* para que quede encima del contenido */
+}
+
+.editDondeCuandoDelete:hover {
+  transform: scale(1.1);
+}
+
 .fechaTxt {
   font-family: "Work Sans", Arial, sans-serif;
   font-size: 30px;
@@ -1892,15 +1942,20 @@ form label {
 
 .editImageFrase {
   position:absolute;
-  top: 110vh;
+  top: 200vh;
   left: 55vw;
   cursor: pointer;  
+}
+
+.addNewDC {
+  text-align: center;
+  margin-top: 1vw;  
 }
 
 @media screen and (min-width: 200px) and (max-width: 767px) {
   .editImage {
     position:absolute;
-    top: 6vh;
+    top: 2vh;
     left: 70vw;
     cursor: pointer;  
   }
@@ -1921,16 +1976,65 @@ form label {
     left: 68vw;
     cursor: pointer;  
   }
+
+  /* .editDondeCuandoImage{ 
+    position: absolute;
+    top: 5vw;
+  } */
 }
 
-.loader {
+.loaderFestejados {
   border: 8px solid rgba(0, 0, 0, 0.1);
   border-top: 8px solid #ff0000;
   border-radius: 50%;
-  width: 60px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
   animation: spin 1s linear infinite;
   background: transparent;
+  position: absolute;
+  right: 43vw;
+  top: 0.8vw;
+}
+
+.loaderPortada {
+  border: 8px solid rgba(0, 0, 0, 0.1);
+  border-top: 8px solid #ff0000;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  background: transparent;
+  position: absolute;
+  top: 0.8vw;
+  left: 2vw;
+}
+
+.loaderDC {
+  border: 8px solid rgba(0, 0, 0, 0.1);
+  border-top: 8px solid #ff0000;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  background: transparent;
+  position: absolute;
+  top: 0.7vw;
+  left: 0.5vw;
+  z-index: 5;
+}
+
+.loaderDCDelete {
+  border: 8px solid rgba(0, 0, 0, 0.1);
+  border-top: 8px solid #ff0000;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  background: transparent;
+  position: absolute;
+  top: 0.7vw;
+  right: 0.5vw;
+  z-index: 5;
 }
 
 @keyframes spin {
@@ -1938,11 +2042,62 @@ form label {
   100% { transform: rotate(360deg); }
 }
 
+.image-container {
+  position: relative;       /* referencia para el botón */
+  display: flex;    /* que se ajuste al tamaño de la imagen */
+  justify-content: center;
+}
+
 .img-frase {
   border-radius: 50%;
   object-fit: cover;
   width: 300px;
   height: 300px;
+}
+
+.edit-image-btn {
+  position: absolute;
+  top: 10px;                /* margen desde arriba */
+  right: 43vw;              /* margen desde la derecha */
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  z-index: 5;               /* asegura que quede encima */
+}
+
+.edit-image-btn:hover {
+  transform: scale(1.1);
+}
+
+.edit-imagePortada-btn {
+  position: absolute;
+  top: 20px;
+  left: 2vw;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  z-index: 5;
+}
+
+.edit-imagePortada-btn:hover {
+  transform: scale(1.1);
+}
+
+.edit-imageDC-btn {
+  position: absolute;
+  top: -1.5vw;
+  left: 21vw;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  z-index: 5;
+}
+
+.edit-imageDC-btn:hover {
+  transform: scale(1.1);
 }
 
 .frase-txt{
@@ -1974,7 +2129,141 @@ form label {
       margin-top: 10px;
       text-shadow: 1px 1px 2px black;
   }  
+  .edit-image-btn {
+    position: absolute;
+    top: 10px;                /* margen desde arriba */
+    right: 20vw;              /* margen desde la derecha */
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    z-index: 5;               /* asegura que quede encima */
+  }
+
+  .loaderFestejados {
+    border: 8px solid rgba(0, 0, 0, 0.1);
+    border-top: 8px solid #ff0000;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    background: transparent;
+    position: absolute;
+    right: 80vw;
+    top: 3vw;
+  }
+
+  .edit-imageDC-btn {
+    position: absolute;
+    top: -1.5vw;
+    left: 18vw;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    z-index: 5;
+  }
 }
 
+.dondeCuando{
+    margin-top: 10px;
+}
+
+.dondeCuandoTitle{
+  width: 100%;
+  text-shadow: 1px 1px 2px black;
+}
+.dondeCuandoLugar{
+    font-size: 18px;
+    text-align: left;
+}
+
+.dondeCuandoGeneral{
+    color:white;
+}
+.dondeCuandoDireccion{    
+    font-size: 16px;
+    text-align: left;
+}
+
+.dondeCuando-space{
+    padding-right: 0.8vw;
+    padding-top: 0.6vw;
+}
+
+.dondeCuandoLugar-space{
+    padding-right: 2.2vw;
+}
+
+.dondeCuandoImg{
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.inside-row {
+  display: inline-flex;
+  margin-bottom: 0.8rem;
+  align-items: baseline;
+}
+
+.inside-row-btn{
+  margin-bottom: 1.5rem
+}
+
+@media screen and (max-width: 767px) {
+  .dondeCuando {
+    width: 100% !important;
+  }
+
+  .dondeCuando-space{
+      padding-right: 2.5vw;
+      padding-top: 2.5vw;
+  }
+
+  .dondeCuandoLugar-space{
+      padding-right: 8.7vw;
+  }
+}
+
+.fecha-hora-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/* Cada mat-form-field crece de forma fluida */
+.fh-field {
+  flex: 1 1 200px;
+  min-width: 180px;
+}
+
+/* Botones de acción */
+.fecha-acciones {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+/* Responsive: en pantallas chicas, cada campo ocupa toda la fila */
+@media (max-width: 767px) {
+  .fh-field {
+    flex: 1 1 100%;
+    min-width: 100%;
+  }
+  .fecha-acciones {
+    justify-content: flex-end;
+  }
+}
+
+.input-lugar .mat-mdc-text-field-wrapper {
+  align-items: flex-start !important; /* alinea el contenido arriba */
+  height: 65px; /* mismo alto que definías inline */
+}
+
+.input-lugar input.mat-input-element {
+  padding-top: 4px; /* mueve un poco el texto hacia arriba */
+  height: 100%;
+}
 
 /*# sourceMappingURL=style.css.map */

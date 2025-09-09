@@ -3,13 +3,14 @@ import { PortadaComponent } from '../../component/invitacion/portada/portada.com
 import { FestejadosComponent } from '../../component/invitacion/festejados/festejados.component'
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { DondeCuandoComponent } from '../../component/invitacion/donde-cuando/donde-cuando.component';
 
 @Component({
   selector: 'app-invitacion',
   standalone: true,
   templateUrl: './invitacion.component.html',
   styleUrl: './invitacion.component.css',
-  imports: [PortadaComponent, CommonModule, FestejadosComponent],  
+  imports: [PortadaComponent, CommonModule, FestejadosComponent, DondeCuandoComponent],  
 })
 
 export class InvitacionComponent {

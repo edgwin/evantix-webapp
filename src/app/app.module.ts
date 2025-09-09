@@ -44,6 +44,8 @@ import { UploadImagesComponent } from './component/upload-images/upload-images.c
 import { PlanCardComponent } from './component/plan-card/plan-card.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MapaModalComponent } from './component/mapa-modal/mapa-modal.component';
+import { GoogleMapsModule } from '@angular/google-maps';
 
 @NgModule({
   declarations: [
@@ -65,7 +67,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     EdgwinGridComponent,
     PagoDialogComponent,
     UploadImagesComponent,
-    PlanCardComponent
+    PlanCardComponent,
+    MapaModalComponent
   ],
   imports: [
     RouterModule,
@@ -85,6 +88,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    GoogleMapsModule,
     MatDialogModule,    
     MatButtonModule,
     PopupHtmlComponent,

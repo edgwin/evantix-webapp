@@ -1,0 +1,150 @@
+<div id="fh5co-event" class="fh5co-bg" 
+[ngStyle]="{
+       'background-image': 'linear-gradient(rgba(255, 255, 255, 0.8), rgba(0, 0, 0, 0.5)), url(' + data?.imagen +')',
+       'background-size': 'cover',
+       'background-position': 'center',
+       'background-repeat': 'no-repeat',
+       'padding-top': '10px'
+     }"
+>
+  <div class="editImage"> 
+    <img src="../../../../assets/editarImagen.png" class="edit-imageDC-btn" alt="" title="Click para editar imagen de fondo" 
+                    (click)="triggerBGImageUpload()" *ngIf="false">
+    <div class="loaderDC" *ngIf="false"></div>
+  </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 text-center fh5co-heading dondeCuandoTitle" *ngIf="!loading">
+                <h2>Donde y Cuando</h2>
+            </div>
+        </div>            
+
+        <div class="row" cdkDropList
+            (cdkDropListDropped)="drop($event)">
+            <div class="col-md-6 col-sm-6 text-center dondeCuando" *ngFor="let item of data.details let i = index" cdkDrag>                    
+                <div class="event-wrap" [ngStyle]="{
+                                            'background-image': 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(' + item.imagen + ')',
+                                            'background-size': 'cover',
+                                            'background-position': 'center',
+                                            'background-repeat': 'no-repeat'
+                                        }">
+                        <img src="../../../../assets/editarImagen.png" alt="" height="64px" width="64px" class="editDondeCuandoImage"
+                                (click)="triggerImageUpload(item.id)" title="Click para editar imagen de fondo" *ngIf="!loadingImgs[item.id]">
+                        <div class="loaderDC" *ngIf="loadingImgs[item.id]"></div>
+
+                        <img src="../../../../assets/BtnDelete.png" alt="" height="64px" width="64px" class="editDondeCuandoDelete"
+                                (click)="triggerImageDelete(item.id)" title="Click para editar imagen de fondo" *ngIf="!loadingImgs[item.id]">
+                        <div class="!loaderDCDelete" *ngIf="!loadingImgs[item.id]"></div>
+                    <div>
+                        <div *ngIf="editingActividadId !== item.id; else editActividad" (click)="enableActividad(item.id)">
+                            <h3><b>{{item.actividad}}</b></h3>
+                        </div>
+                        <ng-template #editActividad>
+                            <input
+                            [(ngModel)]="tempActividad"
+                            (blur)="saveActividad(item.id)"
+                            class="form-control"
+                            autofocus
+                            style="margin-top:20px"
+                            />
+                        </ng-template>
+                    </div>
+                    <div class="event-col">
+                        <div><i class="icon-clock"></i></div>                            
+                        <div *ngIf="editingHoraId !== item.id; else editHora" (click)="enableHora(item.id)">
+                            <span><b>{{item.hora}}</b></span>
+                        </div>
+                        <ng-template #editHora>
+                            <mat-form-field appearance="fill" style="width: 120px; height: 65px;">
+                                <input
+                                style="height: 20px; padding-top: 0px; display: table"
+                                matInput
+                                [(ngModel)]="tempHora"
+                                (blur)="saveHora(item.id)"
+                                name="hora{{i}}"
+                                type="time"                                    
+                                required
+                                />
+                            </mat-form-field>
+                        </ng-template>
+                    </div>                            
+                    <div class="event-col">
+                        <div><i class="icon-calendar"></i></div>
+                        <div *ngIf="editingFechaId !== item.id; else editFecha" (click)="enableFecha(item.id)">
+                            <span>
+                                <b>{{convertDate(item.fecha)}}</b>
+                            </span>
+                        </div>
+
+                        <ng-template #editFecha>
+                            <mat-form-field appearance="fill" style="width: 120px; height: 65px;">
+                                <input
+                                style="height: 20px; padding-top: 0px; display: table"
+                                matInput
+                                [(ngModel)]="tempFecha"
+                                (blur)="saveFecha(item.id)"
+                                name="fecha{{i}}"
+                                type="date"                                    
+                                required
+                                />
+                            </mat-form-field>
+                        </ng-template>
+                    </div>
+                    <div class="row">
+                        <div class="inside-row">
+                            <div class="dondeCuandoGeneral dondeCuandoLugar-space">Lugar:</div>
+                            <div class="dondeCuandoGeneral" 
+                                *ngIf="editingLugarId !== item.id; else editLugar" 
+                                (click)="enableLugar(item.id)">{{item.lugar}}
+                            </div>
+                        </div>
+                        <ng-template #editLugar>
+                            <mat-form-field appearance="fill">
+                                <input                                    
+                                matInput
+                                [(ngModel)]="tempLugar"
+                                (blur)="saveLugar(item.id)"
+                                name="Lugar{{i}}"                                
+                                required
+                                />
+                            </mat-form-field>
+                        </ng-template>
+                        <div class="inside-row">
+                            <div class="dondeCuandoDireccion dondeCuandoGeneral dondeCuando-space">Direccion:</div>
+                            <div class="dondeCuandoDireccion dondeCuandoGeneral" *ngIf="editingDireccionId !== item.id; else editDireccion"
+                                (click)="enableDireccion(item.id)">{{item.direccion}}</div>
+                        </div>
+                        <ng-template #editDireccion>
+                            <mat-form-field appearance="fill" style="width: 500px;">
+                                <input        
+                                style="width: 480px;"                            
+                                matInput
+                                [(ngModel)]="tempDireccion"
+                                (blur)="saveDireccion(item.id)"
+                                name="Direccion{{i}}"                                
+                                required
+                                />
+                            </mat-form-field>
+                        </ng-template>                            
+                        <div class="inside-row">
+                            <div class="dondeCuandoGeneral dondeCuando-space">Ubicacion:</div>
+                            <a href="{{item.ubicacion}}" 
+                                target="_blank" 
+                                class="dondeCuandoGeneral inside-row-btn btn btn-primary">
+                                Ver Ubicación
+                            </a>
+                            <a (click)="abrirMapa(item.id)"
+                                class="dondeCuandoGeneral inside-row-btn btn btn-secondary">
+                                Editar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>													
+        </div>
+    </div>
+    <div class="addNewDC">
+        <img src="../../../../assets/BtnAddNew.png" alt="" height="64px" width="64px" 
+                title="Click para Agregar un nuevo Lugar" (click)="nuevoDondeCuando()" style="cursor: pointer;">
+    </div>
+</div>

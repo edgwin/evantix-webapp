@@ -18,8 +18,8 @@
   data-stellar-background-ratio="0.5"
 >
   <div class="editImage"> 
-	<img src="../../../../assets/editarImagen.png" alt="" height="64px" width="64px" title="Click para editar imagen de fondo" (click)="triggerImageUpload()" *ngIf="!loadingImg">
-	<div class="loader" *ngIf="loadingImg"></div>
+    <img src="../../../../assets/editarImagen.png" class="edit-imagePortada-btn" alt="" title="Click para editar imagen de fondo" (click)="triggerImageUpload()" *ngIf="!loadingImg">
+    <div class="loaderPortada" *ngIf="loadingImg"></div>
   </div>
   
   <div class="text-center titulos">
@@ -35,7 +35,7 @@
             (blur)="saveTitle()"
             class="form-control"
             autofocus
-			style="margin-top:100px"
+			      style="margin-top:100px"
           />
         </ng-template>
 
@@ -54,35 +54,40 @@
             autofocus
           />
         </ng-template>
-		<!-- Fecha -->
-		<div class="divFechas">
-			<div class="fechaTxt"
-				*ngIf="!editingDate; else editDate"
-				(click)="enableDateEdit()">
-				{{newDate}}
+        <!-- Fechas -->
+        <div class="divFechas">
+          <div class="fechaTxt"
+            *ngIf="!editingDate; else editDate"
+            (click)="enableDateEdit()">
+            {{ newDate }}
+          </div>
+
+          <ng-template #editDate>
+            <div class="date-time-picker">
+              <!-- Selector de fecha -->
+              <mat-form-field appearance="fill" class="campo-4">
+                <mat-label>Fecha y hora</mat-label>
+                <input
+                  matInput
+                  [(ngModel)]="tempDate"
+                  (blur)="saveDate()"
+                  name="fechaHora"
+                  type="datetime-local"
+                  required
+                />
+              </mat-form-field>
+            </div>
+          </ng-template>
+
+          <!-- Countdown -->
+          <app-countdown-timer
+            *ngIf="data?.fecha"
+            [targetDate]="data?.fecha"
+            [showLabels]="true"
+          ></app-countdown-timer>
+        </div>
+
 			</div>
-			<ng-template #editDate>
-			<mat-form-field appearance="fill">
-				<input 
-				matInput 
-				[matDatepicker]="picker" 
-				[(ngModel)]="tempDate" 
-				name="fecha" 
-				required
-				(dateChange)="saveDate()" />
-				
-				<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-				<mat-datepicker #picker touchUi="true"></mat-datepicker>
-			</mat-form-field>
-			</ng-template>
-			<!-- Countdown -->
-			<app-countdown-timer
-			*ngIf="data?.fecha"
-			[targetDate]="data?.fecha"
-			[showLabels]="true"
-			></app-countdown-timer>
-		</div>
-      </div>
     </div>
   </div>
 </header>

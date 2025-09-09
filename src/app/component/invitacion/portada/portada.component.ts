@@ -1,4 +1,3 @@
-// portada.component.ts
 import { Component, Input, HostListener } from '@angular/core';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
@@ -9,6 +8,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
+import { FechasHelper } from '../../../helpers/fechas';
 
 @Component({
   selector: 'app-portada',
@@ -18,7 +18,7 @@ import { MatNativeDateModule } from '@angular/material/core';
   imports: [CommonModule, 
             CountdownTimerComponent, 
             FormsModule,
-            MatDatepickerModule,
+            MatDatepickerModule, //ToDo ver si se puede quitar
             MatFormFieldModule,
             MatInputModule,
             MatNativeDateModule]
@@ -36,11 +36,13 @@ export class PortadaComponent {
   editingDate: boolean = false;
   tempTitle: string = '';
   tempSubtitle: string = '';
-  tempDate: string = '';
+  tempDate: Date | null = null;
+  tempTime: string = ''; // formato HH:mm
 
   constructor(
     private invitationService: InvitationService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private fechasHelper: FechasHelper
   ) {}
 
   ngOnInit(): void {
@@ -50,7 +52,7 @@ export class PortadaComponent {
     this.invitationService.getInvitacionPortada(this.eventId).subscribe({
       next: (res) => {
         this.data = res;
-        this.newDate = this.formatearFecha(this.data.fecha);
+        this.newDate = this.fechasHelper.formatearFechaHora(this.data.fecha);
         this.loading = false;
       },
       error: (err) => {
@@ -61,20 +63,6 @@ export class PortadaComponent {
         this.loading = false;
       }
     });
-  }
-
-  formatearFecha(fechaISO:string) {
-    const meses = [
-      "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-    ];
-
-    const fecha = new Date(fechaISO);
-    const dia = fecha.getDate();
-    const mes = meses[fecha.getMonth()];
-    const anio = fecha.getFullYear();
-
-    return `${dia} de ${mes} del ${anio}`;
   }
 
   // --- edición de título ---
@@ -111,15 +99,35 @@ export class PortadaComponent {
 
   // --- edición de fecha ---
   enableDateEdit() {
-    this.tempDate = this.data.fecha;
+    this.tempDate = new Date(this.data.fecha);
+    this.tempTime = this.tempDate.toTimeString().slice(0, 5); // HH:mm
     this.editingDate = true;
   }
 
+  onDateChange(event: any) {
+    this.updateFullDate();
+  }
+
+  onTimeChange(event: any) {
+    this.updateFullDate();
+  }
+
+  updateFullDate() {
+    if (this.tempDate && this.tempTime) {
+      const [hours, minutes] = this.tempTime.split(':').map(Number);
+      this.tempDate.setHours(hours, minutes, 0, 0);
+      this.saveDate();
+    }
+  }
+
   saveDate() {
-    this.data.fecha = this.tempDate;
-    this.newDate = this.formatearFecha(this.tempDate);
+    if (!this.tempDate) return;
+
+    this.data.fecha = this.tempDate; // Guardar en ISO
+    this.newDate = this.fechasHelper.formatearFechaHora(this.tempDate);
     this.editingDate = false;
-    this.updateBackend('Events','Id',this.eventId, 'Fecha', this.data.fecha);
+
+    this.updateBackend('Events','Id', this.eventId, 'Fecha', this.data.fecha);
   }
 
   cancelDate() {
@@ -175,5 +183,6 @@ export class PortadaComponent {
   onEscape() {
     if (this.editingTitle) this.cancelTitle();
     if (this.editingSubtitle) this.cancelSubtitle();
+    if (this.editingDate) this.cancelDate();
   }
 }

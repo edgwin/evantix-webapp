@@ -11,10 +11,11 @@ export class InvitationService {
   private apiUrl = 'https://localhost:7282/';
   private postNewInvitationData = 'api/invitaciones/Create';
   private getInvitationData = 'api/invitacion/';
-  private getPortada = 'portada/'
-  private updateEntry = 'UpdateEntry/'
-  private updateEntryImage = 'UpdateEntry/Image/'
-  private getFestejados = 'festejados/'
+  private getPortada = 'portada/';
+  private updateEntry = 'UpdateEntry/';
+  private updateEntryImage = 'UpdateEntry/Image/';
+  private getFestejados = 'festejados/';
+  private getDondeCuando = 'DondeCuando/';
 
   guardarInvitacion(data: FormData): Observable<any> {
       const token = localStorage.getItem('access_token');
@@ -40,12 +41,12 @@ export class InvitationService {
     return this.http.post(`/api/invitaciones/${eventId}/portada/imagen`, file);
   }
 
-  updateTableField(tabla:string, searchField:string, eventId: string, field:string, value:any) {
+  updateTableField(tabla:string, searchField:string, eventId: string, field:string, value:string) {
     const payload = {
       tableName: tabla,
       searchField: searchField,
       fieldName: field,
-      newValue: value
+      newValue: value.toString()
     }
     return this.http.patch(`${this.apiUrl}${this.getInvitationData}${this.updateEntry}${eventId}`, payload);
   }
@@ -63,5 +64,20 @@ export class InvitationService {
   getInvitacionFestejados(eventId:string){
     const url = `${this.apiUrl}${this.getInvitationData}${this.getFestejados}${eventId}`;
     return this.http.get(url);
+  }
+
+  getInvitacionDondeCuando(eventId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.getDondeCuando}${eventId}`;
+    return this.http.get(url);
+  }
+
+  postNewDondeCuando(eventId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.getDondeCuando}${eventId}`;
+    return this.http.post(url, eventId);
+  }
+
+  deleteDondeCuando(dondeCuandoId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.getDondeCuando}${dondeCuandoId}`;
+    return this.http.delete(url);
   }
 }
