@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { PortadaComponent } from '../../component/invitacion/portada/portada.component'
 import { FestejadosComponent } from '../../component/invitacion/festejados/festejados.component'
+import { IndicacionesComponent } from '../../component/invitacion/indicaciones/indicaciones.component'
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DondeCuandoComponent } from '../../component/invitacion/donde-cuando/donde-cuando.component';
@@ -10,7 +11,7 @@ import { DondeCuandoComponent } from '../../component/invitacion/donde-cuando/do
   standalone: true,
   templateUrl: './invitacion.component.html',
   styleUrl: './invitacion.component.css',
-  imports: [PortadaComponent, CommonModule, FestejadosComponent, DondeCuandoComponent],  
+  imports: [PortadaComponent, CommonModule, FestejadosComponent, DondeCuandoComponent, IndicacionesComponent],  
 })
 
 export class InvitacionComponent {

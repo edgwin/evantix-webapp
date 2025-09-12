@@ -16,6 +16,7 @@ export class InvitationService {
   private updateEntryImage = 'UpdateEntry/Image/';
   private getFestejados = 'festejados/';
   private getDondeCuando = 'DondeCuando/';
+  private getIndicaciones = 'Indicaciones/';
 
   guardarInvitacion(data: FormData): Observable<any> {
       const token = localStorage.getItem('access_token');
@@ -79,5 +80,10 @@ export class InvitationService {
   deleteDondeCuando(dondeCuandoId:string){
     const url = `${this.apiUrl}${this.getInvitationData}${this.getDondeCuando}${dondeCuandoId}`;
     return this.http.delete(url);
+  }
+
+  getInvitacionIndicaciones(eventId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.getIndicaciones}${eventId}`;
+    return this.http.get(url);
   }
 }
