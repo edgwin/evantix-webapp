@@ -2209,6 +2209,21 @@ form label {
   margin-bottom: 1.5rem
 }
 
+.dondeCuandoTitle{
+  font-size: 20px;
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  display: block;
+  padding-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 1px 1px 2px black;
+  font-weight: bold;
+  white-space: pre-wrap; /* respeta saltos de línea y espacios */
+  outline: none;         /* opcional: quita el borde por defecto al enfocar */
+  cursor: text;
+}
+
 @media screen and (max-width: 767px) {
   .dondeCuando {
     width: 100% !important;

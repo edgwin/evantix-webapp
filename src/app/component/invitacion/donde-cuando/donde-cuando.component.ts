@@ -30,8 +30,6 @@ export class DondeCuandoComponent {
   loadingImg: boolean = false;
   data:any = null;
   fecha: string = '';
-  editingActividad: boolean = false;
-  tempActividad: string = '';
   editingActividadId: string | null = null;
   editingHora: boolean = false;
   tempHora: string = '';
@@ -48,6 +46,8 @@ export class DondeCuandoComponent {
   editingDireccion: boolean = false;
   tempDireccion: string = '';
   editingDireccionId: string | null = null;
+
+  tempMap: { [id: string]: string } = {};
   @Input() eventId: string = '';
 
   ngOnInit(): void {
@@ -92,27 +92,259 @@ export class DondeCuandoComponent {
     return this.fechasHelper.formatearFechaHora(date);
   }
 
-  enableActividad(id: string) {
-    const item = this.data.details.find((d: { id: string }) => d.id === id);
-    this.tempActividad = item.actividad;
-    this.editingActividadId = id;    
+  onActividadBlur(event: Event, item: any) {
+    const el = event.target as HTMLElement;
+    const nuevoTexto = el.innerText.trim();
+
+    // si cambió, guardamos y llamamos backend
+    if (nuevoTexto !== item.actividad) {
+      item.actividad = nuevoTexto;
+      this.updateBackend('DondeCuandoDetails', 'Id', item.id, 'Actividad', nuevoTexto);
+    }
+
+    // salimos del modo edición
+    this.editingActividadId = null;
   }
 
-  saveActividad(id: string) {
+  // Actividad
+  onClickActividad(id:string){
+    this.editingActividadId = id; 
     const item = this.data.details.find((d: { id: string }) => d.id === id);
-    item.actividad = this.tempActividad;
-    this.editingActividadId = null; // ya terminó edición
-    this.updateBackend('DondeCuandoDetails','Id', id, 'Actividad', item.actividad);
+    if (item) {
+      this.tempMap[id] = item.actividad; // 🔹 Guardamos el valor original
+    }
+
+    setTimeout(() => {
+      const el = document.querySelector(`[data-id-actividad="${id}"]`) as HTMLElement | null;
+      if (el) {
+        el.focus();
+        // colocar caret al final
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+        const sel = window.getSelection();
+        if (sel) {
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+      }
+    }, 0);
   }
 
-  cancelActividad() {
-    this.editingActividadId = null;    
+  restoreActividad(item: any, element: HTMLElement) {
+    const original = this.tempMap[item.id];
+    if (original !== undefined) {
+      element.innerText = original; // restaurar en la UI
+    }
+    this.editingActividadId = null;
   }
 
-  enableHora(id: string) {
+  //Hora
+  onHoraBlur(event: Event, item: any) {
+    const el = event.target as HTMLElement;
+    const nuevoTexto = el.innerText.trim();
+
+    // si cambió, guardamos y llamamos backend
+    if (nuevoTexto !== item.hora) {
+      item.hora = nuevoTexto;
+      this.updateBackend('DondeCuandoDetails', 'Id', item.id, 'Hora', nuevoTexto);
+    }
+
+    // salimos del modo edición
+    this.editingHoraId = null;
+  }
+
+  onClickHora(id:string){
+    this.editingHoraId = id; 
     const item = this.data.details.find((d: { id: string }) => d.id === id);
-    this.tempHora = item.hora;
-    this.editingHoraId = id;
+    if (item) {
+      this.tempMap[id] = item.hora; // 🔹 Guardamos el valor original
+    }
+
+    setTimeout(() => {
+      const el = document.querySelector(`[data-id-hora="${id}"]`) as HTMLElement | null;
+      if (el) {
+        el.focus();
+        // colocar caret al final
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+        const sel = window.getSelection();
+        if (sel) {
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+      }
+    }, 0);
+  }
+
+  restoreHora(item: any, element: HTMLElement) {
+    const original = this.tempMap[item.id];
+    if (original !== undefined) {
+      element.innerText = original; // restaurar en la UI
+    }
+    this.editingHoraId = null;
+  }
+
+  //Fecha
+  onFechaBlur(event: Event, item: any) {
+    const el = event.target as HTMLElement;
+    const nuevoTexto = el.innerText.trim();
+
+    // si cambió, guardamos y llamamos backend
+    if (nuevoTexto !== item.hora) {
+      item.hora = nuevoTexto;
+      this.updateBackend('DondeCuandoDetails', 'Id', item.id, 'Fecha', nuevoTexto);
+    }
+
+    // salimos del modo edición
+    this.editingFechaId = null;
+  }
+
+  onClickFecha(id:string){
+    this.editingFechaId = id; 
+    const item = this.data.details.find((d: { id: string }) => d.id === id);
+    if (item) {
+      this.tempMap[id] = item.hora; // 🔹 Guardamos el valor original
+    }
+
+    setTimeout(() => {
+      const el = document.querySelector(`[data-id-fecha="${id}"]`) as HTMLElement | null;
+      if (el) {
+        el.focus();
+        // colocar caret al final
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+        const sel = window.getSelection();
+        if (sel) {
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+      }
+    }, 0);
+  }
+
+  restoreFecha(item: any, element: HTMLElement) {
+    const original = this.tempMap[item.id];
+    if (original !== undefined) {
+      element.innerText = original; // restaurar en la UI
+    }
+    this.editingFechaId = null;
+  }
+
+  //Lugar
+  onLugarBlur(event: Event, item: any) {
+    const el = event.target as HTMLElement;
+    const nuevoTexto = el.innerText.trim();
+
+    // si cambió, guardamos y llamamos backend
+    if (nuevoTexto !== item.lugar) {
+      item.lugar = nuevoTexto;
+      this.updateBackend('DondeCuandoDetails', 'Id', item.id, 'Lugar', nuevoTexto);
+    }
+
+    // salimos del modo edición
+    this.editingLugarId = null;
+  }
+
+  onClickLugar(id:string){
+    this.editingLugarId = id; 
+    const item = this.data.details.find((d: { id: string }) => d.id === id);
+    if (item) {
+      this.tempMap[id] = item.hora;
+    }
+
+    setTimeout(() => {
+      const el = document.querySelector(`[data-id-lugar="${id}"]`) as HTMLElement | null;
+      if (el) {
+        el.focus();
+        // colocar caret al final
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+        const sel = window.getSelection();
+        if (sel) {
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+      }
+    }, 0);
+  }
+
+  restoreLugar(item: any, element: HTMLElement) {
+    const original = this.tempMap[item.id];
+    if (original !== undefined) {
+      element.innerText = original; // restaurar en la UI
+    }
+    this.editingLugarId = null;
+  }
+
+  //Direccion
+  onDireccionBlur(event: Event, item: any) {
+    const el = event.target as HTMLElement;
+    const nuevoTexto = el.innerText.trim();
+
+    // si cambió, guardamos y llamamos backend
+    if (nuevoTexto !== item.direccion) {
+      item.direccion = nuevoTexto;
+      this.updateBackend('DondeCuandoDetails', 'Id', item.id, 'Direccion', nuevoTexto);
+    }
+
+    // salimos del modo edición
+    this.editingDireccionId = null;
+  }
+
+  onClickDireccion(id:string){
+    this.editingDireccionId = id; 
+    const item = this.data.details.find((d: { id: string }) => d.id === id);
+    if (item) {
+      this.tempMap[id] = item.direccion;
+    }
+
+    setTimeout(() => {
+      const el = document.querySelector(`[data-id-direccion="${id}"]`) as HTMLElement | null;
+      if (el) {
+        el.focus();
+        // colocar caret al final
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+        const sel = window.getSelection();
+        if (sel) {
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+      }
+    }, 0);
+  }
+
+  restoreDireccion(item: any, element: HTMLElement) {
+    const original = this.tempMap[item.id];
+    if (original !== undefined) {
+      element.innerText = original; // restaurar en la UI
+    }
+    this.editingDireccionId = null;
+  }
+
+  //genericos
+  onKeyDown(event: KeyboardEvent | any, item: any) {
+    const key = (event as KeyboardEvent).key;
+    if (key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
+      event.preventDefault();
+      (event.target as HTMLElement).blur(); // dispara onActividadBlur y guarda
+      return;
+    }
+
+    if (key === 'Escape') {
+      event.preventDefault();
+      // restaura valor original
+      this.restoreActividad(item, event.target as HTMLElement);
+    }
+  }
+
+  trackById(index: number, item: any) {
+    return item?.id;
   }
 
   saveHora(id: string) {
@@ -295,10 +527,16 @@ abrirMapa(id: string) {
     });
   }
 
-  // --- ESC para cancelar ---
   @HostListener('document:keydown.escape', ['$event'])
-  onEscape() {
-    if (this.editingActividadId) this.cancelActividad();
+  onEscapeGlobal(event: KeyboardEvent) {
+    if (this.editingActividadId) {
+      const item = this.data.details.find((d: { id: string }) => d.id === this.editingActividadId);
+      const element = document.querySelector(`[contenteditable][data-id="${this.editingActividadId}"]`) as HTMLElement;
+      if (item && element) {
+        this.restoreActividad(item, element);
+      }
+    }
+
     if (this.editingHoraId) this.cancelHora();
     if (this.editingFechaId) this.cancelFecha();
     if (this.editingLugarId) this.cancelLugar();

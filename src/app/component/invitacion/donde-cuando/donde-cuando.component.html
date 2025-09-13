@@ -21,7 +21,7 @@
 
         <div class="row" cdkDropList
             (cdkDropListDropped)="drop($event)">
-            <div class="col-md-6 col-sm-6 text-center dondeCuando" *ngFor="let item of data.details let i = index" cdkDrag>                    
+            <div class="col-md-6 col-sm-6 text-center dondeCuando" *ngFor="let item of data.details; let i = index; trackBy: trackById" cdkDrag [cdkDragDisabled]="editingActividadId === item.id">                    
                 <div class="event-wrap" [ngStyle]="{
                                             'background-image': 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(' + item.imagen + ')',
                                             'background-size': 'cover',
@@ -35,97 +35,75 @@
                         <img src="../../../../assets/BtnDelete.png" alt="" height="64px" width="64px" class="editDondeCuandoDelete"
                                 (click)="triggerImageDelete(item.id)" title="Click para editar imagen de fondo" *ngIf="!loadingImgs[item.id]">
                         <div class="!loaderDCDelete" *ngIf="!loadingImgs[item.id]"></div>
-                    <div>
-                        <div *ngIf="editingActividadId !== item.id; else editActividad" (click)="enableActividad(item.id)">
-                            <h3><b>{{item.actividad}}</b></h3>
-                        </div>
-                        <ng-template #editActividad>
-                            <input
-                            [(ngModel)]="tempActividad"
-                            (blur)="saveActividad(item.id)"
-                            class="form-control"
-                            autofocus
-                            style="margin-top:20px"
-                            />
-                        </ng-template>
-                    </div>
+                        <div class="dondeCuandoTitle"
+                            [attr.data-id-actividad]="item.id"
+                            contenteditable="true"
+                            (pointerdown)="$event.stopPropagation()"
+                            (mousedown)="$event.stopPropagation()"
+                            (touchstart)="$event.stopPropagation()"
+                            (click)="onClickActividad(item.id)"
+                            (keydown)="onKeyDown($event, item)"
+                            (blur)="onActividadBlur($event, item)">
+                            {{ item.actividad }}
+                        </div>                                         
                     <div class="event-col">
                         <div><i class="icon-clock"></i></div>                            
-                        <div *ngIf="editingHoraId !== item.id; else editHora" (click)="enableHora(item.id)">
+                        <div
+                            [attr.data-id-hora]="item.id"
+                            contenteditable="true"
+                            (pointerdown)="$event.stopPropagation()"
+                            (mousedown)="$event.stopPropagation()"
+                            (touchstart)="$event.stopPropagation()"
+                            (click)="onClickHora(item.id)"
+                            (keydown)="onKeyDown($event, item)"
+                            (blur)="onHoraBlur($event, item)">
                             <span><b>{{item.hora}}</b></span>
-                        </div>
-                        <ng-template #editHora>
-                            <mat-form-field appearance="fill" style="width: 120px; height: 65px;">
-                                <input
-                                style="height: 20px; padding-top: 0px; display: table"
-                                matInput
-                                [(ngModel)]="tempHora"
-                                (blur)="saveHora(item.id)"
-                                name="hora{{i}}"
-                                type="time"                                    
-                                required
-                                />
-                            </mat-form-field>
-                        </ng-template>
+                        </div>                            
                     </div>                            
                     <div class="event-col">
                         <div><i class="icon-calendar"></i></div>
-                        <div *ngIf="editingFechaId !== item.id; else editFecha" (click)="enableFecha(item.id)">
-                            <span>
-                                <b>{{convertDate(item.fecha)}}</b>
-                            </span>
+                        <div
+                            [attr.data-id-fecha]="item.id"
+                            contenteditable="true"
+                            (pointerdown)="$event.stopPropagation()"
+                            (mousedown)="$event.stopPropagation()"
+                            (touchstart)="$event.stopPropagation()"
+                            (click)="onClickFecha(item.id)"
+                            (keydown)="onKeyDown($event, item)"
+                            (blur)="onFechaBlur($event, item)">
+                            <span><b>{{item.fecha}}</b></span>
                         </div>
-
-                        <ng-template #editFecha>
-                            <mat-form-field appearance="fill" style="width: 120px; height: 65px;">
-                                <input
-                                style="height: 20px; padding-top: 0px; display: table"
-                                matInput
-                                [(ngModel)]="tempFecha"
-                                (blur)="saveFecha(item.id)"
-                                name="fecha{{i}}"
-                                type="date"                                    
-                                required
-                                />
-                            </mat-form-field>
-                        </ng-template>
                     </div>
                     <div class="row">
                         <div class="inside-row">
                             <div class="dondeCuandoGeneral dondeCuandoLugar-space">Lugar:</div>
-                            <div class="dondeCuandoGeneral" 
-                                *ngIf="editingLugarId !== item.id; else editLugar" 
-                                (click)="enableLugar(item.id)">{{item.lugar}}
+                            <div
+                                [attr.data-id-lugar]="item.id"
+                                contenteditable="true"
+                                (pointerdown)="$event.stopPropagation()"
+                                (mousedown)="$event.stopPropagation()"
+                                (touchstart)="$event.stopPropagation()"
+                                (click)="onClickLugar(item.id)"
+                                (keydown)="onKeyDown($event, item)"
+                                (blur)="onLugarBlur($event, item)">
+                                <span>{{item.lugar}}</span>
                             </div>
-                        </div>
-                        <ng-template #editLugar>
-                            <mat-form-field appearance="fill">
-                                <input                                    
-                                matInput
-                                [(ngModel)]="tempLugar"
-                                (blur)="saveLugar(item.id)"
-                                name="Lugar{{i}}"                                
-                                required
-                                />
-                            </mat-form-field>
-                        </ng-template>
+                        </div>                        
                         <div class="inside-row">
                             <div class="dondeCuandoDireccion dondeCuandoGeneral dondeCuando-space">Direccion:</div>
-                            <div class="dondeCuandoDireccion dondeCuandoGeneral" *ngIf="editingDireccionId !== item.id; else editDireccion"
-                                (click)="enableDireccion(item.id)">{{item.direccion}}</div>
-                        </div>
-                        <ng-template #editDireccion>
-                            <mat-form-field appearance="fill" style="width: 500px;">
-                                <input        
-                                style="width: 480px;"                            
-                                matInput
-                                [(ngModel)]="tempDireccion"
-                                (blur)="saveDireccion(item.id)"
-                                name="Direccion{{i}}"                                
-                                required
-                                />
-                            </mat-form-field>
-                        </ng-template>                            
+                            <div
+                                [attr.data-id-direccion]="item.id"
+                                contenteditable="true"
+                                (pointerdown)="$event.stopPropagation()"
+                                (mousedown)="$event.stopPropagation()"
+                                (touchstart)="$event.stopPropagation()"
+                                (click)="onClickDireccion(item.id)"
+                                (keydown)="onKeyDown($event, item)"
+                                (blur)="onDireccionBlur($event, item)"
+                                style="text-align: left;">
+                                <span>{{item.direccion}}</span>
+                            </div>
+                        </div>                           
                         <div class="inside-row">
                             <div class="dondeCuandoGeneral dondeCuando-space">Ubicacion:</div>
                             <a href="{{item.ubicacion}}" 
