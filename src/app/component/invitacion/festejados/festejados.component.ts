@@ -30,9 +30,10 @@ export class FestejadosComponent {
   data:any = null;
   @Input() eventId: string = '';
   editingTitle: boolean = false;
-  tempTitle: string = '';
   editingFrase: boolean = false;
-  tempFrase: string = '';
+  tempTitle: string = '';  
+  tempFrase: string = '';  
+  tempMap: { [id: string]: string } = {};
   loadingImg: boolean = false;
   
   ngOnInit(): void {
@@ -53,37 +54,78 @@ export class FestejadosComponent {
       }
     });
   }
+ 
+  //Titulo
+  onTituloBlur(event: Event) {
+    const el = event.target as HTMLElement;
+    const nuevoTexto = el.innerText.trim();
 
-  enableTitleEdit() {
-    this.tempTitle = this.data.titulo;
-    this.editingTitle = true;
+    // si cambió, guardamos y llamamos backend
+    if (nuevoTexto !== this.data.titulo) {
+      this.data.titulo = nuevoTexto;      
+      this.updateBackend('Festejados','IdEvento',this.eventId, 'Titulo', this.data.titulo);
+    }
+  } 
+
+  onClickTitulo(){
+    this.editingTitle = true; 
+    this.tempTitle = this.data.titulo; // 🔹 Guardamos el valor original
   }
 
-  saveTitle() {
-    this.data.titulo = this.tempTitle;
-    this.editingTitle = false;    
-    this.updateBackend('Festejados','IdEvento',this.eventId, 'Titulo', this.data.titulo);
-  }
-
-  cancelTitle() {
+  restoreTitulo(element: HTMLElement) {
+    const original = this.tempTitle;
+    if (original !== undefined) {
+      element.innerText = `${original}`;
+    }
     this.editingTitle = false;
   }
+  //Frase
+  onFraseBlur(event: Event) {
+    const el = event.target as HTMLElement;
+    const nuevoTexto = el.innerText.trim();
 
-  enableFrase() {
-    this.tempFrase = this.data.frase;
-    this.editingFrase = true;
+    // si cambió, guardamos y llamamos backend
+    if (nuevoTexto !== this.data.frase) {
+      this.data.frase = nuevoTexto;      
+      this.updateBackend('Festejados','IdEvento',this.eventId, 'Frase', this.data.frase);
+    }
+  }
+  
+  onClickFrase(){
+    this.editingFrase = true; 
+    this.tempFrase = this.data.frase; // 🔹 Guardamos el valor original
   }
 
-  saveFrase() {
-    this.data.frase = this.tempFrase;
-    this.editingFrase = false;    
-    this.updateBackend('Festejados','IdEvento',this.eventId, 'Frase', this.data.frase);
-  }
-
-  cancelFrase() {
+  restoreFrase(element: HTMLElement) {
+    const original = this.tempFrase;
+    if (original !== undefined) {
+      element.innerText = `${original}`;
+    }
     this.editingFrase = false;
   }
 
+  maxLength = 35;
+  onKeyDown(event: KeyboardEvent | any) {
+    const key = (event as KeyboardEvent).key;
+    if (key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
+      event.preventDefault();
+      (event.target as HTMLElement).blur(); // dispara onActividadBlur y guarda
+      return;
+    }
+    const el = event.target as HTMLElement;
+    const text = el.innerText || '';
+
+    // permite borrar, mover cursor, etc.
+    const controlKeys = [
+      'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight',
+      'ArrowUp', 'ArrowDown', 'Tab'
+    ];
+
+    if (text.length >= this.maxLength && !controlKeys.includes(event.key)) {
+      event.preventDefault(); // bloquea más escritura
+    }
+    (event.target as HTMLElement).click();
+  }
   // --- edición de imagen ---
   triggerImageUpload() {
     const input = document.createElement('input');
@@ -132,8 +174,15 @@ export class FestejadosComponent {
   // --- ESC para cancelar ---
   @HostListener('document:keydown.escape', ['$event'])
   onEscape() {
-    if (this.editingTitle) this.cancelTitle();
-    if (this.editingFrase) this.cancelFrase();
+    if (this.editingTitle) {
+      const element = document.querySelector('#TituloFestejados') as HTMLElement;
+      this.restoreTitulo(element);
+    }
+
+    if (this.editingFrase) {
+      const element = document.querySelector('#FraseFestejados') as HTMLElement;
+      this.restoreFrase(element);
+    }
   }
   
 }

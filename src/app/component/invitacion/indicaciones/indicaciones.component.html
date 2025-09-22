@@ -1,40 +1,42 @@
-<section [ngStyle]="{
-  'height': '100vh',
-  'background-image': 'url('+ data.imagen +')',
-  'background-attachment': 'fixed',
-  'background-size': 'cover',
-  'background-position': 'center 2px',
-  'display': 'flex',
-  'flex-direction': 'column',
-  'align-items': 'center',
-  'justify-content': 'flex-start',
-  'padding': '40px 20px',
-  'color': 'white',
-  'text-align': 'center',
-  'background-repeat': 'no-repeat'
-}">
-<div style="margin-bottom: 5vw;"><h1>Indicaciones para el Evento</h1></div>
+<section class="imagen-fondo" [style.background-image]="'url(' + data.imagen + ')'">
+<div class="editImage"> 
+  <img src="../../../../assets/editarImagen.png"
+       class="edit-imageIndicaciones-btn"
+       alt=""
+       title="Click para editar imagen de fondo"
+       (click)="triggerImageUpload()"
+       *ngIf="!loadingImg">
+  <div class="loaderPortada" *ngIf="loadingImg"></div>
+</div>
+<div style="margin-bottom: 5vw;" *ngIf="!loading"><h1>Indicaciones para el Evento</h1></div>
   <div class="grid-container">
-    <div class="card card-with-icon" *ngFor="let item of data.details let i = index"
-         contenteditable="true"
-         (blur)="saveContent($event, item.id)">
-         
+    <div class="card card-with-icon" *ngFor="let item of data.details let i = index">
+
+         <img src="../../../../assets/BtnDelete.png" alt="" height="64px" width="64px" class="editIndicacionesDelete"
+                                title="Click para eliminar elemento" (click)="triggerElementDelete(item.id)" 
+                                *ngIf="(data?.details?.length || 0) > 1">
         <!-- Ícono encima -->
         <div class="cardIcon">
           <img src="../../../../assets/Indicaciones.png" />
         </div>
 
         <!-- Contenido -->
-        <div class="titulo">{{item.titulo}}</div>
-        <div [innerHTML]=item.descripcion></div>
+        <div class="titulo" contenteditable="true"
+          [attr.data-id-titulo]="item.id"
+          (keydown)="onTituloKeyDown($event)" 
+          (blur)="saveContent($event, item.id, 'titulo')"
+          (click)="onClickTitulo(item.id)">
+            {{item.titulo}}
+        </div>
+        <div id="descripcion" [innerHTML]=item.descripcion contenteditable="true" 
+          [attr.data-id-descripcion]="item.id"
+          (keydown)="onDescKeyDown($event)"
+          (click)="onClickDescripcion(item.id)"
+          (blur)="saveContent($event, item.id, 'descripcion')"></div>
     </div>    
   </div>
+  <div style="text-align: center" class="newBtn">
+    <img src="../../../../assets/BtnAddNew.png" style="cursor: pointer;" alt="" height="64px" width="64px"
+          title="Click para agregar elemento" (click)="nuevaIndicacion()" *ngIf="!loading && (data?.details?.length || 0) < 3">
+  </div>
 </section>
-
-<!-- <section class="normal">
-  <h2>Contenido extra</h2>
-  <p>
-    Aquí puedes poner cualquier otro contenido.  
-    El parallax se mantiene solo en la primera sección.
-  </p>
-</section> -->

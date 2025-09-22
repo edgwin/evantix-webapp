@@ -22,57 +22,53 @@
     <div class="loaderPortada" *ngIf="loadingImg"></div>
   </div>
   
-  <div class="text-center titulos">
+  <div class="text-center">
     <div class="display-t">
       <div class="display-tc">
         <!-- Título -->
-        <div *ngIf="!editingTitle; else editTitle" (click)="enableTitleEdit()" style="margin-top:100px">
-          <h1>{{ data?.titulo }}</h1>
-        </div>
-        <ng-template #editTitle>
-          <input
-            [(ngModel)]="tempTitle"
-            (blur)="saveTitle()"
-            class="form-control"
-            autofocus
-			      style="margin-top:100px"
-          />
-        </ng-template>
-
+         <div class="text-center fh5co-heading editablePortadaTitulo" contenteditable="true"
+            (blur)="onTituloBlur($event)" 
+            (click)="onClickTitulo()"
+            (keydown)="onKeyDown($event)"            
+            style="margin-top:100px">
+            {{ data?.titulo }}
+         </div>
         <!-- Subtítulo -->
-        <div
-          *ngIf="!editingSubtitle; else editSubtitle"
-          (click)="enableSubtitleEdit()"
-        >
+        <div class="editablePortadaSubtitulo" contenteditable="true" (keydown)="onKeyDown($event)" (click)="onClickSubtitulo()" (blur)="onSubtitleBlur($event)">
           <h2>{{ data?.subTitulo }}</h2>
         </div>
-        <ng-template #editSubtitle>
-          <input
-            [(ngModel)]="tempSubtitle"
-            (blur)="saveSubtitle()"
-            class="form-control"
-            autofocus
-          />
-        </ng-template>
         <!-- Fechas -->
         <div class="divFechas">
           <div class="fechaTxt"
             *ngIf="!editingDate; else editDate"
             (click)="enableDateEdit()">
-            {{ newDate }}
+            {{ stringDate }}
           </div>
 
           <ng-template #editDate>
             <div class="date-time-picker">
               <!-- Selector de fecha -->
               <mat-form-field appearance="fill" class="campo-4">
-                <mat-label>Fecha y hora</mat-label>
+                <mat-label>Selecciona fecha</mat-label>
                 <input
                   matInput
+                  [matDatepicker]="picker"
                   [(ngModel)]="tempDate"
+                  (dateChange)="onDateChange($event)"
+                  required
+                />
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+
+              <!-- Selector de hora -->
+              <mat-form-field appearance="fill" class="campo-4">
+                <mat-label>Hora</mat-label>
+                <input
+                  matInput
+                  type="time"
+                  [(ngModel)]="tempTime"
                   (blur)="saveDate()"
-                  name="fechaHora"
-                  type="datetime-local"
                   required
                 />
               </mat-form-field>

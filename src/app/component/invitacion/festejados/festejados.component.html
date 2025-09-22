@@ -1,21 +1,14 @@
 <div *ngIf="!loading">
     <div class="container">
         <div class="row">
-            <div *ngIf="!editingTitle; else editTitle" class="text-center fh5co-heading" (click)="enableTitleEdit()">
-                <h2>{{data.titulo}}</h2>			
+            <div class="text-center editableFestejadosTitulo" contenteditable="true" id="TituloFestejados"
+                (blur)="onTituloBlur($event)"                
+                (click)="onClickTitulo()"
+                (keydown)="onKeyDown($event)">
+                {{data.titulo}}
             </div>
         </div>				
-    </div>
-    <ng-template #editTitle>
-        <input
-        [(ngModel)]="tempTitle"
-        (blur)="saveTitle()"
-        class="form-control"
-        autofocus
-        style="margin-top:100px"
-        />
-    </ng-template>
-
+    </div>    
     <div>
         <div class="image-container">
             <!-- Imagen principal -->
@@ -37,18 +30,12 @@
 
         <!-- Texto editable -->
         <div>
-            <div class="frase-txt" *ngIf="!editingFrase; else editFrase" (click)="enableFrase()">
-            <p>{{data.frase}}</p>
-            </div>
-            <ng-template #editFrase>
-            <input
-                [(ngModel)]="tempFrase"
-                (blur)="saveFrase()"
-                class="form-control"
-                autofocus
-                style="margin-top:100px"
-            />
-            </ng-template>
+            <div class="frase-txt" contenteditable="true" id="FraseFestejados"
+            (blur)="onFraseBlur($event)"
+            (click)="onClickTitulo()"
+            (keydown)="onKeyDown($event)">
+            {{data.frase}}
+        </div>
         </div>
     </div>
 

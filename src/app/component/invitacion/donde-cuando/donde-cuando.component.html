@@ -7,11 +7,11 @@
        'padding-top': '10px'
      }"
 >
-  <div class="editImage"> 
-    <img src="../../../../assets/editarImagen.png" class="edit-imageDC-btn" alt="" title="Click para editar imagen de fondo" 
-                    (click)="triggerBGImageUpload()" *ngIf="false">
-    <div class="loaderDC" *ngIf="false"></div>
-  </div>
+    <div class="editImage"> 
+        <img src="../../../../assets/editarImagen.png" class="edit-imageDC-btn" alt="" title="Click para editar imagen de fondo" 
+                        (click)="triggerBGImageUpload()" *ngIf="false">
+        <div class="loaderDC" *ngIf="false"></div>
+    </div>
     <div class="container">
         <div class="row">
             <div class="col-md-8 col-md-offset-2 text-center fh5co-heading dondeCuandoTitle" *ngIf="!loading">
@@ -32,8 +32,14 @@
                                 (click)="triggerImageUpload(item.id)" title="Click para editar imagen de fondo" *ngIf="!loadingImgs[item.id]">
                         <div class="loaderDC" *ngIf="loadingImgs[item.id]"></div>
 
-                        <img src="../../../../assets/BtnDelete.png" alt="" height="64px" width="64px" class="editDondeCuandoDelete"
-                                (click)="triggerImageDelete(item.id)" title="Click para editar imagen de fondo" *ngIf="!loadingImgs[item.id]">
+                        <img src="../../../../assets/BtnDelete.png" 
+                            alt="" 
+                            height="64px" 
+                            width="64px" 
+                            class="editDondeCuandoDelete"
+                            (click)="triggerImageDelete(item.id)" 
+                            title="Click para eliminar elemento" 
+                            *ngIf="!loadingImgs[item.id] && (data?.details?.length || 0) > 1">
                         <div class="!loaderDCDelete" *ngIf="!loadingImgs[item.id]"></div>
                         <div class="dondeCuandoTitle"
                             [attr.data-id-actividad]="item.id"
@@ -49,6 +55,7 @@
                     <div class="event-col">
                         <div><i class="icon-clock"></i></div>                            
                         <div
+                            class="editable-text-bolded editable-text"
                             [attr.data-id-hora]="item.id"
                             contenteditable="true"
                             (pointerdown)="$event.stopPropagation()"
@@ -63,6 +70,7 @@
                     <div class="event-col">
                         <div><i class="icon-calendar"></i></div>
                         <div
+                            class="editable-text-bolded editable-text"
                             [attr.data-id-fecha]="item.id"
                             contenteditable="true"
                             (pointerdown)="$event.stopPropagation()"
@@ -78,6 +86,7 @@
                         <div class="inside-row">
                             <div class="dondeCuandoGeneral dondeCuandoLugar-space">Lugar:</div>
                             <div
+                                class="editable-text"
                                 [attr.data-id-lugar]="item.id"
                                 contenteditable="true"
                                 (pointerdown)="$event.stopPropagation()"
@@ -92,6 +101,7 @@
                         <div class="inside-row">
                             <div class="dondeCuandoDireccion dondeCuandoGeneral dondeCuando-space">Direccion:</div>
                             <div
+                                class="editable-text"
                                 [attr.data-id-direccion]="item.id"
                                 contenteditable="true"
                                 (pointerdown)="$event.stopPropagation()"
@@ -108,7 +118,7 @@
                             <div class="dondeCuandoGeneral dondeCuando-space">Ubicacion:</div>
                             <a href="{{item.ubicacion}}" 
                                 target="_blank" 
-                                class="dondeCuandoGeneral inside-row-btn btn btn-primary">
+                                class="inside-row-btn btn btn-primary">
                                 Ver Ubicación
                             </a>
                             <a (click)="abrirMapa(item.id)"
@@ -122,7 +132,7 @@
         </div>
     </div>
     <div class="addNewDC" *ngIf="!loading">
-        <img src="../../../../assets/BtnAddNew.png" alt="" height="64px" width="64px" 
+        <img src="../../../../assets/BtnAddNew.png" alt="" height="64px" width="64px" *ngIf="!loading"
                 title="Click para Agregar un nuevo Lugar" (click)="nuevoDondeCuando()" style="cursor: pointer;">
     </div>
 </div>

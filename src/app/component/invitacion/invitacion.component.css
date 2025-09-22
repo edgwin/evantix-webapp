@@ -296,6 +296,7 @@ h1, h2, h3, h4, h5, h6, figure {
 }
 
 .fh5co-cover {
+  position: relative;
   height: 900px;
   background-size: cover;
   background-repeat: no-repeat;
@@ -1894,10 +1895,11 @@ form label {
 }
 
 .editImage {
-  position:absolute;
-  top: 8vh;
-  left: 60vw;
-  cursor: pointer;  
+  position: absolute;
+  top: 10px;   /* margen desde arriba */
+  right: 10px; /* margen desde la derecha */
+  cursor: pointer;
+  z-index: 10; /* asegúrate de que quede encima del fondo */  
 }
 
 .editDondeCuandoImage {
@@ -1953,13 +1955,6 @@ form label {
 }
 
 @media screen and (min-width: 200px) and (max-width: 767px) {
-  .editImage {
-    position:absolute;
-    top: 2vh;
-    left: 70vw;
-    cursor: pointer;  
-  }
-
   .fechaTxt {
     font-family: "Work Sans", Arial, sans-serif;
     font-size: 20px;
@@ -2043,9 +2038,11 @@ form label {
 }
 
 .image-container {
-  position: relative;       /* referencia para el botón */
-  display: flex;    /* que se ajuste al tamaño de la imagen */
-  justify-content: center;
+  position: relative;
+  display: flex;               /* usamos flexbox */
+  justify-content: center;     /* centrado horizontal */
+  align-items: center;         /* centrado vertical (si el contenedor tiene altura) */
+  width: 100%;  
 }
 
 .img-frase {
@@ -2053,17 +2050,19 @@ form label {
   object-fit: cover;
   width: 300px;
   height: 300px;
+  display: block;
+  margin: 0 auto; 
 }
 
 .edit-image-btn {
   position: absolute;
-  top: 10px;                /* margen desde arriba */
-  right: 43vw;              /* margen desde la derecha */
+  top: 10px;
+  right: calc(50% - 150px + 10px); /* 👈 centrado relativo a la imagen */
   width: 40px;
   height: 40px;
   cursor: pointer;
   transition: transform 0.2s ease;
-  z-index: 5;               /* asegura que quede encima */
+  z-index: 5;
 }
 
 .edit-image-btn:hover {
@@ -2071,14 +2070,8 @@ form label {
 }
 
 .edit-imagePortada-btn {
-  position: absolute;
-  top: 20px;
-  left: 2vw;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  z-index: 5;
+  width: 40px;  /* opcional: tamaño fijo */
+  height: 40px; /* opcional */
 }
 
 .edit-imagePortada-btn:hover {
@@ -2111,12 +2104,17 @@ form label {
     text-shadow: 1px 1px 2px black;
 }
 
-@media screen and (min-width: 200px) and (max-width: 767px) {
+@media screen and (max-width: 767px) {
   .img-frase {
-    border-radius: 50%;
-    object-fit: cover;
-    width: 300px;
-    height: 300px;
+    width: 200px;
+    height: 200px;
+  }
+
+  .edit-image-btn {
+    width: 32px;
+    height: 32px;
+    top: 5px;
+    right: calc(50% - 100px + 5px);
   }
 
   .frase-txt{
@@ -2129,16 +2127,6 @@ form label {
       margin-top: 10px;
       text-shadow: 1px 1px 2px black;
   }  
-  .edit-image-btn {
-    position: absolute;
-    top: 10px;                /* margen desde arriba */
-    right: 20vw;              /* margen desde la derecha */
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
-    transition: transform 0.2s ease;
-    z-index: 5;               /* asegura que quede encima */
-  }
 
   .loaderFestejados {
     border: 8px solid rgba(0, 0, 0, 0.1);
@@ -2206,7 +2194,8 @@ form label {
 }
 
 .inside-row-btn{
-  margin-bottom: 1.5rem
+  margin-bottom: 1.5rem;
+  font-size: 15px
 }
 
 .dondeCuandoTitle{
@@ -2224,6 +2213,46 @@ form label {
   cursor: text;
 }
 
+.editable-text {  
+  color: white;
+  outline: none; /* opcional: quita el borde feo al editar */
+  cursor: text;
+}
+
+.editable-text-bolded {
+  font-weight: bold;  
+}
+
+.editablePortadaTitulo {
+  margin-bottom: 0px;
+  font-size: 100px;
+  line-height: 1.5;
+  font-family: "Sacramento", Arial, serif;
+  color: white;
+}
+
+.editablePortadaSubtitulo{
+  font-family: "Work Sans", Arial, sans-serif;
+  font-weight: 400;
+  margin: 0;
+  padding: 0;  
+  color: white;
+  font-size: 60px;
+  line-height: 1.5;
+  margin-bottom: 30px;
+  margin-top: 40px;
+}
+
+.editableFestejadosTitulo{
+  font-size: 60px;
+  margin-bottom: 10px;
+  margin-top: 40px;
+  line-height: 1.5;
+  font-weight: bold;
+  color: #F14E95;
+  font-family: "Sacramento", Arial, serif;
+}
+
 @media screen and (max-width: 767px) {
   .dondeCuando {
     width: 100% !important;
@@ -2236,6 +2265,14 @@ form label {
 
   .dondeCuandoLugar-space{
       padding-right: 8.7vw;
+  }
+
+  .editablePortadaTitulo {
+    margin-bottom: 0px;
+    font-size: 50px;
+    line-height: 1.5;
+    font-family: "Sacramento", Arial, serif;
+    color: white;
   }
 }
 

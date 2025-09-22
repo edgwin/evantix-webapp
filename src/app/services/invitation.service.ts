@@ -86,4 +86,14 @@ export class InvitationService {
     const url = `${this.apiUrl}${this.getInvitationData}${this.getIndicaciones}${eventId}`;
     return this.http.get(url);
   }
+
+  postNewIndicacion(eventId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.getIndicaciones}${eventId}`;
+    return this.http.post(url, eventId);
+  }
+
+  deleteIndicacion(indicacionId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.getIndicaciones}${indicacionId}`;
+    return this.http.delete(url);
+  }
 }

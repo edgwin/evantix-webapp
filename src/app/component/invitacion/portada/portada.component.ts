@@ -28,7 +28,8 @@ export class PortadaComponent {
   loadingImg: boolean = false;
   data: any = null;
   newData: any = null;
-  newDate: string = '';
+  newDate: Date = new Date();
+  stringDate: string = '';
   @Input() eventId: string = '';
 
   editingTitle: boolean = false;
@@ -52,7 +53,7 @@ export class PortadaComponent {
     this.invitationService.getInvitacionPortada(this.eventId).subscribe({
       next: (res) => {
         this.data = res;
-        this.newDate = this.fechasHelper.formatearFechaHora(this.data.fecha);
+        this.stringDate = this.fechasHelper.formatearFechaHora(this.data.fecha);
         this.loading = false;
       },
       error: (err) => {
@@ -66,46 +67,89 @@ export class PortadaComponent {
   }
 
   // --- edición de título ---
-  enableTitleEdit() {
-    this.tempTitle = this.data.titulo;
-    this.editingTitle = true;
+  onTituloBlur(event: Event) {
+    const el = event.target as HTMLElement;
+    const nuevoTexto = el.innerText.trim();
+
+    // si cambió, guardamos y llamamos backend
+    if (nuevoTexto !== this.data.titulo) {
+      this.data.titulo = nuevoTexto;      
+      this.updateBackend('Portada','IdEvento',this.eventId, 'Titulo', this.data.titulo);
+    }
   }
 
-  saveTitle() {
-    this.data.titulo = this.tempTitle;
-    this.editingTitle = false;    
-    this.updateBackend('Portada','IdEvento',this.eventId, 'Titulo', this.data.titulo);
+  onClickTitulo(){
+    this.editingTitle = true; 
+    this.tempTitle = this.data.titulo; // 🔹 Guardamos el valor original
   }
 
-  cancelTitle() {
+  restoreTitulo(element: HTMLElement) {
+    const original = this.tempTitle;
+    if (original !== undefined) {
+      element.innerText = `${original}`;
+    }
     this.editingTitle = false;
   }
 
   // --- edición de subtítulo ---
-  enableSubtitleEdit() {
-    this.tempSubtitle = this.data.subTitulo;
-    this.editingSubtitle = true;
+  onSubtitleBlur(event: Event) {
+    const el = event.target as HTMLElement;
+    const nuevoTexto = el.innerText.trim();
+
+    // si cambió, guardamos y llamamos backend
+    if (nuevoTexto !== this.data.subTitulo) {
+      this.data.subTitulo = nuevoTexto;      
+      this.updateBackend('Portada','IdEvento',this.eventId, 'Subtitulo', this.data.subTitulo);
+    }    
   }
 
-  saveSubtitle() {
-    this.data.subTitulo = this.tempSubtitle;
-    this.editingSubtitle = false;
-    this.updateBackend('Portada','IdEvento',this.eventId, 'Subtitulo', this.data.titulo);
+  onClickSubtitulo(){
+    this.editingSubtitle = true; 
+    this.tempSubtitle = this.data.subTitulo; // 🔹 Guardamos el valor original
   }
 
-  cancelSubtitle() {
+  restoreSubtitulo(element: HTMLElement) {
+    const original = this.tempSubtitle;
+    if (original !== undefined) {
+      element.innerText = `${original}`;
+    }
     this.editingSubtitle = false;
+  }
+  
+  maxLength = 35;
+  onKeyDown(event: KeyboardEvent | any) {
+    const key = (event as KeyboardEvent).key;
+    if (key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
+      event.preventDefault();
+      (event.target as HTMLElement).blur(); // dispara onActividadBlur y guarda
+      return;
+    }
+    const el = event.target as HTMLElement;
+    const text = el.innerText || '';
+
+    // permite borrar, mover cursor, etc.
+    const controlKeys = [
+      'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight',
+      'ArrowUp', 'ArrowDown', 'Tab'
+    ];
+
+    if (text.length >= this.maxLength && !controlKeys.includes(event.key)) {
+      event.preventDefault(); // bloquea más escritura
+    }
+    (event.target as HTMLElement).click();
   }
 
   // --- edición de fecha ---
   enableDateEdit() {
-    this.tempDate = new Date(this.data.fecha);
-    this.tempTime = this.tempDate.toTimeString().slice(0, 5); // HH:mm
     this.editingDate = true;
+    this.tempDate = this.newDate ? new Date(this.newDate) : new Date();
+    this.tempTime = this.newDate
+      ? this.newDate.toISOString().substring(11, 16) // HH:mm
+      : '12:00';
   }
 
   onDateChange(event: any) {
-    this.updateFullDate();
+    this.tempDate = event.value;
   }
 
   onTimeChange(event: any) {
@@ -121,13 +165,15 @@ export class PortadaComponent {
   }
 
   saveDate() {
-    if (!this.tempDate) return;
+    if (this.tempDate && this.tempTime) {
+      const [hours, minutes] = this.tempTime.split(':').map(Number);
+      const finalDate = new Date(this.tempDate);
+      finalDate.setHours(hours, minutes, 0, 0);
 
-    this.data.fecha = this.tempDate; // Guardar en ISO
-    this.newDate = this.fechasHelper.formatearFechaHora(this.tempDate);
+      this.newDate = finalDate;
+    }
+
     this.editingDate = false;
-
-    this.updateBackend('Events','Id', this.eventId, 'Fecha', this.data.fecha);
   }
 
   cancelDate() {
@@ -180,9 +226,15 @@ export class PortadaComponent {
 
   // --- ESC para cancelar ---
   @HostListener('document:keydown.escape', ['$event'])
-  onEscape() {
-    if (this.editingTitle) this.cancelTitle();
-    if (this.editingSubtitle) this.cancelSubtitle();
-    if (this.editingDate) this.cancelDate();
+  onEscape() {    
+    if (this.editingTitle) {
+      const element = document.querySelector('.text-center.fh5co-heading.editablePortadaTitulo') as HTMLElement;
+      this.restoreTitulo(element);
+    }
+
+    if (this.editingSubtitle) {
+      const element = document.querySelector('.editablePortadaSubtitulo') as HTMLElement;
+      this.restoreSubtitulo(element);
+    }
   }
 }
