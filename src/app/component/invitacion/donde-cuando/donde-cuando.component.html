@@ -1,6 +1,6 @@
 <div id="fh5co-event" class="fh5co-bg" *ngIf="!loading"
 [ngStyle]="{
-       'background-image': 'linear-gradient(rgba(255, 255, 255, 1), rgba(0, 0, 0, 0.5)), url(' + data?.imagen +')',
+       'background-image': 'url(../../../../assets/background.jpg)',
        'background-size': 'cover',
        'background-position': 'center',
        'background-repeat': 'no-repeat',
@@ -14,8 +14,8 @@
     </div>
     <div class="container">
         <div class="row">
-            <div class="col-md-8 col-md-offset-2 text-center fh5co-heading dondeCuandoTitle" *ngIf="!loading">
-                <h2>Donde y Cuando</h2>
+            <div class="text-center editableTitulo" *ngIf="!loading">
+                Donde y Cuando
             </div>
         </div>            
 
