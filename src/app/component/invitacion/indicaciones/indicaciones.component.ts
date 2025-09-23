@@ -16,7 +16,6 @@ export class IndicacionesComponent {
 
   loading: boolean = false;
   loadingImg: boolean = false;
-  data: any;
   editingTituloId: string | null = null;
   tempTituloMap: { [id: string]: string } = {};  
   editingDescripcionId: string | null = null;
@@ -24,10 +23,7 @@ export class IndicacionesComponent {
   editingDescription: boolean = false;
   tempTitle: string = '';
   @Input() eventId: string = '';
-
-  ngOnInit(): void {
-    this.cargarDatos();
-  }
+  @Input() data: any;
 
   cargarDatos() {
     this.loading = true;

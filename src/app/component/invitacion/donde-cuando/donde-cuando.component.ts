@@ -25,10 +25,9 @@ export class DondeCuandoComponent {
       private dialog: MatDialog
     ) {}
     
-  loading:boolean = true;
+  loading:boolean = false;
   loadingImgs: { [key: string]: boolean } = {};
-  loadingImg: boolean = false;
-  data:any = null;
+  loadingImg: boolean = false;  
   fecha: string = '';
   editingActividadId: string | null = null;
   editingHora: boolean = false;
@@ -54,10 +53,7 @@ export class DondeCuandoComponent {
   tempDireccionMap: { [id: string]: string } = {};
 
   @Input() eventId: string = '';
-
-  ngOnInit(): void {
-    this.cargarDatos();
-  }
+  @Input() data:any = null;
 
   cargarDatos() {
     this.loading = true;

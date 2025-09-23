@@ -11,10 +11,8 @@ export class InvitationService {
   private apiUrl = 'https://localhost:7282/';
   private postNewInvitationData = 'api/invitaciones/Create';
   private getInvitationData = 'api/invitacion/';
-  private getPortada = 'portada/';
   private updateEntry = 'UpdateEntry/';
   private updateEntryImage = 'UpdateEntry/Image/';
-  private getFestejados = 'festejados/';
   private getDondeCuando = 'DondeCuando/';
   private getIndicaciones = 'Indicaciones/';
 
@@ -29,9 +27,14 @@ export class InvitationService {
       return this.http.post(url, data, { headers });
   }
 
-  getInvitacionPortada(eventId:string){
-    const url = `${this.apiUrl}${this.getInvitationData}${this.getPortada}${eventId}`;
-    return this.http.get(url);
+  getInvitacion(eventId:string){
+    const token = localStorage.getItem('access_token');  
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    const url = `${this.apiUrl}${this.getInvitationData}${eventId}`;
+    return this.http.get(url, {headers});
   }
 
   updateInvitacionPortada(eventId: string, payload: any) {
@@ -60,11 +63,6 @@ export class InvitationService {
       formData.append('File', file);
 
       return this.http.patch(`${this.apiUrl}${this.getInvitationData}${this.updateEntryImage}${eventId}`, formData);
-  }
-
-  getInvitacionFestejados(eventId:string){
-    const url = `${this.apiUrl}${this.getInvitationData}${this.getFestejados}${eventId}`;
-    return this.http.get(url);
   }
 
   getInvitacionDondeCuando(eventId:string){

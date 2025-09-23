@@ -27,34 +27,15 @@ export class FestejadosComponent {
   ) {}
 
   loading:boolean = false;
-  data:any = null;
   @Input() eventId: string = '';
+  @Input() data: any = null;
   editingTitle: boolean = false;
   editingFrase: boolean = false;
   tempTitle: string = '';  
   tempFrase: string = '';  
   tempMap: { [id: string]: string } = {};
   loadingImg: boolean = false;
-  
-  ngOnInit(): void {
-    this.loading = true;
-    if (!this.eventId) return;
 
-    this.invitationService.getInvitacionFestejados(this.eventId).subscribe({
-      next: (res) => {
-        this.data = res;
-        this.loading = false;
-      },
-      error: (err) => {
-        this.notificationService.show(
-          'error',
-          `Hubo un error favor intentar más tarde ${err.message}`
-        );
-        this.loading = false;
-      }
-    });
-  }
- 
   //Titulo
   onTituloBlur(event: Event) {
     const el = event.target as HTMLElement;

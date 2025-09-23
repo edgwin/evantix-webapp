@@ -8,7 +8,6 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
-import { FechasHelper } from '../../../helpers/fechas';
 
 @Component({
   selector: 'app-portada',
@@ -26,11 +25,11 @@ import { FechasHelper } from '../../../helpers/fechas';
 export class PortadaComponent {
   loading: boolean = false;
   loadingImg: boolean = false;
-  data: any = null;
   newData: any = null;
   newDate: Date = new Date();
   stringDate: string = '';
   @Input() eventId: string = '';
+  @Input() data: any;
 
   editingTitle: boolean = false;
   editingSubtitle: boolean = false;
@@ -42,29 +41,8 @@ export class PortadaComponent {
 
   constructor(
     private invitationService: InvitationService,
-    private notificationService: NotificationService,
-    private fechasHelper: FechasHelper
+    private notificationService: NotificationService
   ) {}
-
-  ngOnInit(): void {
-    this.loading = true;
-    if (!this.eventId) return;
-
-    this.invitationService.getInvitacionPortada(this.eventId).subscribe({
-      next: (res) => {
-        this.data = res;
-        this.stringDate = this.fechasHelper.formatearFechaHora(this.data.fecha);
-        this.loading = false;
-      },
-      error: (err) => {
-        this.notificationService.show(
-          'error',
-          `Hubo un error favor intentar más tarde ${err.message}`
-        );
-        this.loading = false;
-      }
-    });
-  }
 
   // --- edición de título ---
   onTituloBlur(event: Event) {
