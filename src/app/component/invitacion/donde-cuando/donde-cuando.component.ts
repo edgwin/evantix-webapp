@@ -54,6 +54,11 @@ export class DondeCuandoComponent {
 
   @Input() eventId: string = '';
   @Input() data:any = null;
+  @Input() dataIntinerario:any = null;
+
+  ngOnInit(){
+    console.log(this.data.details.length);
+  }
 
   cargarDatos() {
     this.loading = true;

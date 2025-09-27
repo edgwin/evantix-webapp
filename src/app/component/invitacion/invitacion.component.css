@@ -481,7 +481,7 @@ h1, h2, h3, h4, h5, h6, figure {
 
 .timeline {
   list-style: none;
-  padding: 20px 0 20px;
+  padding: 40px 0px 0px;
   position: relative;
 }
 .timeline:before {
@@ -489,7 +489,7 @@ h1, h2, h3, h4, h5, h6, figure {
   bottom: 0;
   position: absolute;
   content: " ";
-  width: 1px;
+  width: 3px;
   background-color: #d4d4d4;
   left: 50%;
   margin-left: 0px;
@@ -527,7 +527,7 @@ h1, h2, h3, h4, h5, h6, figure {
   right: -15px;
   display: inline-block;
   border-top: 15px solid transparent;
-  border-left: 15px solid #ccc;
+  border-left: 15px solid #cccccc;
   border-right: 0 solid #ccc;
   border-bottom: 15px solid transparent;
   content: " ";
@@ -538,8 +538,8 @@ h1, h2, h3, h4, h5, h6, figure {
   right: -14px;
   display: inline-block;
   border-top: 14px solid transparent;
-  border-left: 14px solid #fff;
-  border-right: 0 solid #fff;
+  border-left: 14px solid transparent;
+  border-right: 0 solid transparent;
   border-bottom: 14px solid transparent;
   content: " ";
 }
@@ -569,7 +569,7 @@ h1, h2, h3, h4, h5, h6, figure {
   top: 16px;
   left: 50%;
   margin-left: -80px;
-  background-color: #999999;
+  background-color: #c0c0c0;
   z-index: 100;
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
@@ -1023,7 +1023,7 @@ form label {
 #fh5co-couple,
 #fh5co-gallery,
 .fh5co-section {
-  padding: 7em 0;
+  padding: 3em 0;
   clear: both;
 }
 @media screen and (max-width: 768px) {
@@ -1856,10 +1856,6 @@ form label {
   z-index: 9999;
   background: url(../images/loader.gif) center no-repeat #fff;
 } */
-
-.js .animate-box {
-  opacity: 0;
-}
 
 .portada-container {
   width: 100%;

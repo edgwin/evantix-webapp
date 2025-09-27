@@ -13,11 +13,12 @@ import { NotificationService } from '../../services/notification.service';
   standalone: true,
   templateUrl: './invitacion.component.html',
   styleUrl: './invitacion.component.css',
-  imports: [PortadaComponent, CommonModule, FestejadosComponent, DondeCuandoComponent, IndicacionesComponent],  
+  imports: [PortadaComponent, CommonModule, FestejadosComponent, DondeCuandoComponent, IndicacionesComponent],
 })
 
 export class InvitacionComponent {
-  constructor(private route: ActivatedRoute, private invitationService: InvitationService, private notificationService: NotificationService)
+  constructor(private route: ActivatedRoute, private invitationService: InvitationService, 
+              private notificationService: NotificationService)
   {}  
   eventId : any;
   loading:boolean = true;
