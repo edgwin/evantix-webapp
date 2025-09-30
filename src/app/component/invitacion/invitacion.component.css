@@ -601,11 +601,12 @@ h1, h2, h3, h4, h5, h6, figure {
 
 .timeline-title {
   margin-top: 0;
+  text-align: center;
 }
 
 .date {
   display: block;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
   font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -2053,12 +2054,12 @@ form label {
 .edit-image-btn {
   position: absolute;
   top: 10px;
-  right: calc(50% - 150px + 10px); /* 👈 centrado relativo a la imagen */
+  right: calc(50% - 100px + 10px); /* 👈 centrado relativo a la imagen */
   width: 40px;
   height: 40px;
   cursor: pointer;
   transition: transform 0.2s ease;
-  z-index: 5;
+  z-index: 101;
 }
 
 .edit-image-btn:hover {
@@ -2302,6 +2303,10 @@ form label {
 
   .editableTitulo{
     font-size: 35px;
+  }
+
+  .timeline-title {
+    font-size: 18px;    
   }
 }
 

@@ -139,7 +139,7 @@ export class IndicacionesComponent {
   saveContent(event: Event, eventId: string, field:string) {
     const target = event.target as HTMLElement;
     const newText = target.innerText.replace(/\n/g, '<br>');
-    if (newText == this.tempDescripcionMap[eventId]){
+    if (newText == this.tempTituloMap[eventId]){
       return
     }
     const modifyField = field === "titulo" ? 'Titulo' : 'Descripcion';
