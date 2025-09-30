@@ -9,13 +9,15 @@ import { MatDialog } from '@angular/material/dialog';
 import { MapaModalComponent } from '../../mapa-modal/mapa-modal.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { PopupHtmlComponent } from '../../popup-html/popup-html.component';
+
 
 @Component({
   selector: 'app-donde-cuando',
   templateUrl: './donde-cuando.component.html',
   styleUrls: ['./../invitacion.component.css', './../icomoon.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, MatInputModule, DragDropModule]
+  imports: [CommonModule, FormsModule, MatInputModule, DragDropModule, PopupHtmlComponent]
 })
 export class DondeCuandoComponent {
   constructor(
@@ -56,9 +58,8 @@ export class DondeCuandoComponent {
   @Input() data:any = null;
   @Input() dataIntinerario:any = null;
 
-  ngOnInit(){
-    console.log(this.data.details.length);
-  }
+  showPopup = false;
+  carouselHtml = '';
 
   cargarDatos() {
     this.loading = true;
@@ -67,6 +68,25 @@ export class DondeCuandoComponent {
     this.invitationService.getInvitacionDondeCuando(this.eventId).subscribe({
       next: (res) => {
         this.data = res;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.notificationService.show(
+          'error',
+          `Hubo un error favor intentar más tarde ${err.message}`
+        );
+        this.loading = false;
+      }
+    });
+  }
+  
+  cargarDatosIntinerario() {
+    this.loading = true;
+    if (!this.eventId) return;
+
+    this.invitationService.getInvitacionIntinerario(this.eventId).subscribe({
+      next: (res) => {
+        this.dataIntinerario = res;
         this.loading = false;
       },
       error: (err) => {
@@ -359,6 +379,20 @@ export class DondeCuandoComponent {
       });
   }
   
+  triggerIntinerarioImageDelete(intinerarioId:string) {
+    this.invitationService.deleteIntinerario(intinerarioId).subscribe({
+        next: () => {
+          this.cargarDatosIntinerario();
+        },
+        error: (err) => {          
+          this.notificationService.show(
+            'error',
+            `Error al subir imagen: ${err.message}`
+          );
+        }
+      });
+  }
+
   triggerBGImageUpload() {
     const input = document.createElement('input');
     input.type = 'file';
@@ -422,7 +456,6 @@ export class DondeCuandoComponent {
     });
   }
 
-//Todo Sigue lo que el usuario pueda mover los eventos y agregar un eventOrder en la tabla
 abrirMapa(id: string) {
   const item = this.data.details.find((d: { id: string }) => d.id === id);
 
@@ -446,6 +479,72 @@ abrirMapa(id: string) {
     this.data.details.forEach((item: { id: string; }, index: any) => {
       this.updateBackend('DondeCuandoDetails', 'Id', item.id, 'Orden', index);
     });
+  }
+
+  nuevoIntinerario(){
+    this.invitationService.postNewIntinerario(this.eventId).subscribe({
+      next: (res) => {
+        this.cargarDatosIntinerario();
+      },
+      error: (err) => {
+        this.notificationService.show(
+          'error',
+          `Hubo un error favor intentar más tarde ${err.message}`
+        );
+        this.loading = false;
+      }
+    });
+  }
+
+  openPopup() {
+    this.carouselHtml = this.generateCarouselHtml();
+    this.showPopup = true;
+  }
+
+   images = [
+    '../../../../assets/Intinerario/church.png',
+    '../../../../assets/Intinerario/Coctel.png',
+    '../../../../assets/Intinerario/dance.png',
+    '../../../../assets/Intinerario/dinner.png',
+    '../../../../assets/Intinerario/snaks.png',
+    '../../../../assets/Intinerario/vals.png'
+  ];
+
+  private generateCarouselHtml(): string {
+      return `
+        <div class="carousel-container">
+          <button class="carousel-btn prev" onclick="moveSlide(-1)">&#10094;</button>
+          <div class="carousel-slide">
+            ${this.images.map(img => `
+              <img src="${img}" class="carousel-image" onclick="selectImage('${img}')"/>
+            `).join('')}
+          </div>
+          <button class="carousel-btn next" onclick="moveSlide(1)">&#10095;</button>
+        </div>
+        <script>
+          let currentIndex = 0;
+          const slides = document.querySelectorAll('.carousel-image');
+
+          function showSlide(index) {
+            slides.forEach((s, i) => {
+              s.style.display = i === index ? 'block' : 'none';
+            });
+          }
+          function moveSlide(step) {
+            currentIndex = (currentIndex + step + slides.length) % slides.length;
+            showSlide(currentIndex);
+          }
+          function selectImage(img) {
+            alert("Imagen seleccionada: " + img);
+            document.querySelector('.popup-backdrop button').click();
+          }
+          showSlide(currentIndex);
+        </script>
+      `;
+    }  
+
+  onClosePopup() {
+    this.showPopup = false;
   }
 
   @HostListener('document:keydown.escape', ['$event'])

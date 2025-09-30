@@ -1929,6 +1929,21 @@ form label {
   transform: scale(1.1);
 }
 
+.editIntinerarioDelete {
+  position: absolute;
+  top: 10px;   /* separación desde arriba */
+  left: 10px;  /* separación desde la izquierda */
+  width: 40px; /* ajusta tamaño si quieres más chico */
+  height: 40px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  z-index: 10; /* para que quede encima del contenido */
+}
+
+.editIntinerarioDelete:hover {
+  transform: scale(1.1);
+}
+
 .fechaTxt {
   font-family: "Work Sans", Arial, sans-serif;
   font-size: 30px;
@@ -2246,6 +2261,42 @@ form label {
   font-family: "Sacramento", Arial, serif;
   text-shadow: 1px 1px 2px black;
 }
+
+.carousel-container {
+  position: relative;
+  width: 100%;
+  text-align: center;
+}
+
+.carousel-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.carousel-image {
+  max-width: 100%;
+  max-height: 300px;
+  display: none;
+  cursor: pointer;
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0,0,0,0.5);
+  border: none;
+  padding: 10px;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.prev { left: 0; }
+.next { right: 0; }
+
 
 @media screen and (max-width: 767px) {
   .dondeCuando {

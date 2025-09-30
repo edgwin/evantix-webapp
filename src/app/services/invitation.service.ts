@@ -15,6 +15,7 @@ export class InvitationService {
   private updateEntryImage = 'UpdateEntry/Image/';
   private getDondeCuando = 'DondeCuando/';
   private getIndicaciones = 'Indicaciones/';
+  private newIntinerario = 'Intinerario/'
 
   guardarInvitacion(data: FormData): Observable<any> {
       const token = localStorage.getItem('access_token');
@@ -92,6 +93,21 @@ export class InvitationService {
 
   deleteIndicacion(indicacionId:string){
     const url = `${this.apiUrl}${this.getInvitationData}${this.getIndicaciones}${indicacionId}`;
+    return this.http.delete(url);
+  }
+
+  postNewIntinerario(eventId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.newIntinerario}${eventId}`;
+    return this.http.post(url, eventId);
+  }
+
+  getInvitacionIntinerario(eventId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.newIntinerario}${eventId}`;
+    return this.http.get(url);
+  }
+  
+  deleteIntinerario(intinerarioId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.newIntinerario}${intinerarioId}`;
     return this.http.delete(url);
   }
 }

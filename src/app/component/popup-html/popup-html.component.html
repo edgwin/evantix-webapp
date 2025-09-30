@@ -1,7 +1,46 @@
 <div class="popup-backdrop" *ngIf="visible">
-  <div class="popup-container">
-    <h2>{{ title }}</h2>
-    <div class="popup-content" [innerHTML]="htmlContent"></div>
-    <button (click)="close()">Cerrar</button>
+  <div class="popup-container" (click)="$event.stopPropagation()">
+    <div class="popup-header">
+      <h2>{{ title }}</h2>
+      <button class="close-btn" (click)="close()">✕</button>
+    </div>
+
+    <div class="popup-content">
+      <!-- Si tenemos imágenes, mostramos el carrusel Angular -->
+      <ng-container *ngIf="images?.length as total; else rawHtml">
+        <div class="carousel" *ngIf="total > 0">
+          <button class="nav prev" (click)="prev()">&#10094;</button>
+
+          <div class="slide-wrapper">
+            <img
+              [src]="images![currentIndex]"
+              alt="imagen {{currentIndex}}"
+              class="slide-img"
+              (click)="selectImage(images![currentIndex])"
+            />
+          </div>
+
+          <button class="nav next" (click)="next()">&#10095;</button>
+        </div>
+
+        <!-- indicadores -->
+        <div class="dots" *ngIf="total > 1">
+        <span
+          *ngFor="let img of images!; let idx = index"
+          class="dot"
+          [class.active]="idx === currentIndex"
+          (click)="currentIndex = idx">
+        </span>
+      </div>
+      </ng-container>
+
+      <!-- Fallback: usamos innerHTML (legacy) -->
+      <ng-template #rawHtml>
+        <div class="raw-html" [innerHTML]="htmlContent"></div>
+      </ng-template>
+    </div>
   </div>
+
+  <!-- clic en backdrop cierra -->
+  <div class="popup-click-catcher" (click)="close()"></div>
 </div>
