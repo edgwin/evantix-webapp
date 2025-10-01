@@ -61,6 +61,16 @@ export class DondeCuandoComponent {
   showPopup = false;
   carouselHtml = '';
 
+  editingDescripcion: boolean = false;
+  tempDescripcion: string = '';
+
+  editingActividadIntId: string | null = null;
+  tempActividadIntMap: { [id: string]: string } = {};
+  editingFechaIntId: string | null = null;
+  tempFechaIntMap: { [id: string]: string } = {};
+  editingHoraIntId: string | null = null;
+  tempHoraIntMap: { [id: string]: string } = {};
+
   cargarDatos() {
     this.loading = true;
     if (!this.eventId) return;
@@ -349,7 +359,7 @@ export class DondeCuandoComponent {
   cancelDireccion() {
     this.editingLugarId = null;
   }
-
+  
   triggerImageUpload(dondeCuandoId:string) {
     const input = document.createElement('input');
     input.type = 'file';
@@ -444,9 +454,13 @@ export class DondeCuandoComponent {
     });
   }
 
-  updateBackend(tableName:string, searchField: string, eventId:string, field:string, value: string) {    
+  updateBackend(tableName:string, searchField: string, eventId:string, field:string, value: string, loadData: boolean = false) {    
     this.invitationService.updateTableField(tableName, searchField, eventId, field, value).subscribe({
-      next: () => { },
+      next: () => { 
+        if (loadData){
+          this.cargarDatosIntinerario();
+        }
+      },
       error: (err) => {
         this.notificationService.show(
           'error',
@@ -496,8 +510,9 @@ abrirMapa(id: string) {
     });
   }
 
-  openPopup() {
-    this.carouselHtml = this.generateCarouselHtml();
+  selectedItemIndex: number | null = null;
+  openPopup(index: number) {
+    this.selectedItemIndex = index;
     this.showPopup = true;
   }
 
@@ -508,43 +523,124 @@ abrirMapa(id: string) {
     '../../../../assets/Intinerario/dinner.png',
     '../../../../assets/Intinerario/snaks.png',
     '../../../../assets/Intinerario/vals.png'
-  ];
-
-  private generateCarouselHtml(): string {
-      return `
-        <div class="carousel-container">
-          <button class="carousel-btn prev" onclick="moveSlide(-1)">&#10094;</button>
-          <div class="carousel-slide">
-            ${this.images.map(img => `
-              <img src="${img}" class="carousel-image" onclick="selectImage('${img}')"/>
-            `).join('')}
-          </div>
-          <button class="carousel-btn next" onclick="moveSlide(1)">&#10095;</button>
-        </div>
-        <script>
-          let currentIndex = 0;
-          const slides = document.querySelectorAll('.carousel-image');
-
-          function showSlide(index) {
-            slides.forEach((s, i) => {
-              s.style.display = i === index ? 'block' : 'none';
-            });
-          }
-          function moveSlide(step) {
-            currentIndex = (currentIndex + step + slides.length) % slides.length;
-            showSlide(currentIndex);
-          }
-          function selectImage(img) {
-            alert("Imagen seleccionada: " + img);
-            document.querySelector('.popup-backdrop button').click();
-          }
-          showSlide(currentIndex);
-        </script>
-      `;
-    }  
+  ];  
 
   onClosePopup() {
     this.showPopup = false;
+  }
+
+  onClickDescripcion(){
+    this.editingDescripcion = true; 
+    this.tempDescripcion = this.data.descripcion; // 🔹 Guardamos el valor original
+  }
+
+  async onImageSelected(img: string) {
+    //console.log("Imagen seleccionada:", img);
+    // aquí actualizas el item.imagen del itinerario si quieres
+    if (this.selectedItemIndex !== null) {      
+      const itemId = this.dataIntinerario.details[this.selectedItemIndex].id;
+      this.updateBackend('IntinerarioHistoriaDetail', 'Id', itemId, 'Imagen', img, true);      
+    }
+    this.onClosePopup();
+  }
+
+  onDescripcionBlur(event: Event){
+    const el = event.target as HTMLElement;
+    const nuevoTexto = el.innerText.trim();
+
+    // si cambió, guardamos y llamamos backend
+    if (nuevoTexto !== this.data.descripcion) {
+      this.data.descripcion = nuevoTexto;      
+      this.updateBackend('IntinerarioHistoriaMaster','IdEvento',this.eventId, 'Descripcion', this.data.descripcion);
+    }
+  }
+
+  onKeyDownInt(event: KeyboardEvent | any, maxLength:number) {
+    const key = (event as KeyboardEvent).key;
+    if (key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
+      event.preventDefault();
+      (event.target as HTMLElement).blur(); // dispara onActividadBlur y guarda
+      return;
+    }
+    const el = event.target as HTMLElement;
+    const text = el.innerText || '';
+
+    // permite borrar, mover cursor, etc.
+    const controlKeys = [
+      'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight',
+      'ArrowUp', 'ArrowDown', 'Tab'
+    ];
+
+    if (text.length >= maxLength && !controlKeys.includes(event.key)) {
+      event.preventDefault(); // bloquea más escritura
+    }
+    (event.target as HTMLElement).click();
+  }
+  
+  onClickActividadInt(id:string){
+    this.editingActividadIntId = id; 
+    const item = this.data.details.find((d: { id: string }) => d.id === id);
+    if (item) {
+      this.tempActividadIntMap[id] = item.hora;
+    }
+  }
+
+  onActividadIntBlur(event: Event, item: any) {
+    const el = event.target as HTMLElement;
+    const nuevoTexto = el.innerText.trim();
+
+    // si cambió, guardamos y llamamos backend
+    if (nuevoTexto !== item.actividad) {
+      item.actividad = nuevoTexto;
+      this.updateBackend('IntinerarioHistoriaDetail', 'Id', item.id, 'Actividad', nuevoTexto);
+    }
+
+    // salimos del modo edición
+    this.editingDireccionId = null;
+  }
+
+  onClickFechaInt(id:string){
+    this.editingFechaIntId = id; 
+    const item = this.data.details.find((d: { id: string }) => d.id === id);
+    if (item) {
+      this.tempFechaIntMap[id] = item.hora;
+    }
+  }
+
+  onFechaIntBlur(event: Event, item: any) {
+    const el = event.target as HTMLElement;
+    const nuevoTexto = el.innerText.trim();
+
+    // si cambió, guardamos y llamamos backend
+    if (nuevoTexto !== item.fecha) {
+      item.fecha = nuevoTexto;
+      this.updateBackend('IntinerarioHistoriaDetail', 'Id', item.id, 'Fecha', nuevoTexto);
+    }
+
+    // salimos del modo edición
+    this.editingDireccionId = null;
+  }
+
+  onClickHoraInt(id:string){
+    this.editingHoraIntId = id; 
+    const item = this.data.details.find((d: { id: string }) => d.id === id);
+    if (item) {
+      this.tempHoraIntMap[id] = item.hora;
+    }
+  }
+
+  onHoraIntBlur(event: Event, item: any) {
+    const el = event.target as HTMLElement;
+    const nuevoTexto = el.innerText.trim();
+
+    // si cambió, guardamos y llamamos backend
+    if (nuevoTexto !== item.hora) {
+      item.hora = nuevoTexto;
+      this.updateBackend('IntinerarioHistoriaDetail', 'Id', item.id, 'Hora', nuevoTexto);
+    }
+
+    // salimos del modo edición
+    this.editingDireccionId = null;
   }
 
   @HostListener('document:keydown.escape', ['$event'])

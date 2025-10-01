@@ -57,10 +57,7 @@ button {
 
 .popup-header {
   display:flex;
-  align-items:center;
-  justify-content: space-between;
-  padding: 16px 20px;
-  border-bottom: 1px solid #eee;
+  justify-content: center;
 }
 .popup-header h2 { margin: 0; font-size: 1.5rem; }
 .close-btn {
@@ -72,7 +69,6 @@ button {
 
 /* contenido */
 .popup-content {
-  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -96,8 +92,8 @@ button {
   overflow:hidden;
 }
 .slide-img {
-  width: 100%;
-  height: auto;
+  width: 200px;
+  height: 200px;
   max-height: 60vh;
   object-fit: contain;
   cursor: pointer;

@@ -1931,13 +1931,15 @@ form label {
 
 .editIntinerarioDelete {
   position: absolute;
-  top: 10px;   /* separación desde arriba */
-  left: 10px;  /* separación desde la izquierda */
+  top: 10px;   /* separación desde arriba */  
   width: 40px; /* ajusta tamaño si quieres más chico */
   height: 40px;
   cursor: pointer;
   transition: transform 0.2s ease;
   z-index: 10; /* para que quede encima del contenido */
+}
+.editIntinerarioDelete-LR{
+  left: 10px;  /* separación desde la izquierda */
 }
 
 .editIntinerarioDelete:hover {
@@ -1983,11 +1985,6 @@ form label {
     left: 68vw;
     cursor: pointer;  
   }
-
-  /* .editDondeCuandoImage{ 
-    position: absolute;
-    top: 5vw;
-  } */
 }
 
 .loaderFestejados {
@@ -2126,7 +2123,7 @@ form label {
     width: 32px;
     height: 32px;
     top: 5px;
-    right: calc(50% - 100px + 5px);
+    left: calc(50% - 155px + 5px);
   }
 
   .frase-txt{
@@ -2162,6 +2159,20 @@ form label {
     cursor: pointer;
     transition: transform 0.2s ease;
     z-index: 5;
+  }
+
+  .editIntinerarioDelete-LR
+  {
+    height: 24px;
+    width: 24px;
+    right:10px;
+    left: 260px;
+  }
+
+  .editDondeCuandoDelete{
+    height: 24px;
+    width: 24px;
+    right: 6px;
   }
 }
 
@@ -2262,6 +2273,12 @@ form label {
   text-shadow: 1px 1px 2px black;
 }
 
+.descripcion-container {
+  width: 50%;
+  margin: 0 auto;         /* centra horizontalmente */
+  text-align: center;     /* centra el texto dentro */
+}
+
 .carousel-container {
   position: relative;
   width: 100%;
@@ -2296,6 +2313,7 @@ form label {
 
 .prev { left: 0; }
 .next { right: 0; }
+
 
 
 @media screen and (max-width: 767px) {

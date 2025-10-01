@@ -142,8 +142,17 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-offset-2 text-center fh5co-heading">
-					<h2>{{dataIntinerario.titulo}}</h2>
-					<p>{{dataIntinerario.descripcion}}</p>
+                    <div>
+                        <h2>{{dataIntinerario.titulo}}</h2>
+                    </div>
+					<div class="descripcion-container"
+                    contenteditable="true"
+                    (click)="onClickDescripcion()"
+                    (keydown)="onKeyDownInt($event, 200)"
+                    (blur)="onDescripcionBlur($event)" 
+                    >
+                        <p>{{dataIntinerario.descripcion}}</p>
+                    </div>
 				</div>
 			</div>
 			<div class="row">
@@ -154,7 +163,7 @@
                                 alt="editar imagen" 
                                 class="edit-image-btn"
                                 title="Click para editar icono"
-                                (click)="openPopup()"
+                                (click)="openPopup(i)"
                             >
 							<div class="timeline-badge" [ngStyle]="{
                                                                     'background-image': 'url('+item.imagen+')'
@@ -165,14 +174,35 @@
                                         alt="" 
                                         height="64px" 
                                         width="64px" 
-                                        [ngClass]="i % 2 !== 0 ? 'editDondeCuandoDelete' : 'editIntinerarioDelete'"
+                                        [ngClass]="i % 2 !== 0 ? 'editDondeCuandoDelete' : 'editIntinerarioDelete editIntinerarioDelete-LR'"
                                         title="Click para eliminar elemento" 
                                         *ngIf="!loadingImgs[item.id] && (data?.details?.length || 0) > 1"
                                         (click)="triggerIntinerarioImageDelete(item.id)"
                                     />
-									<h3 class="timeline-title">{{item.actividad}}</h3>
-									<span class="date">{{item.fecha}}</span>
-                                    <span class="date">{{item.hora}}</span>
+									<h3 class="timeline-title"
+                                        contenteditable="true"
+                                        (click)="onClickActividadInt(item.id)"
+                                        (keydown)="onKeyDownInt($event, 22)"
+                                        (blur)="onActividadIntBlur($event, item)"
+                                    >
+                                        {{item.actividad}}
+                                    </h3>
+									<span class="date"
+                                        contenteditable="true"
+                                        (click)="onClickFechaInt(item.id)"
+                                        (keydown)="onKeyDownInt($event, 50)"
+                                        (blur)="onFechaIntBlur($event, item)"
+                                    >
+                                        {{item.fecha}}
+                                    </span>
+                                    <span class="date"
+                                    contenteditable="true"
+                                        (click)="onClickHoraInt(item.id)"
+                                        (keydown)="onKeyDownInt($event, 10)"
+                                        (blur)="onHoraIntBlur($event, item)"
+                                    >
+                                        {{item.hora}}
+                                    </span>
 								</div>
 							</div>
 						</li>                        
@@ -189,7 +219,8 @@
 
 <app-popup-html 
   [visible]="showPopup" 
-  [htmlContent]="carouselHtml"
+  [images]="images"
   title="Selecciona una imagen"
-  (closed)="onClosePopup()">
+  (closed)="onClosePopup()"
+  (imageSelected)="onImageSelected($event)">
 </app-popup-html>

@@ -16,7 +16,7 @@
               [src]="images![currentIndex]"
               alt="imagen {{currentIndex}}"
               class="slide-img"
-              (click)="selectImage(images![currentIndex])"
+              (click)="selectImage(images![currentIndex])"              
             />
           </div>
 
@@ -32,6 +32,7 @@
           (click)="currentIndex = idx">
         </span>
       </div>
+      <div><button (click)="close()">Cerrar</button></div>
       </ng-container>
 
       <!-- Fallback: usamos innerHTML (legacy) -->
@@ -42,5 +43,5 @@
   </div>
 
   <!-- clic en backdrop cierra -->
-  <div class="popup-click-catcher" (click)="close()"></div>
+  
 </div>
