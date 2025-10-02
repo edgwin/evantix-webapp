@@ -643,6 +643,10 @@ abrirMapa(id: string) {
     this.editingDireccionId = null;
   }
 
+  showAddBtn(){ 
+    return !this.loading && (this.dataIntinerario?.details?.length || 0) < 6
+  }
+
   @HostListener('document:keydown.escape', ['$event'])
   onEscapeGlobal(event: KeyboardEvent) {
     if (this.editingActividadId) {

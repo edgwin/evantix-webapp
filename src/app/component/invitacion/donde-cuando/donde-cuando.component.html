@@ -212,7 +212,7 @@
 		</div>
 	</div>
     <div class="addNewDC" *ngIf="!loading">
-        <img src="../../../../assets/BtnAddNew.png" alt="" height="64px" width="64px" *ngIf="!loading && (data?.details?.length || 0) < 4"
+        <img src="../../../../assets/BtnAddNew.png" alt="" height="64px" width="64px" *ngIf="showAddBtn()"
                 title="Click para Agregar un nuevo intinerario" (click)="nuevoIntinerario()" style="cursor: pointer;">
     </div>
 </div>
