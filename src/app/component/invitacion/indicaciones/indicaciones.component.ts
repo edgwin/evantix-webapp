@@ -6,7 +6,7 @@ import { NotificationService } from '../../../services/notification.service';
 @Component({
   selector: 'app-indicaciones',
   standalone: true,
-  imports: [CommonModule, ],
+  imports: [CommonModule],
   templateUrl: './indicaciones.component.html',
   styleUrl: './indicaciones.component.css'
 })

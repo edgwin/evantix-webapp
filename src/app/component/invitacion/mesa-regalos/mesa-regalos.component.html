@@ -1,0 +1,61 @@
+<section class="imagen-fondo" [style.background-image]="'
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url(' + data.imagen + ')'
+">
+<div class="editImage"> 
+  <img src="../../../../assets/editarImagen.png"
+       class="edit-imageIndicaciones-btn"
+       alt=""
+       title="Click para editar imagen de fondo"
+       >
+  <div class="loaderPortada" *ngIf="false"></div>
+</div>
+<div class="heading">
+    <h1 style="color:white">Mesa de Regalos</h1>
+</div>
+  <div class="grid-container">
+    <div class="card" *ngFor="let item of data.details let i = index">
+         <img src="../../../../assets/BtnDelete.png" alt="" height="64px" width="64px" class="editIndicacionesDelete"
+                                title="Click para eliminar elemento">
+        <!-- Ícono encima -->
+        <div class="cardIcon">
+          <img [src]="item.imagen" />
+        </div>
+
+        <!-- Contenido -->        
+        <div class="titulo" contenteditable="true"
+          [attr.data-id-titulo]="item.id"
+          (keydown)="onKeyDown($event,22)" 
+          (blur)="saveContent($event, item.id, 'titulo')"
+          (click)="onClickTitulo(item.id)"
+        >
+            {{item.titulo}}
+        </div>
+        <div id="descripcion" contenteditable="true"
+          [attr.data-id-descripcion]="item.id"
+          (keydown)="onKeyDown($event,200)" 
+          (blur)="saveContent($event, item.id, 'descripcion')"
+          (click)="onClickDescripcion(item.id)" >
+            {{item.descripcion}}
+        </div>        
+        <div class="url-section">
+        <input type="text" title="Escriba o pegue la URL de su mesa de regalos, si no escribe una URL no aparecera el boton de 'Ir a Mesa', Esta caja de texto no aparecera en la version final de su invitacion"
+                placeholder="Escribe aquí la URL de tu mesa de regalos"
+                [(ngModel)]="item.url"
+                (blur)="saveContent($event, item.id, 'url')"
+                class="mesa-form-control"/>
+
+        <a *ngIf="item.url"
+            [href]="item.url"
+            target="_blank"
+            class="inside-row-btn btn btn-primary">
+            Ir a la Mesa
+        </a>
+        </div>
+    </div>    
+  </div>
+  <div style="text-align: center" class="newBtn">
+    <img src="../../../../assets/BtnAddNew.png" style="cursor: pointer;" alt="" height="64px" width="64px"
+          title="Click para agregar elemento">
+  </div>
+</section>

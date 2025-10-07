@@ -7,13 +7,14 @@ import { CommonModule } from '@angular/common';
 import { DondeCuandoComponent } from '../../component/invitacion/donde-cuando/donde-cuando.component';
 import { InvitationService } from '../../services/invitation.service';
 import { NotificationService } from '../../services/notification.service';
+import { MesaRegalosComponent } from '../../component/invitacion/mesa-regalos/mesa-regalos.component';
 
 @Component({
   selector: 'app-invitacion',
   standalone: true,
   templateUrl: './invitacion.component.html',
   styleUrl: './invitacion.component.css',
-  imports: [PortadaComponent, CommonModule, FestejadosComponent, DondeCuandoComponent, IndicacionesComponent],
+  imports: [PortadaComponent, CommonModule, FestejadosComponent, DondeCuandoComponent, IndicacionesComponent, MesaRegalosComponent],
 })
 
 export class InvitacionComponent {

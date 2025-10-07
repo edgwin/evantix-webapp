@@ -2009,8 +2009,7 @@ form label {
   animation: spin 1s linear infinite;
   background: transparent;
   position: absolute;
-  top: 0.8vw;
-  left: 2vw;
+  top: 0.8vw;  
 }
 
 .loaderDC {
@@ -2213,7 +2212,8 @@ form label {
 }
 
 .inside-row-btn{
-  margin-bottom: 1.5rem;
+  margin-bottom: 2.5rem;
+  margin-top: 0.5vh;
   font-size: 15px
 }
 
