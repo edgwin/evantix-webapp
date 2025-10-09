@@ -25,6 +25,7 @@ export class MesaRegalosComponent {
   tempDescripcionMap: { [id: string]: string } = {};
   showPopup = false;
   loading = false;
+  loadingImg: boolean = false;
 
   gotoUrl(url:string){
     window.open(url, '_blank');
@@ -45,6 +46,37 @@ export class MesaRegalosComponent {
           `Hubo un error favor intentar más tarde ${err.message}`
         );
         this.loading = false;
+      }
+    });
+  }
+
+  // --- edición de imagen ---
+  triggerImageUpload() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (event: any) => {
+      const file = event.target.files[0];
+      if (file) {
+        this.loadingImg = true;
+        this.uploadImage('MesaRegalosMaster','IdEvento', this.eventId, 'Imagen', file);
+      }
+    };
+    input.click();
+  }
+
+  uploadImage(tableName:string, searchField:string, eventId:string, field: string, file: File) {
+    this.invitationService.updateTableFieldImagen(tableName, searchField, eventId, field, file).subscribe({
+      next: (res) => {
+        this.data.imagen = res;
+        this.loadingImg = false;
+      },
+      error: (err) => {
+        this.loadingImg = false;
+        this.notificationService.show(
+           'error',
+          `Error al subir imagen: ${err.message}`
+        );
       }
     });
   }

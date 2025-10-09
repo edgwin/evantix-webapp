@@ -7,8 +7,10 @@
        class="edit-imageIndicaciones-btn"
        alt=""
        title="Click para editar imagen de fondo"
+       (click)="triggerImageUpload()"
+       *ngIf="!loadingImg"
        >
-  <div class="loaderPortada" *ngIf="false"></div>
+  <div class="loaderPortada" *ngIf="loadingImg"></div>
 </div>
 <div class="heading">
     <h1 style="color:white">Mesa de Regalos</h1>
