@@ -15,7 +15,8 @@ export class InvitationService {
   private updateEntryImage = 'UpdateEntry/Image/';
   private getDondeCuando = 'DondeCuando/';
   private getIndicaciones = 'Indicaciones/';
-  private newIntinerario = 'Intinerario/'
+  private newIntinerario = 'Intinerario/';
+  private getMesa = 'MesaRegalos/';
 
   guardarInvitacion(data: FormData): Observable<any> {
       const token = localStorage.getItem('access_token');
@@ -105,9 +106,24 @@ export class InvitationService {
     const url = `${this.apiUrl}${this.getInvitationData}${this.newIntinerario}${eventId}`;
     return this.http.get(url);
   }
-  
+
   deleteIntinerario(intinerarioId:string){
     const url = `${this.apiUrl}${this.getInvitationData}${this.newIntinerario}${intinerarioId}`;
     return this.http.delete(url);
+  }
+
+  getMesaRegalos(eventId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.getMesa}${eventId}`;
+    return this.http.get(url);
+  }
+
+  deleteMesa(mesaId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.getMesa}${mesaId}`;
+    return this.http.delete(url);
+  }
+
+  postNewMesa(eventId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.getMesa}${eventId}`;
+    return this.http.post(url, eventId);
   }
 }

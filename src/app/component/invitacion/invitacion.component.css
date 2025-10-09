@@ -2009,7 +2009,8 @@ form label {
   animation: spin 1s linear infinite;
   background: transparent;
   position: absolute;
-  top: 0.8vw;  
+  top: 0.8vw;
+  right: 10px;
 }
 
 .loaderDC {
@@ -2065,7 +2066,18 @@ form label {
 .edit-image-btn {
   position: absolute;
   top: 10px;
-  right: calc(50% - 100px + 10px); /* 👈 centrado relativo a la imagen */
+  right: calc(50% - 140px); /* 👈 centrado relativo a la imagen */
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  z-index: 101;
+}
+
+.edit-image-btn-int{
+  position: absolute;
+  top: 5px;
+  right: calc(50% - 90px); /* 👈 centrado relativo a la imagen */
   width: 40px;
   height: 40px;
   cursor: pointer;
@@ -2074,6 +2086,10 @@ form label {
 }
 
 .edit-image-btn:hover {
+  transform: scale(1.1);
+}
+
+.edit-image-btn-int:hover{
   transform: scale(1.1);
 }
 
@@ -2122,7 +2138,7 @@ form label {
     width: 32px;
     height: 32px;
     top: 5px;
-    left: calc(50% - 155px + 5px);
+    right: calc(50% - 100px);
   }
 
   .frase-txt{
@@ -2145,7 +2161,7 @@ form label {
     animation: spin 1s linear infinite;
     background: transparent;
     position: absolute;
-    right: 80vw;
+    right: 25vw;
     top: 3vw;
   }
 
@@ -2172,6 +2188,17 @@ form label {
     height: 24px;
     width: 24px;
     right: 6px;
+  }
+
+  .edit-image-btn-int{
+    position: absolute;
+    top: 5px;
+    left: calc(50% - 150px); /* 👈 centrado relativo a la imagen */
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    z-index: 101;
   }
 }
 

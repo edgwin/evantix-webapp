@@ -59,6 +59,7 @@ export class FestejadosComponent {
       element.innerText = `${original}`;
     }
     this.editingTitle = false;
+    element.blur();
   }
   //Frase
   onFraseBlur(event: Event) {
@@ -83,10 +84,10 @@ export class FestejadosComponent {
       element.innerText = `${original}`;
     }
     this.editingFrase = false;
+    element.blur();
   }
 
-  maxLength = 35;
-  onKeyDown(event: KeyboardEvent | any) {
+  onKeyDown(event: KeyboardEvent | any, maxLength: number) {
     const key = (event as KeyboardEvent).key;
     if (key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
       event.preventDefault();
@@ -102,7 +103,7 @@ export class FestejadosComponent {
       'ArrowUp', 'ArrowDown', 'Tab'
     ];
 
-    if (text.length >= this.maxLength && !controlKeys.includes(event.key)) {
+    if (text.length >= maxLength && !controlKeys.includes(event.key)) {
       event.preventDefault(); // bloquea más escritura
     }
     (event.target as HTMLElement).click();

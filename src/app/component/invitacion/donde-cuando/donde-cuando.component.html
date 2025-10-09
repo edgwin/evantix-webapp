@@ -162,7 +162,7 @@
 						<li [ngClass]="{ 'timeline-inverted': i % 2 !== 0 }">
                             <img src="../../../../assets/editarImagen.png" 
                                 alt="editar imagen" 
-                                class="edit-image-btn"
+                                class="edit-image-btn-int"
                                 title="Click para editar icono"
                                 (click)="openPopup(i)"
                             >
@@ -181,6 +181,7 @@
                                         (click)="triggerIntinerarioImageDelete(item.id)"
                                     />
 									<h3 class="timeline-title"
+                                        [attr.data-id-actividad-int]="item.id"
                                         contenteditable="true"
                                         (click)="onClickActividadInt(item.id)"
                                         (keydown)="onKeyDownInt($event, 22)"
@@ -189,6 +190,7 @@
                                         {{item.actividad}}
                                     </h3>
 									<span class="date"
+                                        [attr.data-id-fecha-int]="item.id"                                    
                                         contenteditable="true"
                                         (click)="onClickFechaInt(item.id)"
                                         (keydown)="onKeyDownInt($event, 50)"
@@ -198,6 +200,7 @@
                                     </span>
                                     <span class="date"
                                     contenteditable="true"
+                                        [attr.data-id-hora-int]="item.id"
                                         (click)="onClickHoraInt(item.id)"
                                         (keydown)="onKeyDownInt($event, 10)"
                                         (blur)="onHoraIntBlur($event, item)"

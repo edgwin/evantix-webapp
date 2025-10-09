@@ -1,13 +1,14 @@
-import { Component, Input } from '@angular/core';
+import { Component, HostListener, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { FormsModule } from '@angular/forms';
+import { PopupHtmlComponent } from '../../popup-html/popup-html.component';
 
 @Component({
   selector: 'app-mesa-regalos',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PopupHtmlComponent],
   templateUrl: './mesa-regalos.component.html',
   styleUrls: ['./mesa-regalos.component.css','./../invitacion.component.css']
 })
@@ -21,10 +22,31 @@ export class MesaRegalosComponent {
   tempTituloMap: { [id: string]: string } = {};
   editingTituloId: string | null = null;
   editingDescripcionId: string | null = null;
-  tempDescripcionMap: { [id: string]: string } = {};  
+  tempDescripcionMap: { [id: string]: string } = {};
+  showPopup = false;
+  loading = false;
 
   gotoUrl(url:string){
     window.open(url, '_blank');
+  }
+
+   cargarDatos() {
+    this.loading = true;
+    if (!this.eventId) return;
+
+    this.invitationService.getMesaRegalos(this.eventId).subscribe({
+      next: (res) => {
+        this.data = res;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.notificationService.show(
+          'error',
+          `Hubo un error favor intentar más tarde ${err.message}`
+        );
+        this.loading = false;
+      }
+    });
   }
 
   onKeyDown(event: KeyboardEvent | any, maxLength: number) {
@@ -79,9 +101,13 @@ export class MesaRegalosComponent {
     this.updateBackend('MesaRegalosDetail', 'Id', eventId, modifyField, newText);
   }
 
-   updateBackend(tableName:string, searchField: string, eventId:string, field:string, value: string) {    
+   updateBackend(tableName:string, searchField: string, eventId:string, field:string, value: string, loadData: boolean = false) {    
     this.invitationService.updateTableField(tableName, searchField, eventId, field, value).subscribe({
-      next: () => { },
+      next: () => { 
+        if (loadData){
+          this.cargarDatos();
+        }
+      },
       error: (err) => {
         this.notificationService.show(
           'error',
@@ -99,6 +125,24 @@ export class MesaRegalosComponent {
     }    
   }
 
+  restoreTitulo(item: any, element: HTMLElement) {
+    const original = this.tempTituloMap[item.id];
+    if (original !== undefined) {
+      element.innerText = original; // restaurar en la UI
+    }
+    this.editingTituloId = null;
+    element.blur();
+  }
+
+  restoreDescripcion(item: any, element: HTMLElement) {
+    const original = this.tempDescripcionMap[item.id];
+    if (original !== undefined) {
+      element.innerText = original; // restaurar en la UI
+    }
+    this.editingDescripcionId = null;
+    element.blur();
+  }
+
   onClickDescripcion(id:string){
     this.editingDescripcionId = id; 
     const item = this.data.details.find((d: { id: string }) => d.id === id);
@@ -106,4 +150,76 @@ export class MesaRegalosComponent {
       this.tempDescripcionMap[id] = item.descripcion; // 🔹 Guardamos el valor original
     }    
   }
+
+  images = [
+    '../../../../assets/MesaRegalos/Mesa.png',
+    '../../../../assets/MesaRegalos/regalo.png',
+    '../../../../assets/MesaRegalos/sobres.png',
+  ];  
+
+  selectedItemIndex: number | null = null;
+  openPopup(index: number) {
+    this.selectedItemIndex = index;
+    this.showPopup = true;
+  }
+
+  onClosePopup() {
+    this.showPopup = false;
+  }
+
+  async onImageSelected(img: string) {
+    if (this.selectedItemIndex !== null) {      
+      const itemId = this.data.details[this.selectedItemIndex].id;
+      this.updateBackend('MesaRegalosDetail', 'Id', itemId, 'Imagen', img, true);      
+    }
+    this.onClosePopup();
+  }
+
+  triggerElementDelete(mesaId:string) {
+  this.invitationService.deleteMesa(mesaId).subscribe({
+      next: () => {
+        this.cargarDatos();
+      },
+      error: (err) => {
+        this.notificationService.show(
+          'error',
+          `Error al subir imagen: ${err.message}`
+        );
+      }
+    });
+  }
+
+  nuevaMesa(){
+    this.invitationService.postNewMesa(this.eventId).subscribe({
+      next: () => {
+        this.cargarDatos();
+      },
+      error: (err) => {
+        this.notificationService.show(
+          'error',
+          `Hubo un error favor intentar más tarde ${err.message}`
+        );
+        this.loading = false;
+      }
+    });
+  }
+
+  @HostListener('document:keydown.escape', ['$event'])
+    onEscape(event: KeyboardEvent) {
+      if (this.editingTituloId) {
+         const item = this.data.details.find((d: { id: string }) => d.id === this.editingTituloId);
+         const element = document.querySelector(`[contenteditable][data-id-titulo="${this.editingTituloId}"]`) as HTMLElement;
+         if (item && element) {
+           this.restoreTitulo(item, element);
+         }
+      }
+
+      if (this.editingDescripcionId) {
+         const item = this.data.details.find((d: { id: string }) => d.id === this.editingDescripcionId);
+         const element = document.querySelector(`[contenteditable][data-id-descripcion="${this.editingDescripcionId}"]`) as HTMLElement;
+         if (item && element) {
+           this.restoreDescripcion(item, element);
+         }
+      }      
+    }
 }

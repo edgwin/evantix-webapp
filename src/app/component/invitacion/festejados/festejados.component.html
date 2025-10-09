@@ -12,7 +12,7 @@
             <div class="text-center editableTitulo" contenteditable="true" id="TituloFestejados"
                 (blur)="onTituloBlur($event)"                
                 (click)="onClickTitulo()"
-                (keydown)="onKeyDown($event)">
+                (keydown)="onKeyDown($event, 35)">
                 {{data.titulo}}
             </div>
         </div>				
@@ -40,8 +40,8 @@
         <div>
             <div class="frase-txt" contenteditable="true" id="FraseFestejados"
             (blur)="onFraseBlur($event)"
-            (click)="onClickTitulo()"
-            (keydown)="onKeyDown($event)">
+            (click)="onClickFrase()"
+            (keydown)="onKeyDown($event, 250)">
             {{data.frase}}
         </div>
         </div>

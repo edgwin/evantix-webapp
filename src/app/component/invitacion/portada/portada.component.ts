@@ -22,15 +22,13 @@ import { MatNativeDateModule } from '@angular/material/core';
             MatInputModule,
             MatNativeDateModule]
 })
-export class PortadaComponent {
-  loading: boolean = false;
+export class PortadaComponent {  
   loadingImg: boolean = false;
   newData: any = null;
   newDate: Date = new Date();
   stringDate: string = '';
   @Input() eventId: string = '';
-  @Input() data: any;
-
+  @Input() data: any;  
   editingTitle: boolean = false;
   editingSubtitle: boolean = false;
   editingDate: boolean = false;
@@ -67,6 +65,7 @@ export class PortadaComponent {
       element.innerText = `${original}`;
     }
     this.editingTitle = false;
+    element.blur();    
   }
 
   // --- edición de subtítulo ---
@@ -92,6 +91,7 @@ export class PortadaComponent {
       element.innerText = `${original}`;
     }
     this.editingSubtitle = false;
+    element.blur();
   }
   
   maxLength = 35;
@@ -120,8 +120,8 @@ export class PortadaComponent {
   // --- edición de fecha ---
   enableDateEdit() {
     this.editingDate = true;
-    this.tempDate = this.newDate ? new Date(this.newDate) : new Date();
-    this.tempTime = this.newDate
+    this.tempDate = this.data.date
+    this.tempTime = this.data.date
       ? this.newDate.toISOString().substring(11, 16) // HH:mm
       : '12:00';
   }
@@ -149,6 +149,7 @@ export class PortadaComponent {
       finalDate.setHours(hours, minutes, 0, 0);
 
       this.newDate = finalDate;
+      this.updateBackend("Events","Id",this.eventId,"Fecha",this.newDate);
     }
 
     this.editingDate = false;
@@ -158,6 +159,19 @@ export class PortadaComponent {
     this.editingDate = false;
   }
 
+  formatearFecha(fechaISO:string) {
+    const meses = [
+      "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ];
+
+    const fecha = new Date(fechaISO);
+    const dia = fecha.getDate();
+    const mes = meses[fecha.getMonth()];
+    const anio = fecha.getFullYear();
+
+    return `${dia} de ${mes} del ${anio}`;
+  }
   // --- edición de imagen ---
   triggerImageUpload() {
     const input = document.createElement('input');

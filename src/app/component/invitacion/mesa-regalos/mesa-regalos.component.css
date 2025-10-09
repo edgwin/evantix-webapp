@@ -44,7 +44,7 @@
   background: #fff;
   color: #333;
   border-radius: 15px;
-  padding: 60px 20px 20px; /* espacio arriba para el ícono */
+  padding: 80px 20px 20px; /* espacio arriba para el ícono */
   box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
   width: 300px;
   text-align: center;
@@ -67,8 +67,8 @@
 
 /* Ajuste del icono dentro del círculo */
 .cardIcon img {
-  width: 50px;
-  height: 50px;
+  width: 80px;
+  height: 80px;
 }
 
 .titulo{
@@ -104,7 +104,30 @@
 .mesa-form-control{
     font-size: 14px;
     padding-bottom: 1vh;
+    width: 250px;
 }
+
+.edit-icon-image-btn {
+  position: absolute;
+  top: -65px;
+  right: calc(50% - 60px);
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  z-index: 101;
+}
+
+.edit-icon-image-btn:hover {
+  transform: scale(1.1);
+}
+
+.inside-row-btn-mesa{
+  margin-bottom: 2.5rem;
+  margin-top: 0.5vh;
+  font-size: 15px
+}
+
 @media screen and (max-width: 767px) {
     .imagen-fondo {
       padding: 16px 12px; 
@@ -152,5 +175,13 @@
     }
     .heading p{
         font-size: 14px;
+    }
+
+    .url-section{
+        display: grid;
+    }
+
+    .inside-row-btn-mesa{
+      width: 150px;
     }
 }

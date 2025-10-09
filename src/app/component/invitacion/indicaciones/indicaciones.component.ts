@@ -16,7 +16,7 @@ export class IndicacionesComponent {
 
   loading: boolean = false;
   loadingImg: boolean = false;
-  editingTituloId: string | null = null;
+  //editingTituloId: string | null = null;
   tempTituloMap: { [id: string]: string } = {};  
   editingDescripcionId: string | null = null;
   tempDescripcionMap: { [id: string]: string } = {};  
@@ -25,6 +25,17 @@ export class IndicacionesComponent {
   @Input() eventId: string = '';
   @Input() data: any;
 
+  private editingTituloId: string | null = null;
+  get valor() {
+    return this.editingTituloId;
+  }
+  set valor(nuevoValor: string | null) {
+    if (nuevoValor !== this.editingTituloId) {
+      this.editingTituloId = nuevoValor;
+      console.log('El valor cambió:', nuevoValor);
+    }
+  }
+  
   cargarDatos() {
     this.loading = true;
     if (!this.eventId) return;
@@ -58,6 +69,7 @@ export class IndicacionesComponent {
       element.innerHTML = original; // restaurar en la UI
     }
     this.editingTituloId = null;
+    element.blur();
   }
 
   onClickDescripcion(id:string){
@@ -74,6 +86,7 @@ export class IndicacionesComponent {
       element.innerHTML = original; // restaurar en la UI
     }
     this.editingDescripcionId = null;
+    element.blur();
   }
 
   maxLength = 150;
@@ -193,14 +206,14 @@ export class IndicacionesComponent {
     onEscape() {    
         if (this.editingTituloId) {
           const item = this.data.details.find((d: { id: string }) => d.id === this.editingTituloId);
-          const element = document.querySelector(`[contenteditable][data-id-actividad="${this.editingTituloId}"]`) as HTMLElement;
+          const element = document.querySelector(`[contenteditable][data-id-titulo-Indicaciones="${this.editingTituloId}"]`) as HTMLElement;
           if (item && element) {
             this.restoreTitulo(item, element);
           }
         }
         if (this.editingDescripcionId) {
           const item = this.data.details.find((d: { id: string }) => d.id === this.editingDescripcionId);
-          const element = document.querySelector(`[contenteditable][data-id-descripcion="${this.editingDescripcionId}"]`) as HTMLElement;
+          const element = document.querySelector(`[contenteditable][data-id-descripcion-indicaciones="${this.editingDescripcionId}"]`) as HTMLElement;
           if (item && element) {
             this.restoreDescripcion(item, element);
           }

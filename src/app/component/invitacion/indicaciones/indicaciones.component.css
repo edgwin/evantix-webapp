@@ -80,7 +80,7 @@
 .editImage {
   position: absolute;  /* <-- importante */
   top: 1px;           /* respeta el padding superior del section */
-  right: 1px;          /* respeta el padding izquierdo del section */
+  right: 5px;          /* respeta el padding izquierdo del section */
   z-index: 999;        /* encima de todo */
   display: block;
 }
@@ -114,6 +114,10 @@
   right: 1vw;
 }
 
+.indicacionesContent{
+  margin-bottom: 5vw;
+}
+
 @media screen and (max-width: 767px) {
     .grid-container {
         display: grid;
@@ -138,7 +142,7 @@
 
     .imagen-fondo {
       padding: 16px 12px; 
-      height: 100vh;
+      height: auto;
     }
 
     .editImage {
@@ -151,6 +155,9 @@
     }
     .newBtn {
       margin-top: 6vh;
+    }    
+    .indicacionesContent{
+      margin-top: 5vw;
     }
 }
 

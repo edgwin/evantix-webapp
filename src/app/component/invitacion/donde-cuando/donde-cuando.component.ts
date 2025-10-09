@@ -59,7 +59,6 @@ export class DondeCuandoComponent {
   @Input() dataIntinerario:any = null;
 
   showPopup = false;
-  carouselHtml = '';
 
   editingDescripcion: boolean = false;
   tempDescripcion: string = '';
@@ -157,6 +156,16 @@ export class DondeCuandoComponent {
       element.innerText = original; // restaurar en la UI
     }
     this.editingActividadId = null;
+    element.blur();
+  }
+
+  restoreActividadInt(item: any, element: HTMLElement) {
+    const original = this.tempActividadIntMap[item.id];
+    if (original !== undefined) {
+      element.innerText = original; // restaurar en la UI
+    }
+    this.editingActividadIntId = null;
+    element.blur();
   }
 
   //Hora
@@ -188,6 +197,16 @@ export class DondeCuandoComponent {
       element.innerText = `${original}`;
     }
     this.editingHoraId = null;
+    element.blur();
+  }
+
+  restoreHoraInt(item: any, element: HTMLElement) {
+    const original = this.tempHoraIntMap[item.id];
+    if (original !== undefined) {
+      element.innerText = original; // restaurar en la UI
+    }
+    this.editingHoraIntId = null;
+    element.blur();
   }
 
   //Fecha
@@ -219,6 +238,16 @@ export class DondeCuandoComponent {
       element.innerText = original; // restaurar en la UI
     }
     this.editingFechaId = null;
+    element.blur();
+  }
+
+  restoreFechaInt(item: any, element: HTMLElement) {
+    const original = this.tempFechaIntMap[item.id];
+    if (original !== undefined) {
+      element.innerText = original; // restaurar en la UI
+    }
+    this.editingFechaIntId = null;
+    element.blur();
   }
 
   //Lugar
@@ -250,6 +279,7 @@ export class DondeCuandoComponent {
       element.innerText = original; // restaurar en la UI
     }
     this.editingLugarId = null;
+    element.blur();
   }
 
   //Direccion
@@ -281,6 +311,7 @@ export class DondeCuandoComponent {
       element.innerText = original; // restaurar en la UI
     }
     this.editingDireccionId = null;
+    element.blur();
   }
 
   //genericos
@@ -535,8 +566,6 @@ abrirMapa(id: string) {
   }
 
   async onImageSelected(img: string) {
-    //console.log("Imagen seleccionada:", img);
-    // aquí actualizas el item.imagen del itinerario si quieres
     if (this.selectedItemIndex !== null) {      
       const itemId = this.dataIntinerario.details[this.selectedItemIndex].id;
       this.updateBackend('IntinerarioHistoriaDetail', 'Id', itemId, 'Imagen', img, true);      
@@ -579,9 +608,9 @@ abrirMapa(id: string) {
   
   onClickActividadInt(id:string){
     this.editingActividadIntId = id; 
-    const item = this.data.details.find((d: { id: string }) => d.id === id);
+    const item = this.dataIntinerario.details.find((d: { id: string }) => d.id === id);
     if (item) {
-      this.tempActividadIntMap[id] = item.hora;
+      this.tempActividadIntMap[id] = item.actividad;
     }
   }
 
@@ -601,9 +630,9 @@ abrirMapa(id: string) {
 
   onClickFechaInt(id:string){
     this.editingFechaIntId = id; 
-    const item = this.data.details.find((d: { id: string }) => d.id === id);
+    const item = this.dataIntinerario.details.find((d: { id: string }) => d.id === id);
     if (item) {
-      this.tempFechaIntMap[id] = item.hora;
+      this.tempFechaIntMap[id] = item.fecha;
     }
   }
 
@@ -623,7 +652,7 @@ abrirMapa(id: string) {
 
   onClickHoraInt(id:string){
     this.editingHoraIntId = id; 
-    const item = this.data.details.find((d: { id: string }) => d.id === id);
+    const item = this.dataIntinerario.details.find((d: { id: string }) => d.id === id);
     if (item) {
       this.tempHoraIntMap[id] = item.hora;
     }
@@ -648,7 +677,7 @@ abrirMapa(id: string) {
   }
 
   @HostListener('document:keydown.escape', ['$event'])
-  onEscapeGlobal(event: KeyboardEvent) {
+  onEscape(event: KeyboardEvent) {
     if (this.editingActividadId) {
        const item = this.data.details.find((d: { id: string }) => d.id === this.editingActividadId);
        const element = document.querySelector(`[contenteditable][data-id-actividad="${this.editingActividadId}"]`) as HTMLElement;
@@ -688,5 +717,29 @@ abrirMapa(id: string) {
          this.restoreDireccion(item, element);
        }
     }
+    
+    if (this.editingActividadIntId) {
+       const item = this.dataIntinerario.details.find((d: { id: string }) => d.id === this.editingActividadIntId);
+       const element = document.querySelector(`[contenteditable][data-id-actividad-int="${this.editingActividadIntId}"]`) as HTMLElement;
+       if (item && element) {
+         this.restoreActividadInt(item, element);
+       }
+    }
+
+    if (this.editingFechaIntId) {
+       const item = this.dataIntinerario.details.find((d: { id: string }) => d.id === this.editingFechaIntId);
+       const element = document.querySelector(`[contenteditable][data-id-fecha-int="${this.editingFechaIntId}"]`) as HTMLElement;
+       if (item && element) {
+         this.restoreFechaInt(item, element);
+       }
+    }
+
+    if (this.editingHoraIntId) {
+       const item = this.dataIntinerario.details.find((d: { id: string }) => d.id === this.editingHoraIntId);
+       const element = document.querySelector(`[contenteditable][data-id-hora-int="${this.editingHoraIntId}"]`) as HTMLElement;
+       if (item && element) {
+         this.restoreHoraInt(item, element);
+       }
+    }    
   }
 }
