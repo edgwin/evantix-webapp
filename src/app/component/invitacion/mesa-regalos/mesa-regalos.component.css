@@ -1,6 +1,6 @@
 .imagen-fondo {
   position: relative;
-  height: 80vh;
+  height: auto;
   background-attachment: fixed;
   background-size: cover;
   background-position: center 2px;
@@ -131,7 +131,7 @@
 @media screen and (max-width: 767px) {
     .imagen-fondo {
       padding: 16px 12px; 
-      height: 100vh;
+      height: auto;
     }
 
     .editImage {

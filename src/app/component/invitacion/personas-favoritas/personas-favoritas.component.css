@@ -1,0 +1,186 @@
+.gallery-root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2vh 0;
+}
+
+.gallery-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden; /* 🔥 Oculta cualquier desbordamiento */
+  max-width: 100%; 
+}
+
+.gallery {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  gap: 10px;
+}
+
+.side,
+.center {  
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.center-img {
+  width: 400px;
+  height: auto;
+  border-radius: 200px;
+  object-fit: cover;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+
+.side-img {
+  width: 320px;
+  opacity: 0.6;
+  border-radius: 200px;
+  object-fit: cover;
+  transform: scale(0.8);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transition: all 0.4s ease;
+}
+
+/* NUEVO contenedor de flechas */
+.nav-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  margin-top: 15px;
+}
+
+/* Flechas */
+.nav {
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  font-size: 28px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  padding-left: 18px;
+}
+
+.nav:hover {
+  background-color: rgba(0, 0, 0, 0.85);
+  transform: scale(1.1);
+}
+
+/* Dots */
+.dots {
+  margin-top: 15px;
+  display: flex;
+  gap: 8px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.dot.active,
+.dot:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+/* ====== ANIMACIONES DE SLIDE ====== */
+.gallery {
+  position: relative;
+}
+
+.gallery.slide-right .center-img,
+.gallery.slide-right .side-img {
+  animation: slideRight 3s ease;
+}
+
+.gallery.slide-left .center-img,
+.gallery.slide-left .side-img {
+  animation: slideLeft 3s ease;
+}
+
+.image-description {
+  margin-top: 15px;
+  font-size: 1.8rem;
+  color: #000000;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  max-width: 400px;
+  line-height: 1.4;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  min-height: 90px;
+  height: auto;
+}
+
+@keyframes slideRight {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  49% {
+    transform: translateX(-100%);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateX(100%);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideLeft {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  49% {
+    transform: translateX(100%);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateX(-100%);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+
+/* Responsivo */
+@media screen and (max-width: 768px) {
+  .center-img {
+    width: 280px;
+  }
+
+  .side-img {
+    width: 220px;
+  }
+
+  .nav-container {
+    gap: 30px;
+  }
+
+  .nav {
+    width: 36px;
+    height: 36px;
+    font-size: 20px;
+    padding-left: 15px;
+  }
+}
+

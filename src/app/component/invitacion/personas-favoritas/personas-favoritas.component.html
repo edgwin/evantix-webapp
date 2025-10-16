@@ -1,0 +1,59 @@
+<div
+[ngStyle]="{
+       'background-image': 'url(../../../../assets/background.jpg)',
+       'background-size': 'cover',
+       'background-position': 'center',
+       'background-repeat': 'no-repeat',
+       'padding-top': '2vh',
+       'padding-bottom': '2vh'
+     }"
+>
+<div class="container">
+  <div class="row">
+    <div class="text-center editableTitulo">
+       {{data.titulo}}
+    </div>
+    <div class="text-center fh5co-heading descripcion-container"
+      contenteditable="true"
+      >
+          <p>{{data.frase}}</p>
+    </div>
+  </div>
+</div>
+<section class="gallery-root" (pointerdown)="onPointerDown($event)" (pointerup)="onPointerUp($event)">
+  <div class="gallery-container">
+  <div class="gallery" [ngClass]="animationDirection">
+    <div class="side left">
+      <img [src]="prevImg()" alt="prev" class="side-img left-img" />
+    </div>
+
+    <div class="center">
+      <img [src]="currentImg()" alt="current" class="center-img" />
+      <div class="image-description" *ngIf="currentParentesco()">
+        {{ currentParentesco() }}
+      </div>
+      <div class="image-description" *ngIf="currentNombres()">
+        {{ currentNombres() }}
+      </div>
+    </div>
+
+    <div class="side right">
+      <img [src]="nextImg()" alt="next" class="side-img right-img" />
+    </div>
+  </div>
+
+  <div class="nav-container">
+    <button class="nav" (click)="prev()">‹</button>
+    <button class="nav" (click)="next()">›</button>
+  </div>
+
+  <div class="dots" *ngIf="data?.details > 1">
+    <button
+      class="dot"
+      *ngFor="let _ of data?.details; let i = index"
+      [class.active]="i === currentIndexValue"
+      (click)="goTo(i)"
+    ></button>
+  </div>
+</div>
+</section>

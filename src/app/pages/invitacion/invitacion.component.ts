@@ -8,13 +8,15 @@ import { DondeCuandoComponent } from '../../component/invitacion/donde-cuando/do
 import { InvitationService } from '../../services/invitation.service';
 import { NotificationService } from '../../services/notification.service';
 import { MesaRegalosComponent } from '../../component/invitacion/mesa-regalos/mesa-regalos.component';
+import { PersonasFavoritasComponent } from '../../component/invitacion/personas-favoritas/personas-favoritas.component';
 
 @Component({
   selector: 'app-invitacion',
   standalone: true,
   templateUrl: './invitacion.component.html',
   styleUrl: './invitacion.component.css',
-  imports: [PortadaComponent, CommonModule, FestejadosComponent, DondeCuandoComponent, IndicacionesComponent, MesaRegalosComponent],
+  imports: [PortadaComponent, CommonModule, FestejadosComponent, DondeCuandoComponent, IndicacionesComponent, 
+            MesaRegalosComponent, PersonasFavoritasComponent],
 })
 
 export class InvitacionComponent {
