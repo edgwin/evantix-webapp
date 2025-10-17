@@ -17,6 +17,7 @@ export class InvitationService {
   private getIndicaciones = 'Indicaciones/';
   private newIntinerario = 'Intinerario/';
   private getMesa = 'MesaRegalos/';
+  private getPersonasFavoritas = 'PersonasFavoritas/';
 
   guardarInvitacion(data: FormData): Observable<any> {
       const token = localStorage.getItem('access_token');
@@ -125,5 +126,10 @@ export class InvitationService {
   postNewMesa(eventId:string){
     const url = `${this.apiUrl}${this.getInvitationData}${this.getMesa}${eventId}`;
     return this.http.post(url, eventId);
+  }
+
+  getPersonasFavoritasData(eventId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.getPersonasFavoritas}${eventId}`;
+    return this.http.get(url);
   }
 }

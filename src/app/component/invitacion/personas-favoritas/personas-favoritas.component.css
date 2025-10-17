@@ -3,6 +3,8 @@
   justify-content: center;
   align-items: center;
   padding: 2vh 0;
+  touch-action: pan-y; /* 🔥 permite swipe horizontal sin interferir con scroll */
+  -ms-touch-action: pan-y;
 }
 
 .gallery-container {
@@ -12,6 +14,7 @@
   position: relative;
   overflow: hidden; /* 🔥 Oculta cualquier desbordamiento */
   max-width: 100%; 
+  touch-action: none;
 }
 
 .gallery {
@@ -20,6 +23,7 @@
   justify-content: center;
   overflow: hidden;
   gap: 10px;
+  padding-bottom: 20px;
 }
 
 .side,
@@ -110,7 +114,7 @@
   animation: slideLeft 3s ease;
 }
 
-.image-description {
+.image-parentesco {
   margin-top: 15px;
   font-size: 1.8rem;
   color: #000000;
@@ -121,6 +125,42 @@
   text-shadow: 0 1px 4px rgba(0,0,0,0.6);
   min-height: 90px;
   height: auto;
+}
+
+.image-nombre {
+  margin-top: 15px;
+  font-size: 1.8rem;
+  color: #000000;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  max-width: 400px;
+  line-height: 1.4;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  min-height: 130px;
+  height: auto;
+}
+
+.gallery-descriptions {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.edit-image-btn-PF{
+  position: absolute;
+  top: 5px;
+  right: calc(50% - 150px); /* 👈 centrado relativo a la imagen */
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  z-index: 101;
+}
+
+.edit-image-btn-PF:hover{
+  transform: scale(1.1);
 }
 
 @keyframes slideRight {
@@ -173,7 +213,7 @@
   }
 
   .nav-container {
-    gap: 30px;
+     display: none !important;
   }
 
   .nav {

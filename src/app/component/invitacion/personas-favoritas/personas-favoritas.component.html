@@ -1,59 +1,102 @@
 <div
-[ngStyle]="{
-       'background-image': 'url(../../../../assets/background.jpg)',
-       'background-size': 'cover',
-       'background-position': 'center',
-       'background-repeat': 'no-repeat',
-       'padding-top': '2vh',
-       'padding-bottom': '2vh'
-     }"
+  [ngStyle]="{
+    'background-image': 'url(../../../../assets/background.jpg)',
+    'background-size': 'cover',
+    'background-position': 'center',
+    'background-repeat': 'no-repeat',
+    'padding-top': '2vh',
+    'padding-bottom': '2vh'
+  }"
 >
-<div class="container">
-  <div class="row">
-    <div class="text-center editableTitulo">
-       {{data.titulo}}
-    </div>
-    <div class="text-center fh5co-heading descripcion-container"
-      contenteditable="true"
+  <!-- ====== ENCABEZADO ====== -->
+  <div class="container">
+    <div class="row">
+      <div class="text-center editableTitulo"
+        contenteditable="true"
+        (click)="onClickTituloPF()"
+        (keydown)="onKeyDownPF($event, 50)"
+        (blur)="onTituloBlur($event)"
       >
-          <p>{{data.frase}}</p>
-    </div>
-  </div>
-</div>
-<section class="gallery-root" (pointerdown)="onPointerDown($event)" (pointerup)="onPointerUp($event)">
-  <div class="gallery-container">
-  <div class="gallery" [ngClass]="animationDirection">
-    <div class="side left">
-      <img [src]="prevImg()" alt="prev" class="side-img left-img" />
-    </div>
-
-    <div class="center">
-      <img [src]="currentImg()" alt="current" class="center-img" />
-      <div class="image-description" *ngIf="currentParentesco()">
-        {{ currentParentesco() }}
+        {{ data.titulo }}
       </div>
-      <div class="image-description" *ngIf="currentNombres()">
-        {{ currentNombres() }}
+      <div
+        class="text-center fh5co-heading descripcion-container"
+        contenteditable="true"
+        (click)="onClickFrasePF()"
+        (keydown)="onKeyDownPF($event, 120)"
+        (blur)="onFraseBlur($event)"
+      >
+        <p>{{ data.frase }}</p>
       </div>
     </div>
+  </div>
 
-    <div class="side right">
-      <img [src]="nextImg()" alt="next" class="side-img right-img" />
+  <!-- ====== GALERÍA ====== -->
+  <section
+    class="gallery-root"
+    (pointerdown)="onPointerDown($event)"
+    (pointermove)="onPointerMove($event)"
+    (pointerup)="onPointerUp($event)"
+    (pointercancel)="onPointerUp($event)"
+  >
+    <div
+      class="gallery-container"
+      (mouseleave)="resumeAutoplayWithDelay()"
+    >
+      <!-- 🔹 Galería de imágenes -->
+      <div class="gallery" [ngClass]="animationDirection">
+        <div class="side left">
+          <img [src]="prevImg()" alt="prev" class="side-img left-img" />
+        </div>
+        <img src="../../../../assets/editarImagen.png" 
+                                alt="editar imagen" 
+                                class="edit-image-btn-PF"
+                                title="Click para editar icono"                                
+                            >
+        <div class="center">
+          <img
+            [src]="currentImg()"
+            alt="current"
+            class="center-img"
+          />
+        </div>
+
+        <div class="side right">
+          <img [src]="nextImg()" alt="next" class="side-img right-img" />
+        </div>
+      </div>
+
+      <!-- ====== DESCRIPCIONES ====== -->
+      <div class="gallery-descriptions">
+        <div
+          class="image-parentesco"
+          *ngIf="currentParentesco()"
+        >
+          {{ currentParentesco() }}
+        </div>
+
+        <div
+          class="image-nombre"
+          *ngIf="currentNombres()"
+        >
+          {{ currentNombres() }}
+        </div>
+      </div>
+
+      <!-- ====== NAVEGACIÓN ====== -->
+      <div class="nav-container">
+        <button class="nav" (click)="prev()">‹</button>
+        <button class="nav" (click)="next()">›</button>
+      </div>
+
+      <div class="dots" *ngIf="data?.details?.length > 1">
+        <button
+          class="dot"
+          *ngFor="let _ of data?.details; let i = index"
+          [class.active]="i === currentIndexValue"
+          (click)="goTo(i)"
+        ></button>
+      </div>
     </div>
-  </div>
-
-  <div class="nav-container">
-    <button class="nav" (click)="prev()">‹</button>
-    <button class="nav" (click)="next()">›</button>
-  </div>
-
-  <div class="dots" *ngIf="data?.details > 1">
-    <button
-      class="dot"
-      *ngFor="let _ of data?.details; let i = index"
-      [class.active]="i === currentIndexValue"
-      (click)="goTo(i)"
-    ></button>
-  </div>
+  </section>
 </div>
-</section>

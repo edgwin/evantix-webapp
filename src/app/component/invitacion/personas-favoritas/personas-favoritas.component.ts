@@ -1,113 +1,206 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, HostListener, signal } from '@angular/core';
+import { Component, Input, HostListener, signal, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { InvitationService } from '../../../services/invitation.service';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-personas-favoritas',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './personas-favoritas.component.html',  
+  templateUrl: './personas-favoritas.component.html',
   styleUrls: ['./../invitacion.component.css', './personas-favoritas.component.css']
 })
-export class PersonasFavoritasComponent {
+export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDestroy {
+  constructor(private invitationService: InvitationService,private notificationService: NotificationService)
+  {}
+  @Input() eventId: string = '';
   @Input() data: any;
-
-  /** Altura del componente (puedes pasar '60vh', '400px', etc.) */
   @Input() height = '60vh';
-  images: string[] = [];
-  
-  get currentIndexValue(): number {
-    return this.currentIndex();
-  }
+  images: any[] = [];
+  editingTituloPF: boolean = false;
+  tempTituloPF: string = '';
 
-  ngOnInit(){
-    this.images = this.data.details
-  }
+  editingFrasePF: boolean = false;
+  tempFrasePF: string = '';
+  loading: boolean = false;
 
   private _index = signal(0);
-  //currentIndex = this._index; // alias para plantillas si se requiere
 
-  // swipe handling
-  private pointerStartX: number | null = null;
-  private pointerEndX: number | null = null;
+  // swipe state
+  private pointerId: number | null = null;
+  private startX: number | null = null;
+  private lastX: number | null = null;
+  private pointerMoved = false;
 
-  // --- Helpers para índices (infinito usando modulo)
+  // autoplay
+  private autoplayIntervalId: any = null;
+  autoplayDelay = 3000; // ms
+  autoplayEnabled = true;
+  animationDirection: 'left' | 'right' | '' = '';
+
+  ngOnInit() {
+    this.images = this.data?.details || [];
+  }
+
+  cargarDatosPF() {
+    this.loading = true;
+    if (!this.eventId) return;
+
+    this.invitationService.getPersonasFavoritasData(this.eventId).subscribe({
+      next: (res) => {
+        this.data = res;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.notificationService.show(
+          'error',
+          `Hubo un error favor intentar más tarde ${err.message}`
+        );
+        this.loading = false;
+      }
+    });
+  }
+
+  ngAfterViewInit() {
+    this.startAutoplayIfNeeded();
+  }
+
+  ngOnDestroy() {
+    this.stopAutoplay();
+  }
+
+  // ---------- index helpers ----------
   currentIndex(): number {
-    const n = this.data?.details.length || 0;
+    const n = this.images?.length || 0;
     if (n === 0) return 0;
     return ((this._index()) % n + n) % n;
   }
 
+  get currentIndexValue(): number {
+    return this.currentIndex();
+  }
+
   prevImg(): string {
-    const n = this.data?.details.length || 0;
+    const n = this.images?.length || 0;
     if (n === 0) return '';
     const idx = (this.currentIndex() - 1 + n) % n;
-    return this.data?.details[idx].foto;
+    return this.images[idx]?.foto || '';
   }
 
   nextImg(): string {
-    const n = this.data?.details.length || 0;
+    const n = this.images?.length || 0;
     if (n === 0) return '';
     const idx = (this.currentIndex() + 1) % n;
-    return this.data?.details[idx].foto;
+    return this.images[idx]?.foto || '';
   }
 
   currentImg(): string {
-    const n = this.data?.details.length || 0;
-    if (n === 0) return '';    
-    return this.data?.details[this.currentIndex()].foto;
+    const n = this.images?.length || 0;
+    if (n === 0) return '';
+    return this.images[this.currentIndex()]?.foto || '';
   }
 
-  // Navegación pública
-  animationDirection: 'left' | 'right' | '' = '';
-  next() {
+  // ---------- navigation ----------
+  private scheduleIndexUpdate(delta: number) {
     const n = this.images.length || 0;
     if (n === 0) return;
+    if (delta > 0) {
+      this.animationDirection = 'right';
+      setTimeout(() => {
+        this._index.update(i => (i + 1) % n);
+        this.animationDirection = '';
+      }, 400);
+    } else if (delta < 0) {
+      this.animationDirection = 'left';
+      setTimeout(() => {
+        this._index.update(i => (i - 1 + n) % n);
+        this.animationDirection = '';
+      }, 400);
+    }
+  }
 
-    this.animationDirection = 'right';
-    setTimeout(() => {
-      this._index.update(i => (i + 1) % n);
-      this.animationDirection = '';
-    }, 400);
+  next() {
+    this.pauseAutoplay();
+    this.scheduleIndexUpdate(1);
+    this.resumeAutoplayWithDelay();
   }
 
   prev() {
-    const n = this.images.length || 0;
-    if (n === 0) return;
-
-    this.animationDirection = 'left';
-    setTimeout(() => {
-      this._index.update(i => (i - 1 + n) % n);
-      this.animationDirection = '';
-    }, 400);
+    this.pauseAutoplay();
+    this.scheduleIndexUpdate(-1);
+    this.resumeAutoplayWithDelay();
   }
 
   goTo(idx: number) {
+    this.pauseAutoplay();
     this._index.set(idx);
+    this.resumeAutoplayWithDelay();
   }
 
-  // teclado
+  // ---------- keyboard ----------
   @HostListener('window:keydown', ['$event'])
   onKeydown(e: KeyboardEvent) {
-    if ((e.target as HTMLElement)?.tagName === 'INPUT' || (e.target as HTMLElement)?.isContentEditable) {
-      return; // no interferir con inputs
-    }
-    if (e.key === 'ArrowLeft') { this.prev(); }
-    if (e.key === 'ArrowRight') { this.next(); }
+    if ((e.target as HTMLElement)?.tagName === 'INPUT' || (e.target as HTMLElement)?.isContentEditable) return;
+    if (e.key === 'ArrowLeft') this.prev();
+    if (e.key === 'ArrowRight') this.next();
   }
 
-  // swipe (pointer events)
+  // ---------- pointer / swipe handlers ----------
+  // In your template you already have: (pointerdown)="onPointerDown($event)" (pointerup)="onPointerUp($event)"
   onPointerDown(ev: PointerEvent) {
-    this.pointerStartX = ev.clientX;
+    // capture pointer to follow moves reliably
+    try {
+      (ev.target as Element)?.setPointerCapture?.(ev.pointerId);
+    } catch {}
+    this.pointerId = ev.pointerId;
+    this.startX = ev.clientX;
+    this.lastX = ev.clientX;
+    this.pointerMoved = false;
+    this.pauseAutoplay();
   }
+
+  onPointerMove(ev: PointerEvent) {
+    if (this.pointerId !== ev.pointerId) return;
+    this.lastX = ev.clientX;
+    if (this.startX == null) return;
+    const diff = ev.clientX - this.startX;
+    if (Math.abs(diff) > 10) this.pointerMoved = true;
+  }
+
   onPointerUp(ev: PointerEvent) {
-    if (this.pointerStartX == null) { this.pointerStartX = null; return; }
-    this.pointerEndX = ev.clientX;
-    const diff = this.pointerEndX - this.pointerStartX;
-    const threshold = 30; // px
-    if (diff > threshold) { this.prev(); }
-    else if (diff < -threshold) { this.next(); }
-    this.pointerStartX = null;
-    this.pointerEndX = null;
+    try {
+      (ev.target as Element)?.releasePointerCapture?.(ev.pointerId);
+    } catch {}
+    if (this.pointerId !== ev.pointerId) {
+      this.resetPointerState();
+      return;
+    }
+
+    if (this.startX == null) {
+      this.resetPointerState();
+      return;
+    }
+
+    const diff = (this.lastX ?? ev.clientX) - this.startX;
+    const threshold = 40; // swipe threshold px
+    if (diff > threshold) {
+      // swipe right -> previous image
+      this.scheduleIndexUpdate(-1);
+    } else if (diff < -threshold) {
+      // swipe left -> next image
+      this.scheduleIndexUpdate(1);
+    } else {
+      // tap/click — do nothing (or optionally treat as click on center)
+    }
+
+    this.resetPointerState();
+    this.resumeAutoplayWithDelay();
+  }
+
+   currentNombres(): string {
+    const n = this.data?.details.length || 0;
+    if (n === 0) return '';
+    return this.data?.details[this.currentIndex()]?.nombres || '';
   }
 
   currentParentesco(): string {
@@ -115,10 +208,116 @@ export class PersonasFavoritasComponent {
     if (n === 0) return '';
     return this.data?.details[this.currentIndex()]?.parentesco || '';
   }
+  
+  resetPointerState() {
+    this.pointerId = null;
+    this.startX = null;
+    this.lastX = null;
+    this.pointerMoved = false;
+  }
 
-  currentNombres(): string {
-    const n = this.data?.details.length || 0;
-    if (n === 0) return '';
-    return this.data?.details[this.currentIndex()]?.nombres || '';
+  // ---------- autoplay ----------
+  startAutoplayIfNeeded() {
+    if (!this.autoplayEnabled) return;
+    const n = this.images.length || 0;
+    if (n <= 1) return;
+    this.stopAutoplay();
+    this.autoplayIntervalId = setInterval(() => {
+      // advance one
+      this.animationDirection = 'right';
+      const nLocal = this.images.length || 0;
+      if (nLocal === 0) return;
+      this._index.update(i => (i + 1) % nLocal);
+      // clear animation after duration (matches CSS)
+      setTimeout(() => this.animationDirection = '', 400);
+    }, this.autoplayDelay);
+  }
+
+  stopAutoplay() {
+    if (this.autoplayIntervalId) {
+      clearInterval(this.autoplayIntervalId);
+      this.autoplayIntervalId = null;
+    }
+  }
+
+  pauseAutoplay() {
+    this.stopAutoplay();
+  }
+
+  resumeAutoplayWithDelay(delay = 2000) {
+    // restart autoplay after short delay (so user sees change)
+    this.stopAutoplay();
+    if (!this.autoplayEnabled) return;
+    this.autoplayIntervalId = setTimeout(() => this.startAutoplayIfNeeded(), delay);
+  }
+
+  onKeyDownPF(event: KeyboardEvent | any, maxLength:number) {
+    const key = (event as KeyboardEvent).key;
+    if (key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
+      event.preventDefault();
+      (event.target as HTMLElement).blur(); // dispara onActividadBlur y guarda
+      return;
+    }
+    const el = event.target as HTMLElement;
+    const text = el.innerText || '';
+
+    // permite borrar, mover cursor, etc.
+    const controlKeys = [
+      'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight',
+      'ArrowUp', 'ArrowDown', 'Tab'
+    ];
+
+    if (text.length >= maxLength && !controlKeys.includes(event.key)) {
+      event.preventDefault(); // bloquea más escritura
+    }
+    (event.target as HTMLElement).click();
+  }
+
+  onClickTituloPF(){
+    this.editingTituloPF = true; 
+    this.tempTituloPF = this.data.titulo; // 🔹 Guardamos el valor original
+  }
+
+  onTituloBlur(event: Event){
+    const el = event.target as HTMLElement;
+    const nuevoTexto = el.innerText.trim();
+
+    // si cambió, guardamos y llamamos backend
+    if (nuevoTexto !== this.data.titulo) {
+      this.data.titulo = nuevoTexto;      
+      this.updateBackend('PersonasFavoritasMaster','IdEvento',this.eventId, 'Titulo', this.data.titulo);
+    }
+  }
+
+  onClickFrasePF(){
+    this.editingFrasePF = true; 
+    this.tempFrasePF = this.data.frase; // 🔹 Guardamos el valor original
+  }
+
+  onFraseBlur(event: Event){
+    const el = event.target as HTMLElement;
+    const nuevoTexto = el.innerText.trim();
+
+    // si cambió, guardamos y llamamos backend
+    if (nuevoTexto !== this.data.frase) {
+      this.data.frase = nuevoTexto;      
+      this.updateBackend('PersonasFavoritasMaster','IdEvento',this.eventId, 'Frase', this.data.frase);
+    }
+  }
+
+  updateBackend(tableName:string, searchField: string, eventId:string, field:string, value: string, loadData: boolean = false) {    
+    this.invitationService.updateTableField(tableName, searchField, eventId, field, value).subscribe({
+      next: () => { 
+        if (loadData){
+          this.cargarDatosPF();
+        }
+      },
+      error: (err) => {
+        this.notificationService.show(
+          'error',
+          `Error al actualizar ${field}: ${err.message}`
+        );
+      }
+    });
   }
 }
