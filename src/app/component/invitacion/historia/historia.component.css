@@ -1,0 +1,262 @@
+.gallery-root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2vh 0;
+  touch-action: pan-y; /* 🔥 permite swipe horizontal sin interferir con scroll */
+  -ms-touch-action: pan-y;
+}
+
+.gallery-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden; /* 🔥 Oculta cualquier desbordamiento */
+  max-width: 100%; 
+  touch-action: none;
+}
+
+.gallery {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  gap: 10px;
+  padding-bottom: 20px;
+}
+
+.side,
+.center {  
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.center-img {
+  width: 400px;
+  height: 400px;
+  max-width: 400px;
+  max-height: 400px;
+  height: auto;
+  border-radius: 200px;
+  object-fit: cover;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);  
+}
+
+.side-img {
+  width: 320px;
+  height: 320px;
+  max-width: 320px;
+  max-height: 320px;
+  opacity: 0.6;
+  border-radius: 200px;
+  object-fit: cover;
+  transform: scale(0.8);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transition: all 0.4s ease;  
+}
+
+/* NUEVO contenedor de flechas */
+.nav-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  margin-top: 15px;
+}
+
+/* Flechas */
+.nav {
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  font-size: 28px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  padding-left: 18px;
+}
+
+.nav:hover {
+  background-color: rgba(0, 0, 0, 0.85);
+  transform: scale(1.1);
+}
+
+/* Dots */
+.dots {
+  margin-top: 15px;
+  display: flex;
+  gap: 8px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.dot.active,
+.dot:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+/* ====== ANIMACIONES DE SLIDE ====== */
+.gallery {
+  position: relative;
+}
+
+.gallery.slide-right .center-img,
+.gallery.slide-right .side-img {
+  animation: slideRight 3s ease;
+}
+
+.gallery.slide-left .center-img,
+.gallery.slide-left .side-img {
+  animation: slideLeft 3s ease;
+}
+
+.image-parentesco {
+  margin-top: 15px;
+  font-size: 1.8rem;
+  color: #000000;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  max-width: 400px;
+  line-height: 1.4;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);  
+  height: auto;
+}
+
+.image-nombre {
+  margin-top: 15px;
+  font-size: 1.8rem;
+  color: #000000;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  max-width: 400px;
+  line-height: 1.4;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  min-height: 130px;
+  height: auto;
+}
+
+.gallery-descriptions {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.edit-image-btn-PF{
+  position: absolute;
+  top: 5px;
+  right: calc(50% - 150px); /* 👈 centrado relativo a la imagen */
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  z-index: 101;
+}
+
+.edit-image-btn-PF:hover{
+  transform: scale(1.1);
+}
+
+.loaderImg {
+  border: 8px solid rgba(0, 0, 0, 0.1);
+  border-top: 8px solid #ff0000;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  background: transparent;
+  position: absolute;
+  top: 0.4vw;
+  left: 36vw;
+  z-index: 9999;
+}
+
+.frase{
+  width: 50%;
+  margin: 0 auto;
+  font-size: 18px;
+  line-height: 1.5;
+  color: #828282;
+}
+
+@keyframes slideRight {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  49% {
+    transform: translateX(-100%);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateX(100%);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideLeft {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  49% {
+    transform: translateX(100%);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateX(-100%);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+
+/* Responsivo */
+@media screen and (max-width: 768px) {
+  .center-img {
+    width: 280px;
+  }
+
+  .side-img {
+    width: 220px;
+  }
+
+  .nav-container {
+     display: none !important;
+  }
+
+  .nav {
+    width: 36px;
+    height: 36px;
+    font-size: 20px;
+    padding-left: 15px;
+  }
+
+  .edit-image-btn-PF{
+    right: calc(50% - 105px);
+  }
+
+  .loaderImg {
+    top: 0.4vw;
+    left: 10vw;
+  }
+}
+

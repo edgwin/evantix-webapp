@@ -9,6 +9,7 @@ import { InvitationService } from '../../services/invitation.service';
 import { NotificationService } from '../../services/notification.service';
 import { MesaRegalosComponent } from '../../component/invitacion/mesa-regalos/mesa-regalos.component';
 import { PersonasFavoritasComponent } from '../../component/invitacion/personas-favoritas/personas-favoritas.component';
+import { HistoriaComponent } from '../../component/invitacion/historia/historia.component';
 
 @Component({
   selector: 'app-invitacion',
@@ -16,7 +17,7 @@ import { PersonasFavoritasComponent } from '../../component/invitacion/personas-
   templateUrl: './invitacion.component.html',
   styleUrl: './invitacion.component.css',
   imports: [PortadaComponent, CommonModule, FestejadosComponent, DondeCuandoComponent, IndicacionesComponent, 
-            MesaRegalosComponent, PersonasFavoritasComponent],
+            MesaRegalosComponent, PersonasFavoritasComponent, HistoriaComponent],
 })
 
 export class InvitacionComponent {
