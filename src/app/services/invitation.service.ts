@@ -18,6 +18,7 @@ export class InvitationService {
   private newIntinerario = 'Intinerario/';
   private getMesa = 'MesaRegalos/';
   private getPersonasFavoritas = 'PersonasFavoritas/';
+  private historia = 'Historia/'
 
   guardarInvitacion(data: FormData): Observable<any> {
       const token = localStorage.getItem('access_token');
@@ -131,5 +132,30 @@ export class InvitationService {
   getPersonasFavoritasData(eventId:string){
     const url = `${this.apiUrl}${this.getInvitationData}${this.getPersonasFavoritas}${eventId}`;
     return this.http.get(url);
+  }
+
+  postNewPersonaFavorita(eventId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.getPersonasFavoritas}${eventId}`;
+    return this.http.post(url, eventId);
+  }
+
+  deletePersonas(personaId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.getPersonasFavoritas}${personaId}`;
+    return this.http.delete(url);
+  }
+
+  postNewHistoria(eventId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.historia}${eventId}`;
+    return this.http.post(url, eventId);
+  }
+
+  getHistoria(eventId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.historia}${eventId}`;
+    return this.http.get(url);
+  }
+
+  deleteHistoria(personaId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.historia}${personaId}`;
+    return this.http.delete(url);
   }
 }

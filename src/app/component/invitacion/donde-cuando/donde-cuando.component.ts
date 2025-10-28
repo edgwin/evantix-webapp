@@ -442,7 +442,7 @@ export class DondeCuandoComponent {
       const file = event.target.files[0];
       if (file) {
         this.loadingImg = true;
-        this.uploadBKImage('DondeCuandoMaster','  IdEvento', this.eventId, 'Imagen', file);
+        this.uploadBKImage('DondeCuandoMaster','IdEvento', this.eventId, 'Imagen', file);
       }
     };
     input.click();
@@ -625,7 +625,7 @@ abrirMapa(id: string) {
     }
 
     // salimos del modo edición
-    this.editingDireccionId = null;
+    this.editingActividadIntId = null;
   }
 
   onClickFechaInt(id:string){
@@ -647,7 +647,7 @@ abrirMapa(id: string) {
     }
 
     // salimos del modo edición
-    this.editingDireccionId = null;
+    this.editingFechaIntId = null;
   }
 
   onClickHoraInt(id:string){
@@ -669,7 +669,7 @@ abrirMapa(id: string) {
     }
 
     // salimos del modo edición
-    this.editingDireccionId = null;
+    this.editingHoraIntId = null;
   }
 
   showAddBtn(){ 

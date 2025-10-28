@@ -1965,7 +1965,7 @@ form label {
 
 .addNewDC {
   text-align: center;
-  margin-top: 1vw;  
+  margin-top: 2vw;  
 }
 
 @media screen and (min-width: 200px) and (max-width: 767px) {
@@ -2152,7 +2152,7 @@ form label {
       text-shadow: 1px 1px 2px black;
   }  
 
-  .loaderFestejados {
+  /* .loaderFestejados {
     border: 8px solid rgba(0, 0, 0, 0.1);
     border-top: 8px solid #ff0000;
     border-radius: 50%;
@@ -2163,7 +2163,7 @@ form label {
     position: absolute;
     right: 25vw;
     top: 3vw;
-  }
+  } */
 
   .edit-imageDC-btn {
     position: absolute;

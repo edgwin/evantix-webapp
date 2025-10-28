@@ -1,13 +1,12 @@
 <div class="popup-backdrop" *ngIf="visible">
   <div class="popup-container" (click)="$event.stopPropagation()">
     <div class="popup-header">
-      <h2>{{ title }}</h2>
-      <button class="close-btn" (click)="close()">✕</button>
+      <div><h2>{{ title }}</h2></div>
     </div>
 
     <div class="popup-content">
       <!-- Si tenemos imágenes, mostramos el carrusel Angular -->
-      <ng-container *ngIf="images?.length as total; else rawHtml">
+      <ng-container *ngIf="images?.length as total; else editHtml">
         <div class="carousel" *ngIf="total > 0">
           <button class="nav prev" (click)="prev()">&#10094;</button>
 
@@ -36,9 +35,43 @@
       </ng-container>
 
       <!-- Fallback: usamos innerHTML (legacy) -->
+
+       <ng-template #editHtml>
+        <ng-container *ngIf="personasFavoritasEdit; else rawHtml">
+            <img src="../../../../assets/editarImagen.png" 
+                                alt="editar imagen" 
+                                class="edit-image-btn-PF"
+                                title="Click para editar icono"  
+                                (click)="triggerImageUpload()"
+                                *ngIf="!loadingImg"
+                            >
+            <div class="loader" *ngIf="loadingImg"></div>
+            <div>
+              <img [src] = "imagenPF" class="img"/>              
+            </div>
+            <div contenteditable="true"
+              (click)="onClickParentesco()"
+              (keydown)="onKeyDown($event, 80)"
+              (blur)="onParentescoBlur($event)" 
+            >
+              {{parentescoPF}}
+            </div>
+            <div 
+            contenteditable="true"
+            (click)="onClickNombres()"
+            (keydown)="onKeyDown($event, 150)"
+            (blur)="onNombresBlur($event)" 
+            >{{nombresPF}}</div>
+            <div class="buttons">
+              <button (click)="close()">Cerrar</button>
+              <button (click)="deletePersonaFavorita()">Eliminar</button>
+            </div>
+        </ng-container>        
+      </ng-template>
+
       <ng-template #rawHtml>
         <div class="raw-html" [innerHTML]="htmlContent"></div>
-      </ng-template>
+      </ng-template>      
     </div>
   </div>
 

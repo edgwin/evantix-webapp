@@ -2,11 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, HostListener, signal, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
+import { PopupHtmlComponent } from '../../popup-html/popup-html.component';
 
 @Component({
   selector: 'app-personas-favoritas',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, PopupHtmlComponent],
   templateUrl: './personas-favoritas.component.html',
   styleUrls: ['./../invitacion.component.css', './personas-favoritas.component.css']
 })
@@ -15,14 +16,24 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
   {}
   @Input() eventId: string = '';
   @Input() data: any;
+  @Input() dataHistoria: any;
   @Input() height = '60vh';
   images: any[] = [];
   editingTituloPF: boolean = false;
   tempTituloPF: string = '';
+  showPopup: boolean = false;
+  loadingImgs: { [key: string]: boolean } = {};
 
   editingFrasePF: boolean = false;
   tempFrasePF: string = '';
   loading: boolean = false;
+
+  editingTituloHistoria: boolean = false;
+  tempTituloHistoria: string = '';
+  editingFechaHistoriaId: string | null = null;
+  tempFechaHistoriaMap: { [id: string]: string } = {};
+  editingDescHistoriaId: string | null = null;
+  tempDescHistoriaMap: { [id: string]: string } = {};
 
   private _index = signal(0);
 
@@ -38,18 +49,46 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
   autoplayEnabled = true;
   animationDirection: 'left' | 'right' | '' = '';
 
+  currentImagen4Popup: string | null = null;
+  currentNombre4Popup: string | null = null;
+  currentParentesco4Popup: string | null = null;
+  currentId4Popup: string = "";
+
   ngOnInit() {
     this.images = this.data?.details || [];
   }
 
-  cargarDatosPF() {
+  cargarDatosPF(gotoNew:boolean = false) {
     this.loading = true;
     if (!this.eventId) return;
 
     this.invitationService.getPersonasFavoritasData(this.eventId).subscribe({
       next: (res) => {
         this.data = res;
+        this.images = this.data?.details || [];
         this.loading = false;
+        if (gotoNew){
+          this.goTo(this.data.details.length - 1);
+        }
+      },
+      error: (err) => {
+        this.notificationService.show(
+          'error',
+          `Hubo un error favor intentar más tarde ${err.message}`
+        );
+        this.loading = false;
+      }
+    });
+  }
+
+  cargarDatosHistoria() {
+    this.loading = true;
+    if (!this.eventId) return;
+
+    this.invitationService.getHistoria(this.eventId).subscribe({
+      next: (res) => {
+        this.dataHistoria = res;
+        this.loading = false;        
       },
       error: (err) => {
         this.notificationService.show(
@@ -197,7 +236,13 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
     this.resumeAutoplayWithDelay();
   }
 
-   currentNombres(): string {
+  currentImage(): string {
+    const n = this.data?.details.length || 0;
+    if (n === 0) return '';
+    return this.data?.details[this.currentIndex()]?.foto || '';
+  }
+
+  currentNombres(): string {
     const n = this.data?.details.length || 0;
     if (n === 0) return '';
     return this.data?.details[this.currentIndex()]?.nombres || '';
@@ -207,6 +252,12 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
     const n = this.data?.details.length || 0;
     if (n === 0) return '';
     return this.data?.details[this.currentIndex()]?.parentesco || '';
+  }
+
+  currentId(): string {
+    const n = this.data?.details.length || 0;
+    if (n === 0) return '';
+    return this.data?.details[this.currentIndex()]?.id || '';
   }
   
   resetPointerState() {
@@ -251,7 +302,7 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
     this.autoplayIntervalId = setTimeout(() => this.startAutoplayIfNeeded(), delay);
   }
 
-  onKeyDownPF(event: KeyboardEvent | any, maxLength:number) {
+  onKeyDown(event: KeyboardEvent | any, maxLength:number) {
     const key = (event as KeyboardEvent).key;
     if (key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
       event.preventDefault();
@@ -319,5 +370,241 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
         );
       }
     });
+  }
+
+  onOpenPopup() {
+    this.currentImagen4Popup = this.currentImage();
+    this.currentNombre4Popup = this.currentNombres();
+    this.currentParentesco4Popup = this.currentParentesco();
+    this.currentId4Popup = this.currentId();
+    this.showPopup = true;
+  }
+
+  onClosePopup() {
+    this.showPopup = false;
+    this.cargarDatosPF();
+  }
+
+  addNewPersonaFavorita(){
+    this.invitationService.postNewPersonaFavorita(this.eventId).subscribe({
+      next: (res) => {
+        this.cargarDatosPF(true);
+      },
+      error: (err) => {
+        this.notificationService.show(
+          'error',
+          `Hubo un error favor intentar más tarde ${err.message}`
+        );
+        this.loading = false;
+      }
+    });
+  }
+
+  onClickTituloHistoria(){    
+    this.editingTituloHistoria = true; 
+    this.tempTituloHistoria = this.dataHistoria.titulo; // 🔹 Guardamos el valor original
+  }
+
+  onTituloHistoriaBlur(event: Event){
+    const el = event.target as HTMLElement;
+    const nuevoTexto = el.innerText.trim();
+
+    // si cambió, guardamos y llamamos backend
+    if (nuevoTexto !== this.dataHistoria.titulo) {
+      this.dataHistoria.titulo = nuevoTexto;      
+      this.updateBackend('HistoriaMaster','IdEvento',this.eventId, 'Titulo', this.dataHistoria.titulo);
+    }
+  }
+
+  restoreTituloHistoria(element: HTMLElement) {  
+    const original = this.tempTituloHistoria;
+    if (original !== undefined) {
+      element.innerText = `${original}`;
+    }
+    this.editingTituloHistoria = false;
+    element.blur();
+  }
+
+  restoreTituloPF(element: HTMLElement) {  
+    const original = this.tempTituloPF;
+    if (original !== undefined) {
+      element.innerText = `${original}`;
+    }
+    this.editingTituloPF = false;
+    element.blur();
+  }  
+
+  restoreFrasePF(element: HTMLElement) {  
+    const original = this.tempFrasePF;
+    if (original !== undefined) {
+      element.innerText = `${original}`;
+    }
+    this.editingFrasePF = false;
+    element.blur();
+  }  
+
+  onClickFechaHistoria(id:string){
+    this.editingFechaHistoriaId = id; 
+    const item = this.dataHistoria.details.find((d: { id: string }) => d.id === id);
+    if (item) {
+      this.tempFechaHistoriaMap[id] = item.fecha;
+    }
+  }
+
+  onFechaHistoriaBlur(event: Event, item: any) {
+    const el = event.target as HTMLElement;
+    const nuevoTexto = el.innerText.trim();
+
+    // si cambió, guardamos y llamamos backend
+    if (nuevoTexto !== item.fecha) {
+      item.fecha = nuevoTexto;
+      this.updateBackend('HistoriaDetail', 'Id', item.id, 'Fecha', nuevoTexto);
+    }
+
+    // salimos del modo edición
+    this.editingFechaHistoriaId = null;
+  }    
+
+  restoreFechaHistoria(item: any, element: HTMLElement) {
+    const original = this.tempFechaHistoriaMap[item.id];
+    if (original !== undefined) {
+      element.innerText = original; // restaurar en la UI
+    }
+    this.editingFechaHistoriaId = null;
+    element.blur();
+  }
+
+  onClickDescHistoria(id:string){
+    this.editingDescHistoriaId = id; 
+    const item = this.dataHistoria.details.find((d: { id: string }) => d.id === id);
+    if (item) {
+      this.tempDescHistoriaMap[id] = item.descripcion;
+    }
+  }
+
+  onDescHistoriaBlur(event: Event, item: any) {
+    const el = event.target as HTMLElement;
+    const nuevoTexto = el.innerText.trim();
+
+    // si cambió, guardamos y llamamos backend
+    if (nuevoTexto !== item.fecha) {
+      item.descripcion = nuevoTexto;
+      this.updateBackend('HistoriaDetail', 'Id', item.id, 'Descripcion', nuevoTexto);
+    }
+
+    // salimos del modo edición
+    this.editingDescHistoriaId = null;
+  }    
+
+  restoreDescHistoria(item: any, element: HTMLElement) {
+    const original = this.tempDescHistoriaMap[item.id];
+    if (original !== undefined) {
+      element.innerText = original; // restaurar en la UI
+    }
+    this.editingDescHistoriaId = null;
+    element.blur();
+  }
+
+  nuevaHistoria(){
+    this.invitationService.postNewHistoria(this.eventId).subscribe({
+      next: (res) => {
+        this.cargarDatosHistoria();
+      },
+      error: (err) => {
+        this.notificationService.show(
+          'error',
+          `Hubo un error favor intentar más tarde ${err.message}`
+        );
+        this.loading = false;
+      }
+    });
+  }
+
+  triggerImageDelete(historiaId:string) {
+    this.invitationService.deleteHistoria(historiaId).subscribe({
+        next: (res) => {
+          this.cargarDatosHistoria();
+        },
+        error: (err) => {
+          this.loadingImgs[historiaId] = false;
+          this.notificationService.show(
+            'error',
+            `Error al subir imagen: ${err.message}`
+          );
+        }
+      });
+  }
+
+  triggerImageUpload(historiaId:string) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (event: any) => {
+      const file = event.target.files[0];
+      if (file) {
+        this.loadingImgs[historiaId] = true;
+        this.uploadImage('HistoriaDetail', 'Id', historiaId, 'Imagen', file, historiaId);
+      }
+    };
+    input.click();
+  }
+  
+  uploadImage(tableName:string, searchField:string, eventId:string, field: string, file: File, historiaId:string) 
+  {
+      this.invitationService.updateTableFieldImagen(tableName, searchField, eventId, field, file).subscribe({
+        next: (res) => {
+          const url = res;
+          const item = this.dataHistoria.details.find((d: { id: string; }) => d.id === historiaId);
+          if (item) {
+             item.imagen = url;
+          }
+          this.loadingImgs[historiaId] = false;
+        },
+        error: (err) => {
+          this.loadingImgs[historiaId] = false;
+          this.notificationService.show(
+            'error',
+            `Error al subir imagen: ${err.message}`
+          );
+        }
+      });
+  }
+
+  showAddHistoriaBtn(){ 
+    return !this.loading && (this.dataHistoria?.details?.length || 0) < 5
+  }
+
+  @HostListener('document:keydown.escape', ['$event'])
+  onEscape(event: KeyboardEvent) {
+    if (this.editingTituloHistoria) {
+      const element = document.querySelector('#TituloHistoria') as HTMLElement;
+      this.restoreTituloHistoria(element);
+    }
+
+    if (this.editingFechaHistoriaId) {
+       const item = this.dataHistoria.details.find((d: { id: string }) => d.id === this.editingFechaHistoriaId);
+       const element = document.querySelector(`[contenteditable][data-id-fecha-historia="${this.editingFechaHistoriaId}"]`) as HTMLElement;
+       if (item && element) {
+         this.restoreFechaHistoria(item, element);
+       }
+    }
+
+    if (this.editingDescHistoriaId) {
+       const item = this.dataHistoria.details.find((d: { id: string }) => d.id === this.editingDescHistoriaId);
+       const element = document.querySelector(`[contenteditable][data-id-desc-historia="${this.editingDescHistoriaId}"]`) as HTMLElement;
+       if (item && element) {
+         this.restoreDescHistoria(item, element);
+       }
+    }
+
+    if (this.editingTituloPF) {
+      const element = document.querySelector('#TituloPF') as HTMLElement;
+      this.restoreTituloPF(element);
+    }
+
+    if (this.editingFrasePF) {
+      const element = document.querySelector('#FrasePF') as HTMLElement;
+      this.restoreFrasePF(element);
+    }
   }
 }

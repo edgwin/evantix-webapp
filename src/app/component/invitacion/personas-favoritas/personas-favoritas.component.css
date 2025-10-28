@@ -33,20 +33,26 @@
 
 .center-img {
   width: 400px;
+  height: 400px;
+  max-width: 400px;
+  max-height: 400px;
   height: auto;
   border-radius: 200px;
   object-fit: cover;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);  
 }
 
 .side-img {
   width: 320px;
+  height: 320px;
+  max-width: 320px;
+  max-height: 320px;
   opacity: 0.6;
   border-radius: 200px;
   object-fit: cover;
   transform: scale(0.8);
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  transition: all 0.4s ease;
+  transition: all 0.4s ease;  
 }
 
 /* NUEVO contenedor de flechas */
@@ -122,8 +128,7 @@
   font-family: 'Poppins', sans-serif;
   max-width: 400px;
   line-height: 1.4;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
-  min-height: 90px;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);  
   height: auto;
 }
 
@@ -161,6 +166,28 @@
 
 .edit-image-btn-PF:hover{
   transform: scale(1.1);
+}
+
+.loaderImg {
+  border: 8px solid rgba(0, 0, 0, 0.1);
+  border-top: 8px solid #ff0000;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  background: transparent;
+  position: absolute;
+  top: 0.4vw;
+  left: 36vw;
+  z-index: 9999;
+}
+
+.frase{
+  width: 50%;
+  margin: 0 auto;
+  font-size: 18px;
+  line-height: 1.5;
+  color: #828282;
 }
 
 @keyframes slideRight {
@@ -221,6 +248,15 @@
     height: 36px;
     font-size: 20px;
     padding-left: 15px;
+  }
+
+  .edit-image-btn-PF{
+    right: calc(50% - 105px);
+  }
+
+  .loaderImg {
+    top: 0.4vw;
+    left: 10vw;
   }
 }
 

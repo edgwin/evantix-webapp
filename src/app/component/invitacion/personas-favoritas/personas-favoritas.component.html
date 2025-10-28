@@ -13,18 +13,20 @@
     <div class="row">
       <div class="text-center editableTitulo"
         contenteditable="true"
+        id="TituloPF"
         (click)="onClickTituloPF()"
-        (keydown)="onKeyDownPF($event, 50)"
+        (keydown)="onKeyDown($event, 50)"
         (blur)="onTituloBlur($event)"
       >
         {{ data.titulo }}
       </div>
       <div
-        class="text-center fh5co-heading descripcion-container"
+        class="text-center frase"
         contenteditable="true"
         (click)="onClickFrasePF()"
-        (keydown)="onKeyDownPF($event, 120)"
+        (keydown)="onKeyDown($event, 120)"
         (blur)="onFraseBlur($event)"
+        id="FrasePF"
       >
         <p>{{ data.frase }}</p>
       </div>
@@ -48,10 +50,11 @@
         <div class="side left">
           <img [src]="prevImg()" alt="prev" class="side-img left-img" />
         </div>
-        <img src="../../../../assets/editarImagen.png" 
+        <img src="../../../../assets/editData.png" 
                                 alt="editar imagen" 
                                 class="edit-image-btn-PF"
-                                title="Click para editar icono"                                
+                                title="Click para editar icono"
+                                (click) = "onOpenPopup()"
                             >
         <div class="center">
           <img
@@ -65,7 +68,11 @@
           <img [src]="nextImg()" alt="next" class="side-img right-img" />
         </div>
       </div>
-
+      <div>
+          <img src="../../../../assets/BtnAddNew.png" (click)="addNewPersonaFavorita()"
+                alt="" height="64px" width="64px" title="Click para Agregar un nuevo elemento" style="cursor: pointer;"                                                                           
+          />
+        </div>
       <!-- ====== DESCRIPCIONES ====== -->
       <div class="gallery-descriptions">
         <div
@@ -80,7 +87,7 @@
           *ngIf="currentNombres()"
         >
           {{ currentNombres() }}
-        </div>
+        </div>        
       </div>
 
       <!-- ====== NAVEGACIÓN ====== -->
@@ -99,4 +106,87 @@
       </div>
     </div>
   </section>
+<!--   Historia     --> 
+<div id="fh5co-couple-story">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-offset-2 text-center fh5co-heading">
+                    <div class="text-center editableTitulo"
+                    id="TituloHistoria"
+                    contenteditable="true"
+                    (click)="onClickTituloHistoria()"
+                    (keydown)="onKeyDown($event, 50)"
+                    (blur)="onTituloHistoriaBlur($event)"
+                    >
+                        {{dataHistoria.titulo}}
+                    </div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-offset-0">                    
+					<ul class="timeline" *ngFor="let item of dataHistoria.details; let i = index;">                        
+						<li [ngClass]="{ 'timeline-inverted': i % 2 !== 0 }">
+                            <img src="../../../../assets/editarImagen.png"
+                                alt="editar imagen" 
+                                class="edit-image-btn-int"
+                                title="Click para editar imagen"
+                                (click)="triggerImageUpload(item.id)"
+                                *ngIf="!loadingImgs[item.id]">
+                                <div class="loaderImg" *ngIf="loadingImgs[item.id]"></div>
+							<div class="timeline-badge" [ngStyle]="{'background-image': 'url('+item.imagen+')'}"></div>              
+							<div class="timeline-panel">
+								<div class="timeline-heading">
+                  <!-- ToDo implementar lo de el limite de registros -->
+                                    <img src="../../../../assets/BtnDelete.png" 
+                                        alt="" 
+                                        height="64px" 
+                                        width="64px" 
+                                        [ngClass]="i % 2 !== 0 ? 'editDondeCuandoDelete' : 'editIntinerarioDelete editIntinerarioDelete-LR'"
+                                        title="Click para eliminar elemento"
+                                        (click)="triggerImageDelete(item.id)"
+                                        *ngIf="!loadingImgs[item.id] && (dataHistoria?.details?.length || 0) > 1"
+                                    />
+                                    <div class="loaderDCDelete" *ngIf="loadingImgs[item.id]"></div>
+									<h3 class="timeline-title"
+                                        [attr.data-id-fecha-historia]="item.id"                                        
+                                        contenteditable="true"
+                                        (click)="onClickFechaHistoria(item.id)"
+                                        (keydown)="onKeyDown($event, 22)"
+                                        (blur)="onFechaHistoriaBlur($event, item)"
+                                    >
+                                        {{item.fecha}}
+                                    </h3>
+									<span class="date"
+                                        [attr.data-id-desc-historia]="item.id"                                    
+                                        contenteditable="true"
+                                        (click)="onClickDescHistoria(item.id)"
+                                        (keydown)="onKeyDown($event, 200)"
+                                        (blur)="onDescHistoriaBlur($event, item)"
+                                    >
+                                        {{item.descripcion}}
+                                    </span>
+								</div>
+							</div>
+						</li>                        
+			    	</ul>
+				</div>
+			</div>
+	</div>
+    <div class="addNewDC" *ngIf="!loading">
+        <img src="../../../../assets/BtnAddNew.png" alt="" height="64px" width="64px" (click)="nuevaHistoria()" *ngIf="showAddHistoriaBtn()"
+                title="Click para Agregar una nueva parte de la historia" style="cursor: pointer;">
+    </div>
+</div>  
 </div>
+
+<app-popup-html 
+  [visible]="showPopup" 
+  title="Modifica la informacion"
+  [personasFavoritasEdit] = "true"
+  [imagenPF]="currentImagen4Popup"
+  [parentescoPF]="currentParentesco4Popup"
+  [nombresPF]="currentNombre4Popup"
+  [personaFavoritaId]="currentId4Popup"
+  (closed)="onClosePopup()"
+>
+</app-popup-html>

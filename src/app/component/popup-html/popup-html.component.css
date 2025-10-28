@@ -56,16 +56,28 @@ button {
 }
 
 .popup-header {
-  display:flex;
-  justify-content: center;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid #eee;
+  position: relative;
 }
-.popup-header h2 { margin: 0; font-size: 1.5rem; }
+
 .close-btn {
   background: transparent;
   border: none;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   cursor: pointer;
+  color: #555;
+  transition: color 0.2s;
 }
+
+.close-btn:hover {
+  color: #000;
+}
+
+.popup-header h2 { margin: 0; font-size: 1.5rem; }
 
 /* contenido */
 .popup-content {
@@ -133,4 +145,63 @@ button {
 .popup-click-catcher {
   position: fixed;
   inset: 0;
+}
+
+.edit-image-btn-PF{
+  position: absolute;
+  right: calc(50% - 150px); /* 👈 centrado relativo a la imagen */
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  z-index: 101;
+}
+
+.edit-image-btn-PF:hover{
+  transform: scale(1.1);
+}
+
+.loader {
+    border: 8px solid rgba(0, 0, 0, 0.1);
+    border-top: 8px solid #ff0000;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    background: transparent;
+    position: absolute;
+    right: calc(50% - 150px);;
+}
+
+.img {
+  width: 300px;
+  height: 300px;
+  max-width: 300px;
+  max-height: 300px;
+  height: auto;
+  border-radius: 200px;
+  object-fit: cover;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);  
+}
+
+.buttons {
+  display: flex;
+  justify-content: center; /* centra los botones horizontalmente */
+  align-items: center;      /* los alinea verticalmente si difieren en altura */
+  gap: 20px;                /* espacio entre botones */
+  margin-top: 20px;         /* separación superior opcional */
+}
+
+.buttons button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.buttons button:hover {
+  background-color: #0056b3;
 }
