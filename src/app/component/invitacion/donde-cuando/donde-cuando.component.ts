@@ -56,19 +56,6 @@ export class DondeCuandoComponent {
 
   @Input() eventId: string = '';
   @Input() data:any = null;
-  @Input() dataIntinerario:any = null;
-
-  showPopup = false;
-
-  editingDescripcion: boolean = false;
-  tempDescripcion: string = '';
-
-  editingActividadIntId: string | null = null;
-  tempActividadIntMap: { [id: string]: string } = {};
-  editingFechaIntId: string | null = null;
-  tempFechaIntMap: { [id: string]: string } = {};
-  editingHoraIntId: string | null = null;
-  tempHoraIntMap: { [id: string]: string } = {};
 
   cargarDatos() {
     this.loading = true;
@@ -89,25 +76,6 @@ export class DondeCuandoComponent {
     });
   }
   
-  cargarDatosIntinerario() {
-    this.loading = true;
-    if (!this.eventId) return;
-
-    this.invitationService.getInvitacionIntinerario(this.eventId).subscribe({
-      next: (res) => {
-        this.dataIntinerario = res;
-        this.loading = false;
-      },
-      error: (err) => {
-        this.notificationService.show(
-          'error',
-          `Hubo un error favor intentar más tarde ${err.message}`
-        );
-        this.loading = false;
-      }
-    });
-  }
-
   nuevoDondeCuando(){
     this.invitationService.postNewDondeCuando(this.eventId).subscribe({
       next: (res) => {
@@ -157,16 +125,7 @@ export class DondeCuandoComponent {
     }
     this.editingActividadId = null;
     element.blur();
-  }
-
-  restoreActividadInt(item: any, element: HTMLElement) {
-    const original = this.tempActividadIntMap[item.id];
-    if (original !== undefined) {
-      element.innerText = original; // restaurar en la UI
-    }
-    this.editingActividadIntId = null;
-    element.blur();
-  }
+  }  
 
   //Hora
   onHoraBlur(event: Event, item: any) {
@@ -198,16 +157,7 @@ export class DondeCuandoComponent {
     }
     this.editingHoraId = null;
     element.blur();
-  }
-
-  restoreHoraInt(item: any, element: HTMLElement) {
-    const original = this.tempHoraIntMap[item.id];
-    if (original !== undefined) {
-      element.innerText = original; // restaurar en la UI
-    }
-    this.editingHoraIntId = null;
-    element.blur();
-  }
+  }  
 
   //Fecha
   onFechaBlur(event: Event, item: any) {
@@ -239,16 +189,7 @@ export class DondeCuandoComponent {
     }
     this.editingFechaId = null;
     element.blur();
-  }
-
-  restoreFechaInt(item: any, element: HTMLElement) {
-    const original = this.tempFechaIntMap[item.id];
-    if (original !== undefined) {
-      element.innerText = original; // restaurar en la UI
-    }
-    this.editingFechaIntId = null;
-    element.blur();
-  }
+  }  
 
   //Lugar
   onLugarBlur(event: Event, item: any) {
@@ -420,20 +361,6 @@ export class DondeCuandoComponent {
       });
   }
   
-  triggerIntinerarioImageDelete(intinerarioId:string) {
-    this.invitationService.deleteIntinerario(intinerarioId).subscribe({
-        next: () => {
-          this.cargarDatosIntinerario();
-        },
-        error: (err) => {          
-          this.notificationService.show(
-            'error',
-            `Error al subir imagen: ${err.message}`
-          );
-        }
-      });
-  }
-
   triggerBGImageUpload() {
     const input = document.createElement('input');
     input.type = 'file';
@@ -485,12 +412,9 @@ export class DondeCuandoComponent {
     });
   }
 
-  updateBackend(tableName:string, searchField: string, eventId:string, field:string, value: string, loadData: boolean = false) {    
+  updateBackend(tableName:string, searchField: string, eventId:string, field:string, value: string) {    
     this.invitationService.updateTableField(tableName, searchField, eventId, field, value).subscribe({
-      next: () => { 
-        if (loadData){
-          this.cargarDatosIntinerario();
-        }
+      next: () => {
       },
       error: (err) => {
         this.notificationService.show(
@@ -524,157 +448,7 @@ abrirMapa(id: string) {
     this.data.details.forEach((item: { id: string; }, index: any) => {
       this.updateBackend('DondeCuandoDetails', 'Id', item.id, 'Orden', index);
     });
-  }
-
-  nuevoIntinerario(){
-    this.invitationService.postNewIntinerario(this.eventId).subscribe({
-      next: (res) => {
-        this.cargarDatosIntinerario();
-      },
-      error: (err) => {
-        this.notificationService.show(
-          'error',
-          `Hubo un error favor intentar más tarde ${err.message}`
-        );
-        this.loading = false;
-      }
-    });
-  }
-
-  selectedItemIndex: number | null = null;
-  openPopup(index: number) {
-    this.selectedItemIndex = index;
-    this.showPopup = true;
-  }
-
-   images = [
-    '../../../../assets/Intinerario/church.png',
-    '../../../../assets/Intinerario/Coctel.png',
-    '../../../../assets/Intinerario/dance.png',
-    '../../../../assets/Intinerario/dinner.png',
-    '../../../../assets/Intinerario/snaks.png',
-    '../../../../assets/Intinerario/vals.png'
-  ];  
-
-  onClosePopup() {
-    this.showPopup = false;
-  }
-
-  onClickDescripcion(){
-    this.editingDescripcion = true; 
-    this.tempDescripcion = this.data.descripcion; // 🔹 Guardamos el valor original
-  }
-
-  async onImageSelected(img: string) {
-    if (this.selectedItemIndex !== null) {      
-      const itemId = this.dataIntinerario.details[this.selectedItemIndex].id;
-      this.updateBackend('IntinerarioHistoriaDetail', 'Id', itemId, 'Imagen', img, true);      
-    }
-    this.onClosePopup();
-  }
-
-  onDescripcionBlur(event: Event){
-    const el = event.target as HTMLElement;
-    const nuevoTexto = el.innerText.trim();
-
-    // si cambió, guardamos y llamamos backend
-    if (nuevoTexto !== this.data.descripcion) {
-      this.data.descripcion = nuevoTexto;      
-      this.updateBackend('IntinerarioHistoriaMaster','IdEvento',this.eventId, 'Descripcion', this.data.descripcion);
-    }
-  }
-
-  onKeyDownInt(event: KeyboardEvent | any, maxLength:number) {
-    const key = (event as KeyboardEvent).key;
-    if (key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
-      event.preventDefault();
-      (event.target as HTMLElement).blur(); // dispara onActividadBlur y guarda
-      return;
-    }
-    const el = event.target as HTMLElement;
-    const text = el.innerText || '';
-
-    // permite borrar, mover cursor, etc.
-    const controlKeys = [
-      'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight',
-      'ArrowUp', 'ArrowDown', 'Tab'
-    ];
-
-    if (text.length >= maxLength && !controlKeys.includes(event.key)) {
-      event.preventDefault(); // bloquea más escritura
-    }
-    (event.target as HTMLElement).click();
-  }
-  
-  onClickActividadInt(id:string){
-    this.editingActividadIntId = id; 
-    const item = this.dataIntinerario.details.find((d: { id: string }) => d.id === id);
-    if (item) {
-      this.tempActividadIntMap[id] = item.actividad;
-    }
-  }
-
-  onActividadIntBlur(event: Event, item: any) {
-    const el = event.target as HTMLElement;
-    const nuevoTexto = el.innerText.trim();
-
-    // si cambió, guardamos y llamamos backend
-    if (nuevoTexto !== item.actividad) {
-      item.actividad = nuevoTexto;
-      this.updateBackend('IntinerarioHistoriaDetail', 'Id', item.id, 'Actividad', nuevoTexto);
-    }
-
-    // salimos del modo edición
-    this.editingActividadIntId = null;
-  }
-
-  onClickFechaInt(id:string){
-    this.editingFechaIntId = id; 
-    const item = this.dataIntinerario.details.find((d: { id: string }) => d.id === id);
-    if (item) {
-      this.tempFechaIntMap[id] = item.fecha;
-    }
-  }
-
-  onFechaIntBlur(event: Event, item: any) {
-    const el = event.target as HTMLElement;
-    const nuevoTexto = el.innerText.trim();
-
-    // si cambió, guardamos y llamamos backend
-    if (nuevoTexto !== item.fecha) {
-      item.fecha = nuevoTexto;
-      this.updateBackend('IntinerarioHistoriaDetail', 'Id', item.id, 'Fecha', nuevoTexto);
-    }
-
-    // salimos del modo edición
-    this.editingFechaIntId = null;
-  }
-
-  onClickHoraInt(id:string){
-    this.editingHoraIntId = id; 
-    const item = this.dataIntinerario.details.find((d: { id: string }) => d.id === id);
-    if (item) {
-      this.tempHoraIntMap[id] = item.hora;
-    }
-  }
-
-  onHoraIntBlur(event: Event, item: any) {
-    const el = event.target as HTMLElement;
-    const nuevoTexto = el.innerText.trim();
-
-    // si cambió, guardamos y llamamos backend
-    if (nuevoTexto !== item.hora) {
-      item.hora = nuevoTexto;
-      this.updateBackend('IntinerarioHistoriaDetail', 'Id', item.id, 'Hora', nuevoTexto);
-    }
-
-    // salimos del modo edición
-    this.editingHoraIntId = null;
-  }
-
-  showAddBtn(){ 
-    return !this.loading && (this.dataIntinerario?.details?.length || 0) < 6
-  }
+  }      
 
   @HostListener('document:keydown.escape', ['$event'])
   onEscape(event: KeyboardEvent) {
@@ -717,29 +491,5 @@ abrirMapa(id: string) {
          this.restoreDireccion(item, element);
        }
     }
-    
-    if (this.editingActividadIntId) {
-       const item = this.dataIntinerario.details.find((d: { id: string }) => d.id === this.editingActividadIntId);
-       const element = document.querySelector(`[contenteditable][data-id-actividad-int="${this.editingActividadIntId}"]`) as HTMLElement;
-       if (item && element) {
-         this.restoreActividadInt(item, element);
-       }
-    }
-
-    if (this.editingFechaIntId) {
-       const item = this.dataIntinerario.details.find((d: { id: string }) => d.id === this.editingFechaIntId);
-       const element = document.querySelector(`[contenteditable][data-id-fecha-int="${this.editingFechaIntId}"]`) as HTMLElement;
-       if (item && element) {
-         this.restoreFechaInt(item, element);
-       }
-    }
-
-    if (this.editingHoraIntId) {
-       const item = this.dataIntinerario.details.find((d: { id: string }) => d.id === this.editingHoraIntId);
-       const element = document.querySelector(`[contenteditable][data-id-hora-int="${this.editingHoraIntId}"]`) as HTMLElement;
-       if (item && element) {
-         this.restoreHoraInt(item, element);
-       }
-    }    
   }
 }

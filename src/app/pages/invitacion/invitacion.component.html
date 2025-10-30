@@ -1,7 +1,19 @@
 <app-portada [eventId] = "eventId" [data]="data.portada"></app-portada>
 <app-festejados [eventId] = "eventId" [data]="data.festejados"></app-festejados>
 <app-indicaciones [eventId] = "eventId" [data]="data.indicaciones"></app-indicaciones>
-<app-donde-cuando [eventId] = "eventId" [data]="data.dondeCuando" [dataIntinerario]="data.intinerario"></app-donde-cuando>
+<div
+[ngStyle]="{
+       'background-image': 'url(../../../../assets/background.jpg)',
+       'background-size': 'cover',
+       'background-position': 'center',
+       'background-repeat': 'no-repeat',
+       'padding-top': '2vh',
+       'padding-bottom': '2vh'
+     }"
+>
+<app-donde-cuando [eventId] = "eventId" [data]="data.dondeCuando"></app-donde-cuando>
+<app-intinerario [eventId] = "eventId" [dataIntinerario]="data.intinerario"></app-intinerario>
+</div>
 <app-mesa-regalos [eventId] = "eventId" [data]="data.mesaRegalos"></app-mesa-regalos>
 <div
   [ngStyle]="{

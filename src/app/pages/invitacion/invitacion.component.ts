@@ -10,13 +10,14 @@ import { NotificationService } from '../../services/notification.service';
 import { MesaRegalosComponent } from '../../component/invitacion/mesa-regalos/mesa-regalos.component';
 import { PersonasFavoritasComponent } from '../../component/invitacion/personas-favoritas/personas-favoritas.component';
 import { HistoriaComponent } from '../../component/invitacion/historia/historia.component';
+import { IntinerarioComponent } from '../../component/invitacion/intinerario/intinerario.component';
 
 @Component({
   selector: 'app-invitacion',
   standalone: true,
   templateUrl: './invitacion.component.html',
   styleUrl: './invitacion.component.css',
-  imports: [PortadaComponent, CommonModule, FestejadosComponent, DondeCuandoComponent, IndicacionesComponent, 
+  imports: [PortadaComponent, CommonModule, FestejadosComponent, DondeCuandoComponent, IntinerarioComponent, IndicacionesComponent, 
             MesaRegalosComponent, PersonasFavoritasComponent, HistoriaComponent],
 })
 
