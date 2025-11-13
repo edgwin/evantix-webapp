@@ -158,7 +158,7 @@ export class IntinerarioComponent {
   async onImageSelected(img: string) {
     if (this.selectedItemIndex !== null) {      
       const itemId = this.dataIntinerario.details[this.selectedItemIndex].id;      
-      //this.updateBackend('IntinerarioHistoriaDetail', 'Id', itemId, 'Imagen', img, true);      
+      this.updateBackend('IntinerarioHistoriaDetail', 'Id', itemId, 'Imagen', img, true);      
     }
     this.onClosePopup();
   }

@@ -2085,6 +2085,17 @@ form label {
   z-index: 101;
 }
 
+.edit-image-btn-gallery{
+  position: absolute;
+  top: 5px;
+  right: calc(50% + 110px); /* 👈 centrado relativo a la imagen */
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  z-index: 101;
+}
+
 .edit-image-btn:hover {
   transform: scale(1.1);
 }
@@ -2151,19 +2162,6 @@ form label {
       margin-top: 10px;
       text-shadow: 1px 1px 2px black;
   }  
-
-  /* .loaderFestejados {
-    border: 8px solid rgba(0, 0, 0, 0.1);
-    border-top: 8px solid #ff0000;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-    background: transparent;
-    position: absolute;
-    right: 25vw;
-    top: 3vw;
-  } */
 
   .edit-imageDC-btn {
     position: absolute;
@@ -2403,6 +2401,10 @@ form label {
 
   .timeline-title {
     font-size: 18px;    
+  }
+
+  .edit-image-btn-gallery{
+    right: calc(50% + 65px); /* 👈 centrado relativo a la imagen */
   }
 }
 

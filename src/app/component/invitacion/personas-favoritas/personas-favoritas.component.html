@@ -31,7 +31,7 @@
     (pointerup)="onPointerUp($event)"
     (pointercancel)="onPointerUp($event)"
   >
-    <div
+    <div *ngIf="showGallery"
       class="gallery-container"
       (mouseleave)="resumeAutoplayWithDelay()"
     >
@@ -57,12 +57,7 @@
         <div class="side right">
           <img [src]="nextImg()" alt="next" class="side-img right-img" />
         </div>
-      </div>
-      <div>
-          <img src="../../../../assets/BtnAddNew.png" (click)="addNewPersonaFavorita()"
-                alt="" height="64px" width="64px" title="Click para Agregar un nuevo elemento" style="cursor: pointer;"                                                                           
-          />
-        </div>
+      </div>      
       <!-- ====== DESCRIPCIONES ====== -->
       <div class="gallery-descriptions">
         <div
@@ -96,6 +91,12 @@
       </div>
     </div>
   </section>
+  <div style="text-align: center;">
+          <img src="../../../../assets/BtnAddNew.png" (click)="addNewPersonaFavorita()"
+                alt="" height="64px" width="64px" title="Click para Agregar un nuevo elemento" style="cursor: pointer;"                                                                           
+          />
+        </div>
+<ng-container *ngIf="showPopup">
 <app-popup-html 
   [visible]="showPopup" 
   title="Modifica la informacion"
@@ -107,3 +108,4 @@
   (closed)="onClosePopup()"
 >
 </app-popup-html>
+</ng-container>

@@ -1,0 +1,108 @@
+  <!-- ====== ENCABEZADO ====== -->
+  <div class="container">
+    <div class="row">
+      <div class="text-center editableTitulo"        
+        id="Titulo"        
+      >
+        Galeria de Fotos
+      </div>      
+    </div>
+  </div>
+  
+<section
+  class="gallery-root"
+  (pointerdown)="onPointerDown($event)"
+  (pointermove)="onPointerMove($event)"
+  (pointerup)="onPointerUp($event)"
+  (pointercancel)="onPointerUp($event)"
+>
+  <!-- ===== GALERÍA (solo si hay imágenes) ===== -->
+  <div
+    *ngIf="showGallery"
+    class="gallery-container"
+    (mouseleave)="resumeAutoplayWithDelay()"
+  >
+    <div class="gallery" [ngClass]="animationDirection">
+      <div class="side left">
+        <img [src]="prevImg()" alt="prev" class="side-img left-img" 
+        (contextmenu)="$event.preventDefault()"
+        draggable="false"/>
+      </div>
+
+      <img
+        src="../../../../assets/BtnDelete.png"
+        alt="editar imagen"
+        class="edit-image-btn-PF"
+        title="Click para editar icono"
+        (click)="triggerImageDelete()"
+      />
+
+      <div class="center">
+        <img
+          [src]="currentImg()"
+          alt="current"
+          class="center-img"
+          (click)="openFullScreen()"
+          (contextmenu)="$event.preventDefault()"
+          draggable="false"
+        />
+      </div>
+
+      <div class="side right">
+        <img [src]="nextImg()" alt="next" class="side-img right-img" 
+        (contextmenu)="$event.preventDefault()"
+        draggable="false"/>
+      </div>
+    </div>
+
+    <!-- ===== NAVEGACIÓN ===== -->
+    <div class="nav-container">
+      <button class="nav" (click)="prev()">‹</button>
+      <button class="nav" (click)="next()">›</button>
+    </div>
+
+    <!-- ===== DOTS ===== -->
+    <div class="dots" *ngIf="data?.details?.length > 1">
+      <button
+        class="dot"
+        *ngFor="let _ of data?.details; let i = index"
+        [class.active]="i === currentIndexValue"
+        (click)="goTo(i)"
+      ></button>
+    </div>
+  </div>
+</section>
+  <!-- ===== BOTÓN AGREGAR (fuera de showGallery) ===== -->
+  <div class="addNewDC" *ngIf="!loading">
+    <input
+      #fileInput
+      type="file"
+      accept="image/*"
+      multiple
+      hidden
+      (change)="triggerImageUpload($event)"
+    />
+    <img
+      src="../../../../assets/BtnAddNew.png"
+      alt="Agregar fotos"
+      height="64"
+      width="64"
+      (click)="fileInput.click()"
+      title="Click para agregar fotos a la galería"
+      class="add-btn"
+    />
+  </div>
+
+  <!-- ===== Overlay de imagen ===== -->
+  <div
+    class="fullscreen-overlay"
+    *ngIf="selectedImage"
+    (click)="closeFullScreen()"
+  >
+    <img
+      [src]="selectedImage"
+      class="fullscreen-image"
+      (click)="$event.stopPropagation()"
+    />
+    <button class="close-button" (click)="closeFullScreen()">✕</button>
+  </div>

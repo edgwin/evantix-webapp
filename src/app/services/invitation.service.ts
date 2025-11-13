@@ -19,6 +19,7 @@ export class InvitationService {
   private getMesa = 'MesaRegalos/';
   private getPersonasFavoritas = 'PersonasFavoritas/';
   private historia = 'Historia/'
+  private galeria = 'Galeria/'
 
   guardarInvitacion(data: FormData): Observable<any> {
       const token = localStorage.getItem('access_token');
@@ -157,5 +158,20 @@ export class InvitationService {
   deleteHistoria(personaId:string){
     const url = `${this.apiUrl}${this.getInvitationData}${this.historia}${personaId}`;
     return this.http.delete(url);
+  }
+
+  getGaleria(eventId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.galeria}${eventId}`;
+    return this.http.get(url);
+  }
+
+  deleteGaleria(fotoId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.galeria}${fotoId}`;
+    return this.http.delete(url);
+  }
+
+  uploadGaleria(eventId:string, formData:any){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.galeria}${eventId}`;
+    return this.http.post(url, formData);
   }
 }

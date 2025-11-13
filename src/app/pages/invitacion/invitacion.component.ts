@@ -11,6 +11,7 @@ import { MesaRegalosComponent } from '../../component/invitacion/mesa-regalos/me
 import { PersonasFavoritasComponent } from '../../component/invitacion/personas-favoritas/personas-favoritas.component';
 import { HistoriaComponent } from '../../component/invitacion/historia/historia.component';
 import { IntinerarioComponent } from '../../component/invitacion/intinerario/intinerario.component';
+import { GaleriaComponent } from '../../component/invitacion/galeria/galeria.component';
 
 @Component({
   selector: 'app-invitacion',
@@ -18,7 +19,7 @@ import { IntinerarioComponent } from '../../component/invitacion/intinerario/int
   templateUrl: './invitacion.component.html',
   styleUrl: './invitacion.component.css',
   imports: [PortadaComponent, CommonModule, FestejadosComponent, DondeCuandoComponent, IntinerarioComponent, IndicacionesComponent, 
-            MesaRegalosComponent, PersonasFavoritasComponent, HistoriaComponent],
+            MesaRegalosComponent, PersonasFavoritasComponent, HistoriaComponent, GaleriaComponent],
 })
 
 export class InvitacionComponent {

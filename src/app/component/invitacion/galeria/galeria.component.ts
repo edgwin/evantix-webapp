@@ -1,33 +1,24 @@
-import { CommonModule } from '@angular/common';
-import { Component, Input, HostListener, signal, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, HostListener, Input, signal } from '@angular/core';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
-import { PopupHtmlComponent } from '../../popup-html/popup-html.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-personas-favoritas',
+  selector: 'app-galeria',
   standalone: true,
-  imports: [CommonModule, PopupHtmlComponent],
-  templateUrl: './personas-favoritas.component.html',
-  styleUrls: ['./../invitacion.component.css', './personas-favoritas.component.css']
+  imports: [CommonModule],
+  templateUrl: './galeria.component.html',  
+  styleUrls: ['./../invitacion.component.css', './galeria.component.css']
 })
-export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDestroy {
+export class GaleriaComponent {
   constructor(private invitationService: InvitationService,private notificationService: NotificationService)
-  {}
+    {}
   @Input() eventId: string = '';
   @Input() data: any;
   @Input() height = '60vh';
-  images: any[] = [];
-  editingTituloPF: boolean = false;
-  tempTituloPF: string = '';
-  showPopup: boolean = false;
-  loadingImgs: { [key: string]: boolean } = {};
-  showGallery: boolean = true;
-
-  editingFrasePF: boolean = false;
-  tempFrasePF: string = '';
+  images: any[] = []; 
   loading: boolean = false;
-
+  showGallery: boolean = true;
   private _index = signal(0);
 
   // swipe state
@@ -42,32 +33,27 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
   autoplayEnabled = true;
   animationDirection: 'left' | 'right' | '' = '';
 
-  currentImagen4Popup: string | null = null;
-  currentNombre4Popup: string | null = null;
-  currentParentesco4Popup: string | null = null;
-  currentId4Popup: string = "";
-
   ngOnInit() {
-    this.images = this.data?.details || [];
+    this.images = this.data || [];
     if (this.images.length <= 0){
       this.showGallery = false;
-    } 
+    }    
   }
 
-  cargarDatosPF(gotoNew:boolean = false) {
+  cargarDatos(gotoNew:boolean = false) {
     this.loading = true;
     if (!this.eventId) return;
 
-    this.invitationService.getPersonasFavoritasData(this.eventId).subscribe({
+    this.invitationService.getGaleria(this.eventId).subscribe({
       next: (res) => {
         this.data = res;
-        this.images = this.data?.details || [];
-        this.loading = false;
-        if (this.data?.details.length <= 0){
+        this.images = this.data || [];
+        if (this.images.length <= 0){
           this.showGallery = false;
-        } else {
+        }else{
           this.showGallery = true;
         }
+        this.loading = false;
         if (gotoNew){
           this.goTo(this.data.details.length - 1);
         }
@@ -105,20 +91,20 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
     const n = this.images?.length || 0;
     if (n === 0) return '';
     const idx = (this.currentIndex() - 1 + n) % n;
-    return this.images[idx]?.foto || '';
+    return this.images[idx]?.imagen || '';
   }
 
   nextImg(): string {
     const n = this.images?.length || 0;
     if (n === 0) return '';
     const idx = (this.currentIndex() + 1) % n;
-    return this.images[idx]?.foto || '';
+    return this.images[idx]?.imagen || '';
   }
 
   currentImg(): string {
     const n = this.images?.length || 0;
     if (n === 0) return '';
-    return this.images[this.currentIndex()]?.foto || '';
+    return this.images[this.currentIndex()]?.imagen || '';
   }
 
   // ---------- navigation ----------
@@ -219,27 +205,27 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
   }
 
   currentImage(): string {
-    const n = this.data?.details.length || 0;
+    const n = this.data?.length || 0;
     if (n === 0) return '';
-    return this.data?.details[this.currentIndex()]?.foto || '';
+    return this.data[this.currentIndex()]?.imagen || '';
   }
 
   currentNombres(): string {
-    const n = this.data?.details.length || 0;
+    const n = this.data?.length || 0;
     if (n === 0) return '';
-    return this.data?.details[this.currentIndex()]?.nombres || '';
+    return this.data[this.currentIndex()]?.nombres || '';
   }
 
   currentParentesco(): string {
-    const n = this.data?.details.length || 0;
+    const n = this.data?.length || 0;
     if (n === 0) return '';
-    return this.data?.details[this.currentIndex()]?.parentesco || '';
+    return this.data[this.currentIndex()]?.parentesco || '';
   }
 
   currentId(): string {
-    const n = this.data?.details.length || 0;
+    const n = this.data?.length || 0;
     if (n === 0) return '';
-    return this.data?.details[this.currentIndex()]?.id || '';
+    return this.data[this.currentIndex()]?.id || '';
   }
   
   resetPointerState() {
@@ -304,73 +290,63 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
       event.preventDefault(); // bloquea más escritura
     }
     (event.target as HTMLElement).click();
-  }
+  }  
 
-  onClickTituloPF(){
-    this.editingTituloPF = true; 
-    this.tempTituloPF = this.data.titulo; // 🔹 Guardamos el valor original
-  }
-
-  onTituloBlur(event: Event){
-    const el = event.target as HTMLElement;
-    const nuevoTexto = el.innerText.trim();
-
-    // si cambió, guardamos y llamamos backend
-    if (nuevoTexto !== this.data.titulo) {
-      this.data.titulo = nuevoTexto;      
-      this.updateBackend('PersonasFavoritasMaster','IdEvento',this.eventId, 'Titulo', this.data.titulo);
-    }
-  }
-
-  onClickFrasePF(){
-    this.editingFrasePF = true; 
-    this.tempFrasePF = this.data.frase; // 🔹 Guardamos el valor original
-  }
-
-  onFraseBlur(event: Event){
-    const el = event.target as HTMLElement;
-    const nuevoTexto = el.innerText.trim();
-
-    // si cambió, guardamos y llamamos backend
-    if (nuevoTexto !== this.data.frase) {
-      this.data.frase = nuevoTexto;      
-      this.updateBackend('PersonasFavoritasMaster','IdEvento',this.eventId, 'Frase', this.data.frase);
-    }
-  }
-
-  updateBackend(tableName:string, searchField: string, eventId:string, field:string, value: string, loadData: boolean = false) {    
-    this.invitationService.updateTableField(tableName, searchField, eventId, field, value).subscribe({
-      next: () => { 
-        if (loadData){
-          this.cargarDatosPF();
+  triggerImageDelete() {
+    const fotoId = this.currentId();
+    this.invitationService.deleteGaleria(fotoId).subscribe({
+        next: (res) => {
+          this.cargarDatos();
+        },
+        error: (err) => {          
+          this.notificationService.show(
+            'error',
+            `Error al subir imagen: ${err.message}`
+          );
         }
-      },
-      error: (err) => {
-        this.notificationService.show(
-          'error',
-          `Error al actualizar ${field}: ${err.message}`
-        );
-      }
+      });
+  }
+
+  imagesToUpload: any[] = [];
+  triggerImageUpload(event: any) {
+    const selectedFiles = Array.from(event.target.files) as File[];
+    if (!selectedFiles.length) return;
+
+    const readPromises = selectedFiles.map(file => {
+      return new Promise<void>((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+          this.imagesToUpload.push({
+            preview: e.target.result,
+            file
+          });
+          resolve();
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+    
+    Promise.all(readPromises).then(() => {
+      this.bulkImagesUpload();
     });
   }
 
-  onOpenPopup() {
-    this.currentImagen4Popup = this.currentImage();
-    this.currentNombre4Popup = this.currentNombres();
-    this.currentParentesco4Popup = this.currentParentesco();
-    this.currentId4Popup = this.currentId();
-    this.showPopup = true;
-  }
+  bulkImagesUpload(){
+    if (this.imagesToUpload.length === 0) {
+      this.notificationService.show('error','No hay imágenes para subir');
+      return;
+    }
 
-  onClosePopup() {
-    this.showPopup = false;
-    this.cargarDatosPF();
-  }
+    const formData = new FormData();
 
-  addNewPersonaFavorita(){
-    this.invitationService.postNewPersonaFavorita(this.eventId).subscribe({
+    this.imagesToUpload.forEach((img, i) => {
+      formData.append('images', img.file, img.file.name);
+    });
+
+    this.invitationService.uploadGaleria(this.eventId, formData).subscribe({
       next: (res) => {
-        this.cargarDatosPF(true);
+        this.data = res;
+        this.cargarDatos();
       },
       error: (err) => {
         this.notificationService.show(
@@ -380,36 +356,22 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
         this.loading = false;
       }
     });
-  }  
+  }
 
-  restoreTituloPF(element: HTMLElement) {  
-    const original = this.tempTituloPF;
-    if (original !== undefined) {
-      element.innerText = `${original}`;
-    }
-    this.editingTituloPF = false;
-    element.blur();
-  }  
+  selectedImage: string | null = null;
 
-  restoreFrasePF(element: HTMLElement) {  
-    const original = this.tempFrasePF;
-    if (original !== undefined) {
-      element.innerText = `${original}`;
-    }
-    this.editingFrasePF = false;
-    element.blur();
-  }  
+  openFullScreen() {
+    const imgUrl: string = this.currentImg();
+    this.selectedImage = imgUrl;
+    document.body.style.overflow = 'hidden'; // bloquea scroll del fondo
+  }
+
+  closeFullScreen() {
+    this.selectedImage = null;
+    document.body.style.overflow = 'auto'; // restablece scroll
+  }
 
   @HostListener('document:keydown.escape', ['$event'])
   onEscape(event: KeyboardEvent) {
-    if (this.editingTituloPF) {
-      const element = document.querySelector('#TituloPF') as HTMLElement;
-      this.restoreTituloPF(element);
-    }
-
-    if (this.editingFrasePF) {
-      const element = document.querySelector('#FrasePF') as HTMLElement;
-      this.restoreFrasePF(element);
-    }
   }
 }
