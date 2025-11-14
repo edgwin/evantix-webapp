@@ -2,11 +2,12 @@ import { Component, HostListener, Input } from '@angular/core';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { CommonModule } from '@angular/common';
+import { DisableDownloadDirective } from '../../../directives/disable-download.directive';
 
 @Component({
   selector: 'app-historia',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, DisableDownloadDirective],
   templateUrl: './historia.component.html',
   styleUrls: ['./../invitacion.component.css', './historia.component.css']
 })

@@ -25,7 +25,7 @@
                                 (click)="triggerImageUpload(item.id)"
                                 *ngIf="!loadingImgs[item.id]">
                                 <div class="loaderImg" *ngIf="loadingImgs[item.id]"></div>
-							<div class="timeline-badge" [ngStyle]="{'background-image': 'url('+item.imagen+')'}"></div>              
+							<div class="timeline-badge" [ngStyle]="{'background-image': 'url('+item.imagen+')'}" appDisableDownload></div>              
 							<div class="timeline-panel">
 								<div class="timeline-heading">
                   <!-- ToDo implementar lo de el limite de registros -->

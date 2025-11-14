@@ -4,13 +4,14 @@ import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { FormsModule } from '@angular/forms';
+import { DisableDownloadDirective } from '../../../directives/disable-download.directive';
 
 @Component({
   selector: 'app-festejados',
   templateUrl: './festejados.component.html',
   styleUrl: './../invitacion.component.css',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DisableDownloadDirective],
   animations: [
     trigger('fadeInScale', [
       transition(':enter', [

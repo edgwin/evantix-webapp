@@ -38,7 +38,7 @@
       <!-- 🔹 Galería de imágenes -->
       <div class="gallery" [ngClass]="animationDirection">
         <div class="side left">
-          <img [src]="prevImg()" alt="prev" class="side-img left-img" />
+          <img [src]="prevImg()" alt="prev" class="side-img left-img" appDisableDownload />
         </div>
         <img src="../../../../assets/editData.png" 
                                 alt="editar imagen" 
@@ -51,11 +51,12 @@
             [src]="currentImg()"
             alt="current"
             class="center-img"
+            appDisableDownload
           />
         </div>
 
         <div class="side right">
-          <img [src]="nextImg()" alt="next" class="side-img right-img" />
+          <img [src]="nextImg()" alt="next" class="side-img right-img" appDisableDownload />
         </div>
       </div>      
       <!-- ====== DESCRIPCIONES ====== -->

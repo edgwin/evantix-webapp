@@ -2,7 +2,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 2vh 0;
   touch-action: pan-y; /* 🔥 permite swipe horizontal sin interferir con scroll */
   -ms-touch-action: pan-y;
 }
@@ -265,6 +264,7 @@
   align-items: center;
   margin-top: 25px; /* separación visual desde la galería */
   margin-bottom: 15px; /* espacio inferior */
+  flex-direction: column;
 }
 
 .addNewDC .add-btn {

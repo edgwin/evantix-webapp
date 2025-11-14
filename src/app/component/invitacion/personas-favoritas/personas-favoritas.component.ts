@@ -3,11 +3,12 @@ import { Component, Input, HostListener, signal, OnInit, OnDestroy, AfterViewIni
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { PopupHtmlComponent } from '../../popup-html/popup-html.component';
+import { DisableDownloadDirective } from '../../../directives/disable-download.directive';
 
 @Component({
   selector: 'app-personas-favoritas',
   standalone: true,
-  imports: [CommonModule, PopupHtmlComponent],
+  imports: [CommonModule, PopupHtmlComponent, DisableDownloadDirective],
   templateUrl: './personas-favoritas.component.html',
   styleUrls: ['./../invitacion.component.css', './personas-favoritas.component.css']
 })

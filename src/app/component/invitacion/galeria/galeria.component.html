@@ -26,7 +26,7 @@
       <div class="side left">
         <img [src]="prevImg()" alt="prev" class="side-img left-img" 
         (contextmenu)="$event.preventDefault()"
-        draggable="false"/>
+        appDisableDownload/>
       </div>
 
       <img
@@ -44,14 +44,14 @@
           class="center-img"
           (click)="openFullScreen()"
           (contextmenu)="$event.preventDefault()"
-          draggable="false"
+          appDisableDownload
         />
       </div>
 
       <div class="side right">
         <img [src]="nextImg()" alt="next" class="side-img right-img" 
         (contextmenu)="$event.preventDefault()"
-        draggable="false"/>
+        appDisableDownload />
       </div>
     </div>
 
@@ -73,26 +73,28 @@
   </div>
 </section>
   <!-- ===== BOTÓN AGREGAR (fuera de showGallery) ===== -->
-  <div class="addNewDC" *ngIf="!loading">
-    <input
-      #fileInput
-      type="file"
-      accept="image/*"
-      multiple
-      hidden
-      (change)="triggerImageUpload($event)"
-    />
-    <img
-      src="../../../../assets/BtnAddNew.png"
-      alt="Agregar fotos"
-      height="64"
-      width="64"
-      (click)="fileInput.click()"
-      title="Click para agregar fotos a la galería"
-      class="add-btn"
-    />
+  <div class="addNewDC">
+        <div class="loaderGaleria" *ngIf="loading"></div>
+        <div style="margin-top: 40px;" *ngIf="!loading">
+          <input
+            #fileInput
+            type="file"
+            accept="image/*"
+            multiple
+            hidden
+            (change)="triggerImageUpload($event)"
+          />
+          <img
+            src="../../../../assets/BtnAddNew.png"
+            alt="Agregar fotos"
+            height="64"
+            width="64"
+            (click)="fileInput.click()"
+            title="Click para agregar fotos a la galería"
+            class="add-btn"
+          />
+        </div>
   </div>
-
   <!-- ===== Overlay de imagen ===== -->
   <div
     class="fullscreen-overlay"
@@ -103,6 +105,7 @@
       [src]="selectedImage"
       class="fullscreen-image"
       (click)="$event.stopPropagation()"
+      appDisableDownload
     />
     <button class="close-button" (click)="closeFullScreen()">✕</button>
   </div>

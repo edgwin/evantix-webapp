@@ -2,11 +2,12 @@ import { Component, HostListener, Input, signal } from '@angular/core';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { CommonModule } from '@angular/common';
+import { DisableDownloadDirective } from '../../../directives/disable-download.directive';
 
 @Component({
   selector: 'app-galeria',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, DisableDownloadDirective],
   templateUrl: './galeria.component.html',  
   styleUrls: ['./../invitacion.component.css', './galeria.component.css']
 })
@@ -309,6 +310,7 @@ export class GaleriaComponent {
 
   imagesToUpload: any[] = [];
   triggerImageUpload(event: any) {
+    this.loading = true;
     const selectedFiles = Array.from(event.target.files) as File[];
     if (!selectedFiles.length) return;
 
