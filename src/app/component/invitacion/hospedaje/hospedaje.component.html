@@ -1,0 +1,60 @@
+<section class="imagen-fondo" [style.background-image]="'
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url(' + data.imagen + ')'
+">
+<div class="editImage"> 
+  <img src="../../../../assets/editarImagen.png"
+       class="edit-imageIndicaciones-btn"
+       alt=""
+       (click)="triggerImageUpload()"
+       title="Click para editar imagen de fondo"       
+       *ngIf="!loadingImg"
+       >
+  <div class="loaderPortada" *ngIf="loadingImg"></div>
+</div>
+<div class="heading">
+    <h1 style="color:white">Hospedaje Recomendado</h1>
+</div>
+  <div class="grid-container">
+    <div class="card" *ngFor="let item of data.details let i = index">
+         <img src="../../../../assets/BtnDelete.png" alt="" height="64px" width="64px" class="editIndicacionesDelete"
+                                title="Click para eliminar elemento" (click)="triggerElementDelete(item.id)">
+        <!-- Ícono encima -->
+        <div class="cardIcon">
+          <img src="../../../../assets/Hospedaje.png" height="60px" width="80px"/>          
+        </div>                        
+        <!-- Contenido -->        
+        <div class="titulo" contenteditable="true"
+          (keydown)="onKeyDown($event,40)" 
+          (blur)="saveContent($event, item.id, 'nombre')"
+          (click)="onClickTitulo(item.id)">
+            {{item.nombre}}
+        </div>
+        <div id="descripcion" contenteditable="true"
+          (keydown)="onKeyDown($event,60)" 
+          (blur)="saveContent($event, item.id, 'direccion')"
+          (click)="onClickTitulo(item.id)">
+            {{item.direccion}}
+        </div>        
+        <div class="url-section">
+            <div>
+            <a [href]="item.ubicacion"
+               target="_blank"
+               class="inside-row-btn-mesa btn btn-primary">
+                Ver Ubicacion
+            </a>            
+            </div>
+            <div>
+              <a (click)="abrirMapa(item.id)"
+                class="dondeCuandoGeneral inside-row-btn btn btn-secondary">
+                Editar
+            </a>
+            </div>
+        </div>
+    </div>    
+  </div>
+  <div style="text-align: center" class="newBtn">
+    <img src="../../../../assets/BtnAddNew.png" style="cursor: pointer;" alt="" height="64px" width="64px" *ngIf="!loading"
+          title="Click para agregar elemento" (click)="nuevoHospedaje()">
+  </div>
+</section>

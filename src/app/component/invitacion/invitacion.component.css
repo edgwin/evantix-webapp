@@ -414,7 +414,7 @@ h1, h2, h3, h4, h5, h6, figure {
   -ms-border-radius: 4px;
   border-radius: 4px;
   min-height: 25vw;         /* altura mínima obligatoria */
-  height: auto;             /* deja que crezca según contenido */
+  height: 520px;
   position: relative;
   overflow: hidden;
 }
@@ -2426,6 +2426,17 @@ form label {
 .input-lugar input.mat-input-element {
   padding-top: 4px; /* mueve un poco el texto hacia arriba */
   height: 100%;
+}
+
+.editIndicacionesDelete {
+  position: absolute;
+  top: -20px;   /* separación desde arriba */
+  right: -20px;  /* separación desde la izquierda */
+  width: 40px; /* ajusta tamaño si quieres más chico */
+  height: 40px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  z-index: 10; /* para que quede encima del contenido */
 }
 
 /*# sourceMappingURL=style.css.map */

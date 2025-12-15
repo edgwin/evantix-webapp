@@ -18,8 +18,10 @@ export class InvitationService {
   private newIntinerario = 'Intinerario/';
   private getMesa = 'MesaRegalos/';
   private getPersonasFavoritas = 'PersonasFavoritas/';
-  private historia = 'Historia/'
-  private galeria = 'Galeria/'
+  private historia = 'Historia/';
+  private galeria = 'Galeria/';
+  private hospedaje = 'Hospedaje/';
+  private photosEvento = 'PhotosEvento/'
 
   guardarInvitacion(data: FormData): Observable<any> {
       const token = localStorage.getItem('access_token');
@@ -172,6 +174,26 @@ export class InvitationService {
 
   uploadGaleria(eventId:string, formData:any){
     const url = `${this.apiUrl}${this.getInvitationData}${this.galeria}${eventId}`;
+    return this.http.post(url, formData);
+  }
+
+  deleteHospedaje(mesaId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.hospedaje}${mesaId}`;
+    return this.http.delete(url);
+  }  
+
+  getHospedaje(eventId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.hospedaje}${eventId}`;
+    return this.http.get(url);
+  }
+
+  postHospedaje(eventId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.hospedaje}${eventId}`;
+    return this.http.post(url, eventId);
+  }
+
+  uploadPhotos(eventId:string, formData:any){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.photosEvento}${eventId}`;
     return this.http.post(url, formData);
   }
 }
