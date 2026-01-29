@@ -1,0 +1,89 @@
+.music-widget {
+	max-width: 420px;
+	margin: 20px auto;
+	padding: 16px;
+	border-radius: 16px;
+	background: rgba(255, 255, 255, 0.85);
+	backdrop-filter: blur(8px);
+	box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+	font-family: system-ui, sans-serif;
+}
+
+.music-header {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 12px;
+}
+
+.music-header .icon {
+	font-size: 20px;
+}
+
+.music-header .title {
+	font-weight: 600;
+	font-size: 16px;
+}
+
+.tags-container {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-bottom: 14px;
+}
+
+.tag {
+	padding: 6px 14px;
+	border-radius: 999px;
+	border: 1px solid #ccc;
+	background: #fff;
+	cursor: pointer;
+	font-size: 13px;
+	transition: all 0.2s ease;
+}
+
+.tag:hover {
+	background: #f2f2f2;
+}
+
+.tag.active {
+	background: #111;
+	color: #fff;
+	border-color: #111;
+}
+
+.track-selector select {
+	width: 100%;
+	padding: 10px 12px;
+	border-radius: 10px;
+	border: 1px solid #ccc;
+	font-size: 14px;
+	background: #fff;
+	outline: none;
+}
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.controls button {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  background: #111;
+  color: white;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.controls button:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+.controls .save {
+  background: #2d7ef7;
+}

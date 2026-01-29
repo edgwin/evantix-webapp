@@ -1,0 +1,41 @@
+<div class="text-center editableTitulo">
+   Elije tu cancion de Fondo
+</div>
+
+<div class="music-widget">
+  <!-- TAGS -->
+  <div class="tags-container">
+    <button
+      class="tag"
+      *ngFor="let tag of availableTags"
+      [class.active]="selectedTags.includes(tag)"
+      (click)="toggleTag(tag)">
+      {{ tag.label }}
+    </button>
+  </div>
+
+  <!-- TRACK SELECT -->
+  <div class="track-selector" *ngIf="tracks.length">
+    <select [(ngModel)]="selectedTrackId" (change)="onTrackChange()">
+        <option value="">Selecciona una canción</option>
+        <option *ngFor="let t of tracks" [value]="t.id">
+            {{ t.name }} – {{ t.artist_Name }}
+        </option>
+    </select>
+  </div>
+
+  <!-- CONTROLES -->
+  <div class="controls" *ngIf="selectedTrack">
+    <button (click)="togglePlayPause()">
+      {{ isPlaying ? '⏸ Pausar' : '▶ Reproducir' }}
+    </button>
+
+    <button *ngIf="!saved" class="save" (click)="saveTrack()">
+      💾 Guardar
+    </button>
+    <button *ngIf="saved" class="save" (click)="deleteTrack()">
+      🧹 Quitar
+    </button>
+  </div>
+
+</div>

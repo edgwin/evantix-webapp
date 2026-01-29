@@ -297,7 +297,7 @@ h1, h2, h3, h4, h5, h6, figure {
 
 .fh5co-cover {
   position: relative;
-  height: 900px;
+  height: 800px;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
@@ -887,7 +887,7 @@ form label {
 #fh5co-header .display-tc h2,
 #fh5co-counter .display-tc h2,
 .fh5co-cover .display-tc h2 {
-  font-size: 60px;
+  font-size: 45px;
   line-height: 1.5;  
   margin-bottom: 30px;
   margin-top: 40px;
@@ -896,7 +896,7 @@ form label {
   #fh5co-header .display-tc h2,
   #fh5co-counter .display-tc h2,
   .fh5co-cover .display-tc h2 {
-    font-size: 40px;
+    font-size: 30px;
   }
 }
 #fh5co-header .display-tc .btn,
@@ -1952,10 +1952,6 @@ form label {
   color: white;
 }
 
-.divFechas {
-  margin-top: 25vh;
-}
-
 .editImageFrase {
   position:absolute;
   top: 200vh;
@@ -2062,6 +2058,7 @@ form label {
   justify-content: center;     /* centrado horizontal */
   align-items: center;         /* centrado vertical (si el contenedor tiene altura) */
   width: 100%;  
+  margin-top: 30px;
 }
 
 .img-frase {
@@ -2277,9 +2274,8 @@ form label {
   font-weight: bold;  
 }
 
-.editablePortadaTitulo {
-  margin-bottom: 0px;
-  font-size: 100px;
+.editablePortadaTitulo {  
+  font-size: 150px;
   line-height: 1.5;
   font-family: "Sacramento", Arial, serif;
   color: white;
@@ -2291,9 +2287,9 @@ form label {
   margin: 0;
   padding: 0;  
   color: white;
-  font-size: 60px;
+  font-size: 45px;
   line-height: 1.5;
-  margin-bottom: 30px;
+  margin-bottom: 50px;
   margin-top: 40px;
 }
 
@@ -2346,6 +2342,11 @@ form label {
   cursor: pointer;
 }
 
+.left{
+  font-size: 20px;
+  color: white;
+}
+
 .prev { left: 0; }
 .next { right: 0; }
 
@@ -2366,8 +2367,7 @@ form label {
   }
 
   .editablePortadaTitulo {
-    margin-bottom: 0px;
-    font-size: 50px;
+    font-size: 65px;
     line-height: 1.5;
     font-family: "Sacramento", Arial, serif;
     color: white;

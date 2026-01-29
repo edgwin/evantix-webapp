@@ -14,6 +14,7 @@ import { IntinerarioComponent } from '../../component/invitacion/intinerario/int
 import { GaleriaComponent } from '../../component/invitacion/galeria/galeria.component';
 import { HospedajeComponent } from '../../component/invitacion/hospedaje/hospedaje.component';
 import { PhotoUploaderComponent } from '../../component/invitacion/photo-uploader/photo-uploader.component';
+import { MusicaComponent } from '../../component/invitacion/musica/musica.component';
 
 @Component({
   selector: 'app-invitacion',
@@ -21,7 +22,8 @@ import { PhotoUploaderComponent } from '../../component/invitacion/photo-uploade
   templateUrl: './invitacion.component.html',
   styleUrl: './invitacion.component.css',
   imports: [PortadaComponent, CommonModule, FestejadosComponent, DondeCuandoComponent, IntinerarioComponent, IndicacionesComponent, 
-            MesaRegalosComponent, PersonasFavoritasComponent, HistoriaComponent, GaleriaComponent, HospedajeComponent, PhotoUploaderComponent],
+            MesaRegalosComponent, PersonasFavoritasComponent, HistoriaComponent, GaleriaComponent, HospedajeComponent, 
+            PhotoUploaderComponent, MusicaComponent],
 })
 
 export class InvitacionComponent {

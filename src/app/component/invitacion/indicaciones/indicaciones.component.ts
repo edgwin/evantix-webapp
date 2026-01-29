@@ -16,7 +16,6 @@ export class IndicacionesComponent {
 
   loading: boolean = false;
   loadingImg: boolean = false;
-  //editingTituloId: string | null = null;
   tempTituloMap: { [id: string]: string } = {};  
   editingDescripcionId: string | null = null;
   tempDescripcionMap: { [id: string]: string } = {};  

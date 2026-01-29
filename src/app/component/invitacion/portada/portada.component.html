@@ -73,11 +73,16 @@
           </ng-template>
 
           <!-- Countdown -->
-          <app-countdown-timer
-            *ngIf="data?.fecha"
-            [targetDate]="data?.fecha"
-            [showLabels]="true"
-          ></app-countdown-timer>
+          <div>
+            <div class="left" *ngIf="!loadingImg">Faltan</div>           
+            <div>
+              <app-countdown-timer
+                *ngIf="data?.fecha"
+                [targetDate]="data?.fecha"
+                [showLabels]="true"
+              ></app-countdown-timer>
+            </div>
+          </div>
         </div>
 
 			</div>

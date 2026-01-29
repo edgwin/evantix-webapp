@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -11,6 +11,7 @@ export class InvitationService {
   private apiUrl = 'https://localhost:7282/';
   private postNewInvitationData = 'api/invitaciones/Create';
   private getInvitationData = 'api/invitacion/';
+  private getAIController = 'api/Ai/';
   private updateEntry = 'UpdateEntry/';
   private updateEntryImage = 'UpdateEntry/Image/';
   private getDondeCuando = 'DondeCuando/';
@@ -21,7 +22,12 @@ export class InvitationService {
   private historia = 'Historia/';
   private galeria = 'Galeria/';
   private hospedaje = 'Hospedaje/';
-  private photosEvento = 'PhotosEvento/'
+  private photosEvento = 'PhotosEvento/';
+  private musicLibrary = 'MusicLibrary/';
+  private saveSong = 'SaveSong/';
+  private deleteSong = 'DeleteSong/';
+  private getSong = 'GetSong/';
+  private getText = 'Text'
 
   guardarInvitacion(data: FormData): Observable<any> {
       const token = localStorage.getItem('access_token');
@@ -195,5 +201,39 @@ export class InvitationService {
   uploadPhotos(eventId:string, formData:any){
     const url = `${this.apiUrl}${this.getInvitationData}${this.photosEvento}${eventId}`;
     return this.http.post(url, formData);
+  }
+
+  getTracks(tags: string[]): Observable<any> {
+    let params = new HttpParams();
+
+    tags.forEach(tag => {
+      params = params.append('tags', tag);
+    });
+    const url = `${this.apiUrl}${this.getInvitationData}${this.musicLibrary}`;
+    return this.http.get<any>(url, {params});
+  }
+
+  addTrack(eventId:string, trackId:string){
+    const payload = {
+      eventId: eventId,
+      trackId: trackId
+    }
+    const url = `${this.apiUrl}${this.getInvitationData}${this.musicLibrary}${this.saveSong}`;
+    return this.http.post(url, payload);
+  }
+
+  deleteTrack(eventId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.musicLibrary}${this.deleteSong}${eventId}`;
+    return this.http.delete(url);
+  }
+
+  getTrackById(trackId:string){
+    const url = `${this.apiUrl}${this.getInvitationData}${this.musicLibrary}${this.getSong}${trackId}`;
+    return this.http.get<any>(url);
+  }
+
+  generateText(payload: any) {
+    const url = `${this.apiUrl}${this.getAIController}${this.getText}`;
+    return this.http.post<{ text: string }>(url,payload);
   }
 }

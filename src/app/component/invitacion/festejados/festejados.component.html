@@ -4,10 +4,11 @@
        'background-size': 'cover',
        'background-position': 'center',
        'background-repeat': 'no-repeat',
-       'padding-top': '10px'
+       'padding-top': '10px',
+       'padding-bottom': '100px'
      }"
 *ngIf="!loading">
-    <div class="container">
+    <!-- <div class="container">
         <div class="row">
             <div class="text-center editableTitulo" contenteditable="true" id="TituloFestejados"
                 (blur)="onTituloBlur($event)"                
@@ -16,7 +17,7 @@
                 {{data.titulo}}
             </div>
         </div>				
-    </div>    
+    </div>     -->
     <div>
         <div class="image-container">
             <!-- Imagen principal -->
@@ -39,10 +40,14 @@
 
         <!-- Texto editable -->
         <div>
-            <div class="frase-txt" contenteditable="true" id="FraseFestejados"
-            (blur)="onFraseBlur($event)"
-            (click)="onClickFrase()"
-            (keydown)="onKeyDown($event, 250)">
+            <div
+                class="frase-txt"
+                contenteditable="true"
+                id="FraseFestejados"
+                (blur)="onFraseBlur($event)"
+                (click)="onClickFrase()"
+                (keydown)="onKeyDown($event, 250)"
+            >
             {{data.frase}}
         </div>
         </div>
