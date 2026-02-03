@@ -35,7 +35,7 @@ availableTags: MusicTag[] = [
   audio!: HTMLAudioElement;
   isPlaying = false;
   saved = this.trackId !== "";
-
+  isLoading = true;
   constructor(private invitationService: InvitationService) {}
 
   ngOnInit() {    
@@ -89,7 +89,7 @@ availableTags: MusicTag[] = [
     this.invitationService.getTracks(tagValues)
       .subscribe(async res => {
         this.tracks = res ?? [];
-
+        this.isLoading = false;
         if (restoreSelection && this.trackId) {
           await this.ensureSavedTrackExists();
           this.applySavedSelection();

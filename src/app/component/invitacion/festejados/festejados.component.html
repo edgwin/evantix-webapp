@@ -47,6 +47,10 @@
                 (blur)="onFraseBlur($event)"
                 (click)="onClickFrase()"
                 (keydown)="onKeyDown($event, 250)"
+                appAiEditable
+                [aiSection]="'Frase emotiva del o los festejados'"
+                [aiEventType]="eventType"
+                [maxLength]="250"
             >
             {{data.frase}}
         </div>

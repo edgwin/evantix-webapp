@@ -31,7 +31,16 @@
             {{ data?.titulo }}
          </div>
         <!-- Subtítulo -->
-        <div class="editablePortadaSubtitulo" contenteditable="true" (keydown)="onKeyDown($event)" (click)="onClickSubtitulo()" (blur)="onSubtitleBlur($event)">
+        <div class="editablePortadaSubtitulo" 
+            contenteditable="true" 
+            (keydown)="onKeyDown($event)"
+            (click)="onClickSubtitulo()"
+            (blur)="onSubtitleBlur($event)"
+            appAiEditable
+            [aiSection]="'Portada Subtitulo'"
+            [aiEventType]="eventType"
+            [maxLength]="maxLength"
+        >
           <h2>{{ data?.subTitulo }}</h2>
         </div>
         <!-- Fechas -->

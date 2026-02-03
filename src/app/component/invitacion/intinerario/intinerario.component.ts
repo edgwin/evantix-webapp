@@ -3,11 +3,12 @@ import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { CommonModule } from '@angular/common';
 import { PopupHtmlComponent } from '../../popup-html/popup-html.component';
+import { AiEditableDirective } from '../../../directives/ai-editable.directive';
 
 @Component({
   selector: 'app-intinerario',
   standalone: true,
-  imports: [CommonModule, PopupHtmlComponent],
+  imports: [CommonModule, PopupHtmlComponent, AiEditableDirective],
   templateUrl: './intinerario.component.html',
   styleUrl: './../invitacion.component.css'
 })
@@ -19,6 +20,7 @@ export class IntinerarioComponent {
   loadingImgs: { [key: string]: boolean } = {};
   @Input() dataIntinerario:any = null;
   @Input() eventId: string = '';
+  @Input() eventType: string = '';  
   showPopup = false;
 
   editingDescripcion: boolean = false;

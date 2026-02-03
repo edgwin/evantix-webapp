@@ -2,11 +2,12 @@ import { Component, Input, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
+import { AiEditableDirective } from '../../../directives/ai-editable.directive';
 
 @Component({
   selector: 'app-indicaciones',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, AiEditableDirective],
   templateUrl: './indicaciones.component.html',
   styleUrl: './indicaciones.component.css'
 })
@@ -23,6 +24,7 @@ export class IndicacionesComponent {
   tempTitle: string = '';
   @Input() eventId: string = '';
   @Input() data: any;
+  @Input() eventType: string = '';  
 
   private editingTituloId: string | null = null;
   get valor() {

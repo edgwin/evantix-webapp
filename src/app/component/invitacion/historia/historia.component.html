@@ -47,13 +47,17 @@
                                         (blur)="onFechaHistoriaBlur($event, item)"
                                     >
                                         {{item.fecha}}
-                                    </h3>
+                                    </h3>                                    
 									<span class="date"
                                         [attr.data-id-desc-historia]="item.id"                                    
                                         contenteditable="true"
                                         (click)="onClickDescHistoria(item.id)"
                                         (keydown)="onKeyDown($event, 200)"
                                         (blur)="onDescHistoriaBlur($event, item)"
+                                        appAiEditable                                        
+                                        [aiSection]="'Historia de vida del o los festejados, si es boda, la historia de la pareja, la respuesta debe ser en primera persona'"
+                                        [aiEventType]="eventType"
+                                        [maxLength]="200"
                                     >
                                         {{item.descripcion}}
                                     </span>

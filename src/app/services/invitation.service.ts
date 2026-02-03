@@ -2,9 +2,20 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
+
+export interface AiTextRequest {
+  section: string;
+  tone: string;
+  eventType: string;
+  currentText?: string;
+  shortVersion: boolean;
+  maxLength: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
+
 export class InvitationService {
 
   constructor(private http: HttpClient) { }
@@ -231,8 +242,8 @@ export class InvitationService {
     const url = `${this.apiUrl}${this.getInvitationData}${this.musicLibrary}${this.getSong}${trackId}`;
     return this.http.get<any>(url);
   }
-
-  generateText(payload: any) {
+  
+  generateText(payload: AiTextRequest) {
     const url = `${this.apiUrl}${this.getAIController}${this.getText}`;
     return this.http.post<{ text: string }>(url,payload);
   }

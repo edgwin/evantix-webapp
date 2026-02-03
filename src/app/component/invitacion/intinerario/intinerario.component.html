@@ -6,10 +6,14 @@
                         <h2>{{dataIntinerario.titulo}}</h2>
                     </div>
 					<div class="descripcion-container"
-                    contenteditable="true"
-                    (click)="onClickDescripcion()"
-                    (keydown)="onKeyDownInt($event, 200)"
-                    (blur)="onDescripcionBlur($event)" 
+                        contenteditable="true"
+                        (click)="onClickDescripcion()"
+                        (keydown)="onKeyDownInt($event, 200)"
+                        (blur)="onDescripcionBlur($event)"
+                        appAiEditable
+                        [aiSection]="'Intinerario del evento'"
+                        [aiEventType]="eventType"
+                        [maxLength]="200"
                     >
                         <p>{{dataIntinerario.descripcion}}</p>
                     </div>
@@ -45,6 +49,10 @@
                                         (click)="onClickActividadInt(item.id)"
                                         (keydown)="onKeyDownInt($event, 22)"
                                         (blur)="onActividadIntBlur($event, item)"
+                                        appAiEditable
+                                        [aiSection]="'Intinerario del evento'"
+                                        [aiEventType]="eventType"
+                                        [maxLength]="22"
                                     >
                                         {{item.actividad}}
                                     </h3>

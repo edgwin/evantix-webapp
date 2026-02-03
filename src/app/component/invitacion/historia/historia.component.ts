@@ -3,11 +3,12 @@ import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { CommonModule } from '@angular/common';
 import { DisableDownloadDirective } from '../../../directives/disable-download.directive';
+import { AiEditableDirective } from '../../../directives/ai-editable.directive';
 
 @Component({
   selector: 'app-historia',
   standalone: true,
-  imports: [CommonModule, DisableDownloadDirective],
+  imports: [CommonModule, DisableDownloadDirective, AiEditableDirective],
   templateUrl: './historia.component.html',
   styleUrls: ['./../invitacion.component.css', './historia.component.css']
 })
@@ -17,6 +18,7 @@ constructor(private invitationService: InvitationService, private notificationSe
 
  @Input() dataHistoria: any;
  @Input() eventId: string = '';
+ @Input() eventType: string = '';
  loadingImgs: { [key: string]: boolean } = {};
  loading: boolean = false;
 

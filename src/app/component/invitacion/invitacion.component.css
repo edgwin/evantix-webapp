@@ -2353,6 +2353,9 @@ form label {
 
 
 @media screen and (max-width: 767px) {
+  .editablePortadaSubtitulo{
+    font-size: 30px;
+  }
   .dondeCuando {
     width: 100% !important;
   }

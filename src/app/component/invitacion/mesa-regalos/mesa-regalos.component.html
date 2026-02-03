@@ -44,7 +44,12 @@
           [attr.data-id-descripcion]="item.id"
           (keydown)="onKeyDown($event,200)" 
           (blur)="saveContent($event, item.id, 'descripcion')"
-          (click)="onClickDescripcion(item.id)" >
+          (click)="onClickDescripcion(item.id)"
+          appAiEditable
+          [aiSection]="'Mesa de Regalos'"
+          [aiEventType]="eventType"
+          [maxLength]="200"
+          >
             {{item.descripcion}}
         </div>        
         <div class="url-section">

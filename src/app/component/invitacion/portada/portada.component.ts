@@ -8,6 +8,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
+import { AiEditableDirective } from '../../../directives/ai-editable.directive';
 
 @Component({
   selector: 'app-portada',
@@ -20,7 +21,8 @@ import { MatNativeDateModule } from '@angular/material/core';
             MatDatepickerModule, //ToDo ver si se puede quitar
             MatFormFieldModule,
             MatInputModule,
-            MatNativeDateModule]
+            MatNativeDateModule,
+            AiEditableDirective]
 })
 export class PortadaComponent {  
   loadingImg: boolean = false;
@@ -28,7 +30,8 @@ export class PortadaComponent {
   newDate: Date = new Date();
   stringDate: string = '';
   @Input() eventId: string = '';
-  @Input() data: any;  
+  @Input() data: any; 
+  @Input() eventType: string = '';
   editingTitle: boolean = false;
   editingSubtitle: boolean = false;
   editingDate: boolean = false;

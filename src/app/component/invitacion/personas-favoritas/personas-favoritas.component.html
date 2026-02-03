@@ -7,6 +7,10 @@
         (click)="onClickTituloPF()"
         (keydown)="onKeyDown($event, 50)"
         (blur)="onTituloBlur($event)"
+        appAiEditable
+        [aiSection]="'Persona Favoritas como Padres y Padrinos'"
+        [aiEventType]="eventType"
+        [maxLength]="50"
       >
         {{ data.titulo }}
       </div>
@@ -17,6 +21,10 @@
         (keydown)="onKeyDown($event, 120)"
         (blur)="onFraseBlur($event)"
         id="FrasePF"
+        appAiEditable
+        [aiSection]="'Persona Favoritas como Padres y Padrinos, frase emotiva o agradecimiento'"
+        [aiEventType]="eventType"
+        [maxLength]="120"
       >
         <p>{{ data.frase }}</p>
       </div>

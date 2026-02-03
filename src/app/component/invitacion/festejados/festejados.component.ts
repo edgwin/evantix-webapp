@@ -5,13 +5,14 @@ import { NotificationService } from '../../../services/notification.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { FormsModule } from '@angular/forms';
 import { DisableDownloadDirective } from '../../../directives/disable-download.directive';
+import { AiEditableDirective } from '../../../directives/ai-editable.directive';
 
 @Component({
   selector: 'app-festejados',
   templateUrl: './festejados.component.html',
   styleUrl: './../invitacion.component.css',
   standalone: true,
-  imports: [CommonModule, FormsModule, DisableDownloadDirective],
+  imports: [CommonModule, FormsModule, DisableDownloadDirective, AiEditableDirective],
   animations: [
     trigger('fadeInScale', [
       transition(':enter', [
@@ -30,6 +31,7 @@ export class FestejadosComponent {
   loading:boolean = false;
   @Input() eventId: string = '';
   @Input() data: any = null;
+  @Input() eventType: string = '';
   editingTitle: boolean = false;
   editingFrase: boolean = false;
   tempTitle: string = '';  

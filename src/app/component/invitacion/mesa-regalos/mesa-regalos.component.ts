@@ -4,11 +4,12 @@ import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { FormsModule } from '@angular/forms';
 import { PopupHtmlComponent } from '../../popup-html/popup-html.component';
+import { AiEditableDirective } from '../../../directives/ai-editable.directive';
 
 @Component({
   selector: 'app-mesa-regalos',
   standalone: true,
-  imports: [CommonModule, FormsModule, PopupHtmlComponent],
+  imports: [CommonModule, FormsModule, PopupHtmlComponent, AiEditableDirective],
   templateUrl: './mesa-regalos.component.html',
   styleUrls: ['./mesa-regalos.component.css','./../invitacion.component.css']
 })
@@ -19,6 +20,7 @@ export class MesaRegalosComponent {
     
   @Input() eventId: string = '';
   @Input() data: any;
+  @Input() eventType: string = '';
   tempTituloMap: { [id: string]: string } = {};
   editingTituloId: string | null = null;
   editingDescripcionId: string | null = null;

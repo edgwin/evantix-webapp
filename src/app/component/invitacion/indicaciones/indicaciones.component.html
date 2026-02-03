@@ -34,7 +34,12 @@
           [attr.data-id-descripcion-indicaciones]="item.id"
           (keydown)="onDescKeyDown($event)"
           (click)="onClickDescripcion(item.id)"
-          (blur)="saveContent($event, item.id, 'descripcion')"></div>
+          (blur)="saveContent($event, item.id, 'descripcion')"
+          appAiEditable
+          [aiSection]="'Indicaciones para el evento'"
+          [aiEventType]="eventType"
+          [maxLength]="maxLength"
+        ></div>
     </div>    
   </div>
   <div style="text-align: center" class="newBtn">

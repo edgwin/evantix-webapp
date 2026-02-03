@@ -1,10 +1,10 @@
 <div *ngIf="loading" style="text-align: center;">
   <img src="../../../assets/images/loading2.gif" alt="Cargando..." width="25%"/>
 </div>
-<div>
-  <app-portada [eventId] = "eventId" [data]="data.portada"></app-portada>
-  <app-festejados [eventId] = "eventId" [data]="data.festejados"></app-festejados>
-  <app-indicaciones [eventId] = "eventId" [data]="data.indicaciones"></app-indicaciones>
+<div *ngIf="!loading">
+  <app-portada [eventId] = "eventId" [data]="data.portada" [eventType]="data.eventType"></app-portada>
+  <app-festejados [eventId] = "eventId" [data]="data.festejados" [eventType]="data.eventType"></app-festejados>
+  <app-indicaciones [eventId] = "eventId" [data]="data.indicaciones" [eventType]="data.eventType"></app-indicaciones>
   <div
   [ngStyle]="{
         'background-image': 'url(../../../../assets/background.jpg)',
@@ -16,9 +16,9 @@
       }"
   >
   <app-donde-cuando [eventId] = "eventId" [data]="data.dondeCuando"></app-donde-cuando>
-  <app-intinerario [eventId] = "eventId" [dataIntinerario]="data.intinerario"></app-intinerario>
+  <app-intinerario [eventId] = "eventId" [dataIntinerario]="data.intinerario" [eventType]="data.eventType"></app-intinerario>
   </div>
-  <app-mesa-regalos [eventId] = "eventId" [data]="data.mesaRegalos"></app-mesa-regalos>
+  <app-mesa-regalos [eventId] = "eventId" [data]="data.mesaRegalos" [eventType]="data.eventType"></app-mesa-regalos>
   <div
     [ngStyle]="{
       'background-image': 'url(../../../../assets/background.jpg)',
@@ -29,8 +29,8 @@
       'padding-bottom': '2vh'
     }"
   >
-  <app-personas-favoritas [eventId] = "eventId" [data]="data.personasFavoritas"></app-personas-favoritas>
-  <app-historia [eventId] = "eventId" [dataHistoria]="data.historia"></app-historia>
+  <app-personas-favoritas [eventId] = "eventId" [data]="data.personasFavoritas" [eventType]="data.eventType"></app-personas-favoritas>
+  <app-historia [eventId] = "eventId" [dataHistoria]="data.historia" [eventType]="data.eventType"></app-historia>
   <app-galeria [eventId] = "eventId" [data]="data.galeriaFotos"></app-galeria>
   <app-hospedaje [eventId] = "eventId" [data]="data.hospedaje"></app-hospedaje>
   <app-musica [eventId] = "eventId" [trackId]="data.portada.trackId"></app-musica>
