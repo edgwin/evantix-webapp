@@ -21,7 +21,7 @@ constructor(private invitationService: InvitationService, private notificationSe
  @Input() eventType: string = '';
  loadingImgs: { [key: string]: boolean } = {};
  loading: boolean = false;
-
+ section: string = ''
  editingTituloHistoria: boolean = false;
  tempTituloHistoria: string = '';
  editingFechaHistoriaId: string | null = null;

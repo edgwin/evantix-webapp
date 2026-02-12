@@ -14,7 +14,7 @@ import { AiEditableDirective } from '../../../directives/ai-editable.directive';
   selector: 'app-portada',
   standalone: true,
   templateUrl: './portada.component.html',
-  styleUrls: ['./../invitacion.component.css'],
+  styleUrls: ['./portada.component.css'],
   imports: [CommonModule, 
             CountdownTimerComponent, 
             FormsModule,

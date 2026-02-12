@@ -10,7 +10,7 @@ import { AiEditableDirective } from '../../../directives/ai-editable.directive';
 @Component({
   selector: 'app-festejados',
   templateUrl: './festejados.component.html',
-  styleUrl: './../invitacion.component.css',
+  styleUrl: './festejados.component.css',
   standalone: true,
   imports: [CommonModule, FormsModule, DisableDownloadDirective, AiEditableDirective],
   animations: [

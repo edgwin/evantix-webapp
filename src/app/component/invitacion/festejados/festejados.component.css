@@ -1,0 +1,117 @@
+.image-container {
+  position: relative;
+  display: flex;               /* usamos flexbox */
+  justify-content: center;     /* centrado horizontal */
+  align-items: center;         /* centrado vertical (si el contenedor tiene altura) */
+  width: 100%;  
+  margin-top: 30px;
+}
+
+.img-frase {
+  border-radius: 50%;
+  object-fit: cover;
+  width: 300px;
+  height: 300px;
+  display: block;
+  margin: 0 auto; 
+}
+
+.edit-image-btn {
+  position: absolute;
+  top: 10px;
+  right: calc(50% - 140px); /* 👈 centrado relativo a la imagen */
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  z-index: 101;
+}
+
+.edit-image-btn-int{
+  position: absolute;
+  top: 5px;
+  right: calc(50% - 90px); /* 👈 centrado relativo a la imagen */
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  z-index: 101;
+}
+
+.edit-image-btn-gallery{
+  position: absolute;
+  top: 5px;
+  right: calc(50% + 110px); /* 👈 centrado relativo a la imagen */
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  z-index: 101;
+}
+
+.edit-image-btn:hover {
+  transform: scale(1.1);
+}
+
+.edit-image-btn-int:hover{
+  transform: scale(1.1);
+}
+
+.loaderFestejados {
+  border: 8px solid rgba(0, 0, 0, 0.1);
+  border-top: 8px solid #ff0000;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  background: transparent;
+  position: absolute;
+  right: 43vw;
+  top: 0.8vw;
+}
+
+.frase-txt{
+    text-align: center;
+    width: 80%;
+    margin: 0 auto;
+    font-size: 24px;
+    line-height: 40px;
+    font-style: italic;
+    margin-top: 10px;
+    text-shadow: 1px 1px 2px black;
+}
+
+@media screen and (max-width: 767px) {
+  .img-frase {
+    width: 200px;
+    height: 200px;
+  }
+
+  .edit-image-btn {
+    width: 32px;
+    height: 32px;
+    top: 5px;
+    right: calc(50% - 100px);
+  }
+
+  .edit-image-btn-int{
+    position: absolute;
+    top: 5px;
+    left: calc(50% - 150px); /* 👈 centrado relativo a la imagen */
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    z-index: 101;
+  }
+
+  .edit-image-btn-gallery{
+    right: calc(50% + 65px); /* 👈 centrado relativo a la imagen */
+  }
+
+  .frase-txt{
+    font-size: 18px;
+    line-height: 20px;
+    margin-top: 25px;
+  }
+}
