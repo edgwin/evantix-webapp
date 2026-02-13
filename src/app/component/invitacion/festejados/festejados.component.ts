@@ -6,6 +6,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { FormsModule } from '@angular/forms';
 import { DisableDownloadDirective } from '../../../directives/disable-download.directive';
 import { AiEditableDirective } from '../../../directives/ai-editable.directive';
+import { TemplateService } from '../../../services/template.service';
 
 @Component({
   selector: 'app-festejados',
@@ -25,7 +26,8 @@ import { AiEditableDirective } from '../../../directives/ai-editable.directive';
 export class FestejadosComponent {
   constructor(
     private invitationService: InvitationService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    public templateService: TemplateService
   ) {}
 
   loading:boolean = false;

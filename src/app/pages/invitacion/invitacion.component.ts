@@ -30,7 +30,7 @@ import { TemplateSelectorComponent } from '../../component/invitacion/template-s
 
 export class InvitacionComponent {
   constructor(private route: ActivatedRoute, private invitationService: InvitationService, 
-              private notificationService: NotificationService, private templateService: TemplateService)
+              private notificationService: NotificationService, public templateService: TemplateService)
   {}  
   eventId : any;
   loading:boolean = true;

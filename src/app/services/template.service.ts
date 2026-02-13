@@ -24,6 +24,7 @@ export interface TemplateTheme {
     mesaRegalos: string;
     intinerario: string;
   };
+  backgroundImage: string;
 }
 
 export interface Template {
@@ -70,7 +71,8 @@ export class TemplateService {
           hospedaje: '../../../../assets/templates/elegant/hospedaje.png',
           mesaRegalos: '../../../../assets/templates/elegant/mesa-regalos.png',
           intinerario: '../../../../assets/templates/elegant/intinerario.png'
-        }
+        },
+        backgroundImage: '../../../../assets/templates/elegant/background.jpg'
       },
       preview: '../../../../assets/templates/previews/elegant_gold.jpg'
     },
@@ -101,7 +103,8 @@ export class TemplateService {
           hospedaje: '../../../../assets/Hospedaje.png',
           mesaRegalos: '../../../../assets/MesaRegalos.png',
           intinerario: '../../../../assets/Intinerario.png'
-        }
+        },
+        backgroundImage: '../../../../assets/background.jpg'
       },
       preview: '../../../../assets/templates/previews/romantic_pink.jpg'
     },
@@ -132,7 +135,8 @@ export class TemplateService {
           hospedaje: '../../../../assets/templates/vintage/hospedaje.png',
           mesaRegalos: '../../../../assets/templates/vintage/mesa-regalos.png',
           intinerario: '../../../../assets/templates/vintage/intinerario.png'
-        }
+        },
+        backgroundImage: '../../../../assets/templates/vintage/background.jpg'
       },
       preview: '../../../../assets/templates/previews/vintage_green.jpg'
     },
@@ -163,7 +167,8 @@ export class TemplateService {
           hospedaje: '../../../../assets/templates/minimal/hospedaje.png',
           mesaRegalos: '../../../../assets/templates/minimal/mesa-regalos.png',
           intinerario: '../../../../assets/templates/minimal/intinerario.png'
-        }
+        },
+        backgroundImage: '../../../../assets/templates/minimal/background.jpg'
       },
       preview: '../../../../assets/templates/previews/modern_minimalist.jpg'
     },
@@ -194,7 +199,8 @@ export class TemplateService {
           hospedaje: '../../../../assets/templates/xv/hospedaje.png',
           mesaRegalos: '../../../../assets/templates/xv/mesa-regalos.png',
           intinerario: '../../../../assets/templates/xv/intinerario.png'
-        }
+        },
+        backgroundImage: '../../../../assets/templates/xv/background.jpg'
       },
       preview: '../../../../assets/templates/previews/xv_princess.jpg'
     },
@@ -225,7 +231,8 @@ export class TemplateService {
           hospedaje: '../../../../assets/templates/bautizo/hospedaje.png',
           mesaRegalos: '../../../../assets/templates/bautizo/mesa-regalos.png',
           intinerario: '../../../../assets/templates/bautizo/intinerario.png'
-        }
+        },
+        backgroundImage: '../../../../assets/templates/bautizo/background.jpg'
       },
       preview: '../../../../assets/templates/previews/bautizo_celestial.jpg'
     }
@@ -311,6 +318,14 @@ export class TemplateService {
       case 'intinerario': return '../../../../assets/Intinerario.png';
       default: return '';
     }
+  }
+
+  getBackgroundImage(): string {
+    const template = this.getCurrentTemplate();
+    if (template && template.theme.backgroundImage) {
+      return template.theme.backgroundImage;
+    }
+    return '../../../../assets/background.jpg';
   }
 
   // Ejemplo de objeto JSON para el backend

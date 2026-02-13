@@ -13,7 +13,7 @@
   <app-indicaciones [eventId]="eventId" [data]="data.indicaciones" [eventType]="data.eventType" [isReadOnly]="isReadOnly"></app-indicaciones>
   <div
   [ngStyle]="{
-        'background-image': 'url(../../../../assets/background.jpg)',
+        'background-image': 'url(' + templateService.getBackgroundImage() + ')',
         'background-size': 'cover',
         'background-position': 'center',
         'background-repeat': 'no-repeat',
@@ -27,7 +27,7 @@
   <app-mesa-regalos [eventId]="eventId" [data]="data.mesaRegalos" [eventType]="data.eventType" [isReadOnly]="isReadOnly"></app-mesa-regalos>
   <div
     [ngStyle]="{
-      'background-image': 'url(../../../../assets/background.jpg)',
+      'background-image': 'url(' + templateService.getBackgroundImage() + ')',
       'background-size': 'cover',
       'background-position': 'center',
       'background-repeat': 'no-repeat',
