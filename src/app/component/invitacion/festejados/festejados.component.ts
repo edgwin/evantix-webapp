@@ -32,6 +32,7 @@ export class FestejadosComponent {
   @Input() eventId: string = '';
   @Input() data: any = null;
   @Input() eventType: string = '';
+  @Input() isReadOnly: boolean = false;
   editingTitle: boolean = false;
   editingFrase: boolean = false;
   tempTitle: string = '';  

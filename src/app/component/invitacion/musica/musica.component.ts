@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InvitationService } from '../../../services/invitation.service';
 import { FormsModule } from '@angular/forms';
@@ -15,10 +15,11 @@ interface MusicTag {
   templateUrl: './musica.component.html',
   styleUrls: ['./../invitacion.component.css', './musica.component.css']
 })
-export class MusicaComponent implements OnInit {
+export class MusicaComponent implements OnInit, OnChanges {
 
 @Input() eventId: string = '';
 @Input() trackId: string = '';
+@Input() isReadOnly: boolean = false;
 availableTags: MusicTag[] = [
     { label: 'Ambiente', value: 'ambient' },
     { label: 'Soundtrack', value: 'soundtrack' },
@@ -45,8 +46,51 @@ availableTags: MusicTag[] = [
 
     this.audio.onended = () => this.isPlaying = false;
     if (this.trackId) {
-      this.restoreSavedTrack();
+      if (this.isReadOnly) {
+        this.loadAndAutoPlay();
+      } else {
+        this.restoreSavedTrack();
+      }
     }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['isReadOnly'] && !changes['isReadOnly'].firstChange) {
+      const isNowReadOnly = changes['isReadOnly'].currentValue;
+      if (isNowReadOnly && this.trackId) {
+        // Cambió a ReadOnly, auto-reproducir
+        if (this.selectedTrack && this.audio.src) {
+          this.audio.play().then(() => {
+            this.isPlaying = true;
+          }).catch(() => {
+            this.isPlaying = false;
+          });
+        } else {
+          this.loadAndAutoPlay();
+        }
+      } else if (!isNowReadOnly) {
+        // Cambió a modo edición, pausar
+        this.audio.pause();
+        this.isPlaying = false;
+      }
+    }
+  }
+
+  loadAndAutoPlay() {
+    this.invitationService.getTrackById(this.trackId)
+      .subscribe(track => {
+        this.selectedTrack = track;
+        if (track && track.audio) {
+          this.audio.src = track.audio;
+          this.audio.load();
+          this.audio.play().then(() => {
+            this.isPlaying = true;
+          }).catch(() => {
+            this.isPlaying = false;
+          });
+        }
+        this.isLoading = false;
+      });
   }
 
   restoreSavedTrack() {

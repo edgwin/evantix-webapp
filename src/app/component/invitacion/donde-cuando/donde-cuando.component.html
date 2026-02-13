@@ -21,7 +21,7 @@
                                             'background-repeat': 'no-repeat'
                                         }">
                         <img src="../../../../assets/editarImagen.png" alt="" height="64px" width="64px" class="editDondeCuandoImage"
-                                (click)="triggerImageUpload(item.id)" title="Click para editar imagen de fondo" *ngIf="!loadingImgs[item.id]">
+                                (click)="triggerImageUpload(item.id)" title="Click para editar imagen de fondo" *ngIf="!loadingImgs[item.id] && !isReadOnly">
                         <div class="loaderDC" *ngIf="loadingImgs[item.id]"></div>
 
                         <img src="../../../../assets/BtnDelete.png" 
@@ -31,15 +31,15 @@
                             class="editDondeCuandoDelete"
                             (click)="triggerImageDelete(item.id)" 
                             title="Click para eliminar elemento" 
-                            *ngIf="!loadingImgs[item.id] && (data?.details?.length || 0) > 1">
+                            *ngIf="!loadingImgs[item.id] && (data?.details?.length || 0) > 1 && !isReadOnly">
                         <div class="!loaderDCDelete" *ngIf="!loadingImgs[item.id]"></div>
                         <div class="dondeCuandoTitle"
                             [attr.data-id-actividad]="item.id"
-                            contenteditable="true"
+                            [attr.contenteditable]="!isReadOnly"
                             (pointerdown)="$event.stopPropagation()"
                             (mousedown)="$event.stopPropagation()"
                             (touchstart)="$event.stopPropagation()"
-                            (click)="onClickActividad(item.id)"
+                            (click)="!isReadOnly && onClickActividad(item.id)"
                             (keydown)="onKeyDown($event, item)"
                             (blur)="onActividadBlur($event, item)">
                             {{ item.actividad }}
@@ -49,11 +49,11 @@
                         <div
                             class="editable-text-bolded editable-text"
                             [attr.data-id-hora]="item.id"
-                            contenteditable="true"
+                            [attr.contenteditable]="!isReadOnly"
                             (pointerdown)="$event.stopPropagation()"
                             (mousedown)="$event.stopPropagation()"
                             (touchstart)="$event.stopPropagation()"
-                            (click)="onClickHora(item.id)"
+                            (click)="!isReadOnly && onClickHora(item.id)"
                             (keydown)="onKeyDown($event, item)"
                             (blur)="onHoraBlur($event, item)">
                             <span><b>{{item.hora}}</b></span>
@@ -64,11 +64,11 @@
                         <div
                             class="editable-text-bolded editable-text"
                             [attr.data-id-fecha]="item.id"
-                            contenteditable="true"
+                            [attr.contenteditable]="!isReadOnly"
                             (pointerdown)="$event.stopPropagation()"
                             (mousedown)="$event.stopPropagation()"
                             (touchstart)="$event.stopPropagation()"
-                            (click)="onClickFecha(item.id)"
+                            (click)="!isReadOnly && onClickFecha(item.id)"
                             (keydown)="onKeyDown($event, item)"
                             (blur)="onFechaBlur($event, item)">
                             <span><b>{{item.fecha}}</b></span>
@@ -80,11 +80,11 @@
                             <div
                                 class="editable-text"
                                 [attr.data-id-lugar]="item.id"
-                                contenteditable="true"
+                                [attr.contenteditable]="!isReadOnly"
                                 (pointerdown)="$event.stopPropagation()"
                                 (mousedown)="$event.stopPropagation()"
                                 (touchstart)="$event.stopPropagation()"
-                                (click)="onClickLugar(item.id)"
+                                (click)="!isReadOnly && onClickLugar(item.id)"
                                 (keydown)="onKeyDown($event, item)"
                                 (blur)="onLugarBlur($event, item)">
                                 <span>{{item.lugar}}</span>
@@ -95,11 +95,11 @@
                             <div
                                 class="editable-text"
                                 [attr.data-id-direccion]="item.id"
-                                contenteditable="true"
+                                [attr.contenteditable]="!isReadOnly"
                                 (pointerdown)="$event.stopPropagation()"
                                 (mousedown)="$event.stopPropagation()"
                                 (touchstart)="$event.stopPropagation()"
-                                (click)="onClickDireccion(item.id)"
+                                (click)="!isReadOnly && onClickDireccion(item.id)"
                                 (keydown)="onKeyDown($event, item)"
                                 (blur)="onDireccionBlur($event, item)"
                                 style="text-align: left;">
@@ -114,7 +114,8 @@
                                 Ver Ubicación
                             </a>
                             <a (click)="abrirMapa(item.id)"
-                                class="dondeCuandoGeneral inside-row-btn btn btn-secondary">
+                                class="dondeCuandoGeneral inside-row-btn btn btn-secondary"
+                                *ngIf="!isReadOnly">
                                 Editar
                             </a>
                         </div>
@@ -123,7 +124,7 @@
             </div>													
         </div>
     </div>
-    <div class="addNewDC" *ngIf="!loading">
+    <div class="addNewDC" *ngIf="!loading && !isReadOnly">
         <img src="../../../../assets/BtnAddNew.png" alt="" height="64px" width="64px" *ngIf="!loading && (data?.details?.length || 0) < 4"
                 title="Click para Agregar un nuevo Lugar" (click)="nuevoDondeCuando()" style="cursor: pointer;">
     </div>

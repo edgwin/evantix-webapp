@@ -2,7 +2,7 @@
     linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
     url(' + data.imagen + ')'
 ">
-<div class="editImage"> 
+<div class="editImage" *ngIf="!isReadOnly"> 
   <img src="../../../../assets/editarImagen.png"
        class="edit-imageIndicaciones-btn"
        alt=""
@@ -18,22 +18,22 @@
   <div class="grid-container">
     <div class="card" *ngFor="let item of data.details let i = index">
          <img src="../../../../assets/BtnDelete.png" alt="" height="64px" width="64px" class="editIndicacionesDelete"
-                                title="Click para eliminar elemento" (click)="triggerElementDelete(item.id)">
+                                title="Click para eliminar elemento" (click)="triggerElementDelete(item.id)" *ngIf="!isReadOnly">
         <!-- Ícono encima -->
         <div class="cardIcon">
-          <img src="../../../../assets/Hospedaje.png" height="60px" width="80px"/>          
+          <img [src]="templateService.getIconForSection('hospedaje')" height="60px" width="80px"/>          
         </div>                        
         <!-- Contenido -->        
-        <div class="titulo" contenteditable="true"
+        <div class="titulo" [attr.contenteditable]="!isReadOnly"
           (keydown)="onKeyDown($event,40)" 
           (blur)="saveContent($event, item.id, 'nombre')"
-          (click)="onClickTitulo(item.id)">
+          (click)="!isReadOnly && onClickTitulo(item.id)">
             {{item.nombre}}
         </div>
-        <div id="descripcion" contenteditable="true"
+        <div id="descripcion" [attr.contenteditable]="!isReadOnly"
           (keydown)="onKeyDown($event,60)" 
           (blur)="saveContent($event, item.id, 'direccion')"
-          (click)="onClickTitulo(item.id)">
+          (click)="!isReadOnly && onClickTitulo(item.id)">
             {{item.direccion}}
         </div>        
         <div class="url-section">
@@ -44,7 +44,7 @@
                 Ver Ubicacion
             </a>            
             </div>
-            <div>
+            <div *ngIf="!isReadOnly">
               <a (click)="abrirMapa(item.id)"
                 class="dondeCuandoGeneral inside-row-btn btn btn-secondary">
                 Editar
@@ -53,7 +53,7 @@
         </div>
     </div>    
   </div>
-  <div style="text-align: center" class="newBtn">
+  <div style="text-align: center" class="newBtn" *ngIf="!isReadOnly">
     <img src="../../../../assets/BtnAddNew.png" style="cursor: pointer;" alt="" height="64px" width="64px" *ngIf="!loading"
           title="Click para agregar elemento" (click)="nuevoHospedaje()">
   </div>

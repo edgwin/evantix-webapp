@@ -34,7 +34,7 @@
                 class="edit-image-btn"
                 (click)="triggerImageUpload()" 
                 title="Click para editar imagen" 
-                *ngIf="!loadingImg">
+                *ngIf="!loadingImg && !isReadOnly">
             <div class="loaderFestejados" *ngIf="loadingImg"></div>                
         </div>        
 
@@ -42,15 +42,16 @@
         <div>
             <div
                 class="frase-txt"
-                contenteditable="true"
+                [attr.contenteditable]="!isReadOnly"
                 id="FraseFestejados"
                 (blur)="onFraseBlur($event)"
-                (click)="onClickFrase()"
+                (click)="!isReadOnly && onClickFrase()"
                 (keydown)="onKeyDown($event, 250)"
                 appAiEditable
                 [aiSection]="'Frase emotiva del o los festejados'"
                 [aiEventType]="eventType"
                 [maxLength]="250"
+                [aiReadOnly]="isReadOnly"
             >
             {{data.frase}}
         </div>

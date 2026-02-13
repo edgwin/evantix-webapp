@@ -9,6 +9,7 @@ export class AiEditableDirective {
   @Input() aiSection: string = '';
   @Input() aiEventType: string = 'boda';
   @Input() maxLength: number = 50;
+  @Input() aiReadOnly: boolean = false;
 
   private widgetRef: ComponentRef<AiTextWidgetComponent> | null = null;
 
@@ -21,6 +22,7 @@ export class AiEditableDirective {
 
   @HostListener('click', ['$event'])
   onClick(event: Event): void {
+    if (this.aiReadOnly) return;
     event.stopPropagation();
     this.showWidget();
   }

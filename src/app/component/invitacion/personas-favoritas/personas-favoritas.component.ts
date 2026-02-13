@@ -20,6 +20,7 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
   @Input() data: any;
   @Input() height = '60vh';
   @Input() eventType: string = '';
+  @Input() isReadOnly: boolean = false;
   images: any[] = [];
   editingTituloPF: boolean = false;
   tempTituloPF: string = '';

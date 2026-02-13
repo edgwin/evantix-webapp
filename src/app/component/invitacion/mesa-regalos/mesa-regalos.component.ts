@@ -21,6 +21,7 @@ export class MesaRegalosComponent {
   @Input() eventId: string = '';
   @Input() data: any;
   @Input() eventType: string = '';
+  @Input() isReadOnly: boolean = false;
   tempTituloMap: { [id: string]: string } = {};
   editingTituloId: string | null = null;
   editingDescripcionId: string | null = null;

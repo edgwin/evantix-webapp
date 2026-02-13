@@ -32,6 +32,7 @@ export class PortadaComponent {
   @Input() eventId: string = '';
   @Input() data: any; 
   @Input() eventType: string = '';
+  @Input() isReadOnly: boolean = false;
   editingTitle: boolean = false;
   editingSubtitle: boolean = false;
   editingDate: boolean = false;

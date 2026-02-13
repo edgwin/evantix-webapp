@@ -20,7 +20,8 @@ export class IntinerarioComponent {
   loadingImgs: { [key: string]: boolean } = {};
   @Input() dataIntinerario:any = null;
   @Input() eventId: string = '';
-  @Input() eventType: string = '';  
+  @Input() eventType: string = '';
+  @Input() isReadOnly: boolean = false;  
   showPopup = false;
 
   editingDescripcion: boolean = false;

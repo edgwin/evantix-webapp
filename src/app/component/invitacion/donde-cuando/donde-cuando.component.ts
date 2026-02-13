@@ -56,6 +56,7 @@ export class DondeCuandoComponent {
 
   @Input() eventId: string = '';
   @Input() data:any = null;
+  @Input() isReadOnly: boolean = false;
 
   cargarDatos() {
     this.loading = true;

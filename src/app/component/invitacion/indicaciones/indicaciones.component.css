@@ -48,7 +48,7 @@
   top: -40px; /* lo sube encima */
   left: 50%;
   transform: translateX(-50%);
-  background: #F14E95; /* color del círculo */
+  background: var(--primary-color); /* color del círculo */
   padding: 15px;
   border-radius: 50%;
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);

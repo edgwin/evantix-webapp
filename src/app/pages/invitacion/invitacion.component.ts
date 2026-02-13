@@ -15,6 +15,8 @@ import { GaleriaComponent } from '../../component/invitacion/galeria/galeria.com
 import { HospedajeComponent } from '../../component/invitacion/hospedaje/hospedaje.component';
 import { PhotoUploaderComponent } from '../../component/invitacion/photo-uploader/photo-uploader.component';
 import { MusicaComponent } from '../../component/invitacion/musica/musica.component';
+import { TemplateService, Template } from '../../services/template.service';
+import { TemplateSelectorComponent } from '../../component/invitacion/template-selector/template-selector.component';
 
 @Component({
   selector: 'app-invitacion',
@@ -23,22 +25,30 @@ import { MusicaComponent } from '../../component/invitacion/musica/musica.compon
   styleUrl: './invitacion.component.css',
   imports: [PortadaComponent, CommonModule, FestejadosComponent, DondeCuandoComponent, IntinerarioComponent, IndicacionesComponent, 
             MesaRegalosComponent, PersonasFavoritasComponent, HistoriaComponent, GaleriaComponent, HospedajeComponent, 
-            PhotoUploaderComponent, MusicaComponent],
+            PhotoUploaderComponent, MusicaComponent, TemplateSelectorComponent],
 })
 
 export class InvitacionComponent {
   constructor(private route: ActivatedRoute, private invitationService: InvitationService, 
-              private notificationService: NotificationService)
+              private notificationService: NotificationService, private templateService: TemplateService)
   {}  
   eventId : any;
   loading:boolean = true;
   data: any;
+  isReadOnly: boolean = false;
+
+  toggleReadOnly(): void {
+    this.isReadOnly = !this.isReadOnly;
+  }
+  
   ngOnInit(): void {          
       this.eventId = this.route.snapshot.paramMap.get('idEvent');
       if (this.eventId === null || this.eventId === undefined) return
       
       this.loading = true;
       if (!this.eventId) return;
+
+      this.templateService.loadTemplateForEvent(this.eventId);
 
       this.invitationService.getInvitacion(this.eventId).subscribe({
         next: (res) => {
@@ -54,4 +64,8 @@ export class InvitacionComponent {
         }
       });
     }
+
+  onTemplateSelected(template: Template): void {
+    this.notificationService.show('success', `Plantilla "${template.name}" aplicada correctamente`);
+  }
 }

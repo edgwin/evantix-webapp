@@ -4,6 +4,7 @@ import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MapaModalComponent } from '../../mapa-modal/mapa-modal.component';
+import { TemplateService } from '../../../services/template.service';
 
 @Component({
   selector: 'app-hospedaje',
@@ -13,10 +14,12 @@ import { MapaModalComponent } from '../../mapa-modal/mapa-modal.component';
   styleUrls: ['./hospedaje.component.css','./../invitacion.component.css']
 })
 export class HospedajeComponent {
-  constructor(private invitationService: InvitationService, private notificationService: NotificationService, private dialog: MatDialog)
+  constructor(private invitationService: InvitationService, private notificationService: NotificationService, 
+              private dialog: MatDialog, public templateService: TemplateService)
       {}
   @Input() eventId: string = '';
   @Input() data: any;
+  @Input() isReadOnly: boolean = false;
   loadingImg: boolean = false;
   loading: boolean = false;
   tempTituloMap: { [id: string]: string } = {};

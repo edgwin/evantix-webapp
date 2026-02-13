@@ -19,6 +19,7 @@ constructor(private invitationService: InvitationService, private notificationSe
  @Input() dataHistoria: any;
  @Input() eventId: string = '';
  @Input() eventType: string = '';
+ @Input() isReadOnly: boolean = false;
  loadingImgs: { [key: string]: boolean } = {};
  loading: boolean = false;
  section: string = ''

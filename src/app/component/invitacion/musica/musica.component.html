@@ -1,4 +1,5 @@
-<div *ngIf="!isLoading">
+<!-- Modo edición: widget completo -->
+<div *ngIf="!isLoading && !isReadOnly">
     <div class="text-center editableTitulo">
     Elije tu cancion de Fondo
     </div>
@@ -40,4 +41,15 @@
     </div>
 
     </div>
+</div>
+
+<!-- Modo ReadOnly: reproductor minimalista -->
+<div *ngIf="isReadOnly && selectedTrack" class="music-player-readonly">
+    <div class="music-player-info">
+        <span class="music-icon">🎵</span>
+        <span class="track-info">{{ selectedTrack.name }} - {{ selectedTrack.artist_Name }}</span>
+    </div>
+    <button class="play-pause-btn" (click)="togglePlayPause()">
+        {{ isPlaying ? '⏸' : '▶' }}
+    </button>
 </div>

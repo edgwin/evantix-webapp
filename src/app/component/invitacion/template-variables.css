@@ -1,0 +1,78 @@
+/* =======================================================
+ * CSS Variables para Templates de Invitaciones
+ * Este archivo define las variables CSS que son utilizadas
+ * por todos los componentes de invitación para permitir
+ * cambio de temas dinámico.
+ * ======================================================= */
+
+:root {
+  /* ============ COLORES ============ */
+  --primary-color: #F14E95;
+  --secondary-color: #5d5d5d;
+  --bg-color: #FFFFFF;
+  --bg-alt-color: #F5F5F5;
+  --text-color: #000000;
+  --text-light-color: #828282;
+  --accent-color: #FF6B9D;
+  --overlay-color: rgba(0, 0, 0, 0.5);
+
+  /* ============ TIPOGRAFÍAS ============ */
+  --title-font: 'Sacramento', Arial, serif;
+  --body-font: 'Work Sans', Arial, sans-serif;
+
+  /* ============ BORDES ============ */
+  --border-radius: 8px;
+  --border-radius-sm: 4px;
+  --border-radius-lg: 16px;
+  --border-radius-full: 50%;
+
+  /* ============ SOMBRAS ============ */
+  --shadow-sm: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0px 8px 20px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0px 14px 30px -15px rgba(0, 0, 0, 0.75);
+
+  /* ============ TRANSICIONES ============ */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+
+  /* ============ ESPACIADO ============ */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 40px;
+}
+
+/* =======================================================
+ * Clases de utilidad basadas en variables
+ * ======================================================= */
+
+/* Colores de fondo */
+.bg-primary { background-color: var(--primary-color) !important; }
+.bg-secondary { background-color: var(--secondary-color) !important; }
+.bg-accent { background-color: var(--accent-color) !important; }
+.bg-main { background-color: var(--bg-color) !important; }
+.bg-alt { background-color: var(--bg-alt-color) !important; }
+
+/* Colores de texto */
+.text-primary { color: var(--primary-color) !important; }
+.text-secondary { color: var(--secondary-color) !important; }
+.text-accent { color: var(--accent-color) !important; }
+.text-main { color: var(--text-color) !important; }
+.text-light { color: var(--text-light-color) !important; }
+
+/* Tipografías */
+.font-title { font-family: var(--title-font) !important; }
+.font-body { font-family: var(--body-font) !important; }
+
+/* Bordes redondeados */
+.rounded-sm { border-radius: var(--border-radius-sm) !important; }
+.rounded { border-radius: var(--border-radius) !important; }
+.rounded-lg { border-radius: var(--border-radius-lg) !important; }
+.rounded-full { border-radius: var(--border-radius-full) !important; }
+
+/* Sombras */
+.shadow-sm { box-shadow: var(--shadow-sm) !important; }
+.shadow-md { box-shadow: var(--shadow-md) !important; }
+.shadow-lg { box-shadow: var(--shadow-lg) !important; }

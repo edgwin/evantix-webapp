@@ -5,8 +5,8 @@
 				<div class="col-md-offset-2 text-center fh5co-heading">
                     <div class="text-center editableTitulo"
                     id="TituloHistoria"
-                    contenteditable="true"
-                    (click)="onClickTituloHistoria()"
+                    [attr.contenteditable]="!isReadOnly"
+                    (click)="!isReadOnly && onClickTituloHistoria()"
                     (keydown)="onKeyDown($event, 50)"
                     (blur)="onTituloHistoriaBlur($event)"
                     >
@@ -23,7 +23,7 @@
                                 class="edit-image-btn-int"
                                 title="Click para editar imagen"
                                 (click)="triggerImageUpload(item.id)"
-                                *ngIf="!loadingImgs[item.id]">
+                                *ngIf="!loadingImgs[item.id] && !isReadOnly">
                                 <div class="loaderImg" *ngIf="loadingImgs[item.id]"></div>
 							<div class="timeline-badge" [ngStyle]="{'background-image': 'url('+item.imagen+')'}" appDisableDownload></div>              
 							<div class="timeline-panel">
@@ -36,13 +36,13 @@
                                         [ngClass]="i % 2 !== 0 ? 'editDondeCuandoDelete' : 'editIntinerarioDelete editIntinerarioDelete-LR'"
                                         title="Click para eliminar elemento"
                                         (click)="triggerImageDelete(item.id)"
-                                        *ngIf="!loadingImgs[item.id] && (dataHistoria?.details?.length || 0) > 1"
+                                        *ngIf="!loadingImgs[item.id] && (dataHistoria?.details?.length || 0) > 1 && !isReadOnly"
                                     />
                                     <div class="loaderDCDelete" *ngIf="loadingImgs[item.id]"></div>
 									<h3 class="timeline-title"
                                         [attr.data-id-fecha-historia]="item.id"                                        
-                                        contenteditable="true"
-                                        (click)="onClickFechaHistoria(item.id)"
+                                        [attr.contenteditable]="!isReadOnly"
+                                        (click)="!isReadOnly && onClickFechaHistoria(item.id)"
                                         (keydown)="onKeyDown($event, 22)"
                                         (blur)="onFechaHistoriaBlur($event, item)"
                                     >
@@ -50,14 +50,15 @@
                                     </h3>                                    
 									<span class="date"
                                         [attr.data-id-desc-historia]="item.id"                                    
-                                        contenteditable="true"
-                                        (click)="onClickDescHistoria(item.id)"
+                                        [attr.contenteditable]="!isReadOnly"
+                                        (click)="!isReadOnly && onClickDescHistoria(item.id)"
                                         (keydown)="onKeyDown($event, 200)"
                                         (blur)="onDescHistoriaBlur($event, item)"
                                         appAiEditable                                        
                                         [aiSection]="'Historia de vida del o los festejados, si es boda, la historia de la pareja, la respuesta debe ser en primera persona'"
                                         [aiEventType]="eventType"
                                         [maxLength]="200"
+                                        [aiReadOnly]="isReadOnly"
                                     >
                                         {{item.descripcion}}
                                     </span>
@@ -68,7 +69,7 @@
 				</div>
 			</div>
 	</div>
-    <div class="addNewDC" *ngIf="!loading">
+    <div class="addNewDC" *ngIf="!loading && !isReadOnly">
         <img src="../../../../assets/BtnAddNew.png" alt="" height="64px" width="64px" (click)="nuevaHistoria()" *ngIf="showAddHistoriaBtn()"
                 title="Click para Agregar una nueva parte de la historia" style="cursor: pointer;">
     </div>

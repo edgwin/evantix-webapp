@@ -46,6 +46,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MapaModalComponent } from './component/mapa-modal/mapa-modal.component';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -94,6 +95,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
     PopupHtmlComponent,
     DragDropModule,
     BrowserAnimationsModule,
+    CommonModule,
   ],
   exports: [UploadImagesComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

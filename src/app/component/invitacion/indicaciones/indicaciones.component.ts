@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { AiEditableDirective } from '../../../directives/ai-editable.directive';
+import { TemplateService } from '../../../services/template.service';
 
 @Component({
   selector: 'app-indicaciones',
@@ -12,7 +13,8 @@ import { AiEditableDirective } from '../../../directives/ai-editable.directive';
   styleUrl: './indicaciones.component.css'
 })
 export class IndicacionesComponent {
-  constructor(private invitationService: InvitationService, private notificationService: NotificationService)
+  constructor(private invitationService: InvitationService, private notificationService: NotificationService,
+              public templateService: TemplateService)
   {}
 
   loading: boolean = false;
@@ -24,7 +26,8 @@ export class IndicacionesComponent {
   tempTitle: string = '';
   @Input() eventId: string = '';
   @Input() data: any;
-  @Input() eventType: string = '';  
+  @Input() eventType: string = '';
+  @Input() isReadOnly: boolean = false;  
 
   private editingTituloId: string | null = null;
   get valor() {

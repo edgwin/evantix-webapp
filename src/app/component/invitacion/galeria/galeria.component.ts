@@ -17,6 +17,7 @@ export class GaleriaComponent {
   @Input() eventId: string = '';
   @Input() data: any;
   @Input() height = '60vh';
+  @Input() isReadOnly: boolean = false;
   images: any[] = []; 
   loading: boolean = false;
   showGallery: boolean = true;

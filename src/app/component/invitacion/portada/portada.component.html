@@ -13,7 +13,7 @@
   
   data-stellar-background-ratio="0.5"
 >
-  <div class="editImage"> 
+  <div class="editImage" *ngIf="!isReadOnly"> 
     <img src="../../../../assets/editarImagen.png" class="edit-imagePortada-btn" 
       alt="" title="Click para editar imagen de fondo" (click)="triggerImageUpload()" *ngIf="!loadingImg">
     <div class="loaderPortada" *ngIf="loadingImg"></div>
@@ -23,23 +23,25 @@
     <div class="display-t">
       <div class="display-tc">
         <!-- Título -->
-         <div class="text-center fh5co-heading editablePortadaTitulo" contenteditable="true"
+         <div class="text-center fh5co-heading editablePortadaTitulo" 
+            [attr.contenteditable]="!isReadOnly"
             (blur)="onTituloBlur($event)" 
-            (click)="onClickTitulo()"
+            (click)="!isReadOnly && onClickTitulo()"
             (keydown)="onKeyDown($event)"            
             style="margin-top:100px">
             {{ data?.titulo }}
          </div>
         <!-- Subtítulo -->
         <div class="editablePortadaSubtitulo" 
-            contenteditable="true" 
+            [attr.contenteditable]="!isReadOnly"
             (keydown)="onKeyDown($event)"
-            (click)="onClickSubtitulo()"
+            (click)="!isReadOnly && onClickSubtitulo()"
             (blur)="onSubtitleBlur($event)"
             appAiEditable
             [aiSection]="'Portada Subtitulo'"
             [aiEventType]="eventType"
             [maxLength]="maxLength"
+            [aiReadOnly]="isReadOnly"
         >
           <h2>{{ data?.subTitulo }}</h2>
         </div>
@@ -47,7 +49,7 @@
         <div class="divFechas">
           <div class="fechaTxt"
             *ngIf="!editingDate; else editDate"
-            (click)="enableDateEdit()">
+            (click)="!isReadOnly && enableDateEdit()">
             {{ stringDate }}
           </div>
 

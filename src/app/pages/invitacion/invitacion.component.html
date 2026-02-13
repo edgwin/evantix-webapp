@@ -2,9 +2,15 @@
   <img src="../../../assets/images/loading2.gif" alt="Cargando..." width="25%"/>
 </div>
 <div *ngIf="!loading">
-  <app-portada [eventId] = "eventId" [data]="data.portada" [eventType]="data.eventType"></app-portada>
-  <app-festejados [eventId] = "eventId" [data]="data.festejados" [eventType]="data.eventType"></app-festejados>
-  <app-indicaciones [eventId] = "eventId" [data]="data.indicaciones" [eventType]="data.eventType"></app-indicaciones>
+  <app-template-selector 
+    *ngIf="!isReadOnly"
+    [eventId]="eventId" 
+    [eventType]="data.eventType"
+    (templateSelected)="onTemplateSelected($event)">
+  </app-template-selector>
+  <app-portada [eventId]="eventId" [data]="data.portada" [eventType]="data.eventType" [isReadOnly]="isReadOnly"></app-portada>
+  <app-festejados [eventId]="eventId" [data]="data.festejados" [eventType]="data.eventType" [isReadOnly]="isReadOnly"></app-festejados>
+  <app-indicaciones [eventId]="eventId" [data]="data.indicaciones" [eventType]="data.eventType" [isReadOnly]="isReadOnly"></app-indicaciones>
   <div
   [ngStyle]="{
         'background-image': 'url(../../../../assets/background.jpg)',
@@ -15,10 +21,10 @@
         'padding-bottom': '2vh'
       }"
   >
-  <app-donde-cuando [eventId] = "eventId" [data]="data.dondeCuando"></app-donde-cuando>
-  <app-intinerario [eventId] = "eventId" [dataIntinerario]="data.intinerario" [eventType]="data.eventType"></app-intinerario>
+  <app-donde-cuando [eventId]="eventId" [data]="data.dondeCuando" [isReadOnly]="isReadOnly"></app-donde-cuando>
+  <app-intinerario [eventId]="eventId" [dataIntinerario]="data.intinerario" [eventType]="data.eventType" [isReadOnly]="isReadOnly"></app-intinerario>
   </div>
-  <app-mesa-regalos [eventId] = "eventId" [data]="data.mesaRegalos" [eventType]="data.eventType"></app-mesa-regalos>
+  <app-mesa-regalos [eventId]="eventId" [data]="data.mesaRegalos" [eventType]="data.eventType" [isReadOnly]="isReadOnly"></app-mesa-regalos>
   <div
     [ngStyle]="{
       'background-image': 'url(../../../../assets/background.jpg)',
@@ -29,10 +35,17 @@
       'padding-bottom': '2vh'
     }"
   >
-  <app-personas-favoritas [eventId] = "eventId" [data]="data.personasFavoritas" [eventType]="data.eventType"></app-personas-favoritas>
-  <app-historia [eventId] = "eventId" [dataHistoria]="data.historia" [eventType]="data.eventType"></app-historia>
-  <app-galeria [eventId] = "eventId" [data]="data.galeriaFotos"></app-galeria>
-  <app-hospedaje [eventId] = "eventId" [data]="data.hospedaje"></app-hospedaje>
-  <app-musica [eventId] = "eventId" [trackId]="data.portada.trackId"></app-musica>
+  <app-personas-favoritas [eventId]="eventId" [data]="data.personasFavoritas" [eventType]="data.eventType" [isReadOnly]="isReadOnly"></app-personas-favoritas>
+  <app-historia [eventId]="eventId" [dataHistoria]="data.historia" [eventType]="data.eventType" [isReadOnly]="isReadOnly"></app-historia>
+  <app-galeria [eventId]="eventId" [data]="data.galeriaFotos" [isReadOnly]="isReadOnly"></app-galeria>
+  <app-hospedaje [eventId]="eventId" [data]="data.hospedaje" [isReadOnly]="isReadOnly"></app-hospedaje>
+  <app-musica [eventId]="eventId" [trackId]="data.portada.trackId" [isReadOnly]="isReadOnly"></app-musica>
+  </div>
+
+  <!-- Botón Ver Previo / Editar Invitación -->
+  <div class="preview-toggle-container">
+    <button class="preview-toggle-btn" (click)="toggleReadOnly()">
+      {{ isReadOnly ? 'Editar Invitación' : 'Ver Previo de la Invitación' }}
+    </button>
   </div>
 </div>
