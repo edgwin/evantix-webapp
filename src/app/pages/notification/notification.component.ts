@@ -13,4 +13,8 @@ export class NotificationComponent {
   constructor(private notificationService: NotificationService) {
     this.notificationService.message$.subscribe(msg => this.message = msg);
   }
+
+  clearNotification() {
+    this.notificationService.clear();
+  }
 }
