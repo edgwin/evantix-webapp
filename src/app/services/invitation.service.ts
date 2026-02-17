@@ -247,4 +247,13 @@ export class InvitationService {
     const url = `${this.apiUrl}${this.getAIController}${this.getText}`;
     return this.http.post<{ text: string }>(url,payload);
   }
+
+  uploadPortadaImages(eventId: string, files: File[]) {
+    const formData = new FormData();
+    files.forEach(file => {
+      formData.append('images', file);
+    });
+    const url = `${this.apiUrl}${this.getInvitationData}Portada/Images/${eventId}`;
+    return this.http.post<string[]>(url, formData);
+  }
 }

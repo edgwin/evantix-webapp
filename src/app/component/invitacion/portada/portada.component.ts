@@ -1,4 +1,4 @@
-import { Component, Input, HostListener } from '@angular/core';
+import { Component, Input, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { CommonModule } from '@angular/common';
@@ -18,13 +18,13 @@ import { AiEditableDirective } from '../../../directives/ai-editable.directive';
   imports: [CommonModule, 
             CountdownTimerComponent, 
             FormsModule,
-            MatDatepickerModule, //ToDo ver si se puede quitar
+            MatDatepickerModule,
             MatFormFieldModule,
             MatInputModule,
             MatNativeDateModule,
             AiEditableDirective]
 })
-export class PortadaComponent {  
+export class PortadaComponent implements OnInit, OnDestroy {  
   loadingImg: boolean = false;
   newData: any = null;
   newDate: Date = new Date();
@@ -40,11 +40,75 @@ export class PortadaComponent {
   tempSubtitle: string = '';
   tempDate: Date | null = null;
   tempTime: string = ''; // formato HH:mm
+  
+  imagenes: string[] = [];
+  currentImageIndex: number = 0;
+  nextImageIndex: number = 1;
+  private carouselTimeout: any = null;
+  readonly MAX_IMAGES = 4;
+  
+  // Configuracion del carrusel (en milisegundos)
+  readonly TRANSITION_DURATION = 2000; // Duracion del fade entre imagenes
+  readonly SLIDE_INTERVAL = 5000; // Tiempo que se muestra cada imagen
+  readonly LAST_TO_FIRST_DELAY = 3000; // Tiempo extra de la ultima a la primera
 
   constructor(
     private invitationService: InvitationService,
     private notificationService: NotificationService
   ) {}
+
+  ngOnInit(): void {
+    this.initCarousel();
+  }
+
+  ngOnDestroy(): void {
+    this.stopCarousel();
+  }
+
+  private initCarousel(): void {
+    if (this.data?.imagenes && this.data.imagenes.length > 0) {
+      this.imagenes = this.data.imagenes;
+    }
+    
+    if (this.imagenes.length > 1) {
+      this.startCarousel();
+    }
+  }
+
+  private startCarousel(): void {
+    this.stopCarousel();
+    this.scheduleNextSlide();
+  }
+
+  private scheduleNextSlide(): void {
+    const isLastImage = this.currentImageIndex === this.imagenes.length - 1;
+    const delay = isLastImage 
+      ? this.SLIDE_INTERVAL + this.LAST_TO_FIRST_DELAY 
+      : this.SLIDE_INTERVAL;
+
+    this.carouselTimeout = setTimeout(() => {
+      this.nextImageIndex = (this.currentImageIndex + 1) % this.imagenes.length;
+      
+      setTimeout(() => {
+        this.currentImageIndex = this.nextImageIndex;
+        this.scheduleNextSlide();
+      }, this.TRANSITION_DURATION);
+    }, delay);
+  }
+
+  private stopCarousel(): void {
+    if (this.carouselTimeout) {
+      clearTimeout(this.carouselTimeout);
+      this.carouselTimeout = null;
+    }
+  }
+
+  get currentImage(): string {
+    if (this.imagenes.length > 0) {
+      return this.imagenes[this.currentImageIndex];
+    }
+    return this.data?.imagen || '';
+  }
 
   // --- edición de título ---
   onTituloBlur(event: Event) {
@@ -181,28 +245,41 @@ export class PortadaComponent {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
+    input.multiple = true;
     input.onchange = (event: any) => {
-      const file = event.target.files[0];
-      if (file) {
+      const files: FileList = event.target.files;
+      if (files && files.length > 0) {
+        const fileArray: File[] = Array.from(files).slice(0, this.MAX_IMAGES);
+        if (files.length > this.MAX_IMAGES) {
+          this.notificationService.show('warning', `Máximo ${this.MAX_IMAGES} imágenes permitidas. Se seleccionaron las primeras ${this.MAX_IMAGES}.`);
+        }
         this.loadingImg = true;
-        this.uploadImage('Portada','IdEvento', this.eventId, 'Imagen', file);
+        this.uploadPortadaImages(fileArray);
       }
     };
     input.click();
   }
 
-  uploadImage(tableName:string, searchField:string, eventId:string, field: string, file: File) {
-    this.invitationService.updateTableFieldImagen(tableName, searchField, eventId, field, file).subscribe({
-      next: (res) => {
-        this.data.imagen = res;
+  uploadPortadaImages(files: File[]) {
+    this.invitationService.uploadPortadaImages(this.eventId, files).subscribe({
+      next: (urls: string[]) => {
+        this.stopCarousel();
+        
+        this.imagenes = urls;
+        this.data.imagenes = urls;
+        this.currentImageIndex = 0;
+        this.nextImageIndex = urls.length > 1 ? 1 : 0;
+        
+        if (this.imagenes.length > 1) {
+          this.startCarousel();
+        }
+        
         this.loadingImg = false;
+        this.notificationService.show('success', 'Imágenes actualizadas correctamente');
       },
       error: (err) => {
         this.loadingImg = false;
-        this.notificationService.show(
-           'error',
-          `Error al subir imagen: ${err.message}`
-        );
+        this.notificationService.show('error', `Error al subir imágenes: ${err.message}`);
       }
     });
   }

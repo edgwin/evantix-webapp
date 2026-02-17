@@ -1,3 +1,30 @@
+.carousel-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.carousel-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 2s ease-in-out;
+}
+
+.carousel-slide.active {
+  opacity: 1;
+}
+
 #fh5co-header .display-tc,
 #fh5co-counter .display-tc,
 .fh5co-cover .display-tc {
@@ -71,12 +98,10 @@
 
 .fh5co-cover {
   position: relative;
-  height: 800px;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
-  position: relative;
+  height: 100vh;
+  min-height: 100vh;
   width: 100%;
+  overflow: hidden;
 }
 .fh5co-cover .overlay {
   z-index: 0;
@@ -91,22 +116,12 @@
   position: relative;
   z-index: 10;
 }
-@media screen and (max-width: 768px) {
-  .fh5co-cover {
-    height: 600px;
-  }
-}
 .fh5co-cover .display-t,
 .fh5co-cover .display-tc {
-  height: 900px;
+  height: 100vh;
   display: flex;  
   justify-content: center;
-}
-@media screen and (max-width: 768px) {
-  .fh5co-cover .display-t,
-  .fh5co-cover .display-tc {
-    height: 600px;
-  }
+  align-items: center;
 }
 
 @media screen and (max-width: 768px) {
@@ -128,10 +143,15 @@
 
 .editImage {
   position: absolute;
-  top: 10px;   /* margen desde arriba */
-  right: 10px; /* margen desde la derecha */
+  top: 10px;
+  right: 10px;
   cursor: pointer;
-  z-index: 10; /* asegúrate de que quede encima del fondo */  
+  z-index: 20;
+}
+
+.fh5co-cover .text-center {
+  position: relative;
+  z-index: 10;
 }
 
 .edit-imagePortada-btn {
