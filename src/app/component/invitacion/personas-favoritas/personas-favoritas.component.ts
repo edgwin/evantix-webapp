@@ -5,17 +5,21 @@ import { NotificationService } from '../../../services/notification.service';
 import { PopupHtmlComponent } from '../../popup-html/popup-html.component';
 import { DisableDownloadDirective } from '../../../directives/disable-download.directive';
 import { AiEditableDirective } from '../../../directives/ai-editable.directive';
+import { TemplateService } from '../../../services/template.service';
 
 @Component({
   selector: 'app-personas-favoritas',
   standalone: true,
   imports: [CommonModule, PopupHtmlComponent, DisableDownloadDirective, AiEditableDirective],
   templateUrl: './personas-favoritas.component.html',
-  styleUrls: ['./../invitacion.component.css', './personas-favoritas.component.css']
+  styleUrls: ['./personas-favoritas.component.css']
 })
 export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDestroy {
-  constructor(private invitationService: InvitationService,private notificationService: NotificationService)
-  {}
+  constructor(
+    private invitationService: InvitationService,
+    private notificationService: NotificationService,
+    public templateService: TemplateService
+  ) {}
   @Input() eventId: string = '';
   @Input() data: any;
   @Input() height = '60vh';

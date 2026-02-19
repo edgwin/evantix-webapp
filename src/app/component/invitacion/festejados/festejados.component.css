@@ -1,117 +1,212 @@
-.image-container {
+.festejados-section {
+  padding: 80px 20px;
   position: relative;
-  display: flex;               /* usamos flexbox */
-  justify-content: center;     /* centrado horizontal */
-  align-items: center;         /* centrado vertical (si el contenedor tiene altura) */
-  width: 100%;  
-  margin-top: 30px;
 }
 
-.img-frase {
+.festejados-content {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+.image-wrapper {
+  position: relative;
+}
+
+.image-frame {
+  position: relative;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+  border-radius: 50%;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+}
+
+.frame-decoration {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-color: var(--primary-color, #e91e63);
+  border-style: solid;
+}
+
+.frame-decoration.top-left {
+  top: 0;
+  left: 0;
+  border-width: 3px 0 0 3px;
+  border-radius: 10px 0 0 0;
+}
+
+.frame-decoration.top-right {
+  top: 0;
+  right: 0;
+  border-width: 3px 3px 0 0;
+  border-radius: 0 10px 0 0;
+}
+
+.frame-decoration.bottom-left {
+  bottom: 0;
+  left: 0;
+  border-width: 0 0 3px 3px;
+  border-radius: 0 0 0 10px;
+}
+
+.frame-decoration.bottom-right {
+  bottom: 0;
+  right: 0;
+  border-width: 0 3px 3px 0;
+  border-radius: 0 0 10px 0;
+}
+
+.festejados-image {
+  width: 280px;
+  height: 280px;
   border-radius: 50%;
   object-fit: cover;
-  width: 300px;
-  height: 300px;
   display: block;
-  margin: 0 auto; 
+  box-shadow: 
+    0 10px 40px rgba(0, 0, 0, 0.3),
+    0 0 0 5px rgba(255, 255, 255, 0.2);
+  transition: transform 0.4s ease;
+}
+
+.festejados-image:hover {
+  transform: scale(1.03);
 }
 
 .edit-image-btn {
   position: absolute;
-  top: 10px;
-  right: calc(50% - 140px); /* 👈 centrado relativo a la imagen */
+  top: 20px;
+  right: 20px;
   width: 40px;
   height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: transform 0.2s ease;
-  z-index: 101;
+  padding: 0;
+  z-index: 10;
 }
 
-.edit-image-btn-int{
-  position: absolute;
-  top: 5px;
-  right: calc(50% - 90px); /* 👈 centrado relativo a la imagen */
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  z-index: 101;
-}
-
-.edit-image-btn-gallery{
-  position: absolute;
-  top: 5px;
-  right: calc(50% + 110px); /* 👈 centrado relativo a la imagen */
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  z-index: 101;
+.edit-image-btn img {
+  width: 24px;
+  height: 24px;
 }
 
 .edit-image-btn:hover {
   transform: scale(1.1);
 }
 
-.edit-image-btn-int:hover{
-  transform: scale(1.1);
+.loader-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
 }
 
-.loaderFestejados {
-  border: 8px solid rgba(0, 0, 0, 0.1);
-  border-top: 8px solid #ff0000;
-  border-radius: 50%;
+.loader {
   width: 40px;
   height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top-color: var(--primary-color, #e91e63);
+  border-radius: 50%;
   animation: spin 1s linear infinite;
-  background: transparent;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.frase-container {
+  position: relative;
+  max-width: 700px;
+  padding: 30px 50px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+}
+
+.quote-icon {
   position: absolute;
-  right: 43vw;
-  top: 0.8vw;
+  font-family: Georgia, serif;
+  font-size: 5rem;
+  color: var(--primary-color, #e91e63);
+  opacity: 0.5;
+  line-height: 1;
 }
 
-.frase-txt{
-    text-align: center;
-    width: 80%;
-    margin: 0 auto;
-    font-size: 24px;
-    line-height: 40px;
-    font-style: italic;
-    margin-top: 10px;
-    text-shadow: 1px 1px 2px black;
+.quote-icon.left {
+  top: -10px;
+  left: 15px;
 }
 
-@media screen and (max-width: 767px) {
-  .img-frase {
-    width: 200px;
-    height: 200px;
+.quote-icon.right {
+  bottom: -40px;
+  right: 15px;
+}
+
+.frase-text {
+  text-align: center;
+  font-size: 1.4rem;
+  line-height: 1.8;
+  font-style: italic;
+  color: #444;
+  margin: 0;
+  outline: none;
+  cursor: text;
+}
+
+@media screen and (max-width: 768px) {
+  .festejados-section {
+    padding: 60px 15px;
+  }
+
+  .festejados-image {
+    width: 220px;
+    height: 220px;
+  }
+
+  .frame-decoration {
+    width: 20px;
+    height: 20px;
+  }
+
+  .frase-container {
+    padding: 25px 35px;
+  }
+
+  .quote-icon {
+    font-size: 3.5rem;
+  }
+
+  .quote-icon.right {
+    bottom: -30px;
+  }
+
+  .frase-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
   }
 
   .edit-image-btn {
-    width: 32px;
-    height: 32px;
-    top: 5px;
-    right: calc(50% - 100px);
+    width: 35px;
+    height: 35px;
+    top: 15px;
+    right: 15px;
   }
 
-  .edit-image-btn-int{
-    position: absolute;
-    top: 5px;
-    left: calc(50% - 150px); /* 👈 centrado relativo a la imagen */
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    transition: transform 0.2s ease;
-    z-index: 101;
-  }
-
-  .edit-image-btn-gallery{
-    right: calc(50% + 65px); /* 👈 centrado relativo a la imagen */
-  }
-
-  .frase-txt{
-    font-size: 18px;
-    line-height: 20px;
-    margin-top: 25px;
+  .edit-image-btn img {
+    width: 20px;
+    height: 20px;
   }
 }

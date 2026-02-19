@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export interface TemplateTheme {
   colors: {
     primary: string;
+    primaryDark: string;
     secondary: string;
     background: string;
     backgroundAlt: string;
@@ -11,6 +12,7 @@ export interface TemplateTheme {
     textLight: string;
     accent: string;
     overlay: string;
+    shadow: string;
   };
   fonts: {
     title: string;
@@ -20,11 +22,10 @@ export interface TemplateTheme {
   iconStyle: 'classic' | 'modern' | 'minimal' | 'vintage';
   icons: {
     indicaciones: string;
-    hospedaje: string;
-    mesaRegalos: string;
-    intinerario: string;
+    hospedaje: string;    
   };
   backgroundImage: string;
+  marbleBackground: string;
 }
 
 export interface Template {
@@ -52,6 +53,8 @@ export class TemplateService {
       theme: {
         colors: {
           primary: '#C9A24D',
+          primaryDark: '#614200',
+          shadow: '97, 66, 0',
           secondary: '#2B2B2B',
           background: '#FFFFFF',
           backgroundAlt: '#F8F5F0',
@@ -67,12 +70,11 @@ export class TemplateService {
         borderRadius: '12px',
         iconStyle: 'classic',
         icons: {
-          indicaciones: '../../../../assets/templates/elegant/indicaciones.png',
-          hospedaje: '../../../../assets/templates/elegant/hospedaje.png',
-          mesaRegalos: '../../../../assets/templates/elegant/mesa-regalos.png',
-          intinerario: '../../../../assets/templates/elegant/intinerario.png'
+          indicaciones: '../../../../assets/Indicaciones.png',
+          hospedaje: '../../../../assets/Hospedaje/Hotel1.png'
         },
-        backgroundImage: '../../../../assets/templates/elegant/background.jpg'
+        backgroundImage: '../../../../assets/templates/elegant/background.jpg',
+        marbleBackground: 'assets/backgrounds/marble-gold.png'
       },
       preview: '../../../../assets/templates/previews/elegant_gold.jpg'
     },
@@ -84,6 +86,8 @@ export class TemplateService {
       theme: {
         colors: {
           primary: '#F14E95',
+          primaryDark: '#4d0122',
+          shadow: '77, 1, 34',
           secondary: '#5d5d5d',
           background: '#FFFFFF',
           backgroundAlt: '#FFF5F8',
@@ -100,11 +104,10 @@ export class TemplateService {
         iconStyle: 'classic',
         icons: {
           indicaciones: '../../../../assets/Indicaciones.png',
-          hospedaje: '../../../../assets/Hospedaje.png',
-          mesaRegalos: '../../../../assets/MesaRegalos.png',
-          intinerario: '../../../../assets/Intinerario.png'
+          hospedaje: '../../../../assets/Hospedaje/Hotel2.png'      
         },
-        backgroundImage: '../../../../assets/background.jpg'
+        backgroundImage: '../../../../assets/background.jpg',
+        marbleBackground: 'assets/backgrounds/marble-pink.png'
       },
       preview: '../../../../assets/templates/previews/romantic_pink.jpg'
     },
@@ -116,6 +119,8 @@ export class TemplateService {
       theme: {
         colors: {
           primary: '#6B8E6B',
+          primaryDark: '#014701',
+          shadow: '1, 71, 1',
           secondary: '#8B7355',
           background: '#FAF8F5',
           backgroundAlt: '#F0EDE8',
@@ -131,12 +136,11 @@ export class TemplateService {
         borderRadius: '4px',
         iconStyle: 'vintage',
         icons: {
-          indicaciones: '../../../../assets/templates/vintage/indicaciones.png',
-          hospedaje: '../../../../assets/templates/vintage/hospedaje.png',
-          mesaRegalos: '../../../../assets/templates/vintage/mesa-regalos.png',
-          intinerario: '../../../../assets/templates/vintage/intinerario.png'
+          indicaciones: '../../../../assets/Indicaciones.png',
+          hospedaje: '../../../../assets/Hospedaje/Hotel3.png'          
         },
-        backgroundImage: '../../../../assets/templates/vintage/background.jpg'
+        backgroundImage: '../../../../assets/templates/vintage/background.jpg',
+        marbleBackground: 'assets/backgrounds/marble-green.png'
       },
       preview: '../../../../assets/templates/previews/vintage_green.jpg'
     },
@@ -148,6 +152,8 @@ export class TemplateService {
       theme: {
         colors: {
           primary: '#1A1A1A',
+          primaryDark: '#b4b4b4',
+          shadow: '99, 99, 99',
           secondary: '#666666',
           background: '#FFFFFF',
           backgroundAlt: '#F5F5F5',
@@ -163,12 +169,11 @@ export class TemplateService {
         borderRadius: '0px',
         iconStyle: 'minimal',
         icons: {
-          indicaciones: '../../../../assets/templates/minimal/indicaciones.png',
-          hospedaje: '../../../../assets/templates/minimal/hospedaje.png',
-          mesaRegalos: '../../../../assets/templates/minimal/mesa-regalos.png',
-          intinerario: '../../../../assets/templates/minimal/intinerario.png'
+          indicaciones: '../../../../assets/Indicaciones.png',
+          hospedaje: '../../../../assets/Hospedaje/Hotel4.png'          
         },
-        backgroundImage: '../../../../assets/templates/minimal/background.jpg'
+        backgroundImage: '../../../../assets/templates/minimal/background.jpg',
+        marbleBackground: 'assets/backgrounds/marble-minimal.jpg'
       },
       preview: '../../../../assets/templates/previews/modern_minimalist.jpg'
     },
@@ -180,6 +185,8 @@ export class TemplateService {
       theme: {
         colors: {
           primary: '#9B59B6',
+          primaryDark: '#320146',
+          shadow: '50, 1, 70',
           secondary: '#8E44AD',
           background: '#FFFFFF',
           backgroundAlt: '#F8F4FC',
@@ -195,12 +202,11 @@ export class TemplateService {
         borderRadius: '16px',
         iconStyle: 'classic',
         icons: {
-          indicaciones: '../../../../assets/templates/xv/indicaciones.png',
-          hospedaje: '../../../../assets/templates/xv/hospedaje.png',
-          mesaRegalos: '../../../../assets/templates/xv/mesa-regalos.png',
-          intinerario: '../../../../assets/templates/xv/intinerario.png'
+          indicaciones: '../../../../assets/Indicaciones.png',
+          hospedaje: '../../../../assets/Hospedaje/Hotel5.png'          
         },
-        backgroundImage: '../../../../assets/templates/xv/background.jpg'
+        backgroundImage: '../../../../assets/templates/xv/background.jpg',
+        marbleBackground: 'assets/backgrounds/marble-purple.png'
       },
       preview: '../../../../assets/templates/previews/xv_princess.jpg'
     },
@@ -212,6 +218,8 @@ export class TemplateService {
       theme: {
         colors: {
           primary: '#87CEEB',
+          primaryDark: '#01425c',
+          shadow: '1, 66, 92',
           secondary: '#4A90A4',
           background: '#FFFFFF',
           backgroundAlt: '#F0F8FF',
@@ -227,12 +235,11 @@ export class TemplateService {
         borderRadius: '20px',
         iconStyle: 'classic',
         icons: {
-          indicaciones: '../../../../assets/templates/bautizo/indicaciones.png',
-          hospedaje: '../../../../assets/templates/bautizo/hospedaje.png',
-          mesaRegalos: '../../../../assets/templates/bautizo/mesa-regalos.png',
-          intinerario: '../../../../assets/templates/bautizo/intinerario.png'
+          indicaciones: '../../../../assets/Indicaciones.png',
+          hospedaje: '../../../../assets/Hospedaje/Hotel1.png'          
         },
-        backgroundImage: '../../../../assets/templates/bautizo/background.jpg'
+        backgroundImage: '../../../../assets/templates/bautizo/background.jpg',
+        marbleBackground: 'assets/backgrounds/marble-blue.png'
       },
       preview: '../../../../assets/templates/previews/bautizo_celestial.jpg'
     }
@@ -293,6 +300,8 @@ export class TemplateService {
 
     root.style.setProperty('--primary-color', colors.primary);
     root.style.setProperty('--secondary-color', colors.secondary);
+    root.style.setProperty('--shadow-color', colors.shadow);
+    root.style.setProperty('--primary-color-dark', colors.primaryDark);
     root.style.setProperty('--bg-color', colors.background);
     root.style.setProperty('--bg-alt-color', colors.backgroundAlt);
     root.style.setProperty('--text-color', colors.text);
@@ -313,9 +322,7 @@ export class TemplateService {
     }
     switch(section) {
       case 'indicaciones': return '../../../../assets/Indicaciones.png';
-      case 'hospedaje': return '../../../../assets/Hospedaje.png';
-      case 'mesaRegalos': return '../../../../assets/MesaRegalos.png';
-      case 'intinerario': return '../../../../assets/Intinerario.png';
+      case 'hospedaje': return '../../../../assets/Hospedaje.png';      
       default: return '';
     }
   }
@@ -326,6 +333,14 @@ export class TemplateService {
       return template.theme.backgroundImage;
     }
     return '../../../../assets/background.jpg';
+  }
+
+  getMarbleBackground(): string {
+    const template = this.getCurrentTemplate();
+    if (template && template.theme.marbleBackground) {
+      return template.theme.marbleBackground;
+    }
+    return 'assets/backgrounds/marble-pink.svg';
   }
 
   // Ejemplo de objeto JSON para el backend

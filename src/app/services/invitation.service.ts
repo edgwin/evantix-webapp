@@ -248,6 +248,11 @@ export class InvitationService {
     return this.http.post<{ text: string }>(url,payload);
   }
 
+  getAssetImages(folder: string) {
+    const url = `${this.apiUrl}api/assets/images/${folder}`;
+    return this.http.get<string[]>(url);
+  }
+
   uploadPortadaImages(eventId: string, files: File[]) {
     const formData = new FormData();
     files.forEach(file => {

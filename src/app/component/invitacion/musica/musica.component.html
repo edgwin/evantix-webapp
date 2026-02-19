@@ -1,55 +1,54 @@
-<!-- Modo edición: widget completo -->
-<div *ngIf="!isLoading && !isReadOnly">
-    <div class="text-center editableTitulo">
-    Elije tu cancion de Fondo
+<section class="musica-section" *ngIf="!isLoading && !isReadOnly">
+  <div class="section-content">
+    <div class="section-header">
+      <span class="header-icon">🎵</span>
+      <h1>Elige tu Cancion de Fondo</h1>
     </div>
 
     <div class="music-widget">
-    <!-- TAGS -->
-    <div class="tags-container">
-        <button
-        class="tag"
-        *ngFor="let tag of availableTags"
-        [class.active]="selectedTags.includes(tag)"
-        (click)="toggleTag(tag)">
-        {{ tag.label }}
+      <div class="tags-container">
+        <button class="tag"
+                *ngFor="let tag of availableTags"
+                [class.active]="selectedTags.includes(tag)"
+                (click)="toggleTag(tag)">
+          {{ tag.label }}
         </button>
-    </div>
+      </div>
 
-    <!-- TRACK SELECT -->
-    <div class="track-selector" *ngIf="tracks.length">
+      <div class="track-selector" *ngIf="tracks.length">
         <select [(ngModel)]="selectedTrackId" (change)="onTrackChange()">
-            <option value="">Selecciona una canción</option>
-            <option *ngFor="let t of tracks" [value]="t.id">
-                {{ t.name }} – {{ t.artist_Name }}
-            </option>
+          <option value="">Selecciona una cancion</option>
+          <option *ngFor="let t of tracks" [value]="t.id">
+            {{ t.name }} - {{ t.artist_Name }}
+          </option>
         </select>
-    </div>
+      </div>
 
-    <!-- CONTROLES -->
-    <div class="controls" *ngIf="selectedTrack">
-        <button (click)="togglePlayPause()">
-        {{ isPlaying ? '⏸ Pausar' : '▶ Reproducir' }}
+      <div class="controls" *ngIf="selectedTrack">
+        <button class="control-btn play" (click)="togglePlayPause()">
+          <span class="btn-icon">{{ isPlaying ? '⏸' : '▶' }}</span>
+          <span>{{ isPlaying ? 'Pausar' : 'Reproducir' }}</span>
         </button>
 
-        <button *ngIf="!saved" class="save" (click)="saveTrack()">
-        💾 Guardar
+        <button *ngIf="!saved" class="control-btn save" (click)="saveTrack()">
+          <span class="btn-icon">💾</span>
+          <span>Guardar</span>
         </button>
-        <button *ngIf="saved" class="save" (click)="deleteTrack()">
-        🧹 Quitar
+        <button *ngIf="saved" class="control-btn remove" (click)="deleteTrack()">
+          <span class="btn-icon">🧹</span>
+          <span>Quitar</span>
         </button>
+      </div>
     </div>
+  </div>
+</section>
 
-    </div>
-</div>
-
-<!-- Modo ReadOnly: reproductor minimalista -->
 <div *ngIf="isReadOnly && selectedTrack" class="music-player-readonly">
-    <div class="music-player-info">
-        <span class="music-icon">🎵</span>
-        <span class="track-info">{{ selectedTrack.name }} - {{ selectedTrack.artist_Name }}</span>
-    </div>
-    <button class="play-pause-btn" (click)="togglePlayPause()">
-        {{ isPlaying ? '⏸' : '▶' }}
-    </button>
+  <div class="music-player-info">
+    <span class="music-icon">🎵</span>
+    <span class="track-info">{{ selectedTrack.name }} - {{ selectedTrack.artist_Name }}</span>
+  </div>
+  <button class="play-pause-btn" (click)="togglePlayPause()">
+    {{ isPlaying ? '⏸' : '▶' }}
+  </button>
 </div>

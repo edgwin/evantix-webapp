@@ -1,130 +1,145 @@
-<div id="fh5co-event" class="fh5co-bg" *ngIf="!loading">
-    <div class="editImage"> 
-        <img src="../../../../assets/editarImagen.png" class="edit-imageDC-btn" alt="" title="Click para editar imagen de fondo" 
-                        (click)="triggerBGImageUpload()" *ngIf="false">
-        <div class="loaderDC" *ngIf="false"></div>
+<section class="donde-cuando-section" *ngIf="!loading">
+  <div class="section-background"></div>
+  
+  <div class="section-content">
+    <div class="section-header">
+      <span class="header-decoration">✦</span>
+      <h1>Donde y Cuando</h1>
+      <span class="header-decoration">✦</span>
     </div>
-    <div class="container">
-        <div class="row">
-            <div class="text-center editableTitulo" *ngIf="!loading">
-                Donde y Cuando
-            </div>
-        </div>            
+    <p class="section-subtitle">Te esperamos en estos lugares especiales</p>
 
-        <div class="row" cdkDropList
-            (cdkDropListDropped)="drop($event)">
-            <div class="col-md-6 col-sm-6 text-center dondeCuando" *ngFor="let item of data.details; let i = index; trackBy: trackById" cdkDrag [cdkDragDisabled]="editingActividadId === item.id">                    
-                <div class="event-wrap" [ngStyle]="{
-                                            'background-image': 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(' + item.imagen + ')',
-                                            'background-size': 'cover',
-                                            'background-position': 'center',
-                                            'background-repeat': 'no-repeat'
-                                        }">
-                        <img src="../../../../assets/editarImagen.png" alt="" height="64px" width="64px" class="editDondeCuandoImage"
-                                (click)="triggerImageUpload(item.id)" title="Click para editar imagen de fondo" *ngIf="!loadingImgs[item.id] && !isReadOnly">
-                        <div class="loaderDC" *ngIf="loadingImgs[item.id]"></div>
+    <div class="events-container" cdkDropList (cdkDropListDropped)="drop($event)">
+      <div class="event-card" 
+           *ngFor="let item of data.details; let i = index; trackBy: trackById" 
+           cdkDrag 
+           [cdkDragDisabled]="editingActividadId === item.id"
+           [style.animation-delay]="(i * 0.15) + 's'">
+        
+        <div class="card-image-section">
+          <div class="card-image" [ngStyle]="{'background-image': 'url(' + item.imagen + ')'}"></div>
+          <div class="card-image-overlay"></div>
+          
+          <div class="card-actions" *ngIf="!isReadOnly">
+            <button class="action-btn edit-btn" (click)="triggerImageUpload(item.id)" 
+                    title="Editar imagen" *ngIf="!loadingImgs[item.id]">
+              <img src="../../../../assets/editarImagen.png" alt="Editar">
+            </button>
+            <button class="action-btn delete-btn" (click)="triggerImageDelete(item.id)" 
+                    title="Eliminar" *ngIf="!loadingImgs[item.id] && (data?.details?.length || 0) > 1">
+              <img src="../../../../assets/BtnDelete.png" alt="Eliminar">
+            </button>
+            <div class="loader-small" *ngIf="loadingImgs[item.id]"></div>
+          </div>
 
-                        <img src="../../../../assets/BtnDelete.png" 
-                            alt="" 
-                            height="64px" 
-                            width="64px" 
-                            class="editDondeCuandoDelete"
-                            (click)="triggerImageDelete(item.id)" 
-                            title="Click para eliminar elemento" 
-                            *ngIf="!loadingImgs[item.id] && (data?.details?.length || 0) > 1 && !isReadOnly">
-                        <div class="!loaderDCDelete" *ngIf="!loadingImgs[item.id]"></div>
-                        <div class="dondeCuandoTitle"
-                            [attr.data-id-actividad]="item.id"
-                            [attr.contenteditable]="!isReadOnly"
-                            (pointerdown)="$event.stopPropagation()"
-                            (mousedown)="$event.stopPropagation()"
-                            (touchstart)="$event.stopPropagation()"
-                            (click)="!isReadOnly && onClickActividad(item.id)"
-                            (keydown)="onKeyDown($event, item)"
-                            (blur)="onActividadBlur($event, item)">
-                            {{ item.actividad }}
-                        </div>                                         
-                    <div class="event-col">
-                        <div><i class="icon-clock"></i></div>                            
-                        <div
-                            class="editable-text-bolded editable-text"
-                            [attr.data-id-hora]="item.id"
-                            [attr.contenteditable]="!isReadOnly"
-                            (pointerdown)="$event.stopPropagation()"
-                            (mousedown)="$event.stopPropagation()"
-                            (touchstart)="$event.stopPropagation()"
-                            (click)="!isReadOnly && onClickHora(item.id)"
-                            (keydown)="onKeyDown($event, item)"
-                            (blur)="onHoraBlur($event, item)">
-                            <span><b>{{item.hora}}</b></span>
-                        </div>                            
-                    </div>                            
-                    <div class="event-col">
-                        <div><i class="icon-calendar"></i></div>
-                        <div
-                            class="editable-text-bolded editable-text"
-                            [attr.data-id-fecha]="item.id"
-                            [attr.contenteditable]="!isReadOnly"
-                            (pointerdown)="$event.stopPropagation()"
-                            (mousedown)="$event.stopPropagation()"
-                            (touchstart)="$event.stopPropagation()"
-                            (click)="!isReadOnly && onClickFecha(item.id)"
-                            (keydown)="onKeyDown($event, item)"
-                            (blur)="onFechaBlur($event, item)">
-                            <span><b>{{item.fecha}}</b></span>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="inside-row">
-                            <div class="dondeCuandoGeneral dondeCuandoLugar-space">Lugar:</div>
-                            <div
-                                class="editable-text"
-                                [attr.data-id-lugar]="item.id"
-                                [attr.contenteditable]="!isReadOnly"
-                                (pointerdown)="$event.stopPropagation()"
-                                (mousedown)="$event.stopPropagation()"
-                                (touchstart)="$event.stopPropagation()"
-                                (click)="!isReadOnly && onClickLugar(item.id)"
-                                (keydown)="onKeyDown($event, item)"
-                                (blur)="onLugarBlur($event, item)">
-                                <span>{{item.lugar}}</span>
-                            </div>
-                        </div>                        
-                        <div class="inside-row">
-                            <div class="dondeCuandoDireccion dondeCuandoGeneral dondeCuando-space">Direccion:</div>
-                            <div
-                                class="editable-text"
-                                [attr.data-id-direccion]="item.id"
-                                [attr.contenteditable]="!isReadOnly"
-                                (pointerdown)="$event.stopPropagation()"
-                                (mousedown)="$event.stopPropagation()"
-                                (touchstart)="$event.stopPropagation()"
-                                (click)="!isReadOnly && onClickDireccion(item.id)"
-                                (keydown)="onKeyDown($event, item)"
-                                (blur)="onDireccionBlur($event, item)"
-                                style="text-align: left;">
-                                <span>{{item.direccion}}</span>
-                            </div>
-                        </div>                           
-                        <div class="inside-row">
-                            <div class="dondeCuandoGeneral dondeCuando-space">Ubicacion:</div>
-                            <a href="{{item.ubicacion}}" 
-                                target="_blank" 
-                                class="inside-row-btn btn btn-primary">
-                                Ver Ubicación
-                            </a>
-                            <a (click)="abrirMapa(item.id)"
-                                class="dondeCuandoGeneral inside-row-btn btn btn-secondary"
-                                *ngIf="!isReadOnly">
-                                Editar
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>													
+          <div class="card-title-overlay">
+            <h3 class="event-title"
+                [attr.data-id-actividad]="item.id"
+                [attr.contenteditable]="!isReadOnly"
+                (pointerdown)="$event.stopPropagation()"
+                (mousedown)="$event.stopPropagation()"
+                (touchstart)="$event.stopPropagation()"
+                (click)="!isReadOnly && onClickActividad(item.id)"
+                (keydown)="onKeyDown($event, item)"
+                (blur)="onActividadBlur($event, item)">
+              {{ item.actividad }}
+            </h3>
+          </div>
         </div>
+
+        <div class="card-content">
+          <div class="datetime-row">
+            <div class="datetime-item">
+              <div class="datetime-icon">
+                <i class="icon-clock"></i>
+              </div>
+              <div class="datetime-text"
+                   [attr.data-id-hora]="item.id"
+                   [attr.contenteditable]="!isReadOnly"
+                   (pointerdown)="$event.stopPropagation()"
+                   (mousedown)="$event.stopPropagation()"
+                   (touchstart)="$event.stopPropagation()"
+                   (click)="!isReadOnly && onClickHora(item.id)"
+                   (keydown)="onKeyDown($event, item)"
+                   (blur)="onHoraBlur($event, item)">
+                {{item.hora}}
+              </div>
+            </div>
+            <div class="datetime-divider"></div>
+            <div class="datetime-item">
+              <div class="datetime-icon">
+                <i class="icon-calendar"></i>
+              </div>
+              <div class="datetime-text"
+                   [attr.data-id-fecha]="item.id"
+                   [attr.contenteditable]="!isReadOnly"
+                   (pointerdown)="$event.stopPropagation()"
+                   (mousedown)="$event.stopPropagation()"
+                   (touchstart)="$event.stopPropagation()"
+                   (click)="!isReadOnly && onClickFecha(item.id)"
+                   (keydown)="onKeyDown($event, item)"
+                   (blur)="onFechaBlur($event, item)">
+                {{item.fecha}}
+              </div>
+            </div>
+          </div>
+
+          <div class="info-section">
+            <div class="info-row">
+              <span class="info-label">
+                <i class="icon-location"></i>
+                Lugar
+              </span>
+              <span class="info-value"
+                    [attr.data-id-lugar]="item.id"
+                    [attr.contenteditable]="!isReadOnly"
+                    (pointerdown)="$event.stopPropagation()"
+                    (mousedown)="$event.stopPropagation()"
+                    (touchstart)="$event.stopPropagation()"
+                    (click)="!isReadOnly && onClickLugar(item.id)"
+                    (keydown)="onKeyDown($event, item)"
+                    (blur)="onLugarBlur($event, item)">
+                {{item.lugar}}
+              </span>
+            </div>
+            
+            <div class="info-row">
+              <span class="info-label">
+                <i class="icon-map"></i>
+                Dirección
+              </span>
+              <span class="info-value address"
+                    [attr.data-id-direccion]="item.id"
+                    [attr.contenteditable]="!isReadOnly"
+                    (pointerdown)="$event.stopPropagation()"
+                    (mousedown)="$event.stopPropagation()"
+                    (touchstart)="$event.stopPropagation()"
+                    (click)="!isReadOnly && onClickDireccion(item.id)"
+                    (keydown)="onKeyDown($event, item)"
+                    (blur)="onDireccionBlur($event, item)">
+                {{item.direccion}}
+              </span>
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <a href="{{item.ubicacion}}" target="_blank" class="location-btn primary">
+              <i class="icon-location"></i>
+              Ver Ubicación
+            </a>
+            <button class="location-btn secondary" (click)="abrirMapa(item.id)" *ngIf="!isReadOnly">
+              Editar Mapa
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="addNewDC" *ngIf="!loading && !isReadOnly">
-        <img src="../../../../assets/BtnAddNew.png" alt="" height="64px" width="64px" *ngIf="!loading && (data?.details?.length || 0) < 4"
-                title="Click para Agregar un nuevo Lugar" (click)="nuevoDondeCuando()" style="cursor: pointer;">
+
+    <div class="add-event-container" *ngIf="!isReadOnly && (data?.details?.length || 0) < 4">
+      <button class="add-event-btn" (click)="nuevoDondeCuando()">
+        <span class="add-icon">+</span>
+        <span>Agregar lugar</span>
+      </button>
     </div>
+  </div>
+</section>

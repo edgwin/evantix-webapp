@@ -15,7 +15,7 @@ import { PopupHtmlComponent } from '../../popup-html/popup-html.component';
 @Component({
   selector: 'app-donde-cuando',
   templateUrl: './donde-cuando.component.html',
-  styleUrls: ['./../invitacion.component.css', './../icomoon.css'],
+  styleUrls: ['./donde-cuando.component.css', './../icomoon.css'],
   standalone: true,
   imports: [CommonModule, FormsModule, MatInputModule, DragDropModule, PopupHtmlComponent]
 })

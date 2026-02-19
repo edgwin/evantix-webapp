@@ -1,4 +1,4 @@
-import { Component, HostListener, Input } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { CommonModule } from '@angular/common';
@@ -10,9 +10,9 @@ import { AiEditableDirective } from '../../../directives/ai-editable.directive';
   standalone: true,
   imports: [CommonModule, PopupHtmlComponent, AiEditableDirective],
   templateUrl: './intinerario.component.html',
-  styleUrl: './../invitacion.component.css'
+  styleUrls: ['./intinerario.component.css']
 })
-export class IntinerarioComponent {
+export class IntinerarioComponent implements OnInit {
   constructor(private invitationService: InvitationService,
         private notificationService: NotificationService){}
         
@@ -23,6 +23,7 @@ export class IntinerarioComponent {
   @Input() eventType: string = '';
   @Input() isReadOnly: boolean = false;  
   showPopup = false;
+  images: string[] = [];
 
   editingDescripcion: boolean = false;
   tempDescripcion: string = '';
@@ -145,14 +146,21 @@ export class IntinerarioComponent {
     this.showPopup = true;
   }
 
-   images = [
-    '../../../../assets/Intinerario/church.png',
-    '../../../../assets/Intinerario/Coctel.png',
-    '../../../../assets/Intinerario/dance.png',
-    '../../../../assets/Intinerario/dinner.png',
-    '../../../../assets/Intinerario/snaks.png',
-    '../../../../assets/Intinerario/vals.png'
-  ];  
+  ngOnInit(): void {
+    this.loadImages();
+  }
+
+  loadImages(): void {
+    this.invitationService.getAssetImages('Intinerario').subscribe({
+      next: (images) => {
+        this.images = images;
+      },
+      error: (err) => {
+        console.error('Error al cargar imágenes del itinerario:', err);
+        this.images = [];
+      }
+    });
+  }  
 
   onClosePopup() {
     this.showPopup = false;

@@ -1,76 +1,82 @@
-<!--   Historia     --> 
-<div id="fh5co-couple-story">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-offset-2 text-center fh5co-heading">
-                    <div class="text-center editableTitulo"
-                    id="TituloHistoria"
-                    [attr.contenteditable]="!isReadOnly"
-                    (click)="!isReadOnly && onClickTituloHistoria()"
-                    (keydown)="onKeyDown($event, 50)"
-                    (blur)="onTituloHistoriaBlur($event)"
-                    >
-                        {{dataHistoria.titulo}}
-                    </div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-offset-0">                    
-					<ul class="timeline" *ngFor="let item of dataHistoria.details; let i = index;">                        
-						<li [ngClass]="{ 'timeline-inverted': i % 2 !== 0 }">
-                            <img src="../../../../assets/editarImagen.png"
-                                alt="editar imagen" 
-                                class="edit-image-btn-int"
-                                title="Click para editar imagen"
-                                (click)="triggerImageUpload(item.id)"
-                                *ngIf="!loadingImgs[item.id] && !isReadOnly">
-                                <div class="loaderImg" *ngIf="loadingImgs[item.id]"></div>
-							<div class="timeline-badge" [ngStyle]="{'background-image': 'url('+item.imagen+')'}" appDisableDownload></div>              
-							<div class="timeline-panel">
-								<div class="timeline-heading">
-                  <!-- ToDo implementar lo de el limite de registros -->
-                                    <img src="../../../../assets/BtnDelete.png" 
-                                        alt="" 
-                                        height="64px" 
-                                        width="64px" 
-                                        [ngClass]="i % 2 !== 0 ? 'editDondeCuandoDelete' : 'editIntinerarioDelete editIntinerarioDelete-LR'"
-                                        title="Click para eliminar elemento"
-                                        (click)="triggerImageDelete(item.id)"
-                                        *ngIf="!loadingImgs[item.id] && (dataHistoria?.details?.length || 0) > 1 && !isReadOnly"
-                                    />
-                                    <div class="loaderDCDelete" *ngIf="loadingImgs[item.id]"></div>
-									<h3 class="timeline-title"
-                                        [attr.data-id-fecha-historia]="item.id"                                        
-                                        [attr.contenteditable]="!isReadOnly"
-                                        (click)="!isReadOnly && onClickFechaHistoria(item.id)"
-                                        (keydown)="onKeyDown($event, 22)"
-                                        (blur)="onFechaHistoriaBlur($event, item)"
-                                    >
-                                        {{item.fecha}}
-                                    </h3>                                    
-									<span class="date"
-                                        [attr.data-id-desc-historia]="item.id"                                    
-                                        [attr.contenteditable]="!isReadOnly"
-                                        (click)="!isReadOnly && onClickDescHistoria(item.id)"
-                                        (keydown)="onKeyDown($event, 200)"
-                                        (blur)="onDescHistoriaBlur($event, item)"
-                                        appAiEditable                                        
-                                        [aiSection]="'Historia de vida del o los festejados, si es boda, la historia de la pareja, la respuesta debe ser en primera persona'"
-                                        [aiEventType]="eventType"
-                                        [maxLength]="200"
-                                        [aiReadOnly]="isReadOnly"
-                                    >
-                                        {{item.descripcion}}
-                                    </span>
-								</div>
-							</div>
-						</li>                        
-			    	</ul>
-				</div>
-			</div>
-	</div>
-    <div class="addNewDC" *ngIf="!loading && !isReadOnly">
-        <img src="../../../../assets/BtnAddNew.png" alt="" height="64px" width="64px" (click)="nuevaHistoria()" *ngIf="showAddHistoriaBtn()"
-                title="Click para Agregar una nueva parte de la historia" style="cursor: pointer;">
+<section class="historia-section">
+  <div class="section-content">
+    <div class="section-header">
+      <span class="header-decoration-line"></span>
+      <h1 id="TituloHistoria"
+          [attr.contenteditable]="!isReadOnly"
+          (click)="!isReadOnly && onClickTituloHistoria()"
+          (keydown)="onKeyDown($event, 50)"
+          (blur)="onTituloHistoriaBlur($event)">
+        {{dataHistoria.titulo}}
+      </h1>
+      <span class="header-decoration-line"></span>
     </div>
-</div>  
+
+    <div class="story-timeline">
+      <div class="timeline-line"></div>
+      
+      <div class="story-item" 
+           *ngFor="let item of dataHistoria.details; let i = index"
+           [ngClass]="{'story-right': i % 2 !== 0}"
+           [style.animation-delay]="(i * 0.2) + 's'">
+        
+        <div class="story-image-wrapper">
+          <div class="story-image" 
+               [ngStyle]="{'background-image': 'url(' + item.imagen + ')'}"
+               appDisableDownload>
+          </div>
+          <button class="image-edit-btn" 
+                  (click)="triggerImageUpload(item.id)" 
+                  *ngIf="!loadingImgs[item.id] && !isReadOnly"
+                  title="Cambiar imagen">
+            <img src="assets/editarImagen.png" alt="editar">
+          </button>
+          <div class="image-loader" *ngIf="loadingImgs[item.id]">
+            <div class="loader"></div>
+          </div>
+        </div>
+
+        <div class="story-card">
+          <button class="card-delete-btn" 
+                  (click)="triggerImageDelete(item.id)"
+                  *ngIf="!loadingImgs[item.id] && (dataHistoria?.details?.length || 0) > 1 && !isReadOnly"
+                  title="Eliminar">
+            <img src="assets/BtnDelete.png" alt="eliminar">
+          </button>
+
+          <div class="card-date-badge"
+               [attr.data-id-fecha-historia]="item.id"
+               [attr.contenteditable]="!isReadOnly"
+               (click)="!isReadOnly && onClickFechaHistoria(item.id)"
+               (keydown)="onKeyDown($event, 22)"
+               (blur)="onFechaHistoriaBlur($event, item)">
+            {{item.fecha}}
+          </div>
+
+          <p class="card-description"
+             [attr.data-id-desc-historia]="item.id"
+             [attr.contenteditable]="!isReadOnly"
+             (click)="!isReadOnly && onClickDescHistoria(item.id)"
+             (keydown)="onKeyDown($event, 200)"
+             (blur)="onDescHistoriaBlur($event, item)"
+             appAiEditable
+             [aiSection]="'Historia de vida del o los festejados, si es boda, la historia de la pareja, la respuesta debe ser en primera persona'"
+             [aiEventType]="eventType"
+             [maxLength]="200"
+             [aiReadOnly]="isReadOnly">
+            {{item.descripcion}}
+          </p>
+
+          <div class="card-connector"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="add-item-container" *ngIf="!loading && !isReadOnly && showAddHistoriaBtn()">
+      <button class="add-item-btn" (click)="nuevaHistoria()">
+        <span class="add-icon">+</span>
+        <span>Agregar momento</span>
+      </button>
+    </div>
+  </div>
+</section>  

@@ -5,22 +5,41 @@
   data-stellar-background-ratio="0.5"
 >
   <div class="carousel-container">
-    <div 
-      *ngFor="let img of imagenes; let i = index"
-      class="carousel-slide"
-      [ngClass]="{ 'active': i === currentImageIndex }"
-      [ngStyle]="{
-        'background-image': 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(' + img + ')',
-        'z-index': i === currentImageIndex ? 2 : 1
-      }"
-    ></div>
-    <div 
-      *ngIf="imagenes.length === 0"
-      class="carousel-slide active"
-      [ngStyle]="{
-        'background-image': 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(' + (data?.imagen || '') + ')'
-      }"
-    ></div>
+    <ng-container *ngFor="let img of imagenes; let i = index">
+      <!-- Fondo blur -->
+      <div 
+        class="carousel-slide-blur"
+        [ngClass]="{ 'active': i === currentImageIndex }"
+        [ngStyle]="{
+          'background-image': 'url(' + img + ')',
+          'z-index': i === currentImageIndex ? 1 : 0
+        }"
+      ></div>
+      <!-- Imagen principal -->
+      <div 
+        class="carousel-slide"
+        [ngClass]="{ 'active': i === currentImageIndex }"
+        [ngStyle]="{
+          'background-image': 'url(' + img + ')',
+          'z-index': i === currentImageIndex ? 2 : 1
+        }"
+      ></div>
+    </ng-container>
+    <!-- Overlay oscuro -->
+    <div class="carousel-overlay"></div>
+    
+    <!-- Fallback cuando no hay imagenes -->
+    <ng-container *ngIf="imagenes.length === 0">
+      <div 
+        class="carousel-slide-blur active"
+        [ngStyle]="{ 'background-image': 'url(' + (data?.imagen || '') + ')' }"
+      ></div>
+      <div 
+        class="carousel-slide active"
+        [ngStyle]="{ 'background-image': 'url(' + (data?.imagen || '') + ')' }"
+      ></div>
+      <div class="carousel-overlay"></div>
+    </ng-container>
   </div>
   <div class="editImage" *ngIf="!isReadOnly"> 
     <img src="../../../../assets/editarImagen.png" class="edit-imagePortada-btn" 

@@ -1,94 +1,95 @@
-<div id="fh5co-couple-story">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-offset-2 text-center fh5co-heading">
-                    <div>
-                        <h2>{{dataIntinerario.titulo}}</h2>
-                    </div>
-					<div class="descripcion-container"
-                        [attr.contenteditable]="!isReadOnly"
-                        (click)="!isReadOnly && onClickDescripcion()"
-                        (keydown)="onKeyDownInt($event, 200)"
-                        (blur)="onDescripcionBlur($event)"
-                        appAiEditable
-                        [aiSection]="'Intinerario del evento'"
-                        [aiEventType]="eventType"
-                        [maxLength]="200"
-                        [aiReadOnly]="isReadOnly"
-                    >
-                        <p>{{dataIntinerario.descripcion}}</p>
-                    </div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-offset-0">                    
-					<ul class="timeline" *ngFor="let item of dataIntinerario.details; let i = index;">                        
-						<li [ngClass]="{ 'timeline-inverted': i % 2 !== 0 }">
-                            <img src="../../../../assets/editarImagen.png" 
-                                alt="editar imagen" 
-                                class="edit-image-btn-int"
-                                title="Click para editar icono"
-                                (click)="openPopup(i)"
-                                *ngIf="!isReadOnly"
-                            >
-							<div class="timeline-badge" [ngStyle]="{
-                                                                    'background-image': 'url('+item.imagen+')'
-                                                                    }"></div>                            
-							<div class="timeline-panel">
-								<div class="timeline-heading">
-                                    <img src="../../../../assets/BtnDelete.png" 
-                                        alt="" 
-                                        height="64px" 
-                                        width="64px" 
-                                        [ngClass]="i % 2 !== 0 ? 'editDondeCuandoDelete' : 'editIntinerarioDelete editIntinerarioDelete-LR'"
-                                        title="Click para eliminar elemento" 
-                                        *ngIf="!loadingImgs[item.id] && (dataIntinerario?.details?.length || 0) > 1 && !isReadOnly"
-                                        (click)="triggerIntinerarioImageDelete(item.id)"
-                                    />
-									<h3 class="timeline-title"
-                                        [attr.data-id-actividad-int]="item.id"
-                                        [attr.contenteditable]="!isReadOnly"
-                                        (click)="!isReadOnly && onClickActividadInt(item.id)"
-                                        (keydown)="onKeyDownInt($event, 22)"
-                                        (blur)="onActividadIntBlur($event, item)"
-                                        appAiEditable
-                                        [aiSection]="'Intinerario del evento'"
-                                        [aiEventType]="eventType"
-                                        [maxLength]="22"
-                                        [aiReadOnly]="isReadOnly"
-                                    >
-                                        {{item.actividad}}
-                                    </h3>
-									<span class="date"
-                                        [attr.data-id-fecha-int]="item.id"                                    
-                                        [attr.contenteditable]="!isReadOnly"
-                                        (click)="!isReadOnly && onClickFechaInt(item.id)"
-                                        (keydown)="onKeyDownInt($event, 50)"
-                                        (blur)="onFechaIntBlur($event, item)"
-                                    >
-                                        {{item.fecha}}
-                                    </span>
-                                    <span class="date"
-                                    [attr.contenteditable]="!isReadOnly"
-                                        [attr.data-id-hora-int]="item.id"
-                                        (click)="!isReadOnly && onClickHoraInt(item.id)"
-                                        (keydown)="onKeyDownInt($event, 10)"
-                                        (blur)="onHoraIntBlur($event, item)"
-                                    >
-                                        {{item.hora}}
-                                    </span>
-								</div>
-							</div>
-						</li>                        
-			    	</ul>
-				</div>
-			</div>
-		</div>
-	</div>
-    <div class="addNewDC" *ngIf="!loading && !isReadOnly">
-        <img src="../../../../assets/BtnAddNew.png" alt="" height="64px" width="64px" *ngIf="showAddBtn()"
-                title="Click para Agregar un nuevo intinerario" (click)="nuevoIntinerario()" style="cursor: pointer;">
+<section class="itinerario-section">
+  <div class="section-content">
+    <div class="section-header">
+      <span class="header-decoration-line"></span>
+      <h1>{{dataIntinerario.titulo}}</h1>
+      <span class="header-decoration-line"></span>
     </div>
+    
+    <p class="section-description"
+       [attr.contenteditable]="!isReadOnly"
+       (click)="!isReadOnly && onClickDescripcion()"
+       (keydown)="onKeyDownInt($event, 200)"
+       (blur)="onDescripcionBlur($event)"
+       appAiEditable
+       [aiSection]="'Intinerario del evento'"
+       [aiEventType]="eventType"
+       [maxLength]="200"
+       [aiReadOnly]="isReadOnly">
+      {{dataIntinerario.descripcion}}
+    </p>
+
+    <div class="timeline-container">
+      <div class="timeline-line"></div>
+      
+      <div class="timeline-item" 
+           *ngFor="let item of dataIntinerario.details; let i = index"
+           [ngClass]="{'timeline-right': i % 2 !== 0}"
+           [style.animation-delay]="(i * 0.15) + 's'">
+        
+        <div class="timeline-icon-wrapper">
+          <div class="timeline-icon" [ngStyle]="{'background-image': 'url(' + item.imagen + ')'}">
+            <button class="icon-edit-btn" (click)="openPopup(i)" *ngIf="!isReadOnly" title="Cambiar icono">
+              <img src="assets/editarImagen.png" alt="editar">
+            </button>
+          </div>
+        </div>
+
+        <div class="timeline-card">
+          <button class="card-delete-btn" 
+                  (click)="triggerIntinerarioImageDelete(item.id)"
+                  *ngIf="!isReadOnly && (dataIntinerario?.details?.length || 0) > 1"
+                  title="Eliminar">
+            <img src="assets/BtnDelete.png" alt="eliminar">
+          </button>
+
+          <div class="card-time">
+            <span class="time-value"
+                  [attr.contenteditable]="!isReadOnly"
+                  [attr.data-id-hora-int]="item.id"
+                  (click)="!isReadOnly && onClickHoraInt(item.id)"
+                  (keydown)="onKeyDownInt($event, 10)"
+                  (blur)="onHoraIntBlur($event, item)">
+              {{item.hora}}
+            </span>
+          </div>
+
+          <h3 class="card-title"
+              [attr.data-id-actividad-int]="item.id"
+              [attr.contenteditable]="!isReadOnly"
+              (click)="!isReadOnly && onClickActividadInt(item.id)"
+              (keydown)="onKeyDownInt($event, 22)"
+              (blur)="onActividadIntBlur($event, item)"
+              appAiEditable
+              [aiSection]="'Intinerario del evento'"
+              [aiEventType]="eventType"
+              [maxLength]="22"
+              [aiReadOnly]="isReadOnly">
+            {{item.actividad}}
+          </h3>
+
+          <p class="card-date"
+             [attr.data-id-fecha-int]="item.id"
+             [attr.contenteditable]="!isReadOnly"
+             (click)="!isReadOnly && onClickFechaInt(item.id)"
+             (keydown)="onKeyDownInt($event, 50)"
+             (blur)="onFechaIntBlur($event, item)">
+            {{item.fecha}}
+          </p>
+
+          <div class="card-connector"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="add-item-container" *ngIf="!isReadOnly && showAddBtn()">
+      <button class="add-item-btn" (click)="nuevoIntinerario()">
+        <span class="add-icon">+</span>
+        <span>Agregar actividad</span>
+      </button>
+    </div>
+  </div>
+</section>
 
 <app-popup-html 
   [visible]="showPopup" 

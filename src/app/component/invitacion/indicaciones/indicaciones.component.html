@@ -1,50 +1,71 @@
-<section class="imagen-fondo" [style.background-image]="
-'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(' + data.imagen + ')'
-">
-<div class="indicacionesContent"><h1>Indicaciones para el Evento</h1></div>
-<div class="editImage" *ngIf="!isReadOnly"> 
-  <img src="../../../../assets/editarImagen.png"
-       class="edit-imageIndicaciones-btn"
-       alt=""
-       title="Click para editar imagen de fondo"
-       (click)="triggerImageUpload()"
-       *ngIf="!loadingImg">
-  <div class="loaderPortada" *ngIf="loadingImg"></div>
-</div>
-  <div class="grid-container">
-    <div class="card card-with-icon" *ngFor="let item of data.details let i = index">
-
-         <img src="../../../../assets/BtnDelete.png" alt="" height="64px" width="64px" class="editIndicacionesDelete"
-                                title="Click para eliminar elemento" (click)="triggerElementDelete(item.id)" 
-                                *ngIf="!isReadOnly && (data?.details?.length || 0) > 1">
-        <!-- Ícono encima -->
-        <div class="cardIcon">
-          <img [src]="templateService.getIconForSection('indicaciones')" />
-        </div>
-
-        <!-- Contenido -->
-        <div class="titulo" [attr.contenteditable]="!isReadOnly"
-          [attr.data-id-titulo-Indicaciones]="item.id"
-          (keydown)="onTituloKeyDown($event)"           
-          (click)="!isReadOnly && onClickTitulo(item.id)"
-          (blur)="saveContent($event, item.id, 'titulo')">
-            {{item.titulo}}
-        </div>
-        <div id="descripcion" [innerHTML]=item.descripcion [attr.contenteditable]="!isReadOnly"
-          [attr.data-id-descripcion-indicaciones]="item.id"
-          (keydown)="onDescKeyDown($event)"
-          (click)="!isReadOnly && onClickDescripcion(item.id)"
-          (blur)="saveContent($event, item.id, 'descripcion')"
-          appAiEditable
-          [aiSection]="'Indicaciones para el evento'"
-          [aiEventType]="eventType"
-          [maxLength]="maxLength"
-          [aiReadOnly]="isReadOnly"
-        ></div>
-    </div>    
+<section class="indicaciones-section">
+  <div class="background-image" [style.background-image]="'url(' + data.imagen + ')'"></div>
+  <div class="background-overlay"></div>
+  
+  <div class="editImage" *ngIf="!isReadOnly"> 
+    <img src="../../../../assets/editarImagen.png"
+         class="edit-imageIndicaciones-btn"
+         alt=""
+         title="Click para editar imagen de fondo"
+         (click)="triggerImageUpload()"
+         *ngIf="!loadingImg">
+    <div class="loaderPortada" *ngIf="loadingImg"></div>
   </div>
-  <div style="text-align: center" class="newBtn" *ngIf="!isReadOnly">
-    <img src="../../../../assets/BtnAddNew.png" style="cursor: pointer;" alt="" height="64px" width="64px"
-          title="Click para agregar elemento" (click)="nuevaIndicacion()" *ngIf="!loading && (data?.details?.length || 0) < 3">
+
+  <div class="indicaciones-content">
+    <div class="section-header">
+      <span class="header-line"></span>
+      <h1>Indicaciones</h1>
+      <span class="header-line"></span>
+    </div>
+    <p class="section-subtitle">Todo lo que necesitas saber para el evento</p>
+
+    <div class="cards-container">
+      <div class="indicacion-card" *ngFor="let item of data.details; let i = index"
+           [style.animation-delay]="(i * 0.1) + 's'">
+        
+        <img src="../../../../assets/BtnDelete.png" alt="" class="delete-btn"
+             title="Click para eliminar elemento" (click)="triggerElementDelete(item.id)" 
+             *ngIf="!isReadOnly && (data?.details?.length || 0) > 1">
+        
+        <div class="card-icon-wrapper">
+          <div class="card-icon">
+            <img [src]="templateService.getIconForSection('indicaciones')" />
+          </div>
+        </div>
+
+        <div class="card-content">
+          <h3 class="card-title" 
+              [attr.contenteditable]="!isReadOnly"
+              [attr.data-id-titulo-Indicaciones]="item.id"
+              (keydown)="onTituloKeyDown($event)"           
+              (click)="!isReadOnly && onClickTitulo(item.id)"
+              (blur)="saveContent($event, item.id, 'titulo')">
+            {{item.titulo}}
+          </h3>
+          <div class="card-divider"></div>
+          <p class="card-description" 
+             [innerHTML]="item.descripcion" 
+             [attr.contenteditable]="!isReadOnly"
+             [attr.data-id-descripcion-indicaciones]="item.id"
+             (keydown)="onDescKeyDown($event)"
+             (click)="!isReadOnly && onClickDescripcion(item.id)"
+             (blur)="saveContent($event, item.id, 'descripcion')"
+             appAiEditable
+             [aiSection]="'Indicaciones para el evento'"
+             [aiEventType]="eventType"
+             [maxLength]="maxLength"
+             [aiReadOnly]="isReadOnly">
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="add-btn-container" *ngIf="!isReadOnly && !loading && (data?.details?.length || 0) < 3">
+      <button class="add-btn" (click)="nuevaIndicacion()" title="Click para agregar elemento">
+        <span class="add-icon">+</span>
+        <span>Agregar indicación</span>
+      </button>
+    </div>
   </div>
 </section>

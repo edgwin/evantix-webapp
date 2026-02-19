@@ -3,17 +3,21 @@ import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { CommonModule } from '@angular/common';
 import { DisableDownloadDirective } from '../../../directives/disable-download.directive';
+import { TemplateService } from '../../../services/template.service';
 
 @Component({
   selector: 'app-galeria',
   standalone: true,
   imports: [CommonModule, DisableDownloadDirective],
   templateUrl: './galeria.component.html',  
-  styleUrls: ['./../invitacion.component.css', './galeria.component.css']
+  styleUrls: ['./galeria.component.css']
 })
 export class GaleriaComponent {
-  constructor(private invitationService: InvitationService,private notificationService: NotificationService)
-    {}
+  constructor(
+    private invitationService: InvitationService,
+    private notificationService: NotificationService,
+    public templateService: TemplateService
+  ) {}
   @Input() eventId: string = '';
   @Input() data: any;
   @Input() height = '60vh';

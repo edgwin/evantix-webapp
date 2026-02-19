@@ -1,61 +1,54 @@
-<div 
-[ngStyle]="{
-       'background-image': 'url(' + templateService.getBackgroundImage() + ')',
-       'background-size': 'cover',
-       'background-position': 'center',
-       'background-repeat': 'no-repeat',
-       'padding-top': '10px',
-       'padding-bottom': '100px'
-     }"
-*ngIf="!loading">
-    <!-- <div class="container">
-        <div class="row">
-            <div class="text-center editableTitulo" contenteditable="true" id="TituloFestejados"
-                (blur)="onTituloBlur($event)"                
-                (click)="onClickTitulo()"
-                (keydown)="onKeyDown($event, 35)">
-                {{data.titulo}}
-            </div>
-        </div>				
-    </div>     -->
-    <div>
-        <div class="image-container">
-            <!-- Imagen principal -->
-            <img [src]="data.imagen" 
-                alt="" 
-                appDisableDownload
-                class="img-frase" 
-                *ngIf="!loading" 
-                @fadeInScale>
-
-            <!-- Botón de editar (arriba a la derecha) -->
-            <img src="../../../../assets/editarImagen.png" 
-                alt="editar imagen" 
-                class="edit-image-btn"
+<section class="festejados-section"
+  [ngStyle]="{
+    'background-image': 'url(' + templateService.getMarbleBackground() + ')',
+    'background-size': 'cover',
+    'background-position': 'center',
+    'background-repeat': 'no-repeat'
+  }"
+  *ngIf="!loading">
+  
+  <div class="festejados-content">
+    <div class="image-wrapper" @fadeInScale>
+      <div class="image-frame">
+        <div class="frame-decoration top-left"></div>
+        <div class="frame-decoration top-right"></div>
+        <div class="frame-decoration bottom-left"></div>
+        <div class="frame-decoration bottom-right"></div>
+        
+        <img [src]="data.imagen" 
+             alt="Festejados" 
+             appDisableDownload
+             class="festejados-image">
+        
+        <button class="edit-image-btn" 
                 (click)="triggerImageUpload()" 
-                title="Click para editar imagen" 
+                title="Cambiar imagen" 
                 *ngIf="!loadingImg && !isReadOnly">
-            <div class="loaderFestejados" *ngIf="loadingImg"></div>                
-        </div>        
-
-        <!-- Texto editable -->
-        <div>
-            <div
-                class="frase-txt"
-                [attr.contenteditable]="!isReadOnly"
-                id="FraseFestejados"
-                (blur)="onFraseBlur($event)"
-                (click)="!isReadOnly && onClickFrase()"
-                (keydown)="onKeyDown($event, 250)"
-                appAiEditable
-                [aiSection]="'Frase emotiva del o los festejados'"
-                [aiEventType]="eventType"
-                [maxLength]="250"
-                [aiReadOnly]="isReadOnly"
-            >
-            {{data.frase}}
+          <img src="assets/editarImagen.png" alt="editar">
+        </button>
+        
+        <div class="loader-container" *ngIf="loadingImg">
+          <div class="loader"></div>
         </div>
-        </div>
+      </div>
     </div>
 
-</div>
+    <div class="frase-container">
+      <span class="quote-icon left">"</span>
+      <p class="frase-text"
+         [attr.contenteditable]="!isReadOnly"
+         id="FraseFestejados"
+         (blur)="onFraseBlur($event)"
+         (click)="!isReadOnly && onClickFrase()"
+         (keydown)="onKeyDown($event, 250)"
+         appAiEditable
+         [aiSection]="'Frase emotiva del o los festejados'"
+         [aiEventType]="eventType"
+         [maxLength]="250"
+         [aiReadOnly]="isReadOnly">
+        {{data.frase}}
+      </p>
+      <span class="quote-icon right">"</span>
+    </div>
+  </div>
+</section>

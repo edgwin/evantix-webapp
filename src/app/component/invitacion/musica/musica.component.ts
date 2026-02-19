@@ -2,10 +2,11 @@ import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { InvitationService } from '../../../services/invitation.service';
 import { FormsModule } from '@angular/forms';
+import { TemplateService } from '../../../services/template.service';
 
 interface MusicTag {
-  label: string; // lo que se muestra
-  value: string; // lo que se envía al API
+  label: string;
+  value: string;
 }
 
 @Component({
@@ -13,7 +14,7 @@ interface MusicTag {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './musica.component.html',
-  styleUrls: ['./../invitacion.component.css', './musica.component.css']
+  styleUrls: ['./musica.component.css']
 })
 export class MusicaComponent implements OnInit, OnChanges {
 
@@ -37,7 +38,10 @@ availableTags: MusicTag[] = [
   isPlaying = false;
   saved = this.trackId !== "";
   isLoading = true;
-  constructor(private invitationService: InvitationService) {}
+  constructor(
+    private invitationService: InvitationService,
+    public templateService: TemplateService
+  ) {}
 
   ngOnInit() {    
     this.audio = new Audio();
