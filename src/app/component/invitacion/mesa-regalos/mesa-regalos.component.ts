@@ -30,6 +30,10 @@ export class MesaRegalosComponent {
   loading = false;
   loadingImg: boolean = false;
 
+  ngOnInit(): void {
+    this.loadImages();
+  }
+
   gotoUrl(url:string){
     window.open(url, '_blank');
   }
@@ -186,11 +190,7 @@ export class MesaRegalosComponent {
     }    
   }
 
-  images = [
-    '../../../../assets/MesaRegalos/Mesa.png',
-    '../../../../assets/MesaRegalos/regalo.png',
-    '../../../../assets/MesaRegalos/sobres.png',
-  ];  
+  images: string[] = []; 
 
   selectedItemIndex: number | null = null;
   openPopup(index: number) {
@@ -235,6 +235,18 @@ export class MesaRegalosComponent {
           `Hubo un error favor intentar más tarde ${err.message}`
         );
         this.loading = false;
+      }
+    });
+  }
+
+  loadImages(): void {
+    this.invitationService.getAssetImages('MesaRegalos').subscribe({
+      next: (images) => {
+        this.images = images;
+      },
+      error: (err) => {
+        console.error('Error al cargar imágenes del itinerario:', err);
+        this.images = [];
       }
     });
   }
