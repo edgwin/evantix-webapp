@@ -34,7 +34,7 @@
   position: absolute;
   bottom: 60px;
   right: 0;
-  width: 400px;
+  width: auto;
   max-height: 500px;
   background: white;
   border-radius: 16px;

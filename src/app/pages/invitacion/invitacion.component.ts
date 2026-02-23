@@ -48,11 +48,14 @@ export class InvitacionComponent {
       this.loading = true;
       if (!this.eventId) return;
 
-      this.templateService.loadTemplateForEvent(this.eventId);
-
       this.invitationService.getInvitacion(this.eventId).subscribe({
-        next: (res) => {
+        next: (res: any) => {
           this.data = res;
+          
+          if (res.template) {
+            this.templateService.applyTemplateFromData(res.template);
+          }
+          
           this.loading = false;
         },
         error: (err) => {

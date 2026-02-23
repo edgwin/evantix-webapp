@@ -261,4 +261,14 @@ export class InvitationService {
     const url = `${this.apiUrl}${this.getInvitationData}Portada/Images/${eventId}`;
     return this.http.post<string[]>(url, formData);
   }
+
+  getTemplates() {
+    const url = `${this.apiUrl}${this.getInvitationData}Templates`;
+    return this.http.get<any[]>(url);
+  }
+
+  updateEventTemplate(eventId: string, templateId: string) {
+    const url = `${this.apiUrl}${this.getInvitationData}${eventId}/template/${templateId}`;
+    return this.http.post(url, {});
+  }
 }
