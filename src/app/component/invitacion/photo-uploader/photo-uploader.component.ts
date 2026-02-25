@@ -81,12 +81,9 @@ export class PhotoUploaderComponent {
   }
 
   private uploadFiles(files: File[]) {
-    const formData = new FormData();
-    files.forEach(f => formData.append('files', f));
-
     this.isUploading = true;
 
-    this.invitationService.uploadGaleria(this.eventId, formData).subscribe({
+    this.invitationService.uploadGaleria(this.eventId, files).subscribe({
       next: () => {
         this.isUploading = false;
       },

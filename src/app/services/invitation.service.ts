@@ -189,7 +189,11 @@ export class InvitationService {
     return this.http.delete(url);
   }
 
-  uploadGaleria(eventId:string, formData:any){
+  uploadGaleria(eventId: string, files: File[]) {
+    const formData = new FormData();
+    files.forEach(file => {
+      formData.append('images', file);
+    });
     const url = `${this.apiUrl}${this.getInvitationData}${this.galeria}${eventId}`;
     return this.http.post(url, formData);
   }

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/component/invitacion/photo-uploader/photo-uploader.component.css"],
+  "sourcesContent": [".uploader {\r\n  width: 100%;\r\n}\r\n\r\n.drop-zone {\r\n  border: 2px dashed #999;\r\n  border-radius: 12px;\r\n  padding: 40px;\r\n  text-align: center;\r\n  cursor: pointer;\r\n  transition: all 0.3s ease;\r\n}\r\n\r\n.drop-zone.dragging {\r\n  background-color: rgba(0, 0, 0, 0.05);\r\n  border-color: #333;\r\n}\r\n\r\n.preview-grid {\r\n  margin-top: 20px;\r\n  display: grid;\r\n  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));\r\n  gap: 10px;\r\n}\r\n\r\n.preview-grid img {\r\n  width: 100%;\r\n  height: 90px;\r\n  object-fit: cover;\r\n  border-radius: 8px;\r\n}"],
+  "mappings": ";AAAA,CAAC;AACC,SAAO;AACT;AAEA,CAAC;AACC,UAAQ,IAAI,OAAO;AACnB,iBAAe;AACf,WAAS;AACT,cAAY;AACZ,UAAQ;AACR,cAAY,IAAI,KAAK;AACvB;AAEA,CATC,SASS,CAAC;AACT,oBAAkB,KAAK,CAAC,EAAE,CAAC,EAAE,CAAC,EAAE;AAChC,gBAAc;AAChB;AAEA,CAAC;AACC,cAAY;AACZ,WAAS;AACT,yBAAuB,OAAO,SAAS,EAAE,OAAO,IAAI,EAAE;AACtD,OAAK;AACP;AAEA,CAPC,aAOa;AACZ,SAAO;AACP,UAAQ;AACR,cAAY;AACZ,iBAAe;AACjB;",
+  "names": []
+}

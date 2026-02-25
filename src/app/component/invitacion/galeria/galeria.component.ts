@@ -43,7 +43,8 @@ export class GaleriaComponent {
     this.images = this.data || [];
     if (this.images.length <= 0){
       this.showGallery = false;
-    }    
+    }
+    this.updateCachedImages();
   }
 
   cargarDatos(gotoNew:boolean = false) {
@@ -59,6 +60,7 @@ export class GaleriaComponent {
         }else{
           this.showGallery = true;
         }
+        this.updateCachedImages();
         this.loading = false;
         if (gotoNew){
           this.goTo(this.data.details.length - 1);
@@ -82,6 +84,11 @@ export class GaleriaComponent {
     this.stopAutoplay();
   }
 
+  // Cached image URLs to avoid recalculation on every change detection
+  cachedPrevImg: string = '';
+  cachedCurrentImg: string = '';
+  cachedNextImg: string = '';
+
   // ---------- index helpers ----------
   currentIndex(): number {
     const n = this.images?.length || 0;
@@ -93,24 +100,33 @@ export class GaleriaComponent {
     return this.currentIndex();
   }
 
-  prevImg(): string {
+  private updateCachedImages(): void {
     const n = this.images?.length || 0;
-    if (n === 0) return '';
-    const idx = (this.currentIndex() - 1 + n) % n;
-    return this.images[idx]?.imagen || '';
+    if (n === 0) {
+      this.cachedPrevImg = '';
+      this.cachedCurrentImg = '';
+      this.cachedNextImg = '';
+      return;
+    }
+    const currentIdx = this.currentIndex();
+    const prevIdx = (currentIdx - 1 + n) % n;
+    const nextIdx = (currentIdx + 1) % n;
+    
+    this.cachedPrevImg = this.images[prevIdx]?.imagen || '';
+    this.cachedCurrentImg = this.images[currentIdx]?.imagen || '';
+    this.cachedNextImg = this.images[nextIdx]?.imagen || '';
+  }
+
+  prevImg(): string {
+    return this.cachedPrevImg;
   }
 
   nextImg(): string {
-    const n = this.images?.length || 0;
-    if (n === 0) return '';
-    const idx = (this.currentIndex() + 1) % n;
-    return this.images[idx]?.imagen || '';
+    return this.cachedNextImg;
   }
 
   currentImg(): string {
-    const n = this.images?.length || 0;
-    if (n === 0) return '';
-    return this.images[this.currentIndex()]?.imagen || '';
+    return this.cachedCurrentImg;
   }
 
   // ---------- navigation ----------
@@ -121,12 +137,14 @@ export class GaleriaComponent {
       this.animationDirection = 'right';
       setTimeout(() => {
         this._index.update(i => (i + 1) % n);
+        this.updateCachedImages();
         this.animationDirection = '';
       }, 400);
     } else if (delta < 0) {
       this.animationDirection = 'left';
       setTimeout(() => {
         this._index.update(i => (i - 1 + n) % n);
+        this.updateCachedImages();
         this.animationDirection = '';
       }, 400);
     }
@@ -147,6 +165,7 @@ export class GaleriaComponent {
   goTo(idx: number) {
     this.pauseAutoplay();
     this._index.set(idx);
+    this.updateCachedImages();
     this.resumeAutoplayWithDelay();
   }
 
@@ -253,6 +272,7 @@ export class GaleriaComponent {
       const nLocal = this.images.length || 0;
       if (nLocal === 0) return;
       this._index.update(i => (i + 1) % nLocal);
+      this.updateCachedImages();
       // clear animation after duration (matches CSS)
       setTimeout(() => this.animationDirection = '', 400);
     }, this.autoplayDelay);
@@ -313,49 +333,33 @@ export class GaleriaComponent {
       });
   }
 
-  imagesToUpload: any[] = [];
   triggerImageUpload(event: any) {
-    this.loading = true;
     const selectedFiles = Array.from(event.target.files) as File[];
     if (!selectedFiles.length) return;
 
-    const readPromises = selectedFiles.map(file => {
-      return new Promise<void>((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-          this.imagesToUpload.push({
-            preview: e.target.result,
-            file
-          });
-          resolve();
-        };
-        reader.readAsDataURL(file);
-      });
-    });
-    
-    Promise.all(readPromises).then(() => {
-      this.bulkImagesUpload();
-    });
-  }
-
-  bulkImagesUpload(){
-    if (this.imagesToUpload.length === 0) {
-      this.notificationService.show('error','No hay imágenes para subir');
+    if (!this.eventId) {
+      this.notificationService.show('error', 'No se encontró el ID del evento');
       return;
     }
 
-    const formData = new FormData();
+    this.loading = true;
+    this.notificationService.show(
+      'info',
+      'Subiendo imágenes... Este proceso puede tardar varios minutos dependiendo del peso de los archivos. Por favor espere.',
+      true
+    );
 
-    this.imagesToUpload.forEach((img, i) => {
-      formData.append('images', img.file, img.file.name);
-    });
+    event.target.value = '';
 
-    this.invitationService.uploadGaleria(this.eventId, formData).subscribe({
+    this.invitationService.uploadGaleria(this.eventId, selectedFiles).subscribe({
       next: (res) => {
+        this.notificationService.clear();
         this.data = res;
         this.cargarDatos();
+        this.notificationService.show('success', 'Imágenes subidas correctamente');
       },
       error: (err) => {
+        this.notificationService.clear();
         this.notificationService.show(
           'error',
           `Hubo un error favor intentar más tarde ${err.message}`

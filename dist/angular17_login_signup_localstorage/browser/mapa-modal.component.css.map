@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["angular:styles/component:css;9ae1bc6534f45404413dc8c6b07d89e656aa56c3887d56e5b42d33604a719288;C:/Evantix/Evantix.WebApp/src/app/component/mapa-modal/mapa-modal.component.ts"],
+  "sourcesContent": ["\n    .mapa-container {\n      width: 100%;\n      height: 400px;\n    }\n  "],
+  "mappings": ";AACI,CAAC;AACC,SAAO;AACP,UAAQ;AACV;",
+  "names": []
+}

@@ -105,11 +105,11 @@ export class NuevoEventoComponent implements OnInit {
     formData.append('Fecha', fechaISO);
     formData.append('WhatsApp', this.evento.whatsapp);
     formData.append('Email', this.evento.email);
-    formData.append('Plan', this.evento.plan);    
-    formData.append('Costo', this.evento.costo.toString());
-    if (this.evento.imagen) {
-      formData.append('Imagen', this.evento.imagen);
-    }
+    // formData.append('Plan', this.evento.plan);    
+    // formData.append('Costo', this.evento.costo.toString());
+    // if (this.evento.imagen) {
+    //   formData.append('Imagen', this.evento.imagen);
+    // }
 
     this.terminosId = localStorage.getItem('terms_id') ?? "";
     formData.append('TermsAndConditionsId', this.terminosId)

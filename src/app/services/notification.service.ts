@@ -15,11 +15,18 @@ export class NotificationService {
   private messageSubject = new BehaviorSubject<Message | null>(null);
   message$ = this.messageSubject.asObservable();
 
-  show(type: MessageType, text: string) {
+  private autoHideTimeout: any = null;
+
+  show(type: MessageType, text: string, persistent: boolean = false) {
+    if (this.autoHideTimeout) {
+      clearTimeout(this.autoHideTimeout);
+      this.autoHideTimeout = null;
+    }
     this.messageSubject.next({ type, text });
 
-    // Optionally auto-hide after 5s
-    setTimeout(() => this.clear(), type === 'error'?10000:5000);
+    if (!persistent) {
+      this.autoHideTimeout = setTimeout(() => this.clear(), type === 'error' ? 10000 : 5000);
+    }
   }
 
   clear() {

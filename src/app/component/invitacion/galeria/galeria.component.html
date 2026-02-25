@@ -16,14 +16,16 @@
 
       <div class="gallery" [ngClass]="animationDirection">
         <div class="side left">
-          <img [src]="prevImg()" alt="prev" class="side-img"
+          <img [src]="cachedPrevImg" alt="prev" class="side-img"
+               loading="lazy"
                (contextmenu)="$event.preventDefault()"
                appDisableDownload>
         </div>
 
         <div class="center">
           <div class="center-image-wrapper">
-            <img [src]="currentImg()" alt="current" class="center-img"
+            <img [src]="cachedCurrentImg" alt="current" class="center-img"
+                 loading="eager"
                  (click)="openFullScreen()"
                  (contextmenu)="$event.preventDefault()"
                  appDisableDownload>
@@ -34,7 +36,8 @@
         </div>
 
         <div class="side right">
-          <img [src]="nextImg()" alt="next" class="side-img"
+          <img [src]="cachedNextImg" alt="next" class="side-img"
+               loading="lazy"
                (contextmenu)="$event.preventDefault()"
                appDisableDownload>
         </div>
@@ -72,6 +75,6 @@
 </section>
 
 <div class="fullscreen-overlay" *ngIf="selectedImage" (click)="closeFullScreen()">
-  <img [src]="selectedImage" class="fullscreen-image" (click)="$event.stopPropagation()" appDisableDownload>
+  <img [src]="selectedImage" class="fullscreen-image" loading="eager" (click)="$event.stopPropagation()" appDisableDownload>
   <button class="close-button" (click)="closeFullScreen()">✕</button>
 </div>
