@@ -57,7 +57,7 @@ button {
 
 .popup-header {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
   padding: 0.5rem 1rem;
   border-bottom: 1px solid #eee;
@@ -65,12 +65,19 @@ button {
 }
 
 .close-btn {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
   background: transparent;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   cursor: pointer;
   color: #555;
   transition: color 0.2s;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
 }
 
 .close-btn:hover {

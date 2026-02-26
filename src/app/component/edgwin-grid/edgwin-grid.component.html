@@ -24,7 +24,7 @@
             <ng-container [ngSwitch]="col.type">
               <ng-container *ngSwitchCase="'image+text'">
                 <div style="display: flex; align-items: center;">
-                  <img [src]="row[col.imageField]" class="img-cell" />
+                  <!-- <img [src]="row[col.imageField]" class="img-cell" /> -->
                   <span style="margin-left: 8px;">{{ row[col.field] }}</span>
                 </div>
               </ng-container>
@@ -45,13 +45,15 @@
           </td>
         </ng-container>
 
-        <!-- Acciones -->
+        <!-- Acciones isDisabled(!(row.estatus == 'Publicado')) -->
         <td>
           <div class="action-buttons">
             <button (click)="onAction('pay', row)" class="icon-button" title="Pagar Evento" [disabled]="isDisabled(!row.showPayment)">💳</button>
             <button (click)="onAction('delete', row)" class="icon-button" title="Eliminar Evento (en caso de tener estatus de Creado)" [disabled]="isDisabled(!row.showDelete)">🗑️</button>
             <button (click)="onAction('invitacion', row)" class="icon-button" title="Cargar informacion para la invitacion" [disabled]="isDisabled(row.showPayment || row.invitationDataLoaded)">📩</button>
-            <button (click)="onAction('verInvitacion', row)" class="icon-button" title="Visualiza la invitacion" [disabled]="isDisabled(!(row.estatus == 'Publicado'))">✉️</button>
+            <button (click)="onAction('verInvitacion', row)" class="icon-button" title="Visualiza la invitacion" 
+                 [disabled]="false"
+                >✉️</button>
           </div>
         </td>
       </tr>

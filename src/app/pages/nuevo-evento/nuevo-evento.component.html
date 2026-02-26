@@ -101,6 +101,7 @@
   </swiper-container>
 
   <p *ngIf="evento.plan">Plan seleccionado: <strong>{{ evento.plan | titlecase }}</strong></p>
+  -->
   <table style="width:100%">
     <tr>
       <td style="padding-bottom: 18px;"><input name="condiciones" type="checkbox" (click)="checkBoxClick()"></td>
@@ -108,17 +109,18 @@
      color:blue;
      text-decoration:underline;" (click)="openPopup()">terminos y condiciones</a></p></td>
     </tr>
-  </table> -->
+  </table> 
   <div *ngIf="loading" class="loading-container">
     <img src="../../../assets/images/loading2.gif" alt="Cargando..." />
   </div>
   <div class="button-group">
-    <button class="btn btn-primary" type="submit" style="padding-left: 50px;padding-right: 50px;" [disabled]="!isFormValid">Guardar Evento</button>
+    <button class="btn btn-primary" type="submit" style="padding-left: 50px;padding-right: 50px;" [disabled]="!isFormValid && !loading">Guardar Evento</button>
   </div>
   <app-popup-html
     [visible]="showPopup"
     [htmlContent]="terminosHtml"
     [title]="'Términos y Condiciones'"
+    [showCloseButton]="true"
     (closed)="showPopup = false">
   </app-popup-html>
 </form>

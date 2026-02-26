@@ -24,6 +24,7 @@ export class PopupHtmlComponent {
   // nueva forma: pasar array de imágenes
   @Input() images: string[] | null = null;
   @Input() personasFavoritasEdit: boolean = false;
+  @Input() showCloseButton: boolean = false;
   @Input() imagenPF: any;
   @Input() parentescoPF: string | null = null;
   @Input() nombresPF: string | null = null;

@@ -21,9 +21,9 @@ export class NuevoEventoComponent implements OnInit {
     codigoPais: '+52',
     whatsapp: '',
     email: '',
-    plan: '',
+    //plan: '',
     imagen: null,
-    costo: 0
+    //costo: 0
   };
 
   codigosPais = [
@@ -46,7 +46,7 @@ export class NuevoEventoComponent implements OnInit {
     {name:'Bodas de Bronce'}, {name:'Otro'}
   ]
   
-  plans: any = [];
+  //plans: any = [];
 
   constructor(private eventService: EventService, private notificationService: NotificationService, private router: Router) {
     const localUser = localStorage.getItem('loggedUser');
@@ -69,14 +69,14 @@ export class NuevoEventoComponent implements OnInit {
       }
     });
     //
-    this.eventService.getPlans().subscribe({
-      next: (res:any) => {
-        this.plans = res;
-      },
-      error: () => {
-        this.notificationService.show('error',`Hubo un error favor de comunicarse a soporte`);
-      }
-    });
+    // this.eventService.getPlans().subscribe({
+    //   next: (res:any) => {
+    //     this.plans = res;
+    //   },
+    //   error: () => {
+    //     this.notificationService.show('error',`Hubo un error favor de comunicarse a soporte`);
+    //   }
+    // });
   }
 
   onFileChange(event: any) {
@@ -86,17 +86,17 @@ export class NuevoEventoComponent implements OnInit {
     }
   }
 
-  seleccionarPlan(plan: any) {
-    this.evento.plan = plan.title;
-    this.evento.costo = plan.price;
-  }
+  // seleccionarPlan(plan: any) {
+  //   this.evento.plan = plan.title;
+  //   this.evento.costo = plan.price;
+  // }
 
-  onSubmit() {
+  onSubmit() {    
+    // if (!this.evento.plan) {
+    //   alert('Por favor selecciona un plan.');
+    //   return;
+    // }    
     this.loading = true;
-    if (!this.evento.plan) {
-      alert('Por favor selecciona un plan.');
-      return;
-    }
     const fechaISO = new Date(this.evento.fecha).toISOString();
     const formData = new FormData();
     formData.append('UserId', this.loggedUser.userId);
@@ -134,9 +134,9 @@ export class NuevoEventoComponent implements OnInit {
       tipoEvento: '',
       whatsapp: '',
       email: '',
-      plan: '',
+      //plan: '',
       imagen: null,
-      costo: 0,      
+      //costo: 0,      
       codigoPais: '+52'
     };
     this.router.navigateByUrl('/dashboard');
@@ -159,7 +159,7 @@ export class NuevoEventoComponent implements OnInit {
       this.evento.fecha !== '' &&
       this.evento.whatsapp.trim() !== '' &&
       this.evento.email.trim() !== '' &&
-      this.evento.plan.trim() !== '' &&
+      this.evento.tipoEvento.trim() !== '' &&
       this.aceptaTerminos
     );
   }
