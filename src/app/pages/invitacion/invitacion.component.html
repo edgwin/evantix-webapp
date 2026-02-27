@@ -44,8 +44,11 @@
 
   <!-- Botón Ver Previo / Editar Invitación -->
   <div class="preview-toggle-container">
-    <button class="preview-toggle-btn" (click)="toggleReadOnly()">
+    <button class="preview-toggle-btn" (click)="toggleReadOnly()" *ngIf="eventStatus === 'Creado'">
       {{ isReadOnly ? 'Editar Invitación' : 'Ver Previo de la Invitación' }}
+    </button>
+    <button *ngIf="canSendToReview" class="send-review-btn" (click)="onSendToReview()" [disabled]="sendingToReview">
+      {{ sendingToReview ? 'Enviando...' : 'Mandar a Revisión' }}
     </button>
   </div>
 </div>

@@ -275,4 +275,11 @@ export class InvitationService {
     const url = `${this.apiUrl}${this.getInvitationData}${eventId}/template/${templateId}`;
     return this.http.post(url, {});
   }
+
+  putInReview(eventId: string) {
+    const url = `${this.apiUrl}${this.getInvitationData}PutInReview`;
+    return this.http.post(url, JSON.stringify(eventId), {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    });
+  }
 }
