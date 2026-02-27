@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InvitationService } from '../../../services/invitation.service';
 import { FormsModule } from '@angular/forms';
@@ -16,12 +16,12 @@ interface MusicTag {
   templateUrl: './musica.component.html',
   styleUrls: ['./musica.component.css']
 })
-export class MusicaComponent implements OnInit, OnChanges {
+export class MusicaComponent implements OnInit, OnChanges, OnDestroy {
 
-@Input() eventId: string = '';
-@Input() trackId: string = '';
-@Input() isReadOnly: boolean = false;
-availableTags: MusicTag[] = [
+  @Input() eventId: string = '';
+  @Input() trackId: string = '';
+  @Input() isReadOnly: boolean = false;
+  availableTags: MusicTag[] = [
     { label: 'Ambiente', value: 'ambient' },
     { label: 'Soundtrack', value: 'soundtrack' },
     { label: 'Piano', value: 'piano' },
@@ -38,12 +38,15 @@ availableTags: MusicTag[] = [
   isPlaying = false;
   saved = this.trackId !== "";
   isLoading = true;
+  private pendingAutoplay = false;
+  private autoplayListener: (() => void) | null = null;
+
   constructor(
     private invitationService: InvitationService,
     public templateService: TemplateService
-  ) {}
+  ) { }
 
-  ngOnInit() {    
+  ngOnInit() {
     this.audio = new Audio();
     this.audio.loop = true;
     this.audio.volume = 0.6;
@@ -58,17 +61,21 @@ availableTags: MusicTag[] = [
     }
   }
 
+  ngOnDestroy() {
+    this.removeAutoplayListener();
+    if (this.audio) {
+      this.audio.pause();
+      this.audio.src = '';
+    }
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['isReadOnly'] && !changes['isReadOnly'].firstChange) {
       const isNowReadOnly = changes['isReadOnly'].currentValue;
       if (isNowReadOnly && this.trackId) {
         // Cambió a ReadOnly, auto-reproducir
         if (this.selectedTrack && this.audio.src) {
-          this.audio.play().then(() => {
-            this.isPlaying = true;
-          }).catch(() => {
-            this.isPlaying = false;
-          });
+          this.tryPlay();
         } else {
           this.loadAndAutoPlay();
         }
@@ -76,8 +83,54 @@ availableTags: MusicTag[] = [
         // Cambió a modo edición, pausar
         this.audio.pause();
         this.isPlaying = false;
+        this.removeAutoplayListener();
       }
     }
+  }
+
+  /**
+   * Intenta reproducir el audio. Si el navegador lo bloquea por falta de
+   * interacción del usuario (autoplay policy), registra un listener de
+   * un solo uso en click/touchstart para reintentar en cuanto el usuario
+   * toque la pantalla.
+   */
+  private tryPlay() {
+    this.audio.play().then(() => {
+      this.isPlaying = true;
+      this.pendingAutoplay = false;
+      this.removeAutoplayListener();
+    }).catch(() => {
+      // El navegador bloqueó el autoplay — esperar interacción del usuario
+      this.isPlaying = false;
+      this.pendingAutoplay = true;
+      this.registerAutoplayListener();
+    });
+  }
+
+  private registerAutoplayListener() {
+    if (this.autoplayListener) return; // ya registrado
+    this.autoplayListener = () => {
+      if (this.pendingAutoplay && this.audio.src) {
+        this.audio.play().then(() => {
+          this.isPlaying = true;
+          this.pendingAutoplay = false;
+        }).catch(() => {
+          this.isPlaying = false;
+        });
+      }
+      this.removeAutoplayListener();
+    };
+    document.addEventListener('click', this.autoplayListener, { once: true });
+    document.addEventListener('touchstart', this.autoplayListener, { once: true });
+  }
+
+  private removeAutoplayListener() {
+    if (this.autoplayListener) {
+      document.removeEventListener('click', this.autoplayListener);
+      document.removeEventListener('touchstart', this.autoplayListener);
+      this.autoplayListener = null;
+    }
+    this.pendingAutoplay = false;
   }
 
   loadAndAutoPlay() {
@@ -87,11 +140,7 @@ availableTags: MusicTag[] = [
         if (track && track.audio) {
           this.audio.src = track.audio;
           this.audio.load();
-          this.audio.play().then(() => {
-            this.isPlaying = true;
-          }).catch(() => {
-            this.isPlaying = false;
-          });
+          this.tryPlay();
         }
         this.isLoading = false;
       });
@@ -210,7 +259,7 @@ availableTags: MusicTag[] = [
           next: () => {
             this.saved = true;
           },
-          error: (err) => {            
+          error: (err) => {
           }
         }
       );

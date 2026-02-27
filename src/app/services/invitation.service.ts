@@ -40,153 +40,150 @@ export class InvitationService {
   private getSong = 'GetSong/';
   private getText = 'Text'
 
-  guardarInvitacion(data: FormData): Observable<any> {
-      const token = localStorage.getItem('access_token');
-  
-      const headers = new HttpHeaders({
-        Authorization: `Bearer ${token}`
-      });
-  
-      const url = `${this.apiUrl}${this.postNewInvitationData}`;
-      return this.http.post(url, data, { headers });
-  }
-
-  getInvitacion(eventId:string){
-    const token = localStorage.getItem('access_token');  
-    const headers = new HttpHeaders({
+  private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('access_token');
+    return new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
+  }
 
+  guardarInvitacion(data: FormData): Observable<any> {
+    const url = `${this.apiUrl}${this.postNewInvitationData}`;
+    return this.http.post(url, data, { headers: this.getAuthHeaders() });
+  }
+
+  // Sin Authorize en el backend
+  getInvitacion(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${eventId}`;
-    return this.http.get(url, {headers});
+    return this.http.get(url);
   }
 
   updateInvitacionPortada(eventId: string, payload: any) {
-    return this.http.put(`/api/invitaciones/${eventId}/portada`, payload);
+    return this.http.put(`/api/invitaciones/${eventId}/portada`, payload, { headers: this.getAuthHeaders() });
   }
 
-  uploadPortadaImage(eventId: string, file:any) {
-    return this.http.post(`/api/invitaciones/${eventId}/portada/imagen`, file);
+  uploadPortadaImage(eventId: string, file: any) {
+    return this.http.post(`/api/invitaciones/${eventId}/portada/imagen`, file, { headers: this.getAuthHeaders() });
   }
 
-  updateTableField(tabla:string, searchField:string, eventId: string, field:string, value:string) {
+  updateTableField(tabla: string, searchField: string, eventId: string, field: string, value: string) {
     const payload = {
       tableName: tabla,
       searchField: searchField,
       fieldName: field,
       newValue: value.toString()
     }
-    return this.http.patch(`${this.apiUrl}${this.getInvitationData}${this.updateEntry}${eventId}`, payload);
+    return this.http.patch(`${this.apiUrl}${this.getInvitationData}${this.updateEntry}${eventId}`, payload, { headers: this.getAuthHeaders() });
   }
 
   updateTableFieldImagen(tabla: string, searchField: string, eventId: string, field: string, file: File) {
-      const formData = new FormData();
-      formData.append('TableName', tabla);
-      formData.append('SearchField', searchField);
-      formData.append('FieldName', field);
-      formData.append('File', file);
+    const formData = new FormData();
+    formData.append('TableName', tabla);
+    formData.append('SearchField', searchField);
+    formData.append('FieldName', field);
+    formData.append('File', file);
 
-      return this.http.patch(`${this.apiUrl}${this.getInvitationData}${this.updateEntryImage}${eventId}`, formData);
+    return this.http.patch(`${this.apiUrl}${this.getInvitationData}${this.updateEntryImage}${eventId}`, formData, { headers: this.getAuthHeaders() });
   }
 
-  getInvitacionDondeCuando(eventId:string){
+  getInvitacionDondeCuando(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.getDondeCuando}${eventId}`;
-    return this.http.get(url);
+    return this.http.get(url, { headers: this.getAuthHeaders() });
   }
 
-  postNewDondeCuando(eventId:string){
+  postNewDondeCuando(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.getDondeCuando}${eventId}`;
-    return this.http.post(url, eventId);
+    return this.http.post(url, eventId, { headers: this.getAuthHeaders() });
   }
 
-  deleteDondeCuando(dondeCuandoId:string){
+  deleteDondeCuando(dondeCuandoId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.getDondeCuando}${dondeCuandoId}`;
-    return this.http.delete(url);
+    return this.http.delete(url, { headers: this.getAuthHeaders() });
   }
 
-  getInvitacionIndicaciones(eventId:string){
+  getInvitacionIndicaciones(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.getIndicaciones}${eventId}`;
-    return this.http.get(url);
+    return this.http.get(url, { headers: this.getAuthHeaders() });
   }
 
-  postNewIndicacion(eventId:string){
+  postNewIndicacion(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.getIndicaciones}${eventId}`;
-    return this.http.post(url, eventId);
+    return this.http.post(url, eventId, { headers: this.getAuthHeaders() });
   }
 
-  deleteIndicacion(indicacionId:string){
+  deleteIndicacion(indicacionId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.getIndicaciones}${indicacionId}`;
-    return this.http.delete(url);
+    return this.http.delete(url, { headers: this.getAuthHeaders() });
   }
 
-  postNewIntinerario(eventId:string){
+  postNewIntinerario(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.newIntinerario}${eventId}`;
-    return this.http.post(url, eventId);
+    return this.http.post(url, eventId, { headers: this.getAuthHeaders() });
   }
 
-  getInvitacionIntinerario(eventId:string){
+  getInvitacionIntinerario(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.newIntinerario}${eventId}`;
-    return this.http.get(url);
+    return this.http.get(url, { headers: this.getAuthHeaders() });
   }
 
-  deleteIntinerario(intinerarioId:string){
+  deleteIntinerario(intinerarioId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.newIntinerario}${intinerarioId}`;
-    return this.http.delete(url);
+    return this.http.delete(url, { headers: this.getAuthHeaders() });
   }
 
-  getMesaRegalos(eventId:string){
+  getMesaRegalos(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.getMesa}${eventId}`;
-    return this.http.get(url);
+    return this.http.get(url, { headers: this.getAuthHeaders() });
   }
 
-  deleteMesa(mesaId:string){
+  deleteMesa(mesaId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.getMesa}${mesaId}`;
-    return this.http.delete(url);
+    return this.http.delete(url, { headers: this.getAuthHeaders() });
   }
 
-  postNewMesa(eventId:string){
+  postNewMesa(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.getMesa}${eventId}`;
-    return this.http.post(url, eventId);
+    return this.http.post(url, eventId, { headers: this.getAuthHeaders() });
   }
 
-  getPersonasFavoritasData(eventId:string){
+  getPersonasFavoritasData(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.getPersonasFavoritas}${eventId}`;
-    return this.http.get(url);
+    return this.http.get(url, { headers: this.getAuthHeaders() });
   }
 
-  postNewPersonaFavorita(eventId:string){
+  postNewPersonaFavorita(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.getPersonasFavoritas}${eventId}`;
-    return this.http.post(url, eventId);
+    return this.http.post(url, eventId, { headers: this.getAuthHeaders() });
   }
 
-  deletePersonas(personaId:string){
+  deletePersonas(personaId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.getPersonasFavoritas}${personaId}`;
-    return this.http.delete(url);
+    return this.http.delete(url, { headers: this.getAuthHeaders() });
   }
 
-  postNewHistoria(eventId:string){
+  postNewHistoria(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.historia}${eventId}`;
-    return this.http.post(url, eventId);
+    return this.http.post(url, eventId, { headers: this.getAuthHeaders() });
   }
 
-  getHistoria(eventId:string){
+  getHistoria(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.historia}${eventId}`;
-    return this.http.get(url);
+    return this.http.get(url, { headers: this.getAuthHeaders() });
   }
 
-  deleteHistoria(personaId:string){
+  deleteHistoria(personaId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.historia}${personaId}`;
-    return this.http.delete(url);
+    return this.http.delete(url, { headers: this.getAuthHeaders() });
   }
 
-  getGaleria(eventId:string){
+  getGaleria(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.galeria}${eventId}`;
-    return this.http.get(url);
+    return this.http.get(url, { headers: this.getAuthHeaders() });
   }
 
-  deleteGaleria(fotoId:string){
+  deleteGaleria(fotoId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.galeria}${fotoId}`;
-    return this.http.delete(url);
+    return this.http.delete(url, { headers: this.getAuthHeaders() });
   }
 
   uploadGaleria(eventId: string, files: File[]) {
@@ -195,27 +192,27 @@ export class InvitationService {
       formData.append('images', file);
     });
     const url = `${this.apiUrl}${this.getInvitationData}${this.galeria}${eventId}`;
-    return this.http.post(url, formData);
+    return this.http.post(url, formData, { headers: this.getAuthHeaders() });
   }
 
-  deleteHospedaje(mesaId:string){
+  deleteHospedaje(mesaId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.hospedaje}${mesaId}`;
-    return this.http.delete(url);
-  }  
-
-  getHospedaje(eventId:string){
-    const url = `${this.apiUrl}${this.getInvitationData}${this.hospedaje}${eventId}`;
-    return this.http.get(url);
+    return this.http.delete(url, { headers: this.getAuthHeaders() });
   }
 
-  postHospedaje(eventId:string){
+  getHospedaje(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.hospedaje}${eventId}`;
-    return this.http.post(url, eventId);
+    return this.http.get(url, { headers: this.getAuthHeaders() });
   }
 
-  uploadPhotos(eventId:string, formData:any){
+  postHospedaje(eventId: string) {
+    const url = `${this.apiUrl}${this.getInvitationData}${this.hospedaje}${eventId}`;
+    return this.http.post(url, eventId, { headers: this.getAuthHeaders() });
+  }
+
+  uploadPhotos(eventId: string, formData: any) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.photosEvento}${eventId}`;
-    return this.http.post(url, formData);
+    return this.http.post(url, formData, { headers: this.getAuthHeaders() });
   }
 
   getTracks(tags: string[]): Observable<any> {
@@ -225,31 +222,31 @@ export class InvitationService {
       params = params.append('tags', tag);
     });
     const url = `${this.apiUrl}${this.getInvitationData}${this.musicLibrary}`;
-    return this.http.get<any>(url, {params});
+    return this.http.get<any>(url, { params });
   }
 
-  addTrack(eventId:string, trackId:string){
+  addTrack(eventId: string, trackId: string) {
     const payload = {
       eventId: eventId,
       trackId: trackId
     }
     const url = `${this.apiUrl}${this.getInvitationData}${this.musicLibrary}${this.saveSong}`;
-    return this.http.post(url, payload);
+    return this.http.post(url, payload, { headers: this.getAuthHeaders() });
   }
 
-  deleteTrack(eventId:string){
+  deleteTrack(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.musicLibrary}${this.deleteSong}${eventId}`;
-    return this.http.delete(url);
+    return this.http.delete(url, { headers: this.getAuthHeaders() });
   }
 
-  getTrackById(trackId:string){
+  getTrackById(trackId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.musicLibrary}${this.getSong}${trackId}`;
     return this.http.get<any>(url);
   }
-  
+
   generateText(payload: AiTextRequest) {
     const url = `${this.apiUrl}${this.getAIController}${this.getText}`;
-    return this.http.post<{ text: string }>(url,payload);
+    return this.http.post<{ text: string }>(url, payload);
   }
 
   getAssetImages(folder: string) {
@@ -263,23 +260,22 @@ export class InvitationService {
       formData.append('images', file);
     });
     const url = `${this.apiUrl}${this.getInvitationData}Portada/Images/${eventId}`;
-    return this.http.post<string[]>(url, formData);
+    return this.http.post<string[]>(url, formData, { headers: this.getAuthHeaders() });
   }
 
   getTemplates() {
     const url = `${this.apiUrl}${this.getInvitationData}Templates`;
-    return this.http.get<any[]>(url);
+    return this.http.get<any[]>(url, { headers: this.getAuthHeaders() });
   }
 
   updateEventTemplate(eventId: string, templateId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${eventId}/template/${templateId}`;
-    return this.http.post(url, {});
+    return this.http.post(url, {}, { headers: this.getAuthHeaders() });
   }
 
   putInReview(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}PutInReview`;
-    return this.http.post(url, JSON.stringify(eventId), {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    });
+    const headers = this.getAuthHeaders().set('Content-Type', 'application/json');
+    return this.http.post(url, JSON.stringify(eventId), { headers });
   }
 }
