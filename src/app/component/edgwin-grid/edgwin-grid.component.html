@@ -49,9 +49,8 @@
         <td>
           <div class="action-buttons">
             <button (click)="onAction('pay', row)" class="icon-button" title="Pagar Evento" [disabled]="isDisabled(!row.showPayment)">💳</button>
-            <button (click)="onAction('delete', row)" class="icon-button" title="Eliminar Evento (en caso de tener estatus de Creado)" [disabled]="isDisabled(!row.showDelete)">🗑️</button>
-            <button (click)="onAction('invitacion', row)" class="icon-button" title="Cargar informacion para la invitacion" [disabled]="isDisabled(row.showPayment || row.invitationDataLoaded)">📩</button>
-            <button (click)="onAction('verInvitacion', row)" class="icon-button" title="Visualiza la invitacion" 
+            <button (click)="onAction('delete', row)" class="icon-button" title="Eliminar Evento" [disabled]="isDisabled(!row.showDelete)">🗑️</button>            
+            <button (click)="onAction('verInvitacion', row)" class="icon-button" title="Editar/Ver la invitacion" 
                  [disabled]="false"
                 >✉️</button>
           </div>

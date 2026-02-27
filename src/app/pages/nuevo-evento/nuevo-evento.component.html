@@ -114,7 +114,7 @@
     <img src="../../../assets/images/loading2.gif" alt="Cargando..." />
   </div>
   <div class="button-group">
-    <button class="btn btn-primary" type="submit" style="padding-left: 50px;padding-right: 50px;" [disabled]="!isFormValid && !loading">Guardar Evento</button>
+    <button class="btn btn-primary" type="submit" style="padding-left: 50px;padding-right: 50px;" [disabled]="!isFormValid || loading">Guardar Evento</button>
   </div>
   <app-popup-html
     [visible]="showPopup"

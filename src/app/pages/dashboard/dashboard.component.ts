@@ -104,8 +104,7 @@ export class DashboardComponent
     this.router.navigateByUrl(`/invitaciones?id=${evento.id}`);
   }
 
-  onVerInvitacion(evento:any){
-    //this.router.navigateByUrl(`/invitacion/${this.replaceNameForUrl(evento.nombre)}/${evento.id}`);
+  onVerInvitacion(evento:any){    
     const url = this.router.serializeUrl(
       this.router.createUrlTree(['/invitacion', `${this.replaceNameForUrl(evento.nombre)}`, `${evento.id}`])
     );

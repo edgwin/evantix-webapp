@@ -96,7 +96,7 @@ export class NuevoEventoComponent implements OnInit {
     //   alert('Por favor selecciona un plan.');
     //   return;
     // }    
-    this.loading = true;
+    this.loading = true;    
     const fechaISO = new Date(this.evento.fecha).toISOString();
     const formData = new FormData();
     formData.append('UserId', this.loggedUser.userId);
