@@ -53,12 +53,10 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.4) 0%,
-    rgba(0, 0, 0, 0.3) 50%,
-    rgba(0, 0, 0, 0.5) 100%
-  );
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.4) 0%,
+      rgba(0, 0, 0, 0.3) 50%,
+      rgba(0, 0, 0, 0.5) 100%);
   z-index: 3;
 }
 
@@ -67,7 +65,7 @@
   .carousel-slide {
     background-size: cover;
   }
-  
+
   .carousel-slide-blur {
     display: none;
   }
@@ -79,7 +77,9 @@
   display: table-cell !important;
   vertical-align: middle;
 }
-#fh5co-header .display-tc h1, #fh5co-header .display-tc h2,
+
+#fh5co-header .display-tc h1,
+#fh5co-header .display-tc h2,
 #fh5co-counter .display-tc h1,
 #fh5co-counter .display-tc h2,
 .fh5co-cover .display-tc h1,
@@ -88,6 +88,7 @@
   padding: 0;
   color: white;
 }
+
 #fh5co-header .display-tc h1,
 #fh5co-counter .display-tc h1,
 .fh5co-cover .display-tc h1 {
@@ -96,35 +97,43 @@
   line-height: 1.5;
   font-family: "Sacramento", Arial, serif;
 }
+
 @media screen and (max-width: 768px) {
+
   #fh5co-header .display-tc h1,
   #fh5co-counter .display-tc h1,
   .fh5co-cover .display-tc h1 {
     font-size: 80px;
   }
 }
+
 @media screen and (max-width: 480px) {
+
   #fh5co-header .display-tc h1,
   #fh5co-counter .display-tc h1,
   .fh5co-cover .display-tc h1 {
     font-size: 60px;
   }
 }
+
 #fh5co-header .display-tc h2,
 #fh5co-counter .display-tc h2,
 .fh5co-cover .display-tc h2 {
   font-size: 45px;
-  line-height: 1.5;  
+  line-height: 1.5;
   margin-bottom: 30px;
   margin-top: 40px;
 }
+
 @media screen and (max-width: 480px) {
+
   #fh5co-header .display-tc h2,
   #fh5co-counter .display-tc h2,
   .fh5co-cover .display-tc h2 {
     font-size: 30px;
   }
 }
+
 #fh5co-header .display-tc .btn,
 #fh5co-counter .display-tc .btn,
 .fh5co-cover .display-tc .btn {
@@ -135,6 +144,7 @@
   font-size: 14px;
   text-transform: uppercase;
 }
+
 #fh5co-header .display-tc .btn:hover,
 #fh5co-counter .display-tc .btn:hover,
 .fh5co-cover .display-tc .btn:hover {
@@ -151,6 +161,7 @@
   width: 100%;
   overflow: hidden;
 }
+
 .fh5co-cover .overlay {
   z-index: 0;
   position: absolute;
@@ -160,14 +171,16 @@
   right: 0;
   background: rgba(0, 0, 0, 0.5);
 }
-.fh5co-cover > .fh5co-container {
+
+.fh5co-cover>.fh5co-container {
   position: relative;
   z-index: 10;
 }
+
 .fh5co-cover .display-t,
 .fh5co-cover .display-tc {
   height: 100vh;
-  display: flex;  
+  display: flex;
   justify-content: center;
   align-items: center;
 }
@@ -176,16 +189,18 @@
   .divFechas {
     margin-top: 15vh;
   }
+
   .fechaTxt {
     font-family: "Work Sans", Arial, sans-serif;
     font-size: 20px;
     color: white;
   }
+
   .editImageFrase {
-    position:absolute;
+    position: absolute;
     top: 80vh;
     left: 68vw;
-    cursor: pointer;  
+    cursor: pointer;
   }
 }
 
@@ -202,13 +217,15 @@
   z-index: 10;
 }
 
-.fh5co-cover > .text-center {
+.fh5co-cover>.text-center {
   z-index: 10;
 }
 
 .edit-imagePortada-btn {
-  width: 40px;  /* opcional: tamaño fijo */
-  height: 40px; /* opcional */
+  width: 40px;
+  /* opcional: tamaño fijo */
+  height: 40px;
+  /* opcional */
 }
 
 .edit-imagePortada-btn:hover {
@@ -228,18 +245,18 @@
   right: 10px;
 }
 
-.editablePortadaTitulo {  
+.editablePortadaTitulo {
   font-size: 150px;
   line-height: 1.5;
   font-family: "Sacramento", Arial, serif;
   color: white;
 }
 
-.editablePortadaSubtitulo{
+.editablePortadaSubtitulo {
   font-family: "Work Sans", Arial, sans-serif;
   font-weight: 400;
   margin: 0;
-  padding: 0;  
+  padding: 0;
   color: white;
   font-size: 45px;
   line-height: 1.5;
@@ -253,21 +270,23 @@
   color: white;
 }
 
-.left{
+.left {
   font-size: 20px;
   color: white;
 }
 
 .editImageFrase {
-  position:absolute;
+  position: absolute;
   top: 200vh;
   left: 55vw;
-  cursor: pointer;  
+  cursor: pointer;
 }
 
 .edit-imagePortada-btn {
-  width: 40px;  /* opcional: tamaño fijo */
-  height: 40px; /* opcional */
+  width: 40px;
+  /* opcional: tamaño fijo */
+  height: 40px;
+  /* opcional */
 }
 
 .edit-imagePortada-btn:hover {
@@ -283,5 +302,131 @@
   #fh5co-counter .display-tc h2,
   .fh5co-cover .display-tc h2 {
     font-size: 30px;
+  }
+}
+
+/* ============================================
+   Calendario - Agregar a mi Calendario
+   ============================================ */
+.calendar-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-top: 20px;
+  z-index: 50;
+}
+
+.calendar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 28px;
+  font-family: var(--body-font, 'Work Sans', Arial, sans-serif);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary-color, #F14E95);
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: var(--border-radius-lg, 30px);
+  cursor: pointer;
+  box-shadow: var(--shadow-md, 0 8px 20px rgba(0, 0, 0, 0.15));
+  transition: all var(--transition-normal, 0.3s ease);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  backdrop-filter: blur(10px);
+}
+
+.calendar-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+  background: #fff;
+}
+
+.calendar-btn:active {
+  transform: translateY(-1px);
+}
+
+.calendar-icon {
+  font-size: 18px;
+}
+
+.calendar-dropdown {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 260px;
+  background: rgba(255, 255, 255, 0.97);
+  border-radius: var(--border-radius, 12px);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(20px);
+  overflow: hidden;
+  animation: calendarDropdownIn 0.25s ease-out;
+  z-index: 100;
+}
+
+@keyframes calendarDropdownIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.calendar-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 20px;
+  font-family: var(--body-font, 'Work Sans', Arial, sans-serif);
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.calendar-option:hover {
+  background: var(--bg-alt-color, #f5f5f5);
+  color: var(--primary-color, #F14E95);
+  padding-left: 24px;
+}
+
+.option-icon {
+  font-size: 20px;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.calendar-divider {
+  height: 1px;
+  background: #eee;
+  margin: 4px 16px;
+}
+
+@media screen and (max-width: 480px) {
+  .calendar-btn {
+    padding: 10px 20px;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  .calendar-dropdown {
+    min-width: 220px;
+  }
+
+  .calendar-option {
+    padding: 12px 16px;
+    font-size: 13px;
   }
 }

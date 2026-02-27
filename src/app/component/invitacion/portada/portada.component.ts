@@ -15,38 +15,39 @@ import { AiEditableDirective } from '../../../directives/ai-editable.directive';
   standalone: true,
   templateUrl: './portada.component.html',
   styleUrls: ['./portada.component.css'],
-  imports: [CommonModule, 
-            CountdownTimerComponent, 
-            FormsModule,
-            MatDatepickerModule,
-            MatFormFieldModule,
-            MatInputModule,
-            MatNativeDateModule,
-            AiEditableDirective]
+  imports: [CommonModule,
+    CountdownTimerComponent,
+    FormsModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatNativeDateModule,
+    AiEditableDirective]
 })
-export class PortadaComponent implements OnInit, OnDestroy {  
+export class PortadaComponent implements OnInit, OnDestroy {
   loadingImg: boolean = false;
   newData: any = null;
   newDate: Date = new Date();
   stringDate: string = '';
   @Input() eventId: string = '';
-  @Input() data: any; 
+  @Input() data: any;
   @Input() eventType: string = '';
   @Input() isReadOnly: boolean = false;
   editingTitle: boolean = false;
   editingSubtitle: boolean = false;
   editingDate: boolean = false;
+  showCalendarDropdown: boolean = false;
   tempTitle: string = '';
   tempSubtitle: string = '';
   tempDate: Date | null = null;
   tempTime: string = ''; // formato HH:mm
-  
+
   imagenes: string[] = [];
   currentImageIndex: number = 0;
   nextImageIndex: number = 1;
   private carouselTimeout: any = null;
   readonly MAX_IMAGES = 4;
-  
+
   // Configuracion del carrusel (en milisegundos)
   readonly TRANSITION_DURATION = 2000; // Duracion del fade entre imagenes
   readonly SLIDE_INTERVAL = 5000; // Tiempo que se muestra cada imagen
@@ -55,7 +56,7 @@ export class PortadaComponent implements OnInit, OnDestroy {
   constructor(
     private invitationService: InvitationService,
     private notificationService: NotificationService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initCarousel();
@@ -69,7 +70,7 @@ export class PortadaComponent implements OnInit, OnDestroy {
     if (this.data?.imagenes && this.data.imagenes.length > 0) {
       this.imagenes = this.data.imagenes;
     }
-    
+
     if (this.imagenes.length > 1) {
       this.startCarousel();
     }
@@ -82,13 +83,13 @@ export class PortadaComponent implements OnInit, OnDestroy {
 
   private scheduleNextSlide(): void {
     const isLastImage = this.currentImageIndex === this.imagenes.length - 1;
-    const delay = isLastImage 
-      ? this.SLIDE_INTERVAL + this.LAST_TO_FIRST_DELAY 
+    const delay = isLastImage
+      ? this.SLIDE_INTERVAL + this.LAST_TO_FIRST_DELAY
       : this.SLIDE_INTERVAL;
 
     this.carouselTimeout = setTimeout(() => {
       this.nextImageIndex = (this.currentImageIndex + 1) % this.imagenes.length;
-      
+
       setTimeout(() => {
         this.currentImageIndex = this.nextImageIndex;
         this.scheduleNextSlide();
@@ -117,13 +118,13 @@ export class PortadaComponent implements OnInit, OnDestroy {
 
     // si cambió, guardamos y llamamos backend
     if (nuevoTexto !== this.data.titulo) {
-      this.data.titulo = nuevoTexto;      
-      this.updateBackend('Portada','IdEvento',this.eventId, 'Titulo', this.data.titulo);
+      this.data.titulo = nuevoTexto;
+      this.updateBackend('Portada', 'IdEvento', this.eventId, 'Titulo', this.data.titulo);
     }
   }
 
-  onClickTitulo(){
-    this.editingTitle = true; 
+  onClickTitulo() {
+    this.editingTitle = true;
     this.tempTitle = this.data.titulo; // 🔹 Guardamos el valor original
   }
 
@@ -133,7 +134,7 @@ export class PortadaComponent implements OnInit, OnDestroy {
       element.innerText = `${original}`;
     }
     this.editingTitle = false;
-    element.blur();    
+    element.blur();
   }
 
   // --- edición de subtítulo ---
@@ -143,13 +144,13 @@ export class PortadaComponent implements OnInit, OnDestroy {
 
     // si cambió, guardamos y llamamos backend
     if (nuevoTexto !== this.data.subTitulo) {
-      this.data.subTitulo = nuevoTexto;      
-      this.updateBackend('Portada','IdEvento',this.eventId, 'Subtitulo', this.data.subTitulo);
-    }    
+      this.data.subTitulo = nuevoTexto;
+      this.updateBackend('Portada', 'IdEvento', this.eventId, 'Subtitulo', this.data.subTitulo);
+    }
   }
 
-  onClickSubtitulo(){
-    this.editingSubtitle = true; 
+  onClickSubtitulo() {
+    this.editingSubtitle = true;
     this.tempSubtitle = this.data.subTitulo; // 🔹 Guardamos el valor original
   }
 
@@ -161,7 +162,7 @@ export class PortadaComponent implements OnInit, OnDestroy {
     this.editingSubtitle = false;
     element.blur();
   }
-  
+
   maxLength = 35;
   onKeyDown(event: KeyboardEvent | any) {
     const key = (event as KeyboardEvent).key;
@@ -217,7 +218,7 @@ export class PortadaComponent implements OnInit, OnDestroy {
       finalDate.setHours(hours, minutes, 0, 0);
 
       this.newDate = finalDate;
-      this.updateBackend("Events","Id",this.eventId,"Fecha",this.newDate);
+      this.updateBackend("Events", "Id", this.eventId, "Fecha", this.newDate);
     }
 
     this.editingDate = false;
@@ -227,7 +228,7 @@ export class PortadaComponent implements OnInit, OnDestroy {
     this.editingDate = false;
   }
 
-  formatearFecha(fechaISO:string) {
+  formatearFecha(fechaISO: string) {
     const meses = [
       "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
       "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
@@ -264,16 +265,16 @@ export class PortadaComponent implements OnInit, OnDestroy {
     this.invitationService.uploadPortadaImages(this.eventId, files).subscribe({
       next: (urls: string[]) => {
         this.stopCarousel();
-        
+
         this.imagenes = urls;
         this.data.imagenes = urls;
         this.currentImageIndex = 0;
         this.nextImageIndex = urls.length > 1 ? 1 : 0;
-        
+
         if (this.imagenes.length > 1) {
           this.startCarousel();
         }
-        
+
         this.loadingImg = false;
         this.notificationService.show('success', 'Imágenes actualizadas correctamente');
       },
@@ -285,7 +286,7 @@ export class PortadaComponent implements OnInit, OnDestroy {
   }
 
   // --- Guardar en backend ---
-  updateBackend(tableName:string, searchField: string, eventId:string, field:string, value: any) {    
+  updateBackend(tableName: string, searchField: string, eventId: string, field: string, value: any) {
     this.invitationService.updateTableField(tableName, searchField, eventId, field, value).subscribe({
       next: () => { },
       error: (err) => {
@@ -299,7 +300,7 @@ export class PortadaComponent implements OnInit, OnDestroy {
 
   // --- ESC para cancelar ---
   @HostListener('document:keydown.escape', ['$event'])
-  onEscape() {    
+  onEscape() {
     if (this.editingTitle) {
       const element = document.querySelector('.text-center.fh5co-heading.editablePortadaTitulo') as HTMLElement;
       this.restoreTitulo(element);
@@ -309,5 +310,120 @@ export class PortadaComponent implements OnInit, OnDestroy {
       const element = document.querySelector('.editablePortadaSubtitulo') as HTMLElement;
       this.restoreSubtitulo(element);
     }
+
+    this.showCalendarDropdown = false;
+  }
+
+  // --- Calendario ---
+  toggleCalendarDropdown() {
+    this.showCalendarDropdown = !this.showCalendarDropdown;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.calendar-wrapper')) {
+      this.showCalendarDropdown = false;
+    }
+  }
+
+  private getEventDate(): Date {
+    return new Date(this.data?.fecha);
+  }
+
+  private getEventTitle(): string {
+    return this.data?.nombreEvento || this.data?.titulo || this.eventType || 'Evento';
+  }
+
+  private getEventDescription(): string {
+    return `${this.eventType} - ${this.data?.subTitulo || ''}`;
+  }
+
+  private formatDateForGoogle(date: Date): string {
+    return date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+  }
+
+  private formatDateForICS(date: Date): string {
+    return date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+  }
+
+  addToGoogleCalendar() {
+    const start = this.getEventDate();
+    const end = new Date(start.getTime() + 3 * 60 * 60 * 1000); // +3 horas
+    const title = encodeURIComponent(this.getEventTitle());
+    const details = encodeURIComponent(this.getEventDescription());
+    const startStr = this.formatDateForGoogle(start);
+    const endStr = this.formatDateForGoogle(end);
+
+    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startStr}/${endStr}&details=${details}`;
+    window.open(url, '_blank');
+    this.showCalendarDropdown = false;
+  }
+
+  addToOutlook() {
+    const start = this.getEventDate();
+    const end = new Date(start.getTime() + 3 * 60 * 60 * 1000);
+    const title = encodeURIComponent(this.getEventTitle());
+    const body = encodeURIComponent(this.getEventDescription());
+    const startStr = start.toISOString();
+    const endStr = end.toISOString();
+
+    const url = `https://outlook.live.com/calendar/0/action/compose?subject=${title}&body=${body}&startdt=${startStr}&enddt=${endStr}`;
+    window.open(url, '_blank');
+    this.showCalendarDropdown = false;
+  }
+
+  addToYahoo() {
+    const start = this.getEventDate();
+    const title = encodeURIComponent(this.getEventTitle());
+    const desc = encodeURIComponent(this.getEventDescription());
+    const startStr = this.formatDateForGoogle(start);
+    const dur = '0300'; // 3 horas
+
+    const url = `https://calendar.yahoo.com/?v=60&title=${title}&desc=${desc}&st=${startStr}&dur=${dur}`;
+    window.open(url, '_blank');
+    this.showCalendarDropdown = false;
+  }
+
+  downloadICS() {
+    const start = this.getEventDate();
+    const end = new Date(start.getTime() + 3 * 60 * 60 * 1000);
+    const title = this.getEventTitle();
+    const description = this.getEventDescription();
+    const startStr = this.formatDateForICS(start);
+    const endStr = this.formatDateForICS(end);
+    const now = this.formatDateForICS(new Date());
+
+    const icsContent = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Evantix//Event//ES',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+      'BEGIN:VEVENT',
+      `DTSTART:${startStr}`,
+      `DTEND:${endStr}`,
+      `DTSTAMP:${now}`,
+      `UID:${this.eventId}@evantix.com`,
+      `SUMMARY:${title}`,
+      `DESCRIPTION:${description}`,
+      'STATUS:CONFIRMED',
+      'BEGIN:VALARM',
+      'TRIGGER:-PT1H',
+      'ACTION:DISPLAY',
+      `DESCRIPTION:Recordatorio: ${title}`,
+      'END:VALARM',
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
+
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${title.replace(/[^a-zA-Z0-9áéíóúñÁÉÍÓÚÑ ]/g, '')}.ics`;
+    link.click();
+    URL.revokeObjectURL(url);
+    this.showCalendarDropdown = false;
   }
 }
