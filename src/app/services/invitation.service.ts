@@ -310,6 +310,12 @@ export class InvitationService {
     return this.http.post(url, JSON.stringify(eventId), { headers });
   }
 
+  setToRevisado(eventId: string) {
+    const url = `${this.apiUrl}${this.getInvitationData}SetToRevisado`;
+    const headers = this.getAuthHeaders().set('Content-Type', 'application/json');
+    return this.http.post(url, JSON.stringify(eventId), { headers });
+  }
+
   // --- Muro de Fotos (Guest Uploads) ---
   getFotosInvitados(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}MuroFotos/${eventId}`;

@@ -42,6 +42,7 @@ export class InvitacionComponent implements OnDestroy {
   data: any;
   isReadOnly: boolean = false;
   isGuestView: boolean = false; // Flag para pruebas: true = simula vista de invitado
+  isAdmin: boolean = false;
   eventStatus: string = '';
   canSendToReview: boolean = false;
   sendingToReview: boolean = false;
@@ -54,7 +55,7 @@ export class InvitacionComponent implements OnDestroy {
   sections: { [key: string]: { isEnabled: boolean, enableCost: number, sectionName: string, maxItems: number } } = {};
 
   toggleReadOnly(): void {
-    if (this.eventStatus === 'Creado') {
+    if (this.eventStatus === 'Creado' || this.isAdmin) {
       this.isReadOnly = !this.isReadOnly;
       // Refrescar costo al volver a modo edición o al ver previo
       if (!this.isReadOnly) {
@@ -75,7 +76,13 @@ export class InvitacionComponent implements OnDestroy {
         this.data = res;
         this.eventStatus = res.eventStatus || 'Creado';
 
-        if (this.eventStatus === 'Creado') {
+        // Detect admin from query param
+        this.isAdmin = this.route.snapshot.queryParamMap.get('admin') === 'true';
+
+        if (this.isAdmin) {
+          this.isReadOnly = false;
+          this.canSendToReview = false; // Admin uses "Revisado" button instead
+        } else if (this.eventStatus === 'Creado') {
           this.isReadOnly = false;
           this.canSendToReview = true;
         } else {
@@ -88,7 +95,7 @@ export class InvitacionComponent implements OnDestroy {
         }
 
         // Cargar precios y secciones habilitadas
-        if (this.eventStatus === 'Creado') {
+        if (this.eventStatus === 'Creado' || this.isAdmin) {
           this.loadPricing();
         }
 
@@ -216,6 +223,24 @@ export class InvitacionComponent implements OnDestroy {
       },
       error: (err) => {
         this.notificationService.show('error', `Hubo un error al enviar a revisión: ${err.message}`);
+        this.sendingToReview = false;
+      }
+    });
+  }
+
+  onSetToRevisado(): void {
+    if (this.sendingToReview) return;
+    this.sendingToReview = true;
+
+    this.invitationService.setToRevisado(this.eventId).subscribe({
+      next: () => {
+        this.notificationService.show('success', 'La invitación fue marcada como Revisada exitosamente');
+        this.eventStatus = 'Revisado';
+        this.sendingToReview = false;
+        this.router.navigateByUrl('/dashboard');
+      },
+      error: (err) => {
+        this.notificationService.show('error', `Hubo un error al marcar como revisado: ${err.message}`);
         this.sendingToReview = false;
       }
     });

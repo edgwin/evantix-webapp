@@ -121,13 +121,17 @@
 
   <!-- Botón Ver Previo / Editar Invitación -->
   <div class="preview-toggle-container">
-    <button class="preview-toggle-btn" (click)="toggleReadOnly()" *ngIf="eventStatus === 'Creado'"
+    <button class="preview-toggle-btn" (click)="toggleReadOnly()" *ngIf="eventStatus === 'Creado' || isAdmin"
       [disabled]="pricingLoading">
       {{ isReadOnly ? 'Editar Invitación' : 'Ver Previo de la Invitación' }}
     </button>
-    <button *ngIf="canSendToReview" class="send-review-btn" (click)="onSendToReview()"
+    <button *ngIf="canSendToReview && !isAdmin" class="send-review-btn" (click)="onSendToReview()"
       [disabled]="sendingToReview || pricingLoading">
       {{ sendingToReview ? 'Enviando...' : 'Mandar a Revisión' }}
+    </button>
+    <button *ngIf="isAdmin" class="send-review-btn" style="background: #28a745;" (click)="onSetToRevisado()"
+      [disabled]="sendingToReview || pricingLoading">
+      {{ sendingToReview ? 'Procesando...' : '✅ Revisado' }}
     </button>
   </div>
 </div>

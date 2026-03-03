@@ -14,7 +14,7 @@ export class EventService {
   private getPlansData = 'api/Event/GetPlans';
   private deleteEventById = 'api/Event/Delete/';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   crearEvento(formData: FormData) {
     const token = localStorage.getItem('access_token');
@@ -26,7 +26,7 @@ export class EventService {
     return this.http.post(`${this.apiUrl}${this.eventCreate}`, formData, { headers });
   }
 
-  getEventsByUserId(userId: string){
+  getEventsByUserId(userId: string) {
     const token = localStorage.getItem('access_token');
 
     const headers = new HttpHeaders({
@@ -37,7 +37,18 @@ export class EventService {
     return this.http.get(url, { headers });
   }
 
-  getEventsById(eventId: string){
+  getAllEvents() {
+    const token = localStorage.getItem('access_token');
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    const url = `${this.apiUrl}api/Event/GetAllEvents`;
+    return this.http.get(url, { headers });
+  }
+
+  getEventsById(eventId: string) {
     const token = localStorage.getItem('access_token');
 
     const headers = new HttpHeaders({
@@ -48,7 +59,7 @@ export class EventService {
     return this.http.get(url, { headers });
   }
 
-  getTermsAndCoditions(){
+  getTermsAndCoditions() {
     const token = localStorage.getItem('access_token');
 
     const headers = new HttpHeaders({
@@ -59,7 +70,7 @@ export class EventService {
     return this.http.get(url, { headers });
   }
 
-  getPlans(){
+  getPlans() {
     const token = localStorage.getItem('access_token');
 
     const headers = new HttpHeaders({
@@ -70,7 +81,7 @@ export class EventService {
     return this.http.get(url, { headers });
   }
 
-  getEventsForInvitationsById(eventId: string){
+  getEventsForInvitationsById(eventId: string) {
     const token = localStorage.getItem('access_token');
 
     const headers = new HttpHeaders({
@@ -80,8 +91,8 @@ export class EventService {
     const url = `${this.apiUrl}${this.getEventForInvitationById}${eventId}`;
     return this.http.get(url, { headers });
   }
-  
-  DeleteEvent(eventId:string){
+
+  DeleteEvent(eventId: string) {
     const token = localStorage.getItem('access_token');
 
     const headers = new HttpHeaders({

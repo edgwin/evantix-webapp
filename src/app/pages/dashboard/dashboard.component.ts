@@ -22,45 +22,48 @@ interface Evento {
   encapsulation: ViewEncapsulation.None
 })
 
-export class DashboardComponent
-  {  
+export class DashboardComponent {
   loggedUser: any;
   loading: boolean = true;
   showPopup: boolean = false;
   noDataMsg: boolean = false;
   terminosHtml = "";
-  constructor(private eventService: EventService, private notificationService: NotificationService, private mercadoPago: MercadoPagoService, 
-                private route: ActivatedRoute, private localStorageService: LocalStorageService, private router: Router, private dialog: MatDialog)
-  {
+  constructor(private eventService: EventService, private notificationService: NotificationService, private mercadoPago: MercadoPagoService,
+    private route: ActivatedRoute, private localStorageService: LocalStorageService, private router: Router, private dialog: MatDialog) {
     const localUser = localStorage.getItem('loggedUser');
-    if(localUser != null) {
+    if (localUser != null) {
       this.loggedUser = JSON.parse(localUser);
     }
   }
-  
+
   ngOnInit(): void {
     this.loadData();
     this.route.queryParams.subscribe(params => {
       const status = params['status'];
       const paymentId = params['payment_id'];
       const eventId = params['external_reference'];
-      if (status !== undefined && paymentId !== undefined && eventId !== undefined){
+      if (status !== undefined && paymentId !== undefined && eventId !== undefined) {
         this.eventService.getEventsById(eventId).subscribe({
-          next: (res:any) => {
-            this.notificationService.show('info',`Pago del evento ${res.nombre} fue ${status}. Id del Pago: ${paymentId}`);
+          next: (res: any) => {
+            this.notificationService.show('info', `Pago del evento ${res.nombre} fue ${status}. Id del Pago: ${paymentId}`);
           },
           error: err => {
-            this.notificationService.show('error',`Hubo un error al obtener la informacion del evento ${eventId}`);
+            this.notificationService.show('error', `Hubo un error al obtener la informacion del evento ${eventId}`);
           }
-        });    
+        });
       }
-    });    
+    });
   }
 
-  loadData(){
+  loadData() {
     this.loading = true;
-    const userId = this.loggedUser.userId; 
-    this.eventService.getEventsByUserId(userId).subscribe({
+    const userId = this.loggedUser.userId;
+    const isAdmin = this.loggedUser.role.toUpperCase() === 'ADMIN';
+    const events$ = isAdmin
+      ? this.eventService.getAllEvents()
+      : this.eventService.getEventsByUserId(userId);
+
+    events$.subscribe({
       next: (res) => {
         this.rowData = res;
         this.loading = false;
@@ -68,25 +71,25 @@ export class DashboardComponent
         this.localStorageService.setShowInvitaciones(!!showInvitations);
       },
       error: err => {
-        this.notificationService.show('error',`Hubo un error al obtener los eventos del usuario ${err.message}`);
+        this.notificationService.show('error', `Hubo un error al obtener los eventos del usuario ${err.message}`);
         this.loading = false;
       }
     });
   }
 
   columns = [
-      {
-        headerName: 'Nombre del Evento',
-        field: 'nombre',
-        type: 'image+text',
-        imageField: 'imagen'
-      },
-      { headerName: 'Fecha', field: 'fecha', type: 'text' },
-      { headerName: 'Plan', field: 'plan', type: 'text' },
-      { headerName: 'Estatus', field: 'estatus', type: 'status' }
-  ] ;
+    {
+      headerName: 'Nombre del Evento',
+      field: 'nombre',
+      type: 'image+text',
+      imageField: 'imagen'
+    },
+    { headerName: 'Fecha', field: 'fecha', type: 'text' },
+    { headerName: 'Plan', field: 'plan', type: 'text' },
+    { headerName: 'Estatus', field: 'estatus', type: 'status' }
+  ];
 
-  rowData:any = [];
+  rowData: any = [];
 
   onActionHandler(event: { type: string, row: Evento }) {
     if (event.type === 'invitacion') {
@@ -104,46 +107,48 @@ export class DashboardComponent
     this.router.navigateByUrl(`/invitaciones?id=${evento.id}`);
   }
 
-  onVerInvitacion(evento:any){    
+  onVerInvitacion(evento: any) {
+    const isAdmin = this.loggedUser.role.toUpperCase() === 'ADMIN';
     const url = this.router.serializeUrl(
-      this.router.createUrlTree(['/invitacion', `${this.replaceNameForUrl(evento.nombre)}`, `${evento.id}`])
+      this.router.createUrlTree(['/invitacion', `${this.replaceNameForUrl(evento.nombre)}`, `${evento.id}`],
+        isAdmin ? { queryParams: { admin: 'true' } } : {})
     );
 
-    window.open(url, '_blank');
+    window.open(url, isAdmin ? '_self' : '_blank');
   }
 
-  replaceNameForUrl(name:string){
+  replaceNameForUrl(name: string) {
     return name.replace(/\s+/g, '_');
   }
 
   onDelete(evento: any) {
     this.eventService.DeleteEvent(evento.id).subscribe({
       next: () => {
-        this.notificationService.show('info',`Evento eliminado con exito`);
+        this.notificationService.show('info', `Evento eliminado con exito`);
         this.loadData();
       },
       error: () => {
-        this.notificationService.show('error',`Hubo un error al intentar eliminar el Evento, favor de contactar a soporte`); 
+        this.notificationService.show('error', `Hubo un error al intentar eliminar el Evento, favor de contactar a soporte`);
       }
     });
   }
 
   onPay(event: any) {
     const dialogRef = this.dialog.open(PagoDialogComponent, {
-       width: '500px',
-       data: { evento: event }
+      width: '500px',
+      data: { evento: event }
     });
 
     dialogRef.afterClosed().subscribe((metodoPago: string | null) => {
-       if (metodoPago !== null && metodoPago.toLowerCase() === 'mercado pago') {
-          this.notificationService.show('info',`Redirigiendo a mercadopago, espere un momento`);
-          this.mercadoPago.createPreference(event).subscribe({
-            next: (res: any) => {
-              window.open(res.init_point, '_self');
-            },
-            error: err => console.error('Error creando preferencia', err)
-          });
-       }
+      if (metodoPago !== null && metodoPago.toLowerCase() === 'mercado pago') {
+        this.notificationService.show('info', `Redirigiendo a mercadopago, espere un momento`);
+        this.mercadoPago.createPreference(event).subscribe({
+          next: (res: any) => {
+            window.open(res.init_point, '_self');
+          },
+          error: err => console.error('Error creando preferencia', err)
+        });
+      }
     });
   }
 }
