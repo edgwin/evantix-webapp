@@ -1,0 +1,174 @@
+.muro-fotos-section {
+    padding: 40px 20px;
+    min-height: 300px;
+}
+
+.section-content {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.section-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: #333;
+    white-space: nowrap;
+}
+
+.header-decoration-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #c9a96e, transparent);
+}
+
+.section-subtitle {
+    text-align: center;
+    color: #777;
+    font-size: 1rem;
+    margin-bottom: 30px;
+    font-style: italic;
+}
+
+/* -- Photos Grid -- */
+.photos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+    padding: 10px 0;
+}
+
+.photo-card {
+    border-radius: 10px;
+    overflow: hidden;
+    aspect-ratio: 1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    animation: fadeInUp 0.4s ease forwards;
+    opacity: 0;
+}
+
+.photo-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.photo-card:hover img {
+    transform: scale(1.05);
+}
+
+/* -- Empty State -- */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+}
+
+.empty-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    margin: 5px 0;
+    font-size: 0.95rem;
+}
+
+/* -- Upload -- */
+.upload-container {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.upload-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    background: linear-gradient(135deg, #c9a96e, #b8860b);
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(201, 169, 110, 0.4);
+}
+
+.upload-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(201, 169, 110, 0.5);
+}
+
+.upload-icon {
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.upload-hint {
+    color: #aaa;
+    font-size: 0.8rem;
+    margin-top: 8px;
+}
+
+/* -- Uploading / Loading -- */
+.loading-container,
+.uploading-container {
+    text-align: center;
+    padding: 40px 0;
+}
+
+.uploading-container p {
+    color: #888;
+    margin-top: 10px;
+}
+
+.loader {
+    width: 36px;
+    height: 36px;
+    border: 3px solid #e0d5c1;
+    border-top: 3px solid #c9a96e;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto;
+}
+
+/* -- Animations -- */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* -- Responsive -- */
+@media (max-width: 600px) {
+    .photos-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 8px;
+    }
+
+    .section-header h1 {
+        font-size: 1.5rem;
+    }
+}

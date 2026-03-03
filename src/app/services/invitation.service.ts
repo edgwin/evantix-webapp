@@ -309,4 +309,19 @@ export class InvitationService {
     const headers = this.getAuthHeaders().set('Content-Type', 'application/json');
     return this.http.post(url, JSON.stringify(eventId), { headers });
   }
+
+  // --- Muro de Fotos (Guest Uploads) ---
+  getFotosInvitados(eventId: string) {
+    const url = `${this.apiUrl}${this.getInvitationData}MuroFotos/${eventId}`;
+    return this.http.get<any[]>(url);
+  }
+
+  uploadFotosInvitados(eventId: string, files: File[]) {
+    const formData = new FormData();
+    files.forEach(file => {
+      formData.append('images', file);
+    });
+    const url = `${this.apiUrl}${this.getInvitationData}MuroFotos/${eventId}`;
+    return this.http.post<any[]>(url, formData);
+  }
 }

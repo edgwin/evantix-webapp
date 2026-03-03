@@ -15,6 +15,7 @@ import { GaleriaComponent } from '../../component/invitacion/galeria/galeria.com
 import { HospedajeComponent } from '../../component/invitacion/hospedaje/hospedaje.component';
 import { PhotoUploaderComponent } from '../../component/invitacion/photo-uploader/photo-uploader.component';
 import { MusicaComponent } from '../../component/invitacion/musica/musica.component';
+import { MuroFotosComponent } from '../../component/invitacion/muro-fotos/muro-fotos.component';
 import { TemplateService, Template } from '../../services/template.service';
 import { TemplateSelectorComponent } from '../../component/invitacion/template-selector/template-selector.component';
 import { PricingService, EventCostResponse } from '../../services/pricing.service';
@@ -29,7 +30,7 @@ import { Subscription } from 'rxjs';
   styleUrl: './invitacion.component.css',
   imports: [PortadaComponent, CommonModule, FestejadosComponent, DondeCuandoComponent, IntinerarioComponent, IndicacionesComponent,
     MesaRegalosComponent, PersonasFavoritasComponent, HistoriaComponent, GaleriaComponent, HospedajeComponent,
-    PhotoUploaderComponent, MusicaComponent, TemplateSelectorComponent, CostBarComponent, SectionToggleComponent],
+    PhotoUploaderComponent, MusicaComponent, MuroFotosComponent, TemplateSelectorComponent, CostBarComponent, SectionToggleComponent],
 })
 
 export class InvitacionComponent implements OnDestroy {
@@ -40,6 +41,7 @@ export class InvitacionComponent implements OnDestroy {
   loading: boolean = true;
   data: any;
   isReadOnly: boolean = false;
+  isGuestView: boolean = false; // Flag para pruebas: true = simula vista de invitado
   eventStatus: string = '';
   canSendToReview: boolean = false;
   sendingToReview: boolean = false;

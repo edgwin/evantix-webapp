@@ -85,6 +85,15 @@
         [maxItems]="getSectionMaxItems('Hospedaje')"></app-hospedaje>
     </app-section-toggle>
 
+    <!-- Muro de Fotos -->
+    <app-section-toggle sectionKey="MuroFotos" [sectionName]="getSectionName('MuroFotos')"
+      [isEnabled]="isSectionEnabled('MuroFotos')" [enableCost]="getSectionEnableCost('MuroFotos')"
+      [enabledByDefault]="false" [isReadOnly]="isReadOnly" [loading]="togglingSection === 'MuroFotos'"
+      (enable)="onEnableSection($event)" (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
+      <app-muro-fotos [eventId]="eventId" [isReadOnly]="isReadOnly" [isGuestView]="isGuestView"
+        [maxItems]="getSectionMaxItems('MuroFotos')"></app-muro-fotos>
+    </app-section-toggle>
+
     <!-- Música -->
     <app-section-toggle sectionKey="Musica" [sectionName]="getSectionName('Musica')"
       [isEnabled]="isSectionEnabled('Musica')" [enableCost]="getSectionEnableCost('Musica')" [enabledByDefault]="false"
