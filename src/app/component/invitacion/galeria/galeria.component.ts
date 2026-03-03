@@ -9,7 +9,7 @@ import { TemplateService } from '../../../services/template.service';
   selector: 'app-galeria',
   standalone: true,
   imports: [CommonModule, DisableDownloadDirective],
-  templateUrl: './galeria.component.html',  
+  templateUrl: './galeria.component.html',
   styleUrls: ['./galeria.component.css']
 })
 export class GaleriaComponent {
@@ -17,12 +17,13 @@ export class GaleriaComponent {
     private invitationService: InvitationService,
     private notificationService: NotificationService,
     public templateService: TemplateService
-  ) {}
+  ) { }
   @Input() eventId: string = '';
   @Input() data: any;
   @Input() height = '60vh';
   @Input() isReadOnly: boolean = false;
-  images: any[] = []; 
+  @Input() maxItems: number = 99;
+  images: any[] = [];
   loading: boolean = false;
   showGallery: boolean = true;
   private _index = signal(0);
@@ -41,13 +42,13 @@ export class GaleriaComponent {
 
   ngOnInit() {
     this.images = this.data || [];
-    if (this.images.length <= 0){
+    if (this.images.length <= 0) {
       this.showGallery = false;
     }
     this.updateCachedImages();
   }
 
-  cargarDatos(gotoNew:boolean = false) {
+  cargarDatos(gotoNew: boolean = false) {
     this.loading = true;
     if (!this.eventId) return;
 
@@ -55,14 +56,14 @@ export class GaleriaComponent {
       next: (res) => {
         this.data = res;
         this.images = this.data || [];
-        if (this.images.length <= 0){
+        if (this.images.length <= 0) {
           this.showGallery = false;
-        }else{
+        } else {
           this.showGallery = true;
         }
         this.updateCachedImages();
         this.loading = false;
-        if (gotoNew){
+        if (gotoNew) {
           this.goTo(this.data.details.length - 1);
         }
       },
@@ -74,7 +75,7 @@ export class GaleriaComponent {
         this.loading = false;
       }
     });
-  }  
+  }
 
   ngAfterViewInit() {
     this.startAutoplayIfNeeded();
@@ -111,7 +112,7 @@ export class GaleriaComponent {
     const currentIdx = this.currentIndex();
     const prevIdx = (currentIdx - 1 + n) % n;
     const nextIdx = (currentIdx + 1) % n;
-    
+
     this.cachedPrevImg = this.images[prevIdx]?.imagen || '';
     this.cachedCurrentImg = this.images[currentIdx]?.imagen || '';
     this.cachedNextImg = this.images[nextIdx]?.imagen || '';
@@ -183,7 +184,7 @@ export class GaleriaComponent {
     // capture pointer to follow moves reliably
     try {
       (ev.target as Element)?.setPointerCapture?.(ev.pointerId);
-    } catch {}
+    } catch { }
     this.pointerId = ev.pointerId;
     this.startX = ev.clientX;
     this.lastX = ev.clientX;
@@ -202,7 +203,7 @@ export class GaleriaComponent {
   onPointerUp(ev: PointerEvent) {
     try {
       (ev.target as Element)?.releasePointerCapture?.(ev.pointerId);
-    } catch {}
+    } catch { }
     if (this.pointerId !== ev.pointerId) {
       this.resetPointerState();
       return;
@@ -252,7 +253,7 @@ export class GaleriaComponent {
     if (n === 0) return '';
     return this.data[this.currentIndex()]?.id || '';
   }
-  
+
   resetPointerState() {
     this.pointerId = null;
     this.startX = null;
@@ -296,7 +297,7 @@ export class GaleriaComponent {
     this.autoplayIntervalId = setTimeout(() => this.startAutoplayIfNeeded(), delay);
   }
 
-  onKeyDown(event: KeyboardEvent | any, maxLength:number) {
+  onKeyDown(event: KeyboardEvent | any, maxLength: number) {
     const key = (event as KeyboardEvent).key;
     if (key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
       event.preventDefault();
@@ -316,25 +317,26 @@ export class GaleriaComponent {
       event.preventDefault(); // bloquea más escritura
     }
     (event.target as HTMLElement).click();
-  }  
+  }
 
   triggerImageDelete() {
     const fotoId = this.currentId();
     this.invitationService.deleteGaleria(fotoId).subscribe({
-        next: (res) => {
-          this.cargarDatos();
-        },
-        error: (err) => {          
-          this.notificationService.show(
-            'error',
-            `Error al subir imagen: ${err.message}`
-          );
-        }
-      });
+      next: (res) => {
+        this.cargarDatos();
+        this.invitationService.notifyMutation(this.eventId);
+      },
+      error: (err) => {
+        this.notificationService.show(
+          'error',
+          `Error al subir imagen: ${err.message}`
+        );
+      }
+    });
   }
 
   triggerImageUpload(event: any) {
-    const selectedFiles = Array.from(event.target.files) as File[];
+    let selectedFiles = Array.from(event.target.files) as File[];
     if (!selectedFiles.length) return;
 
     if (!this.eventId) {
@@ -342,12 +344,37 @@ export class GaleriaComponent {
       return;
     }
 
+    // Limitar al número de slots disponibles según maxItems
+    const currentCount = this.data?.length || 0;
+    const availableSlots = this.maxItems - currentCount;
+
+    if (availableSlots <= 0) {
+      this.notificationService.show('error', `Ya alcanzaste el máximo de ${this.maxItems} fotos en esta sección.`);
+      event.target.value = '';
+      return;
+    }
+
+    const originalCount = selectedFiles.length;
+
+    if (selectedFiles.length > availableSlots) {
+      selectedFiles = selectedFiles.slice(0, availableSlots);
+    }
+
     this.loading = true;
-    this.notificationService.show(
-      'info',
-      'Subiendo imágenes... Este proceso puede tardar varios minutos dependiendo del peso de los archivos. Por favor espere.',
-      true
-    );
+
+    if (originalCount > availableSlots) {
+      this.notificationService.show(
+        'warning',
+        `⚠️ Solo se subirán ${availableSlots} de las ${originalCount} fotos seleccionadas (máximo ${this.maxItems}).`,
+        true
+      );
+    } else {
+      this.notificationService.show(
+        'info',
+        `Subiendo ${selectedFiles.length} imagen(es)... Este proceso puede tardar varios minutos.`,
+        true
+      );
+    }
 
     event.target.value = '';
 
@@ -356,6 +383,7 @@ export class GaleriaComponent {
         this.notificationService.clear();
         this.data = res;
         this.cargarDatos();
+        this.invitationService.notifyMutation(this.eventId);
         this.notificationService.show('success', 'Imágenes subidas correctamente');
       },
       error: (err) => {

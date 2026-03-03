@@ -1,53 +1,106 @@
 <div *ngIf="loading" style="text-align: center;">
-  <img src="../../../assets/images/loading2.gif" alt="Cargando..." width="25%"/>
+  <img src="../../../assets/images/loading2.gif" alt="Cargando..." width="25%" />
 </div>
 <div *ngIf="!loading">
-  <app-template-selector 
-    *ngIf="!isReadOnly"
-    [eventId]="eventId" 
-    [eventType]="data.eventType"
+  <!-- Barra de costo fixed -->
+  <app-cost-bar [isReadOnly]="isReadOnly"></app-cost-bar>
+  <div *ngIf="!isReadOnly" style="height: 55px;"></div>
+
+  <app-template-selector *ngIf="!isReadOnly" [eventId]="eventId" [eventType]="data.eventType"
     (templateSelected)="onTemplateSelected($event)">
   </app-template-selector>
-  <app-portada [eventId]="eventId" [data]="data.portada" [eventType]="data.eventType" [isReadOnly]="isReadOnly"></app-portada>
-  <app-festejados [eventId]="eventId" [data]="data.festejados" [eventType]="data.eventType" [isReadOnly]="isReadOnly"></app-festejados>
-  <app-indicaciones [eventId]="eventId" [data]="data.indicaciones" [eventType]="data.eventType" [isReadOnly]="isReadOnly"></app-indicaciones>
-  <div
-  [ngStyle]="{
-        'background-image': 'url(' + templateService.getMarbleBackground() + ')',
-        'background-size': 'cover',
-        'background-position': 'center',
-        'background-repeat': 'no-repeat',
-        'padding-top': '2vh',
-        'padding-bottom': '2vh'
-      }"
-  >
-  <app-donde-cuando [eventId]="eventId" [data]="data.dondeCuando" [isReadOnly]="isReadOnly"></app-donde-cuando>
-  <app-intinerario [eventId]="eventId" [dataIntinerario]="data.intinerario" [eventType]="data.eventType" [isReadOnly]="isReadOnly"></app-intinerario>
-  </div>
-  <app-mesa-regalos [eventId]="eventId" [data]="data.mesaRegalos" [eventType]="data.eventType" [isReadOnly]="isReadOnly"></app-mesa-regalos>
-  <div
-    [ngStyle]="{
+
+  <!-- Secciones base (siempre habilitadas) -->
+  <app-portada [eventId]="eventId" [data]="data.portada" [eventType]="data.eventType" [isReadOnly]="isReadOnly"
+    [maxItems]="getSectionMaxItems('Portada')"></app-portada>
+  <app-festejados [eventId]="eventId" [data]="data.festejados" [eventType]="data.eventType"
+    [isReadOnly]="isReadOnly"></app-festejados>
+  <app-indicaciones [eventId]="eventId" [data]="data.indicaciones" [eventType]="data.eventType"
+    [isReadOnly]="isReadOnly" [maxItems]="getSectionMaxItems('Indicaciones')"></app-indicaciones>
+
+  <div [ngStyle]="{
       'background-image': 'url(' + templateService.getMarbleBackground() + ')',
       'background-size': 'cover',
       'background-position': 'center',
       'background-repeat': 'no-repeat',
       'padding-top': '2vh',
       'padding-bottom': '2vh'
-    }"
-  >
-  <app-personas-favoritas [eventId]="eventId" [data]="data.personasFavoritas" [eventType]="data.eventType" [isReadOnly]="isReadOnly"></app-personas-favoritas>
-  <app-historia [eventId]="eventId" [dataHistoria]="data.historia" [eventType]="data.eventType" [isReadOnly]="isReadOnly"></app-historia>
-  <app-galeria [eventId]="eventId" [data]="data.galeriaFotos" [isReadOnly]="isReadOnly"></app-galeria>
-  <app-hospedaje [eventId]="eventId" [data]="data.hospedaje" [isReadOnly]="isReadOnly"></app-hospedaje>
-  <app-musica [eventId]="eventId" [trackId]="data.portada.trackId" [isReadOnly]="isReadOnly"></app-musica>
+    }">
+    <app-donde-cuando [eventId]="eventId" [data]="data.dondeCuando" [isReadOnly]="isReadOnly"
+      [maxItems]="getSectionMaxItems('DondeCuando')"></app-donde-cuando>
+    <app-intinerario [eventId]="eventId" [dataIntinerario]="data.intinerario" [eventType]="data.eventType"
+      [isReadOnly]="isReadOnly" [maxItems]="getSectionMaxItems('Intinerario')"></app-intinerario>
   </div>
+
+  <app-mesa-regalos [eventId]="eventId" [data]="data.mesaRegalos" [eventType]="data.eventType" [isReadOnly]="isReadOnly"
+    [maxItems]="getSectionMaxItems('MesaRegalos')"></app-mesa-regalos>
+
+  <!-- Secciones opcionales (con toggle) -->
+  <div [ngStyle]="{
+      'background-image': 'url(' + templateService.getMarbleBackground() + ')',
+      'background-size': 'cover',
+      'background-position': 'center',
+      'background-repeat': 'no-repeat',
+      'padding-top': '2vh',
+      'padding-bottom': '2vh'
+    }">
+
+    <!-- Personas Favoritas -->
+    <app-section-toggle sectionKey="PersonasFavoritas" [sectionName]="getSectionName('PersonasFavoritas')"
+      [isEnabled]="isSectionEnabled('PersonasFavoritas')" [enableCost]="getSectionEnableCost('PersonasFavoritas')"
+      [enabledByDefault]="false" [isReadOnly]="isReadOnly" [loading]="togglingSection === 'PersonasFavoritas'"
+      (enable)="onEnableSection($event)" (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
+      <app-personas-favoritas [eventId]="eventId" [data]="data.personasFavoritas" [eventType]="data.eventType"
+        [isReadOnly]="isReadOnly" [maxItems]="getSectionMaxItems('PersonasFavoritas')"></app-personas-favoritas>
+    </app-section-toggle>
+
+    <!-- Historia -->
+    <app-section-toggle sectionKey="Historia" [sectionName]="getSectionName('Historia')"
+      [isEnabled]="isSectionEnabled('Historia')" [enableCost]="getSectionEnableCost('Historia')"
+      [enabledByDefault]="false" [isReadOnly]="isReadOnly" [loading]="togglingSection === 'Historia'"
+      (enable)="onEnableSection($event)" (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
+      <app-historia [eventId]="eventId" [dataHistoria]="data.historia" [eventType]="data.eventType"
+        [isReadOnly]="isReadOnly" [maxItems]="getSectionMaxItems('Historia')"></app-historia>
+    </app-section-toggle>
+
+    <!-- Galería de Fotos -->
+    <app-section-toggle sectionKey="GaleriaFotos" [sectionName]="getSectionName('GaleriaFotos')"
+      [isEnabled]="isSectionEnabled('GaleriaFotos')" [enableCost]="getSectionEnableCost('GaleriaFotos')"
+      [enabledByDefault]="false" [isReadOnly]="isReadOnly" [loading]="togglingSection === 'GaleriaFotos'"
+      (enable)="onEnableSection($event)" (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
+      <app-galeria [eventId]="eventId" [data]="data.galeriaFotos" [isReadOnly]="isReadOnly"
+        [maxItems]="getSectionMaxItems('GaleriaFotos')"></app-galeria>
+    </app-section-toggle>
+
+    <!-- Hospedaje -->
+    <app-section-toggle sectionKey="Hospedaje" [sectionName]="getSectionName('Hospedaje')"
+      [isEnabled]="isSectionEnabled('Hospedaje')" [enableCost]="getSectionEnableCost('Hospedaje')"
+      [enabledByDefault]="false" [isReadOnly]="isReadOnly" [loading]="togglingSection === 'Hospedaje'"
+      (enable)="onEnableSection($event)" (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
+      <app-hospedaje [eventId]="eventId" [data]="data.hospedaje" [isReadOnly]="isReadOnly"
+        [maxItems]="getSectionMaxItems('Hospedaje')"></app-hospedaje>
+    </app-section-toggle>
+
+    <!-- Música -->
+    <app-section-toggle sectionKey="Musica" [sectionName]="getSectionName('Musica')"
+      [isEnabled]="isSectionEnabled('Musica')" [enableCost]="getSectionEnableCost('Musica')" [enabledByDefault]="false"
+      [isReadOnly]="isReadOnly" [loading]="togglingSection === 'Musica'" (enable)="onEnableSection($event)"
+      (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
+      <app-musica [eventId]="eventId" [trackId]="data.portada.trackId" [isReadOnly]="isReadOnly"></app-musica>
+    </app-section-toggle>
+  </div>
+
+  <!-- Spacer para evitar contenido oculto debajo de la barra fija -->
+  <div class="bottom-spacer"></div>
 
   <!-- Botón Ver Previo / Editar Invitación -->
   <div class="preview-toggle-container">
-    <button class="preview-toggle-btn" (click)="toggleReadOnly()" *ngIf="eventStatus === 'Creado'">
+    <button class="preview-toggle-btn" (click)="toggleReadOnly()" *ngIf="eventStatus === 'Creado'"
+      [disabled]="pricingLoading">
       {{ isReadOnly ? 'Editar Invitación' : 'Ver Previo de la Invitación' }}
     </button>
-    <button *ngIf="canSendToReview" class="send-review-btn" (click)="onSendToReview()" [disabled]="sendingToReview">
+    <button *ngIf="canSendToReview" class="send-review-btn" (click)="onSendToReview()"
+      [disabled]="sendingToReview || pricingLoading">
       {{ sendingToReview ? 'Enviando...' : 'Mandar a Revisión' }}
     </button>
   </div>

@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 
 export interface AiTextRequest {
@@ -45,6 +46,19 @@ export class InvitationService {
     return new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
+  }
+
+  // Emite el eventId después de cualquier mutación (add/delete) para que el parent pueda refrescar el costo
+  private mutationSubject = new Subject<string>();
+  public mutationOccurred$ = this.mutationSubject.asObservable();
+
+  private emitMutation(eventId: string) {
+    this.mutationSubject.next(eventId);
+  }
+
+  // Los componentes hijos pueden llamar esto después de un delete para refrescar costo
+  notifyMutation(eventId: string) {
+    this.emitMutation(eventId);
   }
 
   guardarInvitacion(data: FormData): Observable<any> {
@@ -93,7 +107,9 @@ export class InvitationService {
 
   postNewDondeCuando(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.getDondeCuando}${eventId}`;
-    return this.http.post(url, eventId, { headers: this.getAuthHeaders() });
+    return this.http.post(url, eventId, { headers: this.getAuthHeaders() }).pipe(
+      tap(() => this.emitMutation(eventId))
+    );
   }
 
   deleteDondeCuando(dondeCuandoId: string) {
@@ -108,7 +124,9 @@ export class InvitationService {
 
   postNewIndicacion(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.getIndicaciones}${eventId}`;
-    return this.http.post(url, eventId, { headers: this.getAuthHeaders() });
+    return this.http.post(url, eventId, { headers: this.getAuthHeaders() }).pipe(
+      tap(() => this.emitMutation(eventId))
+    );
   }
 
   deleteIndicacion(indicacionId: string) {
@@ -118,7 +136,9 @@ export class InvitationService {
 
   postNewIntinerario(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.newIntinerario}${eventId}`;
-    return this.http.post(url, eventId, { headers: this.getAuthHeaders() });
+    return this.http.post(url, eventId, { headers: this.getAuthHeaders() }).pipe(
+      tap(() => this.emitMutation(eventId))
+    );
   }
 
   getInvitacionIntinerario(eventId: string) {
@@ -143,7 +163,9 @@ export class InvitationService {
 
   postNewMesa(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.getMesa}${eventId}`;
-    return this.http.post(url, eventId, { headers: this.getAuthHeaders() });
+    return this.http.post(url, eventId, { headers: this.getAuthHeaders() }).pipe(
+      tap(() => this.emitMutation(eventId))
+    );
   }
 
   getPersonasFavoritasData(eventId: string) {
@@ -153,7 +175,9 @@ export class InvitationService {
 
   postNewPersonaFavorita(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.getPersonasFavoritas}${eventId}`;
-    return this.http.post(url, eventId, { headers: this.getAuthHeaders() });
+    return this.http.post(url, eventId, { headers: this.getAuthHeaders() }).pipe(
+      tap(() => this.emitMutation(eventId))
+    );
   }
 
   deletePersonas(personaId: string) {
@@ -163,7 +187,9 @@ export class InvitationService {
 
   postNewHistoria(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.historia}${eventId}`;
-    return this.http.post(url, eventId, { headers: this.getAuthHeaders() });
+    return this.http.post(url, eventId, { headers: this.getAuthHeaders() }).pipe(
+      tap(() => this.emitMutation(eventId))
+    );
   }
 
   getHistoria(eventId: string) {
@@ -192,7 +218,9 @@ export class InvitationService {
       formData.append('images', file);
     });
     const url = `${this.apiUrl}${this.getInvitationData}${this.galeria}${eventId}`;
-    return this.http.post(url, formData, { headers: this.getAuthHeaders() });
+    return this.http.post(url, formData, { headers: this.getAuthHeaders() }).pipe(
+      tap(() => this.emitMutation(eventId))
+    );
   }
 
   deleteHospedaje(mesaId: string) {
@@ -207,7 +235,9 @@ export class InvitationService {
 
   postHospedaje(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${this.hospedaje}${eventId}`;
-    return this.http.post(url, eventId, { headers: this.getAuthHeaders() });
+    return this.http.post(url, eventId, { headers: this.getAuthHeaders() }).pipe(
+      tap(() => this.emitMutation(eventId))
+    );
   }
 
   uploadPhotos(eventId: string, formData: any) {

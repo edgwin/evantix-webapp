@@ -5,7 +5,7 @@
   right: 0;
   padding: 1rem;
   text-align: center;
-  z-index: 1000;
+  z-index: 1100;
   color: #fff;
   font-weight: bold;
   display: flex;
@@ -39,11 +39,24 @@
 
 .notification pre {
   margin: 0;
-  padding-right: 2rem; /* Espacio para el botón de cierre */
+  padding-right: 2rem;
+  /* Espacio para el botón de cierre */
   white-space: pre-wrap;
   word-wrap: break-word;
 }
-.notification.info { background-color: #2196F3; }
-.notification.success { background-color: #4CAF50; }
-.notification.warning { background-color: #FF9800; }
-.notification.error { background-color: #F44336; }
+
+.notification.info {
+  background-color: #2196F3;
+}
+
+.notification.success {
+  background-color: #4CAF50;
+}
+
+.notification.warning {
+  background-color: #FF9800;
+}
+
+.notification.error {
+  background-color: #F44336;
+}

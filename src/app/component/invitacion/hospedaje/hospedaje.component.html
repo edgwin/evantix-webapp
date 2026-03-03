@@ -1,6 +1,6 @@
-<section class="hospedaje-section" 
+<section class="hospedaje-section"
   [style.background-image]="'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(' + data.imagen + ')'">
-  
+
   <button class="bg-edit-btn" (click)="triggerImageUpload()" *ngIf="!isReadOnly && !loadingImg" title="Cambiar fondo">
     <img src="assets/editarImagen.png" alt="editar">
   </button>
@@ -17,12 +17,9 @@
 
     <div class="cards-container">
       <div class="hotel-card" *ngFor="let item of data.details; let i = index"
-           [style.animation-delay]="(i * 0.15) + 's'">
-        
-        <button class="card-delete-btn" 
-                (click)="triggerElementDelete(item.id)" 
-                *ngIf="!isReadOnly"
-                title="Eliminar">
+        [style.animation-delay]="(i * 0.15) + 's'">
+
+        <button class="card-delete-btn" (click)="triggerElementDelete(item.id)" *ngIf="!isReadOnly" title="Eliminar">
           <img src="assets/BtnDelete.png" alt="eliminar">
         </button>
 
@@ -33,34 +30,24 @@
         </div>
 
         <div class="card-content">
-          <h3 class="card-title"
-              [attr.contenteditable]="!isReadOnly"
-              (keydown)="onKeyDown($event, 40)" 
-              (blur)="saveContent($event, item.id, 'nombre')"
-              (click)="!isReadOnly && onClickTitulo(item.id)">
+          <h3 class="card-title" [attr.contenteditable]="!isReadOnly" (keydown)="onKeyDown($event, 40)"
+            (blur)="saveContent($event, item.id, 'nombre')" (click)="!isReadOnly && onClickTitulo(item.id)">
             {{item.nombre}}
           </h3>
-          
-          <p class="card-address"
-             [attr.contenteditable]="!isReadOnly"
-             (keydown)="onKeyDown($event, 60)" 
-             (blur)="saveContent($event, item.id, 'direccion')"
-             (click)="!isReadOnly && onClickTitulo(item.id)">
+
+          <p class="card-address" [attr.contenteditable]="!isReadOnly" (keydown)="onKeyDown($event, 60)"
+            (blur)="saveContent($event, item.id, 'direccion')" (click)="!isReadOnly && onClickTitulo(item.id)">
             <i class="fa fa-map-marker"></i>
             {{item.direccion}}
           </p>
 
           <div class="card-actions">
-            <a [href]="item.ubicacion"
-               target="_blank"
-               class="action-btn primary">
+            <a [href]="item.ubicacion" target="_blank" class="action-btn primary">
               <i class="fa fa-map"></i>
               <span>Ver Ubicacion</span>
             </a>
-            
-            <button class="action-btn secondary" 
-                    (click)="abrirMapa(item.id)"
-                    *ngIf="!isReadOnly">
+
+            <button class="action-btn secondary" (click)="abrirMapa(item.id)" *ngIf="!isReadOnly">
               <i class="fa fa-edit"></i>
               <span>Editar</span>
             </button>
@@ -69,7 +56,7 @@
       </div>
     </div>
 
-    <div class="add-card-container" *ngIf="!isReadOnly && !loading">
+    <div class="add-card-container" *ngIf="!isReadOnly && !loading && (data?.details?.length || 0) < maxItems">
       <button class="add-card-btn" (click)="nuevoHospedaje()">
         <span class="add-icon">+</span>
         <span>Agregar hospedaje</span>

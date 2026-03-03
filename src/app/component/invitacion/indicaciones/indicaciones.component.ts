@@ -14,21 +14,20 @@ import { TemplateService } from '../../../services/template.service';
 })
 export class IndicacionesComponent {
   constructor(private invitationService: InvitationService, private notificationService: NotificationService,
-              public templateService: TemplateService)
-  {}
+    public templateService: TemplateService) { }
 
   loading: boolean = false;
   loadingImg: boolean = false;
-  tempTituloMap: { [id: string]: string } = {};  
+  tempTituloMap: { [id: string]: string } = {};
   editingDescripcionId: string | null = null;
-  tempDescripcionMap: { [id: string]: string } = {};  
+  tempDescripcionMap: { [id: string]: string } = {};
   editingDescription: boolean = false;
   tempTitle: string = '';
   @Input() eventId: string = '';
   @Input() data: any;
   @Input() eventType: string = '';
-  @Input() isReadOnly: boolean = false;  
-
+  @Input() isReadOnly: boolean = false;
+  @Input() maxItems: number = 99;
   private editingTituloId: string | null = null;
   get valor() {
     return this.editingTituloId;
@@ -39,7 +38,7 @@ export class IndicacionesComponent {
       console.log('El valor cambió:', nuevoValor);
     }
   }
-  
+
   cargarDatos() {
     this.loading = true;
     if (!this.eventId) return;
@@ -59,12 +58,12 @@ export class IndicacionesComponent {
     });
   }
 
-  onClickTitulo(id:string){
-    this.editingTituloId = id; 
+  onClickTitulo(id: string) {
+    this.editingTituloId = id;
     const item = this.data.details.find((d: { id: string }) => d.id === id);
     if (item) {
       this.tempTituloMap[id] = item.titulo; // 🔹 Guardamos el valor original
-    }    
+    }
   }
 
   restoreTitulo(item: any, element: HTMLElement) {
@@ -76,12 +75,12 @@ export class IndicacionesComponent {
     element.blur();
   }
 
-  onClickDescripcion(id:string){
-    this.editingDescripcionId = id; 
+  onClickDescripcion(id: string) {
+    this.editingDescripcionId = id;
     const item = this.data.details.find((d: { id: string }) => d.id === id);
     if (item) {
       this.tempDescripcionMap[id] = item.descripcion; // 🔹 Guardamos el valor original
-    }    
+    }
   }
 
   restoreDescripcion(item: any, element: HTMLElement) {
@@ -125,7 +124,7 @@ export class IndicacionesComponent {
     }
   }
 
-  nuevaIndicacion(){
+  nuevaIndicacion() {
     this.invitationService.postNewIndicacion(this.eventId).subscribe({
       next: () => {
         this.cargarDatos();
@@ -140,10 +139,11 @@ export class IndicacionesComponent {
     });
   }
 
-  triggerElementDelete(indicacionId:string) {
-  this.invitationService.deleteIndicacion(indicacionId).subscribe({
+  triggerElementDelete(indicacionId: string) {
+    this.invitationService.deleteIndicacion(indicacionId).subscribe({
       next: (res) => {
         this.cargarDatos();
+        this.invitationService.notifyMutation(this.eventId);
       },
       error: (err) => {
         this.notificationService.show(
@@ -153,10 +153,10 @@ export class IndicacionesComponent {
       }
     });
   }
-  saveContent(event: Event, eventId: string, field:string) {
+  saveContent(event: Event, eventId: string, field: string) {
     const target = event.target as HTMLElement;
     const newText = target.innerText.replace(/\n/g, '<br>');
-    if (newText == this.tempTituloMap[eventId]){
+    if (newText == this.tempTituloMap[eventId]) {
       return
     }
     const modifyField = field === "titulo" ? 'Titulo' : 'Descripcion';
@@ -172,13 +172,13 @@ export class IndicacionesComponent {
       const file = event.target.files[0];
       if (file) {
         this.loadingImg = true;
-        this.uploadImage('IndicacionesMaster','IdEvento', this.eventId, 'Imagen', file);
+        this.uploadImage('IndicacionesMaster', 'IdEvento', this.eventId, 'Imagen', file);
       }
     };
     input.click();
   }
 
-  uploadImage(tableName:string, searchField:string, eventId:string, field: string, file: File) {
+  uploadImage(tableName: string, searchField: string, eventId: string, field: string, file: File) {
     this.invitationService.updateTableFieldImagen(tableName, searchField, eventId, field, file).subscribe({
       next: (res) => {
         this.data.imagen = res;
@@ -187,14 +187,14 @@ export class IndicacionesComponent {
       error: (err) => {
         this.loadingImg = false;
         this.notificationService.show(
-           'error',
+          'error',
           `Error al subir imagen: ${err.message}`
         );
       }
     });
   }
 
-  updateBackend(tableName:string, searchField: string, eventId:string, field:string, value: string) {    
+  updateBackend(tableName: string, searchField: string, eventId: string, field: string, value: string) {
     this.invitationService.updateTableField(tableName, searchField, eventId, field, value).subscribe({
       next: () => { },
       error: (err) => {
@@ -207,20 +207,20 @@ export class IndicacionesComponent {
   }
 
   @HostListener('document:keydown.escape', ['$event'])
-    onEscape() {    
-        if (this.editingTituloId) {
-          const item = this.data.details.find((d: { id: string }) => d.id === this.editingTituloId);
-          const element = document.querySelector(`[contenteditable][data-id-titulo-Indicaciones="${this.editingTituloId}"]`) as HTMLElement;
-          if (item && element) {
-            this.restoreTitulo(item, element);
-          }
-        }
-        if (this.editingDescripcionId) {
-          const item = this.data.details.find((d: { id: string }) => d.id === this.editingDescripcionId);
-          const element = document.querySelector(`[contenteditable][data-id-descripcion-indicaciones="${this.editingDescripcionId}"]`) as HTMLElement;
-          if (item && element) {
-            this.restoreDescripcion(item, element);
-          }
-        }      
+  onEscape() {
+    if (this.editingTituloId) {
+      const item = this.data.details.find((d: { id: string }) => d.id === this.editingTituloId);
+      const element = document.querySelector(`[contenteditable][data-id-titulo-Indicaciones="${this.editingTituloId}"]`) as HTMLElement;
+      if (item && element) {
+        this.restoreTitulo(item, element);
+      }
     }
+    if (this.editingDescripcionId) {
+      const item = this.data.details.find((d: { id: string }) => d.id === this.editingDescripcionId);
+      const element = document.querySelector(`[contenteditable][data-id-descripcion-indicaciones="${this.editingDescripcionId}"]`) as HTMLElement;
+      if (item && element) {
+        this.restoreDescripcion(item, element);
+      }
+    }
+  }
 }

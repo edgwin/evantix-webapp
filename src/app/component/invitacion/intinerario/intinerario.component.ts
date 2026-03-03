@@ -14,14 +14,15 @@ import { AiEditableDirective } from '../../../directives/ai-editable.directive';
 })
 export class IntinerarioComponent implements OnInit {
   constructor(private invitationService: InvitationService,
-        private notificationService: NotificationService){}
-        
-  loading:boolean = false;
+    private notificationService: NotificationService) { }
+
+  loading: boolean = false;
   loadingImgs: { [key: string]: boolean } = {};
-  @Input() dataIntinerario:any = null;
+  @Input() dataIntinerario: any = null;
   @Input() eventId: string = '';
   @Input() eventType: string = '';
-  @Input() isReadOnly: boolean = false;  
+  @Input() isReadOnly: boolean = false;
+  @Input() maxItems: number = 99;
   showPopup = false;
   images: string[] = [];
 
@@ -54,10 +55,10 @@ export class IntinerarioComponent implements OnInit {
     });
   }
 
-  updateBackend(tableName:string, searchField: string, eventId:string, field:string, value: string, loadData: boolean = false) {    
+  updateBackend(tableName: string, searchField: string, eventId: string, field: string, value: string, loadData: boolean = false) {
     this.invitationService.updateTableField(tableName, searchField, eventId, field, value).subscribe({
-      next: () => { 
-        if (loadData){
+      next: () => {
+        if (loadData) {
           this.cargarDatosIntinerario();
         }
       },
@@ -111,21 +112,22 @@ export class IntinerarioComponent implements OnInit {
     return item?.id;
   }
 
-  triggerIntinerarioImageDelete(intinerarioId:string) {
+  triggerIntinerarioImageDelete(intinerarioId: string) {
     this.invitationService.deleteIntinerario(intinerarioId).subscribe({
-        next: () => {
-          this.cargarDatosIntinerario();
-        },
-        error: (err) => {          
-          this.notificationService.show(
-            'error',
-            `Error al subir imagen: ${err.message}`
-          );
-        }
-      });
+      next: () => {
+        this.cargarDatosIntinerario();
+        this.invitationService.notifyMutation(this.eventId);
+      },
+      error: (err) => {
+        this.notificationService.show(
+          'error',
+          `Error al subir imagen: ${err.message}`
+        );
+      }
+    });
   }
 
-  nuevoIntinerario(){
+  nuevoIntinerario() {
     this.invitationService.postNewIntinerario(this.eventId).subscribe({
       next: (res) => {
         this.cargarDatosIntinerario();
@@ -160,33 +162,33 @@ export class IntinerarioComponent implements OnInit {
         this.images = [];
       }
     });
-  }  
+  }
 
   onClosePopup() {
     this.showPopup = false;
   }
 
   async onImageSelected(img: string) {
-    if (this.selectedItemIndex !== null) {      
-      const itemId = this.dataIntinerario.details[this.selectedItemIndex].id;      
-      this.updateBackend('IntinerarioHistoriaDetail', 'Id', itemId, 'Imagen', img, true);      
+    if (this.selectedItemIndex !== null) {
+      const itemId = this.dataIntinerario.details[this.selectedItemIndex].id;
+      this.updateBackend('IntinerarioHistoriaDetail', 'Id', itemId, 'Imagen', img, true);
     }
     this.onClosePopup();
   }
 
-  onClickDescripcion(){
-    this.editingDescripcion = true; 
+  onClickDescripcion() {
+    this.editingDescripcion = true;
     this.tempDescripcion = this.dataIntinerario.descripcion; // 🔹 Guardamos el valor original
   }
 
-  onClickActividadInt(id:string){
-      this.editingActividadIntId = id; 
-      const item = this.dataIntinerario.details.find((d: { id: string }) => d.id === id);
-      if (item) {
-        this.tempActividadIntMap[id] = item.actividad;
-      }
+  onClickActividadInt(id: string) {
+    this.editingActividadIntId = id;
+    const item = this.dataIntinerario.details.find((d: { id: string }) => d.id === id);
+    if (item) {
+      this.tempActividadIntMap[id] = item.actividad;
+    }
   }
-  
+
   onActividadIntBlur(event: Event, item: any) {
     const el = event.target as HTMLElement;
     const nuevoTexto = el.innerText.trim();
@@ -201,8 +203,8 @@ export class IntinerarioComponent implements OnInit {
     this.editingActividadIntId = null;
   }
 
-  onClickFechaInt(id:string){
-    this.editingFechaIntId = id; 
+  onClickFechaInt(id: string) {
+    this.editingFechaIntId = id;
     const item = this.dataIntinerario.details.find((d: { id: string }) => d.id === id);
     if (item) {
       this.tempFechaIntMap[id] = item.fecha;
@@ -223,8 +225,8 @@ export class IntinerarioComponent implements OnInit {
     this.editingFechaIntId = null;
   }
 
-  onClickHoraInt(id:string){
-    this.editingHoraIntId = id; 
+  onClickHoraInt(id: string) {
+    this.editingHoraIntId = id;
     const item = this.dataIntinerario.details.find((d: { id: string }) => d.id === id);
     if (item) {
       this.tempHoraIntMap[id] = item.hora;
@@ -245,11 +247,11 @@ export class IntinerarioComponent implements OnInit {
     this.editingHoraIntId = null;
   }
 
-  showAddBtn(){ 
-    return !this.loading && (this.dataIntinerario?.details?.length || 0) < 6
+  showAddBtn() {
+    return !this.loading && (this.dataIntinerario?.details?.length || 0) < this.maxItems
   }
 
-  onKeyDownInt(event: KeyboardEvent | any, maxLength:number) {
+  onKeyDownInt(event: KeyboardEvent | any, maxLength: number) {
     const key = (event as KeyboardEvent).key;
     if (key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
       event.preventDefault();
@@ -271,41 +273,41 @@ export class IntinerarioComponent implements OnInit {
     (event.target as HTMLElement).click();
   }
 
-  onDescripcionBlur(event: Event){
+  onDescripcionBlur(event: Event) {
     const el = event.target as HTMLElement;
     const nuevoTexto = el.innerText.trim();
 
     // si cambió, guardamos y llamamos backend
     if (nuevoTexto !== this.dataIntinerario.descripcion) {
-      this.dataIntinerario.descripcion = nuevoTexto;      
-      this.updateBackend('IntinerarioHistoriaMaster','IdEvento',this.eventId, 'Descripcion', this.dataIntinerario.descripcion);
+      this.dataIntinerario.descripcion = nuevoTexto;
+      this.updateBackend('IntinerarioHistoriaMaster', 'IdEvento', this.eventId, 'Descripcion', this.dataIntinerario.descripcion);
     }
-  }  
+  }
 
   @HostListener('document:keydown.escape', ['$event'])
-    onEscape(event: KeyboardEvent) {     
-      if (this.editingActividadIntId) {
-         const item = this.dataIntinerario.details.find((d: { id: string }) => d.id === this.editingActividadIntId);
-         const element = document.querySelector(`[contenteditable][data-id-actividad-int="${this.editingActividadIntId}"]`) as HTMLElement;
-         if (item && element) {
-           this.restoreActividadInt(item, element);
-         }
+  onEscape(event: KeyboardEvent) {
+    if (this.editingActividadIntId) {
+      const item = this.dataIntinerario.details.find((d: { id: string }) => d.id === this.editingActividadIntId);
+      const element = document.querySelector(`[contenteditable][data-id-actividad-int="${this.editingActividadIntId}"]`) as HTMLElement;
+      if (item && element) {
+        this.restoreActividadInt(item, element);
       }
-  
-      if (this.editingFechaIntId) {
-         const item = this.dataIntinerario.details.find((d: { id: string }) => d.id === this.editingFechaIntId);
-         const element = document.querySelector(`[contenteditable][data-id-fecha-int="${this.editingFechaIntId}"]`) as HTMLElement;
-         if (item && element) {
-           this.restoreFechaInt(item, element);
-         }
-      }
-  
-      if (this.editingHoraIntId) {
-         const item = this.dataIntinerario.details.find((d: { id: string }) => d.id === this.editingHoraIntId);
-         const element = document.querySelector(`[contenteditable][data-id-hora-int="${this.editingHoraIntId}"]`) as HTMLElement;
-         if (item && element) {
-           this.restoreHoraInt(item, element);
-         }
-      }    
     }
+
+    if (this.editingFechaIntId) {
+      const item = this.dataIntinerario.details.find((d: { id: string }) => d.id === this.editingFechaIntId);
+      const element = document.querySelector(`[contenteditable][data-id-fecha-int="${this.editingFechaIntId}"]`) as HTMLElement;
+      if (item && element) {
+        this.restoreFechaInt(item, element);
+      }
+    }
+
+    if (this.editingHoraIntId) {
+      const item = this.dataIntinerario.details.find((d: { id: string }) => d.id === this.editingHoraIntId);
+      const element = document.querySelector(`[contenteditable][data-id-hora-int="${this.editingHoraIntId}"]`) as HTMLElement;
+      if (item && element) {
+        this.restoreHoraInt(item, element);
+      }
+    }
+  }
 }

@@ -21,15 +21,15 @@ import { PopupHtmlComponent } from '../../popup-html/popup-html.component';
 })
 export class DondeCuandoComponent {
   constructor(
-      private invitationService: InvitationService,
-      private notificationService: NotificationService,
-      private fechasHelper: FechasHelper,
-      private dialog: MatDialog
-    ) {}
-    
-  loading:boolean = false;
+    private invitationService: InvitationService,
+    private notificationService: NotificationService,
+    private fechasHelper: FechasHelper,
+    private dialog: MatDialog
+  ) { }
+
+  loading: boolean = false;
   loadingImgs: { [key: string]: boolean } = {};
-  loadingImg: boolean = false;  
+  loadingImg: boolean = false;
   fecha: string = '';
   editingActividadId: string | null = null;
   editingHora: boolean = false;
@@ -47,16 +47,17 @@ export class DondeCuandoComponent {
   editingDireccion: boolean = false;
   tempDireccion: string = '';
   editingDireccionId: string | null = null;
-  
-  tempActividadMap: { [id: string]: string } = {};  
+
+  tempActividadMap: { [id: string]: string } = {};
   tempHoraMap: { [id: string]: string } = {};
   tempFechaMap: { [id: string]: string } = {};
   tempLugarMap: { [id: string]: string } = {};
   tempDireccionMap: { [id: string]: string } = {};
 
   @Input() eventId: string = '';
-  @Input() data:any = null;
+  @Input() data: any = null;
   @Input() isReadOnly: boolean = false;
+  @Input() maxItems: number = 99;
 
   cargarDatos() {
     this.loading = true;
@@ -76,8 +77,8 @@ export class DondeCuandoComponent {
       }
     });
   }
-  
-  nuevoDondeCuando(){
+
+  nuevoDondeCuando() {
     this.invitationService.postNewDondeCuando(this.eventId).subscribe({
       next: (res) => {
         this.cargarDatos();
@@ -92,7 +93,7 @@ export class DondeCuandoComponent {
     });
   }
 
-  convertDate(date:string){
+  convertDate(date: string) {
     return this.fechasHelper.formatearFechaHora(date);
   }
 
@@ -111,8 +112,8 @@ export class DondeCuandoComponent {
   }
 
   // Actividad
-  onClickActividad(id:string){
-    this.editingActividadId = id; 
+  onClickActividad(id: string) {
+    this.editingActividadId = id;
     const item = this.data.details.find((d: { id: string }) => d.id === id);
     if (item) {
       this.tempActividadMap[id] = item.actividad; // 🔹 Guardamos el valor original
@@ -126,7 +127,7 @@ export class DondeCuandoComponent {
     }
     this.editingActividadId = null;
     element.blur();
-  }  
+  }
 
   //Hora
   onHoraBlur(event: Event, item: any) {
@@ -143,8 +144,8 @@ export class DondeCuandoComponent {
     this.editingHoraId = null;
   }
 
-  onClickHora(id:string){
-    this.editingHoraId = id; 
+  onClickHora(id: string) {
+    this.editingHoraId = id;
     const item = this.data.details.find((d: { id: string }) => d.id === id);
     if (item) {
       this.tempHoraMap[id] = item.hora; // 🔹 Guardamos el valor original
@@ -158,7 +159,7 @@ export class DondeCuandoComponent {
     }
     this.editingHoraId = null;
     element.blur();
-  }  
+  }
 
   //Fecha
   onFechaBlur(event: Event, item: any) {
@@ -175,8 +176,8 @@ export class DondeCuandoComponent {
     this.editingFechaId = null;
   }
 
-  onClickFecha(id:string){
-    this.editingFechaId = id; 
+  onClickFecha(id: string) {
+    this.editingFechaId = id;
     const item = this.data.details.find((d: { id: string }) => d.id === id);
     if (item) {
       this.tempFechaMap[id] = item.fecha;
@@ -190,7 +191,7 @@ export class DondeCuandoComponent {
     }
     this.editingFechaId = null;
     element.blur();
-  }  
+  }
 
   //Lugar
   onLugarBlur(event: Event, item: any) {
@@ -207,8 +208,8 @@ export class DondeCuandoComponent {
     this.editingLugarId = null;
   }
 
-  onClickLugar(id:string){
-    this.editingLugarId = id; 
+  onClickLugar(id: string) {
+    this.editingLugarId = id;
     const item = this.data.details.find((d: { id: string }) => d.id === id);
     if (item) {
       this.tempLugarMap[id] = item.lugar;
@@ -239,8 +240,8 @@ export class DondeCuandoComponent {
     this.editingDireccionId = null;
   }
 
-  onClickDireccion(id:string){
-    this.editingDireccionId = id; 
+  onClickDireccion(id: string) {
+    this.editingDireccionId = id;
     const item = this.data.details.find((d: { id: string }) => d.id === id);
     if (item) {
       this.tempDireccionMap[id] = item.direccion;
@@ -275,7 +276,7 @@ export class DondeCuandoComponent {
     const item = this.data.details.find((d: { id: string }) => d.id === id);
     item.hora = this.tempHora;
     this.editingHoraId = null;
-    this.updateBackend('DondeCuandoDetails','Id', id, 'Hora', item.hora);
+    this.updateBackend('DondeCuandoDetails', 'Id', id, 'Hora', item.hora);
   }
 
   cancelHora() {
@@ -292,7 +293,7 @@ export class DondeCuandoComponent {
     const item = this.data.details.find((d: { id: string }) => d.id === id);
     item.fecha = this.tempFecha;
     this.editingFechaId = null;
-    this.updateBackend('DondeCuandoDetails','Id', id, 'Fecha', item.fecha);
+    this.updateBackend('DondeCuandoDetails', 'Id', id, 'Fecha', item.fecha);
   }
 
   cancelFecha() {
@@ -309,7 +310,7 @@ export class DondeCuandoComponent {
     const item = this.data.details.find((d: { id: string }) => d.id === id);
     item.lugar = this.tempLugar;
     this.editingLugarId = null;
-    this.updateBackend('DondeCuandoDetails','Id', id, 'Lugar', item.lugar);
+    this.updateBackend('DondeCuandoDetails', 'Id', id, 'Lugar', item.lugar);
   }
 
   cancelLugar() {
@@ -326,14 +327,14 @@ export class DondeCuandoComponent {
     const item = this.data.details.find((d: { id: string }) => d.id === id);
     item.direccion = this.tempDireccion;
     this.editingDireccionId = null;
-    this.updateBackend('DondeCuandoDetails','Id', id, 'Direccion', item.direccion);
+    this.updateBackend('DondeCuandoDetails', 'Id', id, 'Direccion', item.direccion);
   }
 
   cancelDireccion() {
     this.editingLugarId = null;
   }
-  
-  triggerImageUpload(dondeCuandoId:string) {
+
+  triggerImageUpload(dondeCuandoId: string) {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
@@ -347,21 +348,22 @@ export class DondeCuandoComponent {
     input.click();
   }
 
-  triggerImageDelete(dondeCuandoId:string) {
+  triggerImageDelete(dondeCuandoId: string) {
     this.invitationService.deleteDondeCuando(dondeCuandoId).subscribe({
-        next: (res) => {
-          this.cargarDatos();
-        },
-        error: (err) => {
-          this.loadingImgs[dondeCuandoId] = false;
-          this.notificationService.show(
-            'error',
-            `Error al subir imagen: ${err.message}`
-          );
-        }
-      });
+      next: (res) => {
+        this.cargarDatos();
+        this.invitationService.notifyMutation(this.eventId);
+      },
+      error: (err) => {
+        this.loadingImgs[dondeCuandoId] = false;
+        this.notificationService.show(
+          'error',
+          `Error al subir imagen: ${err.message}`
+        );
+      }
+    });
   }
-  
+
   triggerBGImageUpload() {
     const input = document.createElement('input');
     input.type = 'file';
@@ -370,34 +372,33 @@ export class DondeCuandoComponent {
       const file = event.target.files[0];
       if (file) {
         this.loadingImg = true;
-        this.uploadBKImage('DondeCuandoMaster','IdEvento', this.eventId, 'Imagen', file);
+        this.uploadBKImage('DondeCuandoMaster', 'IdEvento', this.eventId, 'Imagen', file);
       }
     };
     input.click();
   }
 
-  uploadImage(tableName:string, searchField:string, eventId:string, field: string, file: File, dondeCuandoId:string) 
-  {
-      this.invitationService.updateTableFieldImagen(tableName, searchField, eventId, field, file).subscribe({
-        next: (res) => {
-          const url = res;
-          const item = this.data.details.find((d: { id: string; }) => d.id === dondeCuandoId);
-          if (item) {
-             item.imagen = url;
-          }
-          this.loadingImgs[dondeCuandoId] = false;
-        },
-        error: (err) => {
-          this.loadingImgs[dondeCuandoId] = false;
-          this.notificationService.show(
-            'error',
-            `Error al subir imagen: ${err.message}`
-          );
+  uploadImage(tableName: string, searchField: string, eventId: string, field: string, file: File, dondeCuandoId: string) {
+    this.invitationService.updateTableFieldImagen(tableName, searchField, eventId, field, file).subscribe({
+      next: (res) => {
+        const url = res;
+        const item = this.data.details.find((d: { id: string; }) => d.id === dondeCuandoId);
+        if (item) {
+          item.imagen = url;
         }
-      });
+        this.loadingImgs[dondeCuandoId] = false;
+      },
+      error: (err) => {
+        this.loadingImgs[dondeCuandoId] = false;
+        this.notificationService.show(
+          'error',
+          `Error al subir imagen: ${err.message}`
+        );
+      }
+    });
   }
-  
-  uploadBKImage(tableName:string, searchField:string, eventId:string, field: string, file: File) {
+
+  uploadBKImage(tableName: string, searchField: string, eventId: string, field: string, file: File) {
     this.invitationService.updateTableFieldImagen(tableName, searchField, eventId, field, file).subscribe({
       next: (res) => {
         this.data.imagen = res;
@@ -406,14 +407,14 @@ export class DondeCuandoComponent {
       error: (err) => {
         this.loadingImg = false;
         this.notificationService.show(
-           'error',
+          'error',
           `Error al subir imagen: ${err.message}`
         );
       }
     });
   }
 
-  updateBackend(tableName:string, searchField: string, eventId:string, field:string, value: string) {    
+  updateBackend(tableName: string, searchField: string, eventId: string, field: string, value: string) {
     this.invitationService.updateTableField(tableName, searchField, eventId, field, value).subscribe({
       next: () => {
       },
@@ -426,18 +427,18 @@ export class DondeCuandoComponent {
     });
   }
 
-abrirMapa(id: string) {
-  const item = this.data.details.find((d: { id: string }) => d.id === id);
+  abrirMapa(id: string) {
+    const item = this.data.details.find((d: { id: string }) => d.id === id);
 
-  const dialogRef = this.dialog.open(MapaModalComponent, {
-    width: '600px',
-    data: { ubicacion: item.ubicacion }
-  });
+    const dialogRef = this.dialog.open(MapaModalComponent, {
+      width: '600px',
+      data: { ubicacion: item.ubicacion }
+    });
 
-  dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         item.ubicacion = result;
-        this.updateBackend('DondeCuandoDetails','Id', id, 'Ubicacion', result);
+        this.updateBackend('DondeCuandoDetails', 'Id', id, 'Ubicacion', result);
       }
     });
   }
@@ -449,48 +450,48 @@ abrirMapa(id: string) {
     this.data.details.forEach((item: { id: string; }, index: any) => {
       this.updateBackend('DondeCuandoDetails', 'Id', item.id, 'Orden', index);
     });
-  }      
+  }
 
   @HostListener('document:keydown.escape', ['$event'])
   onEscape(event: KeyboardEvent) {
     if (this.editingActividadId) {
-       const item = this.data.details.find((d: { id: string }) => d.id === this.editingActividadId);
-       const element = document.querySelector(`[contenteditable][data-id-actividad="${this.editingActividadId}"]`) as HTMLElement;
-       if (item && element) {
-         this.restoreActividad(item, element);
-       }
+      const item = this.data.details.find((d: { id: string }) => d.id === this.editingActividadId);
+      const element = document.querySelector(`[contenteditable][data-id-actividad="${this.editingActividadId}"]`) as HTMLElement;
+      if (item && element) {
+        this.restoreActividad(item, element);
+      }
     }
 
     if (this.editingHoraId) {
-       const item = this.data.details.find((d: { id: string }) => d.id === this.editingHoraId);
-       const element = document.querySelector(`[contenteditable][data-id-hora="${this.editingHoraId}"]`) as HTMLElement;
-       if (item && element) {
-         this.restoreHora(item, element);
-       }
+      const item = this.data.details.find((d: { id: string }) => d.id === this.editingHoraId);
+      const element = document.querySelector(`[contenteditable][data-id-hora="${this.editingHoraId}"]`) as HTMLElement;
+      if (item && element) {
+        this.restoreHora(item, element);
+      }
     }
 
     if (this.editingFechaId) {
-       const item = this.data.details.find((d: { id: string }) => d.id === this.editingFechaId);
-       const element = document.querySelector(`[contenteditable][data-id-fecha="${this.editingFechaId}"]`) as HTMLElement;
-       if (item && element) {
-         this.restoreFecha(item, element);
-       }
+      const item = this.data.details.find((d: { id: string }) => d.id === this.editingFechaId);
+      const element = document.querySelector(`[contenteditable][data-id-fecha="${this.editingFechaId}"]`) as HTMLElement;
+      if (item && element) {
+        this.restoreFecha(item, element);
+      }
     }
 
     if (this.editingLugarId) {
-       const item = this.data.details.find((d: { id: string }) => d.id === this.editingLugarId);
-       const element = document.querySelector(`[contenteditable][data-id-lugar="${this.editingLugarId}"]`) as HTMLElement;
-       if (item && element) {
-         this.restoreLugar(item, element);
-       }
+      const item = this.data.details.find((d: { id: string }) => d.id === this.editingLugarId);
+      const element = document.querySelector(`[contenteditable][data-id-lugar="${this.editingLugarId}"]`) as HTMLElement;
+      if (item && element) {
+        this.restoreLugar(item, element);
+      }
     }
 
-     if (this.editingDireccionId) {
-       const item = this.data.details.find((d: { id: string }) => d.id === this.editingDireccionId);
-       const element = document.querySelector(`[contenteditable][data-id-direccion="${this.editingDireccionId}"]`) as HTMLElement;
-       if (item && element) {
-         this.restoreDireccion(item, element);
-       }
+    if (this.editingDireccionId) {
+      const item = this.data.details.find((d: { id: string }) => d.id === this.editingDireccionId);
+      const element = document.querySelector(`[contenteditable][data-id-direccion="${this.editingDireccionId}"]`) as HTMLElement;
+      if (item && element) {
+        this.restoreDireccion(item, element);
+      }
     }
   }
 }

@@ -52,7 +52,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .section-content {
@@ -111,6 +113,7 @@
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -269,7 +272,7 @@
 
 .action-btn.primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(233, 30, 99, 0.4);
+  box-shadow: 0 8px 25px rgba(var(--shadow-color), 0.4);
 }
 
 .action-btn i {

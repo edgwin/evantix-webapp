@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { PortadaComponent } from '../../component/invitacion/portada/portada.component'
 import { FestejadosComponent } from '../../component/invitacion/festejados/festejados.component'
 import { IndicacionesComponent } from '../../component/invitacion/indicaciones/indicaciones.component'
@@ -17,6 +17,10 @@ import { PhotoUploaderComponent } from '../../component/invitacion/photo-uploade
 import { MusicaComponent } from '../../component/invitacion/musica/musica.component';
 import { TemplateService, Template } from '../../services/template.service';
 import { TemplateSelectorComponent } from '../../component/invitacion/template-selector/template-selector.component';
+import { PricingService, EventCostResponse } from '../../services/pricing.service';
+import { CostBarComponent } from '../../component/invitacion/cost-bar/cost-bar.component';
+import { SectionToggleComponent } from '../../component/invitacion/section-toggle/section-toggle.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-invitacion',
@@ -25,13 +29,13 @@ import { TemplateSelectorComponent } from '../../component/invitacion/template-s
   styleUrl: './invitacion.component.css',
   imports: [PortadaComponent, CommonModule, FestejadosComponent, DondeCuandoComponent, IntinerarioComponent, IndicacionesComponent,
     MesaRegalosComponent, PersonasFavoritasComponent, HistoriaComponent, GaleriaComponent, HospedajeComponent,
-    PhotoUploaderComponent, MusicaComponent, TemplateSelectorComponent],
+    PhotoUploaderComponent, MusicaComponent, TemplateSelectorComponent, CostBarComponent, SectionToggleComponent],
 })
 
-export class InvitacionComponent {
+export class InvitacionComponent implements OnDestroy {
   constructor(private route: ActivatedRoute, private invitationService: InvitationService,
     private notificationService: NotificationService, public templateService: TemplateService,
-    private router: Router) { }
+    private router: Router, private pricingService: PricingService) { }
   eventId: any;
   loading: boolean = true;
   data: any;
@@ -39,11 +43,21 @@ export class InvitacionComponent {
   eventStatus: string = '';
   canSendToReview: boolean = false;
   sendingToReview: boolean = false;
+  togglingSection: string = '';
+  pricingLoading: boolean = true;
+  private mutationSub: Subscription | null = null;
+  private pricingLoadingSub: Subscription | null = null;
+
+  // Secciones opcionales habilitadas/deshabilitadas
+  sections: { [key: string]: { isEnabled: boolean, enableCost: number, sectionName: string, maxItems: number } } = {};
 
   toggleReadOnly(): void {
-    // AC1: Solo permitir toggle si el estatus es "Creado"
     if (this.eventStatus === 'Creado') {
       this.isReadOnly = !this.isReadOnly;
+      // Refrescar costo al volver a modo edición o al ver previo
+      if (!this.isReadOnly) {
+        this.loadPricing();
+      }
     }
   }
 
@@ -59,8 +73,6 @@ export class InvitacionComponent {
         this.data = res;
         this.eventStatus = res.eventStatus || 'Creado';
 
-        // AC1: Si "Creado" -> isReadOnly = false (editable)
-        // AC3: Cualquier otro estatus -> isReadOnly = true (solo lectura)
         if (this.eventStatus === 'Creado') {
           this.isReadOnly = false;
           this.canSendToReview = true;
@@ -73,6 +85,11 @@ export class InvitacionComponent {
           this.templateService.applyTemplateFromData(res.template);
         }
 
+        // Cargar precios y secciones habilitadas
+        if (this.eventStatus === 'Creado') {
+          this.loadPricing();
+        }
+
         this.loading = false;
       },
       error: (err) => {
@@ -81,6 +98,99 @@ export class InvitacionComponent {
           `Hubo un error favor intentar más tarde ${err.message}`
         );
         this.loading = false;
+      }
+    });
+
+    // Suscribirse a mutaciones de los componentes hijos para refrescar costo
+    this.mutationSub = this.invitationService.mutationOccurred$.subscribe(eventId => {
+      if (eventId === this.eventId) {
+        this.loadPricing();
+      }
+    });
+
+    // Suscribirse al estado de carga de precios
+    this.pricingLoadingSub = this.pricingService.loading$.subscribe(loading => {
+      this.pricingLoading = loading;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.mutationSub?.unsubscribe();
+    this.pricingLoadingSub?.unsubscribe();
+  }
+
+  loadPricing(): void {
+    this.pricingService.getEventCost(this.eventId).subscribe({
+      next: (cost: EventCostResponse) => {
+        cost.sections.forEach(s => {
+          this.sections[s.sectionKey] = {
+            isEnabled: s.isEnabled,
+            enableCost: s.enableCost,
+            sectionName: s.sectionName,
+            maxItems: s.maxItems
+          };
+        });
+      },
+      error: (err) => {
+        console.error('Error loading pricing', err);
+      }
+    });
+  }
+
+  private getEnableCostFromDetail(section: any): number {
+    return section.enableCost || 0;
+  }
+
+  isSectionEnabled(sectionKey: string): boolean {
+    if (this.isReadOnly) return true; // En readonly, mostrar todo lo que tenga datos
+    const section = this.sections[sectionKey];
+    return section?.isEnabled ?? false;
+  }
+
+  getSectionEnableCost(sectionKey: string): number {
+    return this.sections[sectionKey]?.enableCost ?? 0;
+  }
+
+  getSectionName(sectionKey: string): string {
+    return this.sections[sectionKey]?.sectionName ?? sectionKey;
+  }
+
+  getSectionMaxItems(sectionKey: string): number {
+    return this.sections[sectionKey]?.maxItems ?? 99;
+  }
+
+  onEnableSection(sectionKey: string): void {
+    this.togglingSection = sectionKey;
+    this.pricingService.toggleSection(this.eventId, sectionKey, true).subscribe({
+      next: (cost) => {
+        this.sections[sectionKey] = {
+          ...this.sections[sectionKey],
+          isEnabled: true
+        };
+        this.togglingSection = '';
+        this.notificationService.show('success', `${this.getSectionName(sectionKey)} habilitada`);
+      },
+      error: (err) => {
+        this.togglingSection = '';
+        this.notificationService.show('error', `Error al habilitar sección: ${err.message}`);
+      }
+    });
+  }
+
+  onRemoveSection(sectionKey: string): void {
+    this.togglingSection = sectionKey;
+    this.pricingService.toggleSection(this.eventId, sectionKey, false).subscribe({
+      next: (cost) => {
+        this.sections[sectionKey] = {
+          ...this.sections[sectionKey],
+          isEnabled: false
+        };
+        this.togglingSection = '';
+        this.notificationService.show('success', `${this.getSectionName(sectionKey)} deshabilitada`);
+      },
+      error: (err) => {
+        this.togglingSection = '';
+        this.notificationService.show('error', `Error al deshabilitar sección: ${err.message}`);
       }
     });
   }
@@ -100,7 +210,6 @@ export class InvitacionComponent {
         this.isReadOnly = true;
         this.canSendToReview = false;
         this.sendingToReview = false;
-        // Redirigir al dashboard después de enviar a revisión
         this.router.navigateByUrl('/dashboard');
       },
       error: (err) => {

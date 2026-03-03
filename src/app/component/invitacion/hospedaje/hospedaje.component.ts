@@ -11,15 +11,15 @@ import { TemplateService } from '../../../services/template.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './hospedaje.component.html',
-  styleUrls: ['./hospedaje.component.css','./../invitacion.component.css']
+  styleUrls: ['./hospedaje.component.css', './../invitacion.component.css']
 })
 export class HospedajeComponent {
-  constructor(private invitationService: InvitationService, private notificationService: NotificationService, 
-              private dialog: MatDialog, public templateService: TemplateService)
-      {}
+  constructor(private invitationService: InvitationService, private notificationService: NotificationService,
+    private dialog: MatDialog, public templateService: TemplateService) { }
   @Input() eventId: string = '';
   @Input() data: any;
   @Input() isReadOnly: boolean = false;
+  @Input() maxItems: number = 99;
   loadingImg: boolean = false;
   loading: boolean = false;
   tempTituloMap: { [id: string]: string } = {};
@@ -36,13 +36,13 @@ export class HospedajeComponent {
       const file = event.target.files[0];
       if (file) {
         this.loadingImg = true;
-        this.uploadImage('HospedajeMaster','IdEvento', this.eventId, 'Imagen', file);
+        this.uploadImage('HospedajeMaster', 'IdEvento', this.eventId, 'Imagen', file);
       }
     };
     input.click();
   }
 
-  uploadImage(tableName:string, searchField:string, eventId:string, field: string, file: File) {
+  uploadImage(tableName: string, searchField: string, eventId: string, field: string, file: File) {
     this.invitationService.updateTableFieldImagen(tableName, searchField, eventId, field, file).subscribe({
       next: (res) => {
         this.data.imagen = res;
@@ -51,17 +51,18 @@ export class HospedajeComponent {
       error: (err) => {
         this.loadingImg = false;
         this.notificationService.show(
-           'error',
+          'error',
           `Error al subir imagen: ${err.message}`
         );
       }
     });
   }
 
-  triggerElementDelete(hospedajeId:string) {
-  this.invitationService.deleteHospedaje(hospedajeId).subscribe({
+  triggerElementDelete(hospedajeId: string) {
+    this.invitationService.deleteHospedaje(hospedajeId).subscribe({
       next: () => {
         this.cargarDatos();
+        this.invitationService.notifyMutation(this.eventId);
       },
       error: (err) => {
         this.notificationService.show(
@@ -106,7 +107,7 @@ export class HospedajeComponent {
     }
   }
 
-  saveContent(event: Event, eventId: string, field:string) {
+  saveContent(event: Event, eventId: string, field: string) {
     const target = event.target as HTMLElement | HTMLInputElement;
     let newText: string;
 
@@ -125,7 +126,7 @@ export class HospedajeComponent {
         break;
       case 'direccion':
         modifyField = 'Direccion';
-        break;      
+        break;
       default:
         console.warn(`Campo no reconocido: ${field}`);
         return;
@@ -135,10 +136,10 @@ export class HospedajeComponent {
     this.updateBackend('HospedajeDetail', 'Id', eventId, modifyField, newText);
   }
 
-  updateBackend(tableName:string, searchField: string, eventId:string, field:string, value: string, loadData: boolean = false) {    
+  updateBackend(tableName: string, searchField: string, eventId: string, field: string, value: string, loadData: boolean = false) {
     this.invitationService.updateTableField(tableName, searchField, eventId, field, value).subscribe({
-      next: () => { 
-        if (loadData){
+      next: () => {
+        if (loadData) {
           this.cargarDatos();
         }
       },
@@ -151,12 +152,12 @@ export class HospedajeComponent {
     });
   }
 
-  onClickTitulo(id:string){
+  onClickTitulo(id: string) {
     this.editingTituloId = id;
     const item = this.data.details.find((d: { id: string }) => d.id === id);
     if (item) {
       this.tempTituloMap[id] = item.titulo; // 🔹 Guardamos el valor original
-    }    
+    }
   }
 
   restoreTitulo(item: any, element: HTMLElement) {
@@ -177,15 +178,15 @@ export class HospedajeComponent {
     element.blur();
   }
 
-  onClickDescripcion(id:string){
-    this.editingDescripcionId = id; 
+  onClickDescripcion(id: string) {
+    this.editingDescripcionId = id;
     const item = this.data.details.find((d: { id: string }) => d.id === id);
     if (item) {
       this.tempDescripcionMap[id] = item.descripcion; // 🔹 Guardamos el valor original
-    }    
+    }
   }
 
-  nuevoHospedaje(){
+  nuevoHospedaje() {
     this.invitationService.postHospedaje(this.eventId).subscribe({
       next: () => {
         this.cargarDatos();
@@ -202,17 +203,17 @@ export class HospedajeComponent {
 
   abrirMapa(id: string) {
     const item = this.data.details.find((d: { id: string }) => d.id === id);
-  
+
     const dialogRef = this.dialog.open(MapaModalComponent, {
       width: '600px',
       data: { ubicacion: item.ubicacion }
     });
-  
+
     dialogRef.afterClosed().subscribe((result) => {
-        if (result) {
-          item.ubicacion = result;
-          this.updateBackend('HospedajeDetail','Id', id, 'Ubicacion', result);
-        }
-      });
+      if (result) {
+        item.ubicacion = result;
+        this.updateBackend('HospedajeDetail', 'Id', id, 'Ubicacion', result);
+      }
+    });
   }
 }

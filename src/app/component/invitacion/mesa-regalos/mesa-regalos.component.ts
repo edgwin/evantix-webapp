@@ -11,17 +11,17 @@ import { AiEditableDirective } from '../../../directives/ai-editable.directive';
   standalone: true,
   imports: [CommonModule, FormsModule, PopupHtmlComponent, AiEditableDirective],
   templateUrl: './mesa-regalos.component.html',
-  styleUrls: ['./mesa-regalos.component.css','./../invitacion.component.css']
+  styleUrls: ['./mesa-regalos.component.css', './../invitacion.component.css']
 })
 
 export class MesaRegalosComponent {
-  constructor(private invitationService: InvitationService, private notificationService: NotificationService)
-    {}
-    
+  constructor(private invitationService: InvitationService, private notificationService: NotificationService) { }
+
   @Input() eventId: string = '';
   @Input() data: any;
   @Input() eventType: string = '';
   @Input() isReadOnly: boolean = false;
+  @Input() maxItems: number = 99;
   tempTituloMap: { [id: string]: string } = {};
   editingTituloId: string | null = null;
   editingDescripcionId: string | null = null;
@@ -34,11 +34,11 @@ export class MesaRegalosComponent {
     this.loadImages();
   }
 
-  gotoUrl(url:string){
+  gotoUrl(url: string) {
     window.open(url, '_blank');
   }
 
-   cargarDatos() {
+  cargarDatos() {
     this.loading = true;
     if (!this.eventId) return;
 
@@ -66,13 +66,13 @@ export class MesaRegalosComponent {
       const file = event.target.files[0];
       if (file) {
         this.loadingImg = true;
-        this.uploadImage('MesaRegalosMaster','IdEvento', this.eventId, 'Imagen', file);
+        this.uploadImage('MesaRegalosMaster', 'IdEvento', this.eventId, 'Imagen', file);
       }
     };
     input.click();
   }
 
-  uploadImage(tableName:string, searchField:string, eventId:string, field: string, file: File) {
+  uploadImage(tableName: string, searchField: string, eventId: string, field: string, file: File) {
     this.invitationService.updateTableFieldImagen(tableName, searchField, eventId, field, file).subscribe({
       next: (res) => {
         this.data.imagen = res;
@@ -81,7 +81,7 @@ export class MesaRegalosComponent {
       error: (err) => {
         this.loadingImg = false;
         this.notificationService.show(
-           'error',
+          'error',
           `Error al subir imagen: ${err.message}`
         );
       }
@@ -103,7 +103,7 @@ export class MesaRegalosComponent {
     }
   }
 
-  saveContent(event: Event, eventId: string, field:string) {
+  saveContent(event: Event, eventId: string, field: string) {
     const target = event.target as HTMLElement | HTMLInputElement;
     let newText: string;
 
@@ -140,10 +140,10 @@ export class MesaRegalosComponent {
     this.updateBackend('MesaRegalosDetail', 'Id', eventId, modifyField, newText);
   }
 
-   updateBackend(tableName:string, searchField: string, eventId:string, field:string, value: string, loadData: boolean = false) {    
+  updateBackend(tableName: string, searchField: string, eventId: string, field: string, value: string, loadData: boolean = false) {
     this.invitationService.updateTableField(tableName, searchField, eventId, field, value).subscribe({
-      next: () => { 
-        if (loadData){
+      next: () => {
+        if (loadData) {
           this.cargarDatos();
         }
       },
@@ -156,12 +156,12 @@ export class MesaRegalosComponent {
     });
   }
 
-  onClickTitulo(id:string){
+  onClickTitulo(id: string) {
     this.editingTituloId = id;
     const item = this.data.details.find((d: { id: string }) => d.id === id);
     if (item) {
       this.tempTituloMap[id] = item.titulo; // 🔹 Guardamos el valor original
-    }    
+    }
   }
 
   restoreTitulo(item: any, element: HTMLElement) {
@@ -182,15 +182,15 @@ export class MesaRegalosComponent {
     element.blur();
   }
 
-  onClickDescripcion(id:string){
-    this.editingDescripcionId = id; 
+  onClickDescripcion(id: string) {
+    this.editingDescripcionId = id;
     const item = this.data.details.find((d: { id: string }) => d.id === id);
     if (item) {
       this.tempDescripcionMap[id] = item.descripcion; // 🔹 Guardamos el valor original
-    }    
+    }
   }
 
-  images: string[] = []; 
+  images: string[] = [];
 
   selectedItemIndex: number | null = null;
   openPopup(index: number) {
@@ -203,17 +203,18 @@ export class MesaRegalosComponent {
   }
 
   async onImageSelected(img: string) {
-    if (this.selectedItemIndex !== null) {      
+    if (this.selectedItemIndex !== null) {
       const itemId = this.data.details[this.selectedItemIndex].id;
-      this.updateBackend('MesaRegalosDetail', 'Id', itemId, 'Imagen', img, true);      
+      this.updateBackend('MesaRegalosDetail', 'Id', itemId, 'Imagen', img, true);
     }
     this.onClosePopup();
   }
 
-  triggerElementDelete(mesaId:string) {
-  this.invitationService.deleteMesa(mesaId).subscribe({
+  triggerElementDelete(mesaId: string) {
+    this.invitationService.deleteMesa(mesaId).subscribe({
       next: () => {
         this.cargarDatos();
+        this.invitationService.notifyMutation(this.eventId);
       },
       error: (err) => {
         this.notificationService.show(
@@ -224,7 +225,7 @@ export class MesaRegalosComponent {
     });
   }
 
-  nuevaMesa(){
+  nuevaMesa() {
     this.invitationService.postNewMesa(this.eventId).subscribe({
       next: () => {
         this.cargarDatos();
@@ -252,21 +253,21 @@ export class MesaRegalosComponent {
   }
 
   @HostListener('document:keydown.escape', ['$event'])
-    onEscape(event: KeyboardEvent) {
-      if (this.editingTituloId) {
-         const item = this.data.details.find((d: { id: string }) => d.id === this.editingTituloId);
-         const element = document.querySelector(`[contenteditable][data-id-titulo="${this.editingTituloId}"]`) as HTMLElement;
-         if (item && element) {
-           this.restoreTitulo(item, element);
-         }
+  onEscape(event: KeyboardEvent) {
+    if (this.editingTituloId) {
+      const item = this.data.details.find((d: { id: string }) => d.id === this.editingTituloId);
+      const element = document.querySelector(`[contenteditable][data-id-titulo="${this.editingTituloId}"]`) as HTMLElement;
+      if (item && element) {
+        this.restoreTitulo(item, element);
       }
-
-      if (this.editingDescripcionId) {
-         const item = this.data.details.find((d: { id: string }) => d.id === this.editingDescripcionId);
-         const element = document.querySelector(`[contenteditable][data-id-descripcion="${this.editingDescripcionId}"]`) as HTMLElement;
-         if (item && element) {
-           this.restoreDescripcion(item, element);
-         }
-      }      
     }
+
+    if (this.editingDescripcionId) {
+      const item = this.data.details.find((d: { id: string }) => d.id === this.editingDescripcionId);
+      const element = document.querySelector(`[contenteditable][data-id-descripcion="${this.editingDescripcionId}"]`) as HTMLElement;
+      if (item && element) {
+        this.restoreDescripcion(item, element);
+      }
+    }
+  }
 }

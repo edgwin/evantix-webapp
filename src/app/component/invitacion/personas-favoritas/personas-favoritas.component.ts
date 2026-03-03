@@ -19,12 +19,13 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
     private invitationService: InvitationService,
     private notificationService: NotificationService,
     public templateService: TemplateService
-  ) {}
+  ) { }
   @Input() eventId: string = '';
   @Input() data: any;
   @Input() height = '60vh';
   @Input() eventType: string = '';
   @Input() isReadOnly: boolean = false;
+  @Input() maxItems: number = 99;
   images: any[] = [];
   editingTituloPF: boolean = false;
   tempTituloPF: string = '';
@@ -57,12 +58,12 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
 
   ngOnInit() {
     this.images = this.data?.details || [];
-    if (this.images.length <= 0){
+    if (this.images.length <= 0) {
       this.showGallery = false;
-    } 
+    }
   }
 
-  cargarDatosPF(gotoNew:boolean = false) {
+  cargarDatosPF(gotoNew: boolean = false) {
     this.loading = true;
     if (!this.eventId) return;
 
@@ -71,12 +72,12 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
         this.data = res;
         this.images = this.data?.details || [];
         this.loading = false;
-        if (this.data?.details.length <= 0){
+        if (this.data?.details.length <= 0) {
           this.showGallery = false;
         } else {
           this.showGallery = true;
         }
-        if (gotoNew){
+        if (gotoNew) {
           this.goTo(this.data.details.length - 1);
         }
       },
@@ -88,7 +89,7 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
         this.loading = false;
       }
     });
-  }  
+  }
 
   ngAfterViewInit() {
     this.startAutoplayIfNeeded();
@@ -180,7 +181,7 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
     // capture pointer to follow moves reliably
     try {
       (ev.target as Element)?.setPointerCapture?.(ev.pointerId);
-    } catch {}
+    } catch { }
     this.pointerId = ev.pointerId;
     this.startX = ev.clientX;
     this.lastX = ev.clientX;
@@ -199,7 +200,7 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
   onPointerUp(ev: PointerEvent) {
     try {
       (ev.target as Element)?.releasePointerCapture?.(ev.pointerId);
-    } catch {}
+    } catch { }
     if (this.pointerId !== ev.pointerId) {
       this.resetPointerState();
       return;
@@ -249,7 +250,7 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
     if (n === 0) return '';
     return this.data?.details[this.currentIndex()]?.id || '';
   }
-  
+
   resetPointerState() {
     this.pointerId = null;
     this.startX = null;
@@ -292,7 +293,7 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
     this.autoplayIntervalId = setTimeout(() => this.startAutoplayIfNeeded(), delay);
   }
 
-  onKeyDown(event: KeyboardEvent | any, maxLength:number) {
+  onKeyDown(event: KeyboardEvent | any, maxLength: number) {
     const key = (event as KeyboardEvent).key;
     if (key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
       event.preventDefault();
@@ -314,42 +315,42 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
     (event.target as HTMLElement).click();
   }
 
-  onClickTituloPF(){
-    this.editingTituloPF = true; 
+  onClickTituloPF() {
+    this.editingTituloPF = true;
     this.tempTituloPF = this.data.titulo; // 🔹 Guardamos el valor original
   }
 
-  onTituloBlur(event: Event){
+  onTituloBlur(event: Event) {
     const el = event.target as HTMLElement;
     const nuevoTexto = el.innerText.trim();
 
     // si cambió, guardamos y llamamos backend
     if (nuevoTexto !== this.data.titulo) {
-      this.data.titulo = nuevoTexto;      
-      this.updateBackend('PersonasFavoritasMaster','IdEvento',this.eventId, 'Titulo', this.data.titulo);
+      this.data.titulo = nuevoTexto;
+      this.updateBackend('PersonasFavoritasMaster', 'IdEvento', this.eventId, 'Titulo', this.data.titulo);
     }
   }
 
-  onClickFrasePF(){
-    this.editingFrasePF = true; 
+  onClickFrasePF() {
+    this.editingFrasePF = true;
     this.tempFrasePF = this.data.frase; // 🔹 Guardamos el valor original
   }
 
-  onFraseBlur(event: Event){
+  onFraseBlur(event: Event) {
     const el = event.target as HTMLElement;
     const nuevoTexto = el.innerText.trim();
 
     // si cambió, guardamos y llamamos backend
     if (nuevoTexto !== this.data.frase) {
-      this.data.frase = nuevoTexto;      
-      this.updateBackend('PersonasFavoritasMaster','IdEvento',this.eventId, 'Frase', this.data.frase);
+      this.data.frase = nuevoTexto;
+      this.updateBackend('PersonasFavoritasMaster', 'IdEvento', this.eventId, 'Frase', this.data.frase);
     }
   }
 
-  updateBackend(tableName:string, searchField: string, eventId:string, field:string, value: string, loadData: boolean = false) {    
+  updateBackend(tableName: string, searchField: string, eventId: string, field: string, value: string, loadData: boolean = false) {
     this.invitationService.updateTableField(tableName, searchField, eventId, field, value).subscribe({
-      next: () => { 
-        if (loadData){
+      next: () => {
+        if (loadData) {
           this.cargarDatosPF();
         }
       },
@@ -373,12 +374,14 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
   onClosePopup() {
     this.showPopup = false;
     this.cargarDatosPF();
+    this.invitationService.notifyMutation(this.eventId);
   }
 
-  addNewPersonaFavorita(){
+  addNewPersonaFavorita() {
     this.invitationService.postNewPersonaFavorita(this.eventId).subscribe({
       next: (res) => {
         this.cargarDatosPF(true);
+        this.invitationService.notifyMutation(this.eventId);
       },
       error: (err) => {
         this.notificationService.show(
@@ -388,25 +391,25 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
         this.loading = false;
       }
     });
-  }  
+  }
 
-  restoreTituloPF(element: HTMLElement) {  
+  restoreTituloPF(element: HTMLElement) {
     const original = this.tempTituloPF;
     if (original !== undefined) {
       element.innerText = `${original}`;
     }
     this.editingTituloPF = false;
     element.blur();
-  }  
+  }
 
-  restoreFrasePF(element: HTMLElement) {  
+  restoreFrasePF(element: HTMLElement) {
     const original = this.tempFrasePF;
     if (original !== undefined) {
       element.innerText = `${original}`;
     }
     this.editingFrasePF = false;
     element.blur();
-  }  
+  }
 
   @HostListener('document:keydown.escape', ['$event'])
   onEscape(event: KeyboardEvent) {

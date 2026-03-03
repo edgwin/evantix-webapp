@@ -13,31 +13,31 @@ import { AiEditableDirective } from '../../../directives/ai-editable.directive';
   styleUrls: ['./../invitacion.component.css', './historia.component.css']
 })
 export class HistoriaComponent {
-constructor(private invitationService: InvitationService, private notificationService: NotificationService)
-  {}
+  constructor(private invitationService: InvitationService, private notificationService: NotificationService) { }
 
- @Input() dataHistoria: any;
- @Input() eventId: string = '';
- @Input() eventType: string = '';
- @Input() isReadOnly: boolean = false;
- loadingImgs: { [key: string]: boolean } = {};
- loading: boolean = false;
- section: string = ''
- editingTituloHistoria: boolean = false;
- tempTituloHistoria: string = '';
- editingFechaHistoriaId: string | null = null;
- tempFechaHistoriaMap: { [id: string]: string } = {};
- editingDescHistoriaId: string | null = null;
- tempDescHistoriaMap: { [id: string]: string } = {};
+  @Input() dataHistoria: any;
+  @Input() eventId: string = '';
+  @Input() eventType: string = '';
+  @Input() isReadOnly: boolean = false;
+  @Input() maxItems: number = 99;
+  loadingImgs: { [key: string]: boolean } = {};
+  loading: boolean = false;
+  section: string = ''
+  editingTituloHistoria: boolean = false;
+  tempTituloHistoria: string = '';
+  editingFechaHistoriaId: string | null = null;
+  tempFechaHistoriaMap: { [id: string]: string } = {};
+  editingDescHistoriaId: string | null = null;
+  tempDescHistoriaMap: { [id: string]: string } = {};
 
- cargarDatosHistoria() {
+  cargarDatosHistoria() {
     this.loading = true;
     if (!this.eventId) return;
 
     this.invitationService.getHistoria(this.eventId).subscribe({
       next: (res) => {
         this.dataHistoria = res;
-        this.loading = false;        
+        this.loading = false;
       },
       error: (err) => {
         this.notificationService.show(
@@ -49,23 +49,23 @@ constructor(private invitationService: InvitationService, private notificationSe
     });
   }
 
-  onClickTituloHistoria(){    
-    this.editingTituloHistoria = true; 
+  onClickTituloHistoria() {
+    this.editingTituloHistoria = true;
     this.tempTituloHistoria = this.dataHistoria.titulo; // 🔹 Guardamos el valor original
   }
 
-  onTituloHistoriaBlur(event: Event){
+  onTituloHistoriaBlur(event: Event) {
     const el = event.target as HTMLElement;
     const nuevoTexto = el.innerText.trim();
 
     // si cambió, guardamos y llamamos backend
     if (nuevoTexto !== this.dataHistoria.titulo) {
-      this.dataHistoria.titulo = nuevoTexto;      
-      this.updateBackend('HistoriaMaster','IdEvento',this.eventId, 'Titulo', this.dataHistoria.titulo);
+      this.dataHistoria.titulo = nuevoTexto;
+      this.updateBackend('HistoriaMaster', 'IdEvento', this.eventId, 'Titulo', this.dataHistoria.titulo);
     }
   }
 
-  restoreTituloHistoria(element: HTMLElement) {  
+  restoreTituloHistoria(element: HTMLElement) {
     const original = this.tempTituloHistoria;
     if (original !== undefined) {
       element.innerText = `${original}`;
@@ -74,8 +74,8 @@ constructor(private invitationService: InvitationService, private notificationSe
     element.blur();
   }
 
-  onClickFechaHistoria(id:string){
-    this.editingFechaHistoriaId = id; 
+  onClickFechaHistoria(id: string) {
+    this.editingFechaHistoriaId = id;
     const item = this.dataHistoria.details.find((d: { id: string }) => d.id === id);
     if (item) {
       this.tempFechaHistoriaMap[id] = item.fecha;
@@ -94,7 +94,7 @@ constructor(private invitationService: InvitationService, private notificationSe
 
     // salimos del modo edición
     this.editingFechaHistoriaId = null;
-  }    
+  }
 
   restoreFechaHistoria(item: any, element: HTMLElement) {
     const original = this.tempFechaHistoriaMap[item.id];
@@ -105,8 +105,8 @@ constructor(private invitationService: InvitationService, private notificationSe
     element.blur();
   }
 
-  onClickDescHistoria(id:string){
-    this.editingDescHistoriaId = id; 
+  onClickDescHistoria(id: string) {
+    this.editingDescHistoriaId = id;
     const item = this.dataHistoria.details.find((d: { id: string }) => d.id === id);
     if (item) {
       this.tempDescHistoriaMap[id] = item.descripcion;
@@ -125,7 +125,7 @@ constructor(private invitationService: InvitationService, private notificationSe
 
     // salimos del modo edición
     this.editingDescHistoriaId = null;
-  }    
+  }
 
   restoreDescHistoria(item: any, element: HTMLElement) {
     const original = this.tempDescHistoriaMap[item.id];
@@ -136,7 +136,7 @@ constructor(private invitationService: InvitationService, private notificationSe
     element.blur();
   }
 
-  nuevaHistoria(){
+  nuevaHistoria() {
     this.invitationService.postNewHistoria(this.eventId).subscribe({
       next: (res) => {
         this.cargarDatosHistoria();
@@ -151,22 +151,23 @@ constructor(private invitationService: InvitationService, private notificationSe
     });
   }
 
-  triggerImageDelete(historiaId:string) {
+  triggerImageDelete(historiaId: string) {
     this.invitationService.deleteHistoria(historiaId).subscribe({
-        next: (res) => {
-          this.cargarDatosHistoria();
-        },
-        error: (err) => {
-          this.loadingImgs[historiaId] = false;
-          this.notificationService.show(
-            'error',
-            `Error al subir imagen: ${err.message}`
-          );
-        }
-      });
+      next: (res) => {
+        this.cargarDatosHistoria();
+        this.invitationService.notifyMutation(this.eventId);
+      },
+      error: (err) => {
+        this.loadingImgs[historiaId] = false;
+        this.notificationService.show(
+          'error',
+          `Error al subir imagen: ${err.message}`
+        );
+      }
+    });
   }
 
-  triggerImageUpload(historiaId:string) {
+  triggerImageUpload(historiaId: string) {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
@@ -179,11 +180,11 @@ constructor(private invitationService: InvitationService, private notificationSe
     };
     input.click();
   }
-  
-  updateBackend(tableName:string, searchField: string, eventId:string, field:string, value: string, loadData: boolean = false) {    
+
+  updateBackend(tableName: string, searchField: string, eventId: string, field: string, value: string, loadData: boolean = false) {
     this.invitationService.updateTableField(tableName, searchField, eventId, field, value).subscribe({
-      next: () => { 
-        if (loadData){
+      next: () => {
+        if (loadData) {
           this.cargarDatosHistoria();
         }
       },
@@ -196,32 +197,31 @@ constructor(private invitationService: InvitationService, private notificationSe
     });
   }
 
-  uploadImage(tableName:string, searchField:string, eventId:string, field: string, file: File, historiaId:string) 
-  {
-      this.invitationService.updateTableFieldImagen(tableName, searchField, eventId, field, file).subscribe({
-        next: (res) => {
-          const url = res;
-          const item = this.dataHistoria.details.find((d: { id: string; }) => d.id === historiaId);
-          if (item) {
-             item.imagen = url;
-          }
-          this.loadingImgs[historiaId] = false;
-        },
-        error: (err) => {
-          this.loadingImgs[historiaId] = false;
-          this.notificationService.show(
-            'error',
-            `Error al subir imagen: ${err.message}`
-          );
+  uploadImage(tableName: string, searchField: string, eventId: string, field: string, file: File, historiaId: string) {
+    this.invitationService.updateTableFieldImagen(tableName, searchField, eventId, field, file).subscribe({
+      next: (res) => {
+        const url = res;
+        const item = this.dataHistoria.details.find((d: { id: string; }) => d.id === historiaId);
+        if (item) {
+          item.imagen = url;
         }
-      });
+        this.loadingImgs[historiaId] = false;
+      },
+      error: (err) => {
+        this.loadingImgs[historiaId] = false;
+        this.notificationService.show(
+          'error',
+          `Error al subir imagen: ${err.message}`
+        );
+      }
+    });
   }
 
-  showAddHistoriaBtn(){ 
-    return !this.loading && (this.dataHistoria?.details?.length || 0) < 5
+  showAddHistoriaBtn() {
+    return !this.loading && (this.dataHistoria?.details?.length || 0) < this.maxItems
   }
 
-  onKeyDown(event: KeyboardEvent | any, maxLength:number) {
+  onKeyDown(event: KeyboardEvent | any, maxLength: number) {
     const key = (event as KeyboardEvent).key;
     if (key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
       event.preventDefault();
@@ -244,26 +244,26 @@ constructor(private invitationService: InvitationService, private notificationSe
   }
 
   @HostListener('document:keydown.escape', ['$event'])
-    onEscape(event: KeyboardEvent) {
-      if (this.editingTituloHistoria) {
-        const element = document.querySelector('#TituloHistoria') as HTMLElement;
-        this.restoreTituloHistoria(element);
-      }
-  
-      if (this.editingFechaHistoriaId) {
-         const item = this.dataHistoria.details.find((d: { id: string }) => d.id === this.editingFechaHistoriaId);
-         const element = document.querySelector(`[contenteditable][data-id-fecha-historia="${this.editingFechaHistoriaId}"]`) as HTMLElement;
-         if (item && element) {
-           this.restoreFechaHistoria(item, element);
-         }
-      }
-  
-      if (this.editingDescHistoriaId) {
-         const item = this.dataHistoria.details.find((d: { id: string }) => d.id === this.editingDescHistoriaId);
-         const element = document.querySelector(`[contenteditable][data-id-desc-historia="${this.editingDescHistoriaId}"]`) as HTMLElement;
-         if (item && element) {
-           this.restoreDescHistoria(item, element);
-         }
+  onEscape(event: KeyboardEvent) {
+    if (this.editingTituloHistoria) {
+      const element = document.querySelector('#TituloHistoria') as HTMLElement;
+      this.restoreTituloHistoria(element);
+    }
+
+    if (this.editingFechaHistoriaId) {
+      const item = this.dataHistoria.details.find((d: { id: string }) => d.id === this.editingFechaHistoriaId);
+      const element = document.querySelector(`[contenteditable][data-id-fecha-historia="${this.editingFechaHistoriaId}"]`) as HTMLElement;
+      if (item && element) {
+        this.restoreFechaHistoria(item, element);
       }
     }
+
+    if (this.editingDescHistoriaId) {
+      const item = this.dataHistoria.details.find((d: { id: string }) => d.id === this.editingDescHistoriaId);
+      const element = document.querySelector(`[contenteditable][data-id-desc-historia="${this.editingDescHistoriaId}"]`) as HTMLElement;
+      if (item && element) {
+        this.restoreDescHistoria(item, element);
+      }
+    }
+  }
 }

@@ -33,6 +33,7 @@ export class PortadaComponent implements OnInit, OnDestroy {
   @Input() data: any;
   @Input() eventType: string = '';
   @Input() isReadOnly: boolean = false;
+  @Input() maxItems: number = 99;
   editingTitle: boolean = false;
   editingSubtitle: boolean = false;
   editingDate: boolean = false;
@@ -46,7 +47,7 @@ export class PortadaComponent implements OnInit, OnDestroy {
   currentImageIndex: number = 0;
   nextImageIndex: number = 1;
   private carouselTimeout: any = null;
-  readonly MAX_IMAGES = 4;
+  // MAX_IMAGES ahora viene de @Input() maxItems (SectionPricing.MaxItems)
 
   // Configuracion del carrusel (en milisegundos)
   readonly TRANSITION_DURATION = 2000; // Duracion del fade entre imagenes
@@ -250,10 +251,18 @@ export class PortadaComponent implements OnInit, OnDestroy {
     input.onchange = (event: any) => {
       const files: FileList = event.target.files;
       if (files && files.length > 0) {
-        const fileArray: File[] = Array.from(files).slice(0, this.MAX_IMAGES);
-        if (files.length > this.MAX_IMAGES) {
-          this.notificationService.show('warning', `Máximo ${this.MAX_IMAGES} imágenes permitidas. Se seleccionaron las primeras ${this.MAX_IMAGES}.`);
+        let fileArray: File[] = Array.from(files);
+        const originalCount = fileArray.length;
+
+        if (fileArray.length > this.maxItems) {
+          fileArray = fileArray.slice(0, this.maxItems);
+          this.notificationService.show(
+            'warning',
+            `⚠️ Solo se subirán ${this.maxItems} de las ${originalCount} imágenes seleccionadas (máximo ${this.maxItems}).`,
+            true
+          );
         }
+
         this.loadingImg = true;
         this.uploadPortadaImages(fileArray);
       }
@@ -276,6 +285,7 @@ export class PortadaComponent implements OnInit, OnDestroy {
         }
 
         this.loadingImg = false;
+        this.invitationService.notifyMutation(this.eventId);
         this.notificationService.show('success', 'Imágenes actualizadas correctamente');
       },
       error: (err) => {
