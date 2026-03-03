@@ -26,6 +26,7 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
   @Input() eventType: string = '';
   @Input() isReadOnly: boolean = false;
   @Input() maxItems: number = 99;
+  @Input() aiEnabled: boolean = false;
   images: any[] = [];
   editingTituloPF: boolean = false;
   tempTituloPF: string = '';

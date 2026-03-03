@@ -10,21 +10,70 @@ export class AiEditableDirective {
   @Input() aiEventType: string = 'boda';
   @Input() maxLength: number = 50;
   @Input() aiReadOnly: boolean = false;
+  @Input() aiEnabled: boolean = false;
+  @Input() aiEventId: string = '';
 
   private widgetRef: ComponentRef<AiTextWidgetComponent> | null = null;
+  private lockedTooltip: HTMLElement | null = null;
 
   constructor(
     private el: ElementRef,
     private viewContainer: ViewContainerRef,
     private appRef: ApplicationRef,
     private injector: EnvironmentInjector
-  ) {}
+  ) { }
 
   @HostListener('click', ['$event'])
   onClick(event: Event): void {
     if (this.aiReadOnly) return;
     event.stopPropagation();
+
+    if (!this.aiEnabled) {
+      this.showLockedTooltip();
+      return;
+    }
+
     this.showWidget();
+  }
+
+  private showLockedTooltip(): void {
+    // Si ya existe, cerrarlo
+    if (this.lockedTooltip) {
+      this.removeLockedTooltip();
+      return;
+    }
+
+    const rect = this.el.nativeElement.getBoundingClientRect();
+
+    this.lockedTooltip = document.createElement('div');
+    this.lockedTooltip.innerHTML = '🔒 Habilita <b>"Sugerencias con IA"</b> para usar esta función';
+    this.lockedTooltip.style.cssText = `
+      position: absolute;
+      top: ${rect.bottom + window.scrollY + 8}px;
+      left: ${rect.left + rect.width / 2 + window.scrollX}px;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.85);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      z-index: 1050;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      pointer-events: none;
+      animation: fadeIn 0.2s ease;
+    `;
+    document.body.appendChild(this.lockedTooltip);
+
+    // Auto cerrar después de 3 segundos
+    setTimeout(() => this.removeLockedTooltip(), 3000);
+  }
+
+  private removeLockedTooltip(): void {
+    if (this.lockedTooltip) {
+      this.lockedTooltip.remove();
+      this.lockedTooltip = null;
+    }
   }
 
   private showWidget(): void {
@@ -49,6 +98,7 @@ export class AiEditableDirective {
     this.widgetRef.instance.currentText = currentText;
     this.widgetRef.instance.eventType = this.aiEventType;
     this.widgetRef.instance.maxLength = this.maxLength;
+    this.widgetRef.instance.eventId = this.aiEventId;
     this.widgetRef.instance.position = {
       top: rect.bottom + window.scrollY + 10,
       left: rect.left + rect.width / 2 + window.scrollX
@@ -57,7 +107,7 @@ export class AiEditableDirective {
     // Escuchar eventos
     this.widgetRef.instance.textGenerated.subscribe((newText: string) => {
       this.updateElementText(newText);
-      this.focusElement(); // NUEVO: enfocar después de actualizar
+      this.focusElement();
     });
 
     this.widgetRef.instance.close.subscribe(() => {
@@ -71,7 +121,7 @@ export class AiEditableDirective {
 
   private updateElementText(newText: string): void {
     const element = this.el.nativeElement;
-    
+
     if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
       element.value = newText;
       element.dispatchEvent(new Event('input', { bubbles: true }));
@@ -81,44 +131,33 @@ export class AiEditableDirective {
     }
   }
 
-  // NUEVO: Método para enfocar el elemento y colocar el cursor al final
   private focusElement(): void {
     const element = this.el.nativeElement;
-    
-    // Pequeño delay para asegurar que el DOM se haya actualizado
+
     setTimeout(() => {
       if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-        // Para inputs y textareas
         element.focus();
-        // Colocar el cursor al final
         const length = element.value.length;
         element.setSelectionRange(length, length);
       } else if (element.isContentEditable) {
-        // Para elementos contenteditable (div, h1, h2, etc.)
         element.focus();
-        
-        // Colocar el cursor al final del contenido
+
         const range = document.createRange();
         const selection = window.getSelection();
-        
-        // Seleccionar todo el contenido del elemento
+
         range.selectNodeContents(element);
-        // Colapsar la selección al final
         range.collapse(false);
-        
-        // Aplicar la selección
+
         if (selection) {
           selection.removeAllRanges();
           selection.addRange(range);
         }
       } else {
-        // Para otros elementos, simplemente enfocar
         element.focus();
       }
-      
-      // Hacer scroll suave hacia el elemento si está fuera de la vista
-      element.scrollIntoView({ 
-        behavior: 'smooth', 
+
+      element.scrollIntoView({
+        behavior: 'smooth',
         block: 'nearest',
         inline: 'nearest'
       });
@@ -135,5 +174,6 @@ export class AiEditableDirective {
 
   ngOnDestroy(): void {
     this.closeWidget();
+    this.removeLockedTooltip();
   }
 }

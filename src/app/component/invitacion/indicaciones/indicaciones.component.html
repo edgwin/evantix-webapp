@@ -40,7 +40,7 @@
             [attr.data-id-descripcion-indicaciones]="item.id" (keydown)="onDescKeyDown($event)"
             (click)="!isReadOnly && onClickDescripcion(item.id)" (blur)="saveContent($event, item.id, 'descripcion')"
             appAiEditable [aiSection]="'Indicaciones para el evento'" [aiEventType]="eventType" [maxLength]="maxLength"
-            [aiReadOnly]="isReadOnly">
+            [aiReadOnly]="isReadOnly" [aiEnabled]="aiEnabled" [aiEventId]="eventId">
           </p>
         </div>
       </div>

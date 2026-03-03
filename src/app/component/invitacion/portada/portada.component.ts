@@ -34,6 +34,7 @@ export class PortadaComponent implements OnInit, OnDestroy {
   @Input() eventType: string = '';
   @Input() isReadOnly: boolean = false;
   @Input() maxItems: number = 99;
+  @Input() aiEnabled: boolean = false;
   editingTitle: boolean = false;
   editingSubtitle: boolean = false;
   editingDate: boolean = false;

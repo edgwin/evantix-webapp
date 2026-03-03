@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InvitationService, AiTextRequest } from '../../services/invitation.service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-ai-text-widget',
@@ -15,7 +16,8 @@ export class AiTextWidgetComponent {
   @Input() currentText: string = '';
   @Input() eventType: string = 'boda'; // xv, boda, bautizo
   @Input() position: { top: number; left: number } = { top: 0, left: 0 };
-  
+  @Input() eventId: string = '';
+
   @Output() textGenerated = new EventEmitter<string>();
   @Output() close = new EventEmitter<void>();
 
@@ -33,7 +35,10 @@ export class AiTextWidgetComponent {
     { value: 'moderno', label: 'Moderno' }
   ];
 
-  constructor(private aiTextService: InvitationService) {}
+  constructor(
+    private aiTextService: InvitationService,
+    private notificationService: NotificationService
+  ) { }
 
   // NUEVO: método para toggle expandir/colapsar
   toggleExpand(): void {
@@ -55,7 +60,8 @@ export class AiTextWidgetComponent {
       eventType: this.eventType,
       currentText: this.currentText || undefined,
       shortVersion: this.shortVersion,
-      maxLength: this.maxLength
+      maxLength: this.maxLength,
+      eventId: this.eventId || undefined
     };
 
     this.aiTextService.generateText(request).subscribe({
@@ -66,7 +72,13 @@ export class AiTextWidgetComponent {
       },
       error: (error) => {
         this.isLoading = false;
-        this.errorMessage = 'Error al generar el texto. Intenta nuevamente.';
+        if (error.status === 403) {
+          this.errorMessage = 'Las sugerencias con IA no están habilitadas.';
+        } else if (error.status === 429) {
+          this.errorMessage = 'Has alcanzado el límite de sugerencias con IA.';
+        } else {
+          this.errorMessage = 'Error al generar el texto. Intenta nuevamente.';
+        }
         console.error('Error:', error);
       }
     });

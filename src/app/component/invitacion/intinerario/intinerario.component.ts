@@ -23,6 +23,7 @@ export class IntinerarioComponent implements OnInit {
   @Input() eventType: string = '';
   @Input() isReadOnly: boolean = false;
   @Input() maxItems: number = 99;
+  @Input() aiEnabled: boolean = false;
   showPopup = false;
   images: string[] = [];
 

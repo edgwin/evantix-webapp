@@ -20,6 +20,7 @@ export class HistoriaComponent {
   @Input() eventType: string = '';
   @Input() isReadOnly: boolean = false;
   @Input() maxItems: number = 99;
+  @Input() aiEnabled: boolean = false;
   loadingImgs: { [key: string]: boolean } = {};
   loading: boolean = false;
   section: string = ''

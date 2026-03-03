@@ -28,6 +28,7 @@ export class IndicacionesComponent {
   @Input() eventType: string = '';
   @Input() isReadOnly: boolean = false;
   @Input() maxItems: number = 99;
+  @Input() aiEnabled: boolean = false;
   private editingTituloId: string | null = null;
   get valor() {
     return this.editingTituloId;

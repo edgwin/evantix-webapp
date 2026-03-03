@@ -12,11 +12,12 @@
 
   <!-- Secciones base (siempre habilitadas) -->
   <app-portada [eventId]="eventId" [data]="data.portada" [eventType]="data.eventType" [isReadOnly]="isReadOnly"
-    [maxItems]="getSectionMaxItems('Portada')"></app-portada>
-  <app-festejados [eventId]="eventId" [data]="data.festejados" [eventType]="data.eventType"
-    [isReadOnly]="isReadOnly"></app-festejados>
+    [maxItems]="getSectionMaxItems('Portada')" [aiEnabled]="isSectionEnabled('AISuggestions')"></app-portada>
+  <app-festejados [eventId]="eventId" [data]="data.festejados" [eventType]="data.eventType" [isReadOnly]="isReadOnly"
+    [aiEnabled]="isSectionEnabled('AISuggestions')"></app-festejados>
   <app-indicaciones [eventId]="eventId" [data]="data.indicaciones" [eventType]="data.eventType"
-    [isReadOnly]="isReadOnly" [maxItems]="getSectionMaxItems('Indicaciones')"></app-indicaciones>
+    [isReadOnly]="isReadOnly" [maxItems]="getSectionMaxItems('Indicaciones')"
+    [aiEnabled]="isSectionEnabled('AISuggestions')"></app-indicaciones>
 
   <div [ngStyle]="{
       'background-image': 'url(' + templateService.getMarbleBackground() + ')',
@@ -29,11 +30,12 @@
     <app-donde-cuando [eventId]="eventId" [data]="data.dondeCuando" [isReadOnly]="isReadOnly"
       [maxItems]="getSectionMaxItems('DondeCuando')"></app-donde-cuando>
     <app-intinerario [eventId]="eventId" [dataIntinerario]="data.intinerario" [eventType]="data.eventType"
-      [isReadOnly]="isReadOnly" [maxItems]="getSectionMaxItems('Intinerario')"></app-intinerario>
+      [isReadOnly]="isReadOnly" [maxItems]="getSectionMaxItems('Intinerario')"
+      [aiEnabled]="isSectionEnabled('AISuggestions')"></app-intinerario>
   </div>
 
   <app-mesa-regalos [eventId]="eventId" [data]="data.mesaRegalos" [eventType]="data.eventType" [isReadOnly]="isReadOnly"
-    [maxItems]="getSectionMaxItems('MesaRegalos')"></app-mesa-regalos>
+    [maxItems]="getSectionMaxItems('MesaRegalos')" [aiEnabled]="isSectionEnabled('AISuggestions')"></app-mesa-regalos>
 
   <!-- Secciones opcionales (con toggle) -->
   <div [ngStyle]="{
@@ -51,7 +53,8 @@
       [enabledByDefault]="false" [isReadOnly]="isReadOnly" [loading]="togglingSection === 'PersonasFavoritas'"
       (enable)="onEnableSection($event)" (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
       <app-personas-favoritas [eventId]="eventId" [data]="data.personasFavoritas" [eventType]="data.eventType"
-        [isReadOnly]="isReadOnly" [maxItems]="getSectionMaxItems('PersonasFavoritas')"></app-personas-favoritas>
+        [isReadOnly]="isReadOnly" [maxItems]="getSectionMaxItems('PersonasFavoritas')"
+        [aiEnabled]="isSectionEnabled('AISuggestions')"></app-personas-favoritas>
     </app-section-toggle>
 
     <!-- Historia -->
@@ -60,7 +63,8 @@
       [enabledByDefault]="false" [isReadOnly]="isReadOnly" [loading]="togglingSection === 'Historia'"
       (enable)="onEnableSection($event)" (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
       <app-historia [eventId]="eventId" [dataHistoria]="data.historia" [eventType]="data.eventType"
-        [isReadOnly]="isReadOnly" [maxItems]="getSectionMaxItems('Historia')"></app-historia>
+        [isReadOnly]="isReadOnly" [maxItems]="getSectionMaxItems('Historia')"
+        [aiEnabled]="isSectionEnabled('AISuggestions')"></app-historia>
     </app-section-toggle>
 
     <!-- Galería de Fotos -->
@@ -87,6 +91,19 @@
       [isReadOnly]="isReadOnly" [loading]="togglingSection === 'Musica'" (enable)="onEnableSection($event)"
       (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
       <app-musica [eventId]="eventId" [trackId]="data.portada.trackId" [isReadOnly]="isReadOnly"></app-musica>
+    </app-section-toggle>
+
+    <!-- Sugerencias con IA -->
+    <app-section-toggle sectionKey="AISuggestions" [sectionName]="getSectionName('AISuggestions')"
+      [isEnabled]="isSectionEnabled('AISuggestions')" [enableCost]="getSectionEnableCost('AISuggestions')"
+      [enabledByDefault]="false" [isReadOnly]="isReadOnly" [loading]="togglingSection === 'AISuggestions'"
+      (enable)="onEnableSection($event)" (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
+      <div style="text-align:center; padding: 20px; color: #555;">
+        <span style="font-size: 2rem;">✨</span>
+        <p>Mejora los textos de tu invitación con sugerencias de Inteligencia Artificial.</p>
+        <p style="font-size: 0.85rem; color: #888;">Incluye 100 sugerencias. Sugerencias adicionales tienen un costo de
+          $5 c/u (máx. 200).</p>
+      </div>
     </app-section-toggle>
   </div>
 

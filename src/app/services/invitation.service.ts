@@ -11,6 +11,7 @@ export interface AiTextRequest {
   currentText?: string;
   shortVersion: boolean;
   maxLength: number;
+  eventId?: string;
 }
 
 @Injectable({

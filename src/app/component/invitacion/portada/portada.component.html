@@ -41,7 +41,8 @@
         <!-- Subtítulo -->
         <div class="editablePortadaSubtitulo" [attr.contenteditable]="!isReadOnly" (keydown)="onKeyDown($event)"
           (click)="!isReadOnly && onClickSubtitulo()" (blur)="onSubtitleBlur($event)" appAiEditable
-          [aiSection]="'Portada Subtitulo'" [aiEventType]="eventType" [maxLength]="maxLength" [aiReadOnly]="isReadOnly">
+          [aiSection]="'Portada Subtitulo'" [aiEventType]="eventType" [maxLength]="maxLength" [aiReadOnly]="isReadOnly"
+          [aiEnabled]="aiEnabled" [aiEventId]="eventId">
           <h2>{{ data?.subTitulo }}</h2>
         </div>
         <!-- Fechas -->

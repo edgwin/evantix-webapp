@@ -5,7 +5,7 @@
       <h1 [attr.contenteditable]="!isReadOnly" id="TituloPF" (click)="!isReadOnly && onClickTituloPF()"
         (keydown)="onKeyDown($event, 50)" (blur)="onTituloBlur($event)" appAiEditable
         [aiSection]="'Persona Favoritas como Padres y Padrinos'" [aiEventType]="eventType" [maxLength]="50"
-        [aiReadOnly]="isReadOnly">
+        [aiReadOnly]="isReadOnly" [aiEnabled]="aiEnabled" [aiEventId]="eventId">
         {{ data.titulo }}
       </h1>
       <span class="header-decoration-line"></span>
@@ -14,7 +14,7 @@
     <p class="section-description" [attr.contenteditable]="!isReadOnly" (click)="!isReadOnly && onClickFrasePF()"
       (keydown)="onKeyDown($event, 120)" (blur)="onFraseBlur($event)" id="FrasePF" appAiEditable
       [aiSection]="'Persona Favoritas como Padres y Padrinos, frase emotiva o agradecimiento'" [aiEventType]="eventType"
-      [maxLength]="120" [aiReadOnly]="isReadOnly">
+      [maxLength]="120" [aiReadOnly]="isReadOnly" [aiEnabled]="aiEnabled" [aiEventId]="eventId">
       {{ data.frase }}
     </p>
 

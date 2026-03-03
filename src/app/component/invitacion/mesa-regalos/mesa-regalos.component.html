@@ -42,7 +42,8 @@
           <p class="card-description" [attr.contenteditable]="!isReadOnly" [attr.data-id-descripcion]="item.id"
             (keydown)="onKeyDown($event, 200)" (blur)="saveContent($event, item.id, 'descripcion')"
             (click)="!isReadOnly && onClickDescripcion(item.id)" appAiEditable [aiSection]="'Mesa de Regalos'"
-            [aiEventType]="eventType" [maxLength]="200" [aiReadOnly]="isReadOnly">
+            [aiEventType]="eventType" [maxLength]="200" [aiReadOnly]="isReadOnly" [aiEnabled]="aiEnabled"
+            [aiEventId]="eventId">
             {{item.descripcion}}
           </p>
 

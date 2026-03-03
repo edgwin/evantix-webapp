@@ -22,6 +22,7 @@ export class MesaRegalosComponent {
   @Input() eventType: string = '';
   @Input() isReadOnly: boolean = false;
   @Input() maxItems: number = 99;
+  @Input() aiEnabled: boolean = false;
   tempTituloMap: { [id: string]: string } = {};
   editingTituloId: string | null = null;
   editingDescripcionId: string | null = null;

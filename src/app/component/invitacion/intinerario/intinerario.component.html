@@ -5,28 +5,20 @@
       <h1>{{dataIntinerario.titulo}}</h1>
       <span class="header-decoration-line"></span>
     </div>
-    
-    <p class="section-description"
-       [attr.contenteditable]="!isReadOnly"
-       (click)="!isReadOnly && onClickDescripcion()"
-       (keydown)="onKeyDownInt($event, 200)"
-       (blur)="onDescripcionBlur($event)"
-       appAiEditable
-       [aiSection]="'Intinerario del evento'"
-       [aiEventType]="eventType"
-       [maxLength]="200"
-       [aiReadOnly]="isReadOnly">
+
+    <p class="section-description" [attr.contenteditable]="!isReadOnly" (click)="!isReadOnly && onClickDescripcion()"
+      (keydown)="onKeyDownInt($event, 200)" (blur)="onDescripcionBlur($event)" appAiEditable
+      [aiSection]="'Intinerario del evento'" [aiEventType]="eventType" [maxLength]="200" [aiReadOnly]="isReadOnly"
+      [aiEnabled]="aiEnabled" [aiEventId]="eventId">
       {{dataIntinerario.descripcion}}
     </p>
 
     <div class="timeline-container">
       <div class="timeline-line"></div>
-      
-      <div class="timeline-item" 
-           *ngFor="let item of dataIntinerario.details; let i = index"
-           [ngClass]="{'timeline-right': i % 2 !== 0}"
-           [style.animation-delay]="(i * 0.15) + 's'">
-        
+
+      <div class="timeline-item" *ngFor="let item of dataIntinerario.details; let i = index"
+        [ngClass]="{'timeline-right': i % 2 !== 0}" [style.animation-delay]="(i * 0.15) + 's'">
+
         <div class="timeline-icon-wrapper">
           <div class="timeline-icon" [ngStyle]="{'background-image': 'url(' + item.imagen + ')'}">
             <button class="icon-edit-btn" (click)="openPopup(i)" *ngIf="!isReadOnly" title="Cambiar icono">
@@ -36,44 +28,30 @@
         </div>
 
         <div class="timeline-card">
-          <button class="card-delete-btn" 
-                  (click)="triggerIntinerarioImageDelete(item.id)"
-                  *ngIf="!isReadOnly && (dataIntinerario?.details?.length || 0) > 1"
-                  title="Eliminar">
+          <button class="card-delete-btn" (click)="triggerIntinerarioImageDelete(item.id)"
+            *ngIf="!isReadOnly && (dataIntinerario?.details?.length || 0) > 1" title="Eliminar">
             <img src="assets/BtnDelete.png" alt="eliminar">
           </button>
 
           <div class="card-time">
-            <span class="time-value"
-                  [attr.contenteditable]="!isReadOnly"
-                  [attr.data-id-hora-int]="item.id"
-                  (click)="!isReadOnly && onClickHoraInt(item.id)"
-                  (keydown)="onKeyDownInt($event, 10)"
-                  (blur)="onHoraIntBlur($event, item)">
+            <span class="time-value" [attr.contenteditable]="!isReadOnly" [attr.data-id-hora-int]="item.id"
+              (click)="!isReadOnly && onClickHoraInt(item.id)" (keydown)="onKeyDownInt($event, 10)"
+              (blur)="onHoraIntBlur($event, item)">
               {{item.hora}}
             </span>
           </div>
 
-          <h3 class="card-title"
-              [attr.data-id-actividad-int]="item.id"
-              [attr.contenteditable]="!isReadOnly"
-              (click)="!isReadOnly && onClickActividadInt(item.id)"
-              (keydown)="onKeyDownInt($event, 22)"
-              (blur)="onActividadIntBlur($event, item)"
-              appAiEditable
-              [aiSection]="'Intinerario del evento'"
-              [aiEventType]="eventType"
-              [maxLength]="22"
-              [aiReadOnly]="isReadOnly">
+          <h3 class="card-title" [attr.data-id-actividad-int]="item.id" [attr.contenteditable]="!isReadOnly"
+            (click)="!isReadOnly && onClickActividadInt(item.id)" (keydown)="onKeyDownInt($event, 22)"
+            (blur)="onActividadIntBlur($event, item)" appAiEditable [aiSection]="'Intinerario del evento'"
+            [aiEventType]="eventType" [maxLength]="22" [aiReadOnly]="isReadOnly" [aiEnabled]="aiEnabled"
+            [aiEventId]="eventId">
             {{item.actividad}}
           </h3>
 
-          <p class="card-date"
-             [attr.data-id-fecha-int]="item.id"
-             [attr.contenteditable]="!isReadOnly"
-             (click)="!isReadOnly && onClickFechaInt(item.id)"
-             (keydown)="onKeyDownInt($event, 50)"
-             (blur)="onFechaIntBlur($event, item)">
+          <p class="card-date" [attr.data-id-fecha-int]="item.id" [attr.contenteditable]="!isReadOnly"
+            (click)="!isReadOnly && onClickFechaInt(item.id)" (keydown)="onKeyDownInt($event, 50)"
+            (blur)="onFechaIntBlur($event, item)">
             {{item.fecha}}
           </p>
 
@@ -91,10 +69,6 @@
   </div>
 </section>
 
-<app-popup-html 
-  [visible]="showPopup" 
-  [images]="images"
-  title="Selecciona una imagen"
-  (closed)="onClosePopup()"
+<app-popup-html [visible]="showPopup" [images]="images" title="Selecciona una imagen" (closed)="onClosePopup()"
   (imageSelected)="onImageSelected($event)">
 </app-popup-html>
