@@ -103,7 +103,7 @@
     </app-section-toggle>
 
     <!-- Sugerencias con IA -->
-    <app-section-toggle sectionKey="AISuggestions" [sectionName]="getSectionName('AISuggestions')"
+    <app-section-toggle *ngIf="!isReadOnly" sectionKey="AISuggestions" [sectionName]="getSectionName('AISuggestions')"
       [isEnabled]="isSectionEnabled('AISuggestions')" [enableCost]="getSectionEnableCost('AISuggestions')"
       [enabledByDefault]="false" [isReadOnly]="isReadOnly" [loading]="togglingSection === 'AISuggestions'"
       (enable)="onEnableSection($event)" (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">

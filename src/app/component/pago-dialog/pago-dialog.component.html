@@ -1,19 +1,19 @@
 <body>
-<div class="close-button" (click)="cancelar()">✖</div>
-<header>Resumen de Pago</header>
-<div class="container">
+  <div class="close-button" (click)="cancelar()">✖</div>
+  <header>Resumen de Pago</header>
+  <div class="container">
     <div class="payment-resume">
       <div>
-        <b>Evento: XV de Cristy</b>
+        <b>Evento: {{ data.evento.nombre }}</b>
       </div>
       <div>
-        <b>Fecha: 16 de Agosto 2025</b>
+        <b>Fecha: {{ data.evento.fecha }}</b>
       </div>
       <div>
-        <b>Paquete: Black</b>
+        <b>Estatus: {{ data.evento.estatus }}</b>
       </div>
       <div>
-        <b>Total a pagar: $2500</b>
+        <b>Total a pagar: {{ data.evento.costo | currency:'$' }}</b>
       </div>
       <div>
         <b>Elige tu opcion de pago favorito:</b>
@@ -34,8 +34,9 @@
         <span class="method-name">Mercado Pago</span>
       </div>
       <div class="logos">
-        <img src="../../../assets/tarjetas.png" alt = "MercadoPago" title="Acepta Visa, Mastercard, AMEX, MercadoPagoy Pago en efectivo">
+        <img src="../../../assets/tarjetas.png" alt="MercadoPago"
+          title="Acepta Visa, Mastercard, AMEX, MercadoPagoy Pago en efectivo">
       </div>
     </div>
-</div>
+  </div>
 </body>

@@ -46,7 +46,7 @@ export class AiEditableDirective {
     const rect = this.el.nativeElement.getBoundingClientRect();
 
     this.lockedTooltip = document.createElement('div');
-    this.lockedTooltip.innerHTML = '🔒 Habilita <b>"Sugerencias con IA"</b> para usar esta función';
+    this.lockedTooltip.innerHTML = '🔒 Habilita <b>"Sugerencias con IA"</b> para usar esta función<br>al final de la página';
     this.lockedTooltip.style.cssText = `
       position: absolute;
       top: ${rect.bottom + window.scrollY + 8}px;

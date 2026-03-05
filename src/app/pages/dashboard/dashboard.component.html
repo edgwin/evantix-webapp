@@ -1,6 +1,13 @@
 <div class="header-row">
-  <div><h1>Mis Eventos</h1></div>
-  <div><button class="btn btn-primary" type="button" routerLink="/nuevoEvento">Nuevo Evento</button></div>
+  <div>
+    <h1>Mis Eventos</h1>
+  </div>
+  <div>
+    <button class="btn btn-secondary btn-space" type="button" (click)="onRefresh()"
+      title="Refrescar lista de eventos">🔄
+      Refrescar</button>
+    <button class="btn btn-primary" type="button" routerLink="/nuevoEvento">Nuevo Evento</button>
+  </div>
 </div>
 <!-- LOADING GIF -->
 <div *ngIf="loading" class="loading-container">
@@ -8,17 +15,10 @@
 </div>
 
 <div *ngIf="!loading" style="width: 90%; height: 500px;">
-<app-edgwin-grid
-  [columns]="columns"
-  [data]="rowData"
-  (action)="onActionHandler($event)">
-</app-edgwin-grid>
+  <app-edgwin-grid [columns]="columns" [data]="rowData" (action)="onActionHandler($event)">
+  </app-edgwin-grid>
 </div>
 
-<app-popup-html
-    [visible]="showPopup"
-    [htmlContent]="terminosHtml"
-    [title]="'Seleccione su metodo de pago'"
-    (closed)="showPopup = false">
+<app-popup-html [visible]="showPopup" [htmlContent]="terminosHtml" [title]="'Seleccione su metodo de pago'"
+  (closed)="showPopup = false">
 </app-popup-html>
-

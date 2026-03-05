@@ -79,9 +79,14 @@ export class InvitacionComponent implements OnDestroy {
         // Detect admin from query param
         this.isAdmin = this.route.snapshot.queryParamMap.get('admin') === 'true';
 
+        const isPaid = ['Pagado', 'Pago Creado'].includes(this.eventStatus);
+
         if (this.isAdmin) {
           this.isReadOnly = false;
           this.canSendToReview = false; // Admin uses "Revisado" button instead
+        } else if (isPaid) {
+          this.isReadOnly = true;
+          this.canSendToReview = false;
         } else if (this.eventStatus === 'Creado') {
           this.isReadOnly = false;
           this.canSendToReview = true;
@@ -95,7 +100,7 @@ export class InvitacionComponent implements OnDestroy {
         }
 
         // Cargar precios y secciones habilitadas
-        if (this.eventStatus === 'Creado' || this.isAdmin) {
+        if ((this.eventStatus === 'Creado' || this.isAdmin) && !isPaid) {
           this.loadPricing();
         }
 

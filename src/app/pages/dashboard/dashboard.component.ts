@@ -37,22 +37,43 @@ export class DashboardComponent {
   }
 
   ngOnInit(): void {
-    this.loadData();
     this.route.queryParams.subscribe(params => {
       const status = params['status'];
       const paymentId = params['payment_id'];
       const eventId = params['external_reference'];
       if (status !== undefined && paymentId !== undefined && eventId !== undefined) {
-        this.eventService.getEventsById(eventId).subscribe({
-          next: (res: any) => {
-            this.notificationService.show('info', `Pago del evento ${res.nombre} fue ${status}. Id del Pago: ${paymentId}`);
-          },
-          error: err => {
-            this.notificationService.show('error', `Hubo un error al obtener la informacion del evento ${eventId}`);
-          }
-        });
+        const statusMsg = status === 'approved' ? 'aprobado ✅' : status === 'rejected' ? 'rechazado ❌' : status;
+        this.notificationService.show('info', `Pago fue ${statusMsg}. Id del Pago: ${paymentId}`);
+
+        // Guardar info del callback para aplicar override visual después de loadData
+        this.callbackEventId = eventId;
+        this.callbackStatus = status;
       }
+      this.loadData();
     });
+  }
+
+  onRefresh() {
+    // Navegar sin query params para limpiar la URL
+    this.router.navigate(['/dashboard']).then(() => {
+      this.callbackEventId = null;
+      this.callbackStatus = null;
+      this.loadData();
+    });
+  }
+
+  private callbackEventId: string | null = null;
+  private callbackStatus: string | null = null;
+
+  private translateMercadoPagoStatus(status: string): string {
+    const map: any = {
+      'approved': 'Pagado',
+      'rejected': 'Pago Rechazado',
+      'pending': 'Pago Pendiente',
+      'in_process': 'En Proceso',
+      'cancelled': 'Pago Cancelado'
+    };
+    return map[status] || status;
   }
 
   loadData() {
@@ -66,6 +87,23 @@ export class DashboardComponent {
     events$.subscribe({
       next: (res) => {
         this.rowData = res;
+
+        // AC1: Si hay callback de MercadoPago y el evento aún tiene estatus "Revisado" en la BD,
+        // mostrar temporalmente el estatus del callback con tooltip "Parcialmente <status>"
+        if (this.callbackEventId && this.callbackStatus) {
+          const evento = this.rowData.find((e: any) => e.id === this.callbackEventId);
+          if (evento && evento.estatus?.toUpperCase() === 'REVISADO') {
+            const translated = this.translateMercadoPagoStatus(this.callbackStatus);
+            evento.estatus = translated;
+            evento.estatusDescripcion = `Parcialmente ${translated}`;
+            evento.showPayment = false;
+            evento.showDelete = false;
+          }
+          // Limpiar para que en un refresh normal (AC2) muestre lo de la BD
+          this.callbackEventId = null;
+          this.callbackStatus = null;
+        }
+
         this.loading = false;
         const showInvitations = this.rowData.find((item: any) => item.showInvitation === true)?.showInvitation ?? false;
         this.localStorageService.setShowInvitaciones(!!showInvitations);
@@ -109,9 +147,12 @@ export class DashboardComponent {
 
   onVerInvitacion(evento: any) {
     const isAdmin = this.loggedUser.role.toUpperCase() === 'ADMIN';
+    const queryParams: any = {};
+    if (isAdmin) queryParams.admin = 'true';
+
     const url = this.router.serializeUrl(
       this.router.createUrlTree(['/invitacion', `${this.replaceNameForUrl(evento.nombre)}`, `${evento.id}`],
-        isAdmin ? { queryParams: { admin: 'true' } } : {})
+        Object.keys(queryParams).length > 0 ? { queryParams } : {})
     );
 
     window.open(url, isAdmin ? '_self' : '_blank');

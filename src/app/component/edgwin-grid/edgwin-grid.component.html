@@ -50,7 +50,8 @@
                 [disabled]="!row.showPayment">💳</button>
               <button (click)="onAction('delete', row)" class="icon-button" title="Eliminar Evento"
                 [disabled]="!row.showDelete">🗑️</button>
-              <button (click)="onAction('verInvitacion', row)" class="icon-button" title="Editar/Ver la invitacion"
+              <button (click)="onAction('verInvitacion', row)" class="icon-button"
+                [title]="row.estatus?.toUpperCase() === 'PAGADO' ? 'Ver Invitación' : 'Editar/Ver la invitacion'"
                 [disabled]="!row.showInvitation">✉️</button>
             </div>
           </td>

@@ -73,6 +73,12 @@ export class InvitationService {
     return this.http.get(url);
   }
 
+  // Obtiene la invitación final desde MongoDB (para eventos pagados)
+  getInvitacionFinal(eventId: string) {
+    const url = `${this.apiUrl}${this.getInvitationData}final/${eventId}`;
+    return this.http.get(url);
+  }
+
   updateInvitacionPortada(eventId: string, payload: any) {
     return this.http.put(`/api/invitaciones/${eventId}/portada`, payload, { headers: this.getAuthHeaders() });
   }

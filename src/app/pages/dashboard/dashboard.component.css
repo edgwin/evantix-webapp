@@ -6,7 +6,7 @@
   width: 90%;
 }
 
-h1{
+h1 {
   font-size: 35px;
 }
 
@@ -18,7 +18,12 @@ td span[title] {
   text-align: center;
   margin: 40px 0;
 }
+
 .loading-container img {
   width: 50px;
   height: 50px;
+}
+
+.btn-space {
+  margin-right: 10px;
 }
