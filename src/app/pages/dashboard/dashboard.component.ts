@@ -2,6 +2,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
 import { EventService } from './../../services/event.service';
 import { NotificationService } from '../../services/notification.service';
 import { MercadoPagoService } from '../../services/mercado-pago.service.service';
+import { StripeService } from '../../services/stripe.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStorageService } from '../../services/local-storage.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -29,7 +30,7 @@ export class DashboardComponent {
   noDataMsg: boolean = false;
   terminosHtml = "";
   constructor(private eventService: EventService, private notificationService: NotificationService, private mercadoPago: MercadoPagoService,
-    private route: ActivatedRoute, private localStorageService: LocalStorageService, private router: Router, private dialog: MatDialog) {
+    private stripeService: StripeService, private route: ActivatedRoute, private localStorageService: LocalStorageService, private router: Router, private dialog: MatDialog) {
     const localUser = localStorage.getItem('loggedUser');
     if (localUser != null) {
       this.loggedUser = JSON.parse(localUser);
@@ -41,9 +42,11 @@ export class DashboardComponent {
       const status = params['status'];
       const paymentId = params['payment_id'];
       const eventId = params['external_reference'];
-      if (status !== undefined && paymentId !== undefined && eventId !== undefined) {
+      if (status !== undefined && eventId !== undefined) {
         const statusMsg = status === 'approved' ? 'aprobado ✅' : status === 'rejected' ? 'rechazado ❌' : status;
-        this.notificationService.show('info', `Pago fue ${statusMsg}. Id del Pago: ${paymentId}`);
+        const paymentSource = paymentId ? 'MercadoPago' : 'Stripe';
+        const idMsg = paymentId ? `Id del Pago: ${paymentId}` : '';
+        this.notificationService.show('info', `Pago fue ${statusMsg} (${paymentSource}). ${idMsg}`.trim());
 
         // Guardar info del callback para aplicar override visual después de loadData
         this.callbackEventId = eventId;
@@ -94,10 +97,11 @@ export class DashboardComponent {
           const evento = this.rowData.find((e: any) => e.id === this.callbackEventId);
           if (evento && evento.estatus?.toUpperCase() === 'REVISADO') {
             const translated = this.translateMercadoPagoStatus(this.callbackStatus);
-            evento.estatus = translated;
-            evento.estatusDescripcion = `Parcialmente ${translated}`;
-            evento.showPayment = false;
-            evento.showDelete = false;
+            const isCancelled = this.callbackStatus === 'cancelled';
+            evento.estatus = isCancelled ? 'Revisado' : translated;
+            evento.estatusDescripcion = isCancelled ? 'Pago cancelado, puede reintentar' : `Parcialmente ${translated}`;
+            evento.showPayment = isCancelled;
+            evento.showDelete = isCancelled;
           }
           // Limpiar para que en un refresh normal (AC2) muestre lo de la BD
           this.callbackEventId = null;
@@ -182,12 +186,20 @@ export class DashboardComponent {
 
     dialogRef.afterClosed().subscribe((metodoPago: string | null) => {
       if (metodoPago !== null && metodoPago.toLowerCase() === 'mercado pago') {
-        this.notificationService.show('info', `Redirigiendo a mercadopago, espere un momento`);
+        this.notificationService.show('info', `Redirigiendo a MercadoPago, espere un momento`);
         this.mercadoPago.createPreference(event).subscribe({
           next: (res: any) => {
             window.open(res.init_point, '_self');
           },
           error: err => console.error('Error creando preferencia', err)
+        });
+      } else if (metodoPago !== null && metodoPago.toLowerCase() === 'stripe') {
+        this.notificationService.show('info', `Redirigiendo a Stripe, espere un momento`);
+        this.stripeService.createSession(event).subscribe({
+          next: (res: any) => {
+            window.open(res.sessionUrl, '_self');
+          },
+          error: err => console.error('Error creando sesión de Stripe', err)
         });
       }
     });

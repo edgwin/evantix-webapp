@@ -86,6 +86,7 @@ export class EdgwinGridComponent {
       'PAGADO': { backgroundColor: '#00FF00', color: '#1B3925' },
       'PENDIENTE': { backgroundColor: '#036103ff', color: '#ffffffff' },
       'EN PROCESO': { backgroundColor: '#ffff00', color: '#ff9800' },
+      'PAGO EN PROCESO': { backgroundColor: '#ffff00', color: '#ff9800' },
       'PAGO DECLINADO': { backgroundColor: '#ff0000ff', color: '#fffb00ff' },
       'PAGO CANCELADO': { backgroundColor: '#ffcdd2', color: '#c62828' },
       'PAGO RECHAZADO': { backgroundColor: '#930001', color: '#FF0000' },

@@ -19,15 +19,6 @@
         <b>Elige tu opcion de pago favorito:</b>
       </div>
     </div>
-    <!-- NetPay -->
-    <!-- <div class="payment-option" name="Mercadolibre" (click)="confirmar($event)">
-      <div class="payment-left">
-        <span class="method-name">Net Pay</span>
-      </div>
-      <div class="logos">
-        <img src="../../../assets/tarjetasNetPay.png" alt="NetPay" title="Acepta Visa, Mastercard y AMEX">
-      </div>
-    </div> -->
     <!-- Mercado Pago -->
     <div class="payment-option" name="Mercadolibre" (click)="confirmar($event)">
       <div class="payment-left">
@@ -35,7 +26,17 @@
       </div>
       <div class="logos">
         <img src="../../../assets/tarjetas.png" alt="MercadoPago"
-          title="Acepta Visa, Mastercard, AMEX, MercadoPagoy Pago en efectivo">
+          title="Acepta Visa, Mastercard, AMEX, MercadoPago y Pago en efectivo">
+      </div>
+    </div>
+    <!-- Stripe -->
+    <div class="payment-option" (click)="confirmar($event)" style="margin-top: 10px;">
+      <div class="payment-left">
+        <span class="method-name">Stripe</span>
+      </div>
+      <div class="logos">
+        <img src="../../../assets/tarjetasStripe.png" alt="Stripe"
+          title="Acepta Visa, Mastercard, AMEX, Apple Pay, Google Pay, Stripe Link Pay">
       </div>
     </div>
   </div>
