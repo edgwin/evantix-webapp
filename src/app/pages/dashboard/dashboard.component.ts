@@ -12,7 +12,6 @@ interface Evento {
   nombre: string;
   fecha: string;
   estatus: string;
-  plan: string;
   estatusDescripcion: string;
 }
 
@@ -127,14 +126,15 @@ export class DashboardComponent {
       imageField: 'imagen'
     },
     { headerName: 'Fecha', field: 'fecha', type: 'text' },
-    { headerName: 'Plan', field: 'plan', type: 'text' },
     { headerName: 'Estatus', field: 'estatus', type: 'status' }
   ];
 
   rowData: any = [];
 
   onActionHandler(event: { type: string, row: Evento }) {
-    if (event.type === 'invitacion') {
+    if (event.type === 'edit') {
+      this.router.navigate(['/nuevoEvento'], { queryParams: { id: (event.row as any).id } });
+    } else if (event.type === 'invitacion') {
       this.onInvitacion(event.row);
     } else if (event.type === 'delete') {
       this.onDelete(event.row);

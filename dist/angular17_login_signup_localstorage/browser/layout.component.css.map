@@ -1,7 +1,7 @@
 {
   "version": 3,
   "sources": ["src/app/pages/layout/layout.component.css"],
-  "sourcesContent": [".sidenav-container {\r\n  height: 100vh;  \r\n}\r\n\r\n.main-content {\r\n  padding-top: 10px;\r\n  padding-left: 70px;\r\n}"],
-  "mappings": ";AAAA,CAAC;AACC,UAAQ;AACV;AAEA,CAAC;AACC,eAAa;AACb,gBAAc;AAChB;",
+  "sourcesContent": [".sidenav-container {\r\n  height: 100vh;\r\n}\r\n\r\n.main-content {\r\n  padding-top: 10px;\r\n  padding-left: 70px;\r\n}\r\n\r\n@media (max-width: 768px) {\r\n  .main-content {\r\n    padding-left: 10px;\r\n    padding-right: 10px;\r\n  }\r\n}"],
+  "mappings": ";AAAA,CAAC;AACC,UAAQ;AACV;AAEA,CAAC;AACC,eAAa;AACb,gBAAc;AAChB;AAEA,OAAO,CAAC,SAAS,EAAE;AACjB,GAND;AAOG,kBAAc;AACd,mBAAe;AACjB;AACF;",
   "names": []
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
@@ -11,22 +11,25 @@ import { SocialAuthService } from '@abacritt/angularx-social-login';
 })
 export class TopbarComponent {
   svgImage: SafeHtml | null = null;
-  isSocial:boolean = false;
+  isSocial: boolean = false;
 
   loggedUser: any;
-  
+
+  @Input() showMenuButton = false;
+  @Output() toggleSidenav = new EventEmitter<void>();
+
   constructor(private router: Router, private authService: AuthService, private sanitizer: DomSanitizer, private socialAuthService: SocialAuthService) {
     const localUser = localStorage.getItem('loggedUser');
-    if(localUser != null) {
+    if (localUser != null) {
       this.loggedUser = JSON.parse(localUser);
     }
   }
 
   ngOnInit() {
     const rawSvg = this.loggedUser?.picture;
-    if (!this.loggedUser.isSocial){
+    if (!this.loggedUser.isSocial) {
       this.svgImage = this.sanitizer.bypassSecurityTrustHtml(rawSvg || '');
-    }else{
+    } else {
       const dynamicTag = `<img src="${this.loggedUser?.picture}" style="width:32px; height:32px; border-radius:50%; object-fit:cover;" />`;
       this.svgImage = this.sanitizer.bypassSecurityTrustHtml(dynamicTag || '');
     }
@@ -37,5 +40,9 @@ export class TopbarComponent {
     this.authService.logout();
     this.socialAuthService.signOut();
     this.router.navigateByUrl('/login')
+  }
+
+  onToggleSidenav() {
+    this.toggleSidenav.emit();
   }
 }

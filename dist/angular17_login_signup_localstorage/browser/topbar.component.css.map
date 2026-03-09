@@ -1,7 +1,7 @@
 {
   "version": 3,
   "sources": ["src/app/pages/layout/topbar/topbar.component.css"],
-  "sourcesContent": ["mat-nav-list {\r\n  width: 200px;\r\n}\r\n\r\n.TopBarText{\r\n  padding: 10px;\r\n}"],
-  "mappings": ";AAAA;AACE,SAAO;AACT;AAEA,CAAC;AACC,WAAS;AACX;",
+  "sourcesContent": ["mat-nav-list {\r\n  width: 200px;\r\n}\r\n\r\n.TopBarText {\r\n  padding: 10px;\r\n}\r\n\r\n.hamburger-btn {\r\n  background: none;\r\n  border: none;\r\n  cursor: pointer;\r\n  padding: 4px;\r\n  display: flex;\r\n  align-items: center;\r\n  color: #333;\r\n}\r\n\r\n.hamburger-btn mat-icon {\r\n  font-size: 28px;\r\n  width: 28px;\r\n  height: 28px;\r\n}\r\n\r\n.topbar-right {\r\n  align-items: center;\r\n}\r\n\r\n@media (max-width: 768px) {\r\n  .navbar {\r\n    padding: 6px 10px;\r\n  }\r\n\r\n  .navbar .container-fluid {\r\n    flex-wrap: nowrap;\r\n  }\r\n\r\n  .navbar-nav {\r\n    display: none !important;\r\n  }\r\n\r\n  .user-name {\r\n    display: none;\r\n  }\r\n\r\n  .topbar-right {\r\n    gap: 8px;\r\n  }\r\n\r\n  .topbar-right .btn {\r\n    font-size: 12px;\r\n    padding: 5px 10px;\r\n  }\r\n}"],
+  "mappings": ";AAAA;AACE,SAAO;AACT;AAEA,CAAC;AACC,WAAS;AACX;AAEA,CAAC;AACC,cAAY;AACZ,UAAQ;AACR,UAAQ;AACR,WAAS;AACT,WAAS;AACT,eAAa;AACb,SAAO;AACT;AAEA,CAVC,cAUc;AACb,aAAW;AACX,SAAO;AACP,UAAQ;AACV;AAEA,CAAC;AACC,eAAa;AACf;AAEA,OAAO,CAAC,SAAS,EAAE;AACjB,GAAC;AACC,aAAS,IAAI;AACf;AAEA,GAJC,OAIO,CAAC;AACP,eAAW;AACb;AAEA,GAAC;AACC,aAAS;AACX;AAEA,GAAC;AACC,aAAS;AACX;AAEA,GArBD;AAsBG,SAAK;AACP;AAEA,GAzBD,aAyBe,CAAC;AACb,eAAW;AACX,aAAS,IAAI;AACf;AACF;",
   "names": []
 }

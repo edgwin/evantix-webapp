@@ -1,16 +1,22 @@
 <nav class="navbar navbar-expand-sm bg-white navbar-dark">
   <div class="container-fluid">
+    <button *ngIf="showMenuButton" class="hamburger-btn" (click)="onToggleSidenav()">
+      <mat-icon>menu</mat-icon>
+    </button>
     <ul class="navbar-nav">
       <li class="nav-item">
         <a class="nav-link active" href="#">Active</a>
       </li>
       <li class="nav-item">
-        <div style="padding-top:20px"><h2>Dashboard</h2></div>
-      </li>      
+        <div style="padding-top:20px">
+          <h2>Dashboard</h2>
+        </div>
+      </li>
     </ul>
-    <form class="d-flex">
+    <form class="d-flex topbar-right">
       <div [innerHTML]="svgImage"></div>
-      <span class="text-black TopBarText">Bienvenido {{loggedUser?.firstName}} {{loggedUser?.lastName}} </span> 
+      <span class="text-black TopBarText user-name">Bienvenido {{loggedUser?.firstName}} {{loggedUser?.lastName}}
+      </span>
       <button class="btn btn-primary" type="button" (click)="onLogoff()">Cerrar Sesion</button>
     </form>
   </div>

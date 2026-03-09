@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, OnInit, OnDestroy, Output } from '@angular/core';
 import { NavigationEnd, Router, Event } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { LocalStorageService } from '../../../services/local-storage.service'
@@ -14,16 +14,18 @@ export class SidebarComponent implements OnInit, OnDestroy {
   selectedRoute: string = '';
   showInvitados: boolean = false;
 
+  @Output() menuItemClicked = new EventEmitter<void>();
+
   private sub: Subscription = new Subscription();
 
-  constructor(private router: Router, private storageService: LocalStorageService) {}
+  constructor(private router: Router, private storageService: LocalStorageService) { }
 
   ngOnInit(): void {
-     this.sub.add(
-       this.storageService.showInvitados$.subscribe(value => {
-         this.showInvitados = value;
-       })
-     );
+    this.sub.add(
+      this.storageService.showInvitados$.subscribe(value => {
+        this.showInvitados = value;
+      })
+    );
 
     this.selectedRoute = this.router.url;
     this.sub.add(
@@ -38,14 +40,18 @@ export class SidebarComponent implements OnInit, OnDestroy {
   toggleInvitacionesSubmenu() {
     this.submenuInvitacionesOpen = !this.submenuInvitacionesOpen;
   }
-  
+
   toggleConfirmacionesSubmenu() {
     this.submenuConfirmacionesOpen = !this.submenuConfirmacionesOpen;
   }
 
   selectRoute(route: string) {
-    if (route === '/invitados') return;
+    if (route === '/invitados') {
+      this.menuItemClicked.emit();
+      return;
+    }
     this.selectedRoute = route;
+    this.menuItemClicked.emit();
   }
 
   ngOnDestroy() {

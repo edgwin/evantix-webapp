@@ -102,4 +102,14 @@ export class EventService {
     const url = `${this.apiUrl}${this.deleteEventById}${eventId}`;
     return this.http.delete(url, { headers });
   }
+
+  updateEvent(eventId: string, formData: FormData) {
+    const token = localStorage.getItem('access_token');
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    return this.http.put(`${this.apiUrl}api/Event/Update/${eventId}`, formData, { headers });
+  }
 }

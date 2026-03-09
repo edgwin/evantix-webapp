@@ -1,126 +1,120 @@
-<form (ngSubmit)="onSubmit()" #eventoForm="ngForm">
-  <h2>Datos del Evento</h2>
-<table style="width: 100%;">
-  <tr>
-    <td>
-      <mat-form-field appearance="fill">
-        <mat-label>Nombre del Evento</mat-label>
-        <input matInput name="nombre" [(ngModel)]="evento.nombre" required>
-      </mat-form-field>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <mat-form-field appearance="fill">
-        <mat-label>Fecha</mat-label>
-        <input matInput [matDatepicker]="picker" [(ngModel)]="evento.fecha" name="fecha" required>
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker touchUi="true"></mat-datepicker>
-      </mat-form-field>
-    </td>
-  </tr> 
-  <tr>
-    <td>
-      <mat-form-field appearance="fill" style="flex: 1; width: 100%;">
-        <mat-label>Tipo de Evento</mat-label>
-        <mat-select name="tipoEvento" (selectionChange)="tipoEventoChange($event)" required>
-          <mat-option *ngFor="let tipo of tipoEvento" [value]="tipo.name">
-            {{ tipo.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>      
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <mat-form-field appearance="fill" [hidden]="tipoEventoTxtHidden">
-        <mat-label>Escribe el tipo de Evento</mat-label>
-        <input matInput name="tipoEventoTxt" [(ngModel)]="evento.tipoEvento" required>
-      </mat-form-field>
-    </td>
-  </tr>
-  <tr>
-  <td colspan="2">
-    <div style="display: flex; gap: 16px;">
-      <mat-form-field appearance="fill" style="flex: 1; width: 20%;">
-        <mat-label>País</mat-label>
-        <mat-select [(ngModel)]="evento.codigoPais" name="codigoPais" required>
-          <mat-option *ngFor="let pais of codigosPais" [value]="pais.dialCode">
-            {{ pais.name }} ({{ pais.dialCode }})
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+<div class="evento-container">
+  <div class="section-header">
+    <h2>{{ isEditMode ? '✏️ Editar Evento' : '🎉 Nuevo Evento' }}</h2>
+  </div>
 
-      <mat-form-field appearance="fill" style="flex: 2; width: 80%;">
-        <mat-label>Número de WhatsApp</mat-label>
-        <input
-          matInput
-          name="numero"
-          [(ngModel)]="evento.whatsapp"
-          required
-          type="tel"
-          pattern="[0-9]*"
-          maxlength="15" />
-      </mat-form-field>
+  <form (ngSubmit)="onSubmit()" #eventoForm="ngForm">
+    <div class="form-card">
+      <div class="form-header">
+        <h3>Datos del Evento</h3>
+      </div>
+
+      <div class="form-body">
+        <!-- Nombre del Evento -->
+        <div class="form-group">
+          <label>Nombre del Evento <span class="required">*</span></label>
+          <input type="text" name="nombre" [(ngModel)]="evento.nombre" required placeholder="Ej: Boda de Ana y Carlos"
+            class="form-input" />
+        </div>
+
+        <!-- Fecha -->
+        <div class="form-group">
+          <label>Fecha del Evento <span class="required">*</span></label>
+          <mat-form-field appearance="outline" class="mat-field-modern">
+            <input matInput [matDatepicker]="picker" [(ngModel)]="evento.fecha" name="fecha" required
+              placeholder="Selecciona una fecha">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker touchUi="true"></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <!-- Tipo de Evento -->
+        <div class="form-group">
+          <label>Tipo de Evento <span class="required">*</span></label>
+          <mat-form-field appearance="outline" class="mat-field-modern">
+            <mat-select name="tipoEvento" [(value)]="evento.tipoEvento" (selectionChange)="tipoEventoChange($event)"
+              required placeholder="Selecciona un tipo">
+              <mat-option *ngFor="let tipo of tipoEvento" [value]="tipo.name">
+                {{ tipo.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Otro tipo de Evento -->
+        <div class="form-group" *ngIf="!tipoEventoTxtHidden">
+          <label>Especifica el tipo de Evento <span class="required">*</span></label>
+          <input type="text" name="tipoEventoTxt" [(ngModel)]="evento.tipoEvento" required
+            placeholder="Escribe el tipo de evento" class="form-input" />
+        </div>
+
+        <!-- País y WhatsApp -->
+        <div class="form-row">
+          <div class="form-group form-group-small">
+            <label>País <span class="required">*</span></label>
+            <mat-form-field appearance="outline" class="mat-field-modern">
+              <mat-select [(ngModel)]="evento.codigoPais" name="codigoPais" required>
+                <mat-option *ngFor="let pais of codigosPais" [value]="pais.dialCode">
+                  {{ pais.name }} ({{ pais.dialCode }})
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="form-group form-group-large">
+            <label>Número de WhatsApp <span class="required">*</span></label>
+            <input type="tel" name="numero" #numeroField="ngModel" [(ngModel)]="evento.whatsapp" required
+              pattern="[0-9]*" maxlength="15" placeholder="Ej: 3312345678" class="form-input"
+              [class.input-error]="numeroField.invalid && numeroField.touched" />
+            <small class="error-msg" *ngIf="numeroField.hasError('pattern') && numeroField.touched">Solo se permiten
+              números</small>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label>Email <span class="required">*</span></label>
+          <input type="email" name="email" #emailField="ngModel" [(ngModel)]="evento.email" required
+            pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" placeholder="Ej: contacto@evento.com"
+            class="form-input" [class.input-error]="emailField.invalid && emailField.touched" />
+          <small class="error-msg" *ngIf="emailField.hasError('pattern') && emailField.touched">Ingresa un email
+            válido</small>
+        </div>
+
+        <!-- Mensaje de Invitación -->
+        <div class="form-group">
+          <label>Mensaje de Invitación <span class="required">*</span></label>
+          <textarea name="mensajeInvitacion" [(ngModel)]="evento.mensajeInvitacion" required rows="4"
+            placeholder="Escribe el mensaje que recibirán tus invitados por email o WhatsApp..."
+            class="form-input form-textarea"></textarea>
+          <small class="hint">Este mensaje se enviará junto con la invitación</small>
+        </div>
+      </div>
     </div>
-  </td>
-</tr>
-  <tr>
-    <td>
-      <mat-form-field appearance="fill">
-        <mat-label>Email</mat-label>
-        <input matInput type="email" name="email" [(ngModel)]="evento.email" required>
-      </mat-form-field>
-    </td>
-  </tr>
-  <!-- <tr>
-    <td>
-      <label>Imagen alusiva al evento</label>
-      <input type="file" name="imagen" (change)="onFileChange($event)" /> 
-    </td>
-  </tr> -->
-</table> <br />
-  <!-- <h4>Seleccion de plan</h4>
-  <p>De click sobre el plan que mas se acomode a sus necesidades</p>
-  <swiper-container
-    slides-per-view="1"
-    navigation="true"
-    pagination="true"
-    loop="true"
-    #swiperRef>
 
-    <swiper-slide *ngFor="let plan of plans" (click)="seleccionarPlan(plan)">
-      <app-plan-card
-        [planTitle]="plan.title"
-        [price]="plan.price"
-        [features]="plan.features"
-        [headerColor]="plan.color"
-        [planSubtitle]="plan.subtitle">
-      </app-plan-card>
-    </swiper-slide>
-  </swiper-container>
+    <!-- Términos y Condiciones -->
+    <div class="terms-row" *ngIf="!isEditMode">
+      <label class="checkbox-label">
+        <input name="condiciones" type="checkbox" (click)="checkBoxClick()" class="checkbox-input">
+        <span>He leído los <a class="terms-link" (click)="openPopup()">términos y condiciones</a></span>
+      </label>
+    </div>
 
-  <p *ngIf="evento.plan">Plan seleccionado: <strong>{{ evento.plan | titlecase }}</strong></p>
-  -->
-  <table style="width:100%">
-    <tr>
-      <td style="padding-bottom: 18px;"><input name="condiciones" type="checkbox" (click)="checkBoxClick()"></td>
-      <td><p>He leido los <a style="cursor:pointer;
-     color:blue;
-     text-decoration:underline;" (click)="openPopup()">terminos y condiciones</a></p></td>
-    </tr>
-  </table> 
-  <div *ngIf="loading" class="loading-container">
-    <img src="../../../assets/images/loading2.gif" alt="Cargando..." />
-  </div>
-  <div class="button-group">
-    <button class="btn btn-primary" type="submit" style="padding-left: 50px;padding-right: 50px;" [disabled]="!isFormValid || loading">Guardar Evento</button>
-  </div>
-  <app-popup-html
-    [visible]="showPopup"
-    [htmlContent]="terminosHtml"
-    [title]="'Términos y Condiciones'"
-    [showCloseButton]="true"
-    (closed)="showPopup = false">
-  </app-popup-html>
-</form>
+    <!-- Loading -->
+    <div *ngIf="loading" class="loading">
+      <div class="loader"></div>
+      <p>{{ isEditMode ? 'Guardando Información...' : 'Creando evento...' }}</p>
+    </div>
+
+    <!-- Botones -->
+    <div class="form-actions">
+      <button class="btn btn-secondary" type="button" (click)="cancelar()">Cancelar</button>
+      <button class="btn btn-primary" type="submit" [disabled]="!isFormValid || loading">
+        {{ isEditMode ? 'Actualizar Evento' : 'Guardar Evento' }}
+      </button>
+    </div>
+
+    <app-popup-html [visible]="showPopup" [htmlContent]="terminosHtml" [title]="'Términos y Condiciones'"
+      [showCloseButton]="true" (closed)="showPopup = false">
+    </app-popup-html>
+  </form>
+</div>

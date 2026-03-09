@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { EventService } from './../../services/event.service';
 import { NotificationService } from '../../services/notification.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-nuevo-evento',
@@ -10,10 +10,12 @@ import { Router } from '@angular/router';
 })
 export class NuevoEventoComponent implements OnInit {
   @ViewChild('swiperRef', { static: false }) swiperRef!: ElementRef;
-  
+
   loggedUser: any;
   loading = false;
-  titlecase:string = 'Sin selecciona';
+  isEditMode = false;
+  editEventId: string | null = null;
+
   evento = {
     nombre: '',
     fecha: '',
@@ -21,9 +23,8 @@ export class NuevoEventoComponent implements OnInit {
     codigoPais: '+52',
     whatsapp: '',
     email: '',
-    //plan: '',
+    mensajeInvitacion: '',
     imagen: null,
-    //costo: 0
   };
 
   codigosPais = [
@@ -35,48 +36,78 @@ export class NuevoEventoComponent implements OnInit {
     { name: 'Chile', dialCode: '+56' },
     { name: 'Perú', dialCode: '+51' },
     { name: 'Ecuador', dialCode: '+593' },
-    // agrega los que necesites
   ];
 
-  tipoEventoTxtHidden :boolean = true;
+  tipoEventoTxtHidden: boolean = true;
   tipoEventoTxt = "";
   tipoEvento = [
-    {name: 'Boda'}, {name:'XV Años'}, {name: 'Graduacion'}, {name:'Cumpleaños'}, {name:'Bautizo'},
-    {name:'Primera Comunion'}, {name:'Confirmacion'}, {name:'Bodas de Oro'}, {name:'Bodas de Plata'}, 
-    {name:'Bodas de Bronce'}, {name:'Otro'}
+    { name: 'Boda' }, { name: 'XV Años' }, { name: 'Graduacion' }, { name: 'Cumpleaños' }, { name: 'Bautizo' },
+    { name: 'Primera Comunion' }, { name: 'Confirmacion' }, { name: 'Bodas de Oro' }, { name: 'Bodas de Plata' },
+    { name: 'Bodas de Bronce' }, { name: 'Otro' }
   ]
-  
-  //plans: any = [];
 
-  constructor(private eventService: EventService, private notificationService: NotificationService, private router: Router) {
+  constructor(
+    private eventService: EventService,
+    private notificationService: NotificationService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
     const localUser = localStorage.getItem('loggedUser');
-    if(localUser != null) {
+    if (localUser != null) {
       this.loggedUser = JSON.parse(localUser);
     }
-   }
-  
+  }
+
   terminosHtml = "";
   terminosId = "";
+
   ngOnInit(): void {
     this.eventService.getTermsAndCoditions().subscribe({
-      next: (res:any) => {
+      next: (res: any) => {
         this.terminosHtml = res.text;
         localStorage.setItem('terms_id', res.id);
         localStorage.setItem('terms_text', res.text);
       },
       error: () => {
-        this.notificationService.show('error',`Hubo un error favor de comunicarse a soporte`);
+        this.notificationService.show('error', `Hubo un error favor de comunicarse a soporte`);
       }
     });
-    //
-    // this.eventService.getPlans().subscribe({
-    //   next: (res:any) => {
-    //     this.plans = res;
-    //   },
-    //   error: () => {
-    //     this.notificationService.show('error',`Hubo un error favor de comunicarse a soporte`);
-    //   }
-    // });
+
+    // Check if editing
+    this.route.queryParams.subscribe(params => {
+      const eventId = params['id'];
+      if (eventId) {
+        this.isEditMode = true;
+        this.editEventId = eventId;
+        this.loadEventData(eventId);
+      }
+    });
+  }
+
+  loadEventData(eventId: string) {
+    this.loading = true;
+    this.eventService.getEventsById(eventId).subscribe({
+      next: (res: any) => {
+        this.evento.nombre = res.nombre || '';
+        this.evento.fecha = res.fecha ? new Date(res.fecha) as any : '';
+        this.evento.email = res.email || '';
+        this.evento.whatsapp = res.whatsApp || '';
+        this.evento.mensajeInvitacion = res.mensajeInvitacion || '';
+
+        // Handle tipoEvento
+        this.evento.tipoEvento = res.tipoEvento || '';
+        const matchingTipo = this.tipoEvento.find(t => t.name === res.tipoEvento);
+        if (!matchingTipo && res.tipoEvento) {
+          this.tipoEventoTxtHidden = false;
+        }
+        this.aceptaTerminos = true; // Already accepted when created
+        this.loading = false;
+      },
+      error: (err) => {
+        this.notificationService.show('error', `Error al cargar evento: ${err.message}`);
+        this.loading = false;
+      }
+    });
   }
 
   onFileChange(event: any) {
@@ -86,17 +117,8 @@ export class NuevoEventoComponent implements OnInit {
     }
   }
 
-  // seleccionarPlan(plan: any) {
-  //   this.evento.plan = plan.title;
-  //   this.evento.costo = plan.price;
-  // }
-
-  onSubmit() {    
-    // if (!this.evento.plan) {
-    //   alert('Por favor selecciona un plan.');
-    //   return;
-    // }    
-    this.loading = true;    
+  onSubmit() {
+    this.loading = true;
     const fechaISO = new Date(this.evento.fecha).toISOString();
     const formData = new FormData();
     formData.append('UserId', this.loggedUser.userId);
@@ -105,26 +127,37 @@ export class NuevoEventoComponent implements OnInit {
     formData.append('Fecha', fechaISO);
     formData.append('WhatsApp', this.evento.whatsapp);
     formData.append('Email', this.evento.email);
-    // formData.append('Plan', this.evento.plan);    
-    // formData.append('Costo', this.evento.costo.toString());
-    // if (this.evento.imagen) {
-    //   formData.append('Imagen', this.evento.imagen);
-    // }
+    formData.append('MensajeInvitacion', this.evento.mensajeInvitacion);
 
     this.terminosId = localStorage.getItem('terms_id') ?? "";
-    formData.append('TermsAndConditionsId', this.terminosId)
-    this.eventService.crearEvento(formData).subscribe({
-      next: () => {
-        this.notificationService.show('info',`Evento ${this.evento.nombre} creado`);        
-        this.loading = false;
-        this.cancelar();
-        this.router.navigateByUrl('/dashboard');        
-      },
-      error: (err) => {        
-        this.notificationService.show('error',`Hubo un error al crear el evento ${this.evento.nombre}. \n ${err.error}`);
-        this.loading = false;
-      }
-    });
+    formData.append('TermsAndConditionsId', this.terminosId);
+
+    if (this.isEditMode && this.editEventId) {
+      this.eventService.updateEvent(this.editEventId, formData).subscribe({
+        next: () => {
+          this.notificationService.show('info', `Evento ${this.evento.nombre} actualizado`);
+          this.loading = false;
+          this.router.navigateByUrl('/dashboard');
+        },
+        error: (err) => {
+          this.notificationService.show('error', `Error al actualizar: ${err.error}`);
+          this.loading = false;
+        }
+      });
+    } else {
+      this.eventService.crearEvento(formData).subscribe({
+        next: () => {
+          this.notificationService.show('info', `Evento ${this.evento.nombre} creado`);
+          this.loading = false;
+          this.cancelar();
+          this.router.navigateByUrl('/dashboard');
+        },
+        error: (err) => {
+          this.notificationService.show('error', `Hubo un error al crear el evento ${this.evento.nombre}. \n ${err.error}`);
+          this.loading = false;
+        }
+      });
+    }
   }
 
   cancelar() {
@@ -134,20 +167,19 @@ export class NuevoEventoComponent implements OnInit {
       tipoEvento: '',
       whatsapp: '',
       email: '',
-      //plan: '',
+      mensajeInvitacion: '',
       imagen: null,
-      //costo: 0,      
       codigoPais: '+52'
     };
     this.router.navigateByUrl('/dashboard');
   }
-  
+
   showPopup = false;
 
   openPopup() {
     this.showPopup = true;
   }
-  
+
   checkBoxClick() {
     this.aceptaTerminos = !this.aceptaTerminos;
   }
@@ -160,15 +192,16 @@ export class NuevoEventoComponent implements OnInit {
       this.evento.whatsapp.trim() !== '' &&
       this.evento.email.trim() !== '' &&
       this.evento.tipoEvento.trim() !== '' &&
-      this.aceptaTerminos
+      this.evento.mensajeInvitacion.trim() !== '' &&
+      (this.isEditMode || this.aceptaTerminos)
     );
   }
 
-  tipoEventoChange(event:any){    
-    if (event.value.toLowerCase() === "otro"){
+  tipoEventoChange(event: any) {
+    if (event.value.toLowerCase() === "otro") {
       this.tipoEventoTxtHidden = false;
       this.evento.tipoEvento = "";
-      return
+      return;
     }
     this.evento.tipoEvento = event.value;
   }

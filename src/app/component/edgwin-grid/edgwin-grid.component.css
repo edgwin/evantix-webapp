@@ -7,6 +7,7 @@
 
 .grid-wrapper {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 table {
@@ -15,7 +16,8 @@ table {
 }
 
 
-th, td {
+th,
+td {
   padding: 8px;
   border-bottom: 1px solid #ccc;
 }
@@ -39,4 +41,41 @@ th, td {
 
 .icon-button:hover {
   transform: scale(1.2);
+}
+
+@media (max-width: 768px) {
+  table {
+    min-width: 600px;
+  }
+
+  th,
+  td {
+    padding: 6px;
+    font-size: 13px;
+  }
+
+  /* Nombre column - truncate */
+  td:first-child,
+  th:first-child {
+    max-width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Fecha column - compact */
+  td:nth-child(2),
+  th:nth-child(2) {
+    white-space: nowrap;
+    font-size: 12px;
+  }
+
+  .icon-button {
+    font-size: 1.5rem;
+    padding: 2px;
+  }
+
+  .action-buttons {
+    gap: 6px;
+  }
 }

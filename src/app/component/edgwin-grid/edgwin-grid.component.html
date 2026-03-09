@@ -46,6 +46,7 @@
           <!-- Acciones -->
           <td>
             <div class="action-buttons">
+              <button (click)="onAction('edit', row)" class="icon-button" title="Editar Evento">✏️</button>
               <button (click)="onAction('pay', row)" class="icon-button" title="Pagar Evento"
                 [disabled]="!row.showPayment">💳</button>
               <button (click)="onAction('delete', row)" class="icon-button" title="Eliminar Evento"

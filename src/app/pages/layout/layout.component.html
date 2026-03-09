@@ -1,9 +1,9 @@
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav mode="side" opened>
-    <app-sidebar></app-sidebar>
+  <mat-sidenav [mode]="isMobile ? 'over' : 'side'" [opened]="sidenavOpen" (closedStart)="sidenavOpen = false">
+    <app-sidebar (menuItemClicked)="onMenuItemClicked()"></app-sidebar>
   </mat-sidenav>
-  <app-topbar></app-topbar>
-    <div class="main-content">
-      <router-outlet></router-outlet>
-    </div>
+  <app-topbar (toggleSidenav)="sidenavOpen = !sidenavOpen" [showMenuButton]="isMobile"></app-topbar>
+  <div class="main-content">
+    <router-outlet></router-outlet>
+  </div>
 </mat-sidenav-container>

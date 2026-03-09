@@ -1,1 +1,163 @@
-<p>invitados works!</p>
+<div class="invitados-container">
+    <!-- Header -->
+    <div class="section-header">
+        <h2>Mis Invitados</h2>
+        <span class="badge" *ngIf="grupos.length > 0">{{ getTotalInvitados() }} invitados totales</span>
+    </div>
+
+    <!-- Event Selector -->
+    <div class="event-selector" *ngIf="paidEvents.length > 0">
+        <label>Selecciona un evento:</label>
+        <select [(ngModel)]="selectedEventId" (change)="onEventChange()" class="event-dropdown">
+            <option *ngFor="let event of paidEvents" [value]="event.id">
+                {{ event.nombre }} — {{ event.fecha }} ({{ event.tipoEvento }})
+            </option>
+        </select>
+        <button class="btn btn-primary" (click)="openForm()" *ngIf="!showForm">
+            <span class="btn-icon">+</span> Alta de Invitados
+        </button>
+        <button class="btn btn-secondary" (click)="loadGrupos()" title="Refrescar lista de invitados">🔄
+            Refrescar</button>
+    </div>
+
+    <div class="no-events" *ngIf="paidEvents.length === 0">
+        <p>No tienes eventos con pago completado. Una vez que un evento esté pagado, podrás dar de alta invitados.</p>
+    </div>
+
+    <!-- Form -->
+    <div class="form-panel" *ngIf="showForm">
+        <div class="form-header">
+            <h3>{{ editingGrupoId ? 'Editar Invitados' : 'Alta de Invitados' }}</h3>
+            <button class="btn-close" (click)="closeForm()">✖</button>
+        </div>
+
+        <!-- Tipo tabs -->
+        <div class="tipo-tabs">
+            <button [class.active]="tipoInvitacion === 'Familiar'" (click)="switchTipo('Familiar')">
+                👨‍👩‍👧‍👦 Familiar
+            </button>
+            <button [class.active]="tipoInvitacion === 'Individual'" (click)="switchTipo('Individual')">
+                👤 Individual
+            </button>
+        </div>
+
+        <div class="form-body">
+            <!-- Nombre Familia (solo Familiar) -->
+            <div class="form-group" *ngIf="tipoInvitacion === 'Familiar'">
+                <label>Nombre de la Familia <span class="required">*</span></label>
+                <input type="text" [(ngModel)]="nombreFamilia" placeholder="Ej: Familia López Sánchez"
+                    class="form-input"
+                    [class.input-error]="formSubmitted && tipoInvitacion === 'Familiar' && !nombreFamilia?.trim()" />
+                <small class="error-msg"
+                    *ngIf="formSubmitted && tipoInvitacion === 'Familiar' && !nombreFamilia?.trim()">Este campo es
+                    obligatorio</small>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>WhatsApp <span class="required">*</span></label>
+                    <input type="tel" [(ngModel)]="whatsApp" placeholder="Ej: 5512345678" class="form-input"
+                        [class.input-error]="formSubmitted && !whatsApp?.trim()" />
+                    <small class="error-msg" *ngIf="formSubmitted && !whatsApp?.trim()">Este campo es
+                        obligatorio</small>
+                </div>
+                <div class="form-group">
+                    <label>Email (opcional)</label>
+                    <input type="email" [(ngModel)]="email" placeholder="Ej: familia@email.com" class="form-input" />
+                </div>
+            </div>
+
+            <!-- Invitados list -->
+            <div class="invitados-list">
+                <label>Invitados</label>
+                <div class="invitado-row" *ngFor="let inv of invitados; let i = index">
+                    <span class="invitado-number">{{ i + 1 }}</span>
+                    <input type="text" [(ngModel)]="inv.nombre" [placeholder]="getDefaultName(i)" class="form-input" />
+                    <button class="btn-remove" (click)="removeInvitado(i)" *ngIf="invitados.length > 1"
+                        title="Quitar">✕</button>
+                </div>
+                <button class="btn btn-secondary" (click)="addInvitado()">
+                    + Agregar Invitado
+                </button>
+                <small class="hint" *ngIf="tipoInvitacion === 'Individual'">Máximo 2 invitados para invitación
+                    individual</small>
+            </div>
+
+            <div class="form-actions">
+                <button class="btn btn-secondary" (click)="closeForm()">Cancelar</button>
+                <button class="btn btn-primary" (click)="saveGrupo()">
+                    {{ editingGrupoId ? 'Actualizar' : 'Guardar' }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grid -->
+    <div class="grid-container" *ngIf="selectedEventId && !loading">
+        <table class="invitados-grid" *ngIf="grupos.length > 0">
+            <thead>
+                <tr>
+                    <th style="width: 30px;"></th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Inv. Confirmada</th>
+                    <th>Confirmado por</th>
+                    <th>Mesa #</th>
+                    <th>Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let grupo of grupos">
+                    <!-- Main row -->
+                    <tr class="grupo-row">
+                        <td>
+                            <button class="expand-btn" (click)="toggleExpand(grupo.id)"
+                                *ngIf="grupo.invitados?.length > 0">
+                                {{ isExpanded(grupo.id) ? '−' : '+' }}
+                            </button>
+                        </td>
+                        <td>
+                            <span class="tipo-badge" [class.familiar]="grupo.tipoInvitacion === 'Familiar'"
+                                [class.individual]="grupo.tipoInvitacion === 'Individual'">
+                                {{ grupo.tipoInvitacion === 'Familiar' ? '👨‍👩‍👧‍👦' : '👤' }}
+                            </span>
+                            {{ getDisplayName(grupo) }}
+                            <span class="count-badge">({{ grupo.invitados?.length }})</span>
+                        </td>
+                        <td>{{ grupo.email || '—' }}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="actions-cell">
+                            <button class="action-btn edit" (click)="editGrupo(grupo)" title="Editar">✏️</button>
+                            <button class="action-btn delete" (click)="deleteGrupo(grupo)" title="Eliminar">🗑️</button>
+                            <button class="action-btn" title="Enviar por Email" disabled>📧</button>
+                            <button class="action-btn" title="Enviar por WhatsApp" disabled>📱</button>
+                        </td>
+                    </tr>
+                    <!-- Expanded invitados rows with per-invitado confirmation fields -->
+                    <tr *ngFor="let inv of grupo.invitados" class="invitado-detail-row"
+                        [class.visible]="isExpanded(grupo.id)">
+                        <td></td>
+                        <td class="invitado-name">↳ {{ inv.nombre }}</td>
+                        <td></td>
+                        <td><span class="status-pending">{{ inv.invitacionConfirmada ? 'Confirmado ✅' : 'Pendiente'
+                                }}</span></td>
+                        <td>{{ inv.confirmadoPor || '—' }}</td>
+                        <td>{{ inv.mesaNumero || '—' }}</td>
+                        <td></td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+
+        <div class="no-data" *ngIf="grupos.length === 0">
+            <p>Sin invitados para este evento</p>
+        </div>
+    </div>
+
+    <div class="loading" *ngIf="loading">
+        <div class="loader"></div>
+        <p>Cargando invitados...</p>
+    </div>
+</div>

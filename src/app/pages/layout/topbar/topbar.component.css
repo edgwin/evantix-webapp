@@ -2,6 +2,53 @@ mat-nav-list {
   width: 200px;
 }
 
-.TopBarText{
+.TopBarText {
   padding: 10px;
+}
+
+.hamburger-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  color: #333;
+}
+
+.hamburger-btn mat-icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+}
+
+.topbar-right {
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 6px 10px;
+  }
+
+  .navbar .container-fluid {
+    flex-wrap: nowrap;
+  }
+
+  .navbar-nav {
+    display: none !important;
+  }
+
+  .user-name {
+    display: none;
+  }
+
+  .topbar-right {
+    gap: 8px;
+  }
+
+  .topbar-right .btn {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
 }
