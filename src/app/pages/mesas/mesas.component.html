@@ -1,1 +1,124 @@
-<p>mesas works!</p>
+<div class="mesas-container">
+    <!-- Header -->
+    <div class="section-header">
+        <h2>Asignación de Mesas</h2>
+    </div>
+
+    <!-- Event Selector -->
+    <div class="event-selector" *ngIf="paidEvents.length > 0">
+        <label>Selecciona un evento:</label>
+        <select [(ngModel)]="selectedEventId" (change)="onEventChange()" class="event-dropdown">
+            <option *ngFor="let event of paidEvents" [value]="event.id">
+                {{ event.nombre }} — {{ event.fecha }} ({{ event.tipoEvento }})
+            </option>
+        </select>
+        <button class="btn btn-primary" (click)="openForm()" *ngIf="!showForm && hasInvitados">
+            <span class="btn-icon">+</span> Nueva Mesa
+        </button>
+    </div>
+
+    <div class="no-events" *ngIf="paidEvents.length === 0">
+        <p>No tienes eventos con pago completado.</p>
+    </div>
+
+    <!-- No invitados message -->
+    <div class="empty-state" *ngIf="!loading && selectedEventId && !hasInvitados">
+        <div class="empty-icon">👥</div>
+        <p>No existen invitados registrados. Da de alta tus invitados para habilitar esta sección.</p>
+    </div>
+
+    <!-- Form -->
+    <div class="form-panel" *ngIf="showForm">
+        <div class="form-header">
+            <h3>{{ editingMesaId ? 'Editar Mesa' : 'Nueva Mesa' }}</h3>
+            <button class="close-btn" (click)="closeForm()">✕</button>
+        </div>
+        <div class="form-body">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nombre de la Mesa <span class="required">*</span></label>
+                    <input type="text" [(ngModel)]="mesaNombre" placeholder="Ej: Mesa Principal" class="form-input"
+                        [class.input-error]="formSubmitted && !mesaNombre.trim()" />
+                    <small class="error-msg" *ngIf="formSubmitted && !mesaNombre.trim()">Este campo es
+                        obligatorio</small>
+                </div>
+                <div class="form-group">
+                    <label>Cantidad de Lugares <span class="required">*</span></label>
+                    <input type="number" [(ngModel)]="mesaCantidad" min="1" class="form-input"
+                        [class.input-error]="formSubmitted && mesaCantidad < 1" />
+                </div>
+                <div class="form-group">
+                    <label>Orden</label>
+                    <input type="number" [(ngModel)]="mesaOrden" min="1" class="form-input" />
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-secondary" (click)="closeForm()">Cancelar</button>
+                <button class="btn btn-primary" (click)="saveMesa()" [disabled]="saving">
+                    {{ saving ? 'Guardando...' : (editingMesaId ? 'Guardar Cambios' : 'Crear Mesa') }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading" *ngIf="loading">
+        <div class="spinner"></div>
+        <p>Cargando...</p>
+    </div>
+
+    <!-- No mesas message -->
+    <div class="empty-state" *ngIf="!loading && hasInvitados && mesas.length === 0 && !showForm">
+        <div class="empty-icon">🪑</div>
+        <p>Aún no tienes mesas configuradas. Crea tu primera mesa para comenzar a asignar invitados.</p>
+    </div>
+
+    <!-- Mesas Grid -->
+    <div class="mesas-grid" *ngIf="!loading && mesas.length > 0">
+        <div class="mesa-card" *ngFor="let mesa of mesas">
+            <div class="mesa-header">
+                <div class="mesa-info">
+                    <h3 class="mesa-name">{{ mesa.nombre }}</h3>
+                    <span class="mesa-capacity" [class.full]="isMesaFull(mesa)">
+                        {{ mesa.invitados?.length || 0 }} / {{ mesa.cantidadLugares }} lugares
+                    </span>
+                </div>
+                <div class="mesa-actions">
+                    <button class="icon-btn" (click)="editMesa(mesa)" title="Editar">✏️</button>
+                    <button class="icon-btn delete" (click)="deleteMesa(mesa)" title="Eliminar">🗑️</button>
+                </div>
+            </div>
+
+            <div class="mesa-capacity-bar">
+                <div class="capacity-fill" [style.width.%]="(mesa.invitados?.length || 0) / mesa.cantidadLugares * 100"
+                    [class.full]="isMesaFull(mesa)">
+                </div>
+            </div>
+
+            <!-- Assigned invitados -->
+            <div class="assigned-list">
+                <div class="assigned-item" *ngFor="let inv of mesa.invitados">
+                    <span class="assigned-name">{{ getInvitadoDisplayName(inv) }}</span>
+                    <button class="remove-btn" (click)="removeInvitado(inv.id)" title="Quitar de mesa">✕</button>
+                </div>
+                <div class="empty-seats" *ngIf="!mesa.invitados || mesa.invitados.length === 0">
+                    <span class="empty-text">Sin invitados asignados</span>
+                </div>
+            </div>
+
+            <!-- Add invitado dropdown -->
+            <div class="add-invitado" *ngIf="!isMesaFull(mesa)">
+                <select class="invitado-dropdown" #invSelect
+                    (change)="assignInvitado(mesa, invSelect.value); invSelect.value=''">
+                    <option value="">＋ Agregar invitado...</option>
+                    <option *ngFor="let inv of getAvailableInvitados(mesa)" [value]="inv.id">
+                        {{ inv.displayName }}
+                    </option>
+                </select>
+            </div>
+            <div class="mesa-full-msg" *ngIf="isMesaFull(mesa)">
+                ✅ Mesa completa
+            </div>
+        </div>
+    </div>
+</div>
