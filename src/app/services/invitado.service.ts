@@ -32,4 +32,13 @@ export class InvitadoService {
     deleteGrupo(id: string): Observable<any> {
         return this.http.delete(`${this.apiUrl}Delete/${id}`, { headers: this.getHeaders() });
     }
+
+    // Public endpoints (no auth) for guest RSVP
+    getGrupoByInvitacion(eventId: string, idInvitacion: string): Observable<any> {
+        return this.http.get(`${this.apiUrl}Invitacion/${eventId}/${idInvitacion}`);
+    }
+
+    confirmInvitacion(eventId: string, idInvitacion: string, data: any[]): Observable<any> {
+        return this.http.put(`${this.apiUrl}Invitacion/${eventId}/${idInvitacion}/Confirm`, data);
+    }
 }

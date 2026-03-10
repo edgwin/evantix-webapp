@@ -10,6 +10,8 @@ import { NotificationService } from '../../services/notification.service';
 export class InvitadosComponent implements OnInit {
   paidEvents: any[] = [];
   selectedEventId: string = '';
+  selectedEventName: string = '';
+  selectedEventMensaje: string = '';
   grupos: any[] = [];
   loading = false;
   expandedRows: Set<string> = new Set();
@@ -43,6 +45,8 @@ export class InvitadosComponent implements OnInit {
         this.paidEvents = events;
         if (events.length > 0) {
           this.selectedEventId = events[0].id;
+          this.selectedEventName = events[0].nombre;
+          this.selectedEventMensaje = events[0].mensajeInvitacion || '';
           this.loadGrupos();
         }
       },
@@ -67,6 +71,9 @@ export class InvitadosComponent implements OnInit {
 
   onEventChange() {
     this.closeForm();
+    const ev = this.paidEvents.find((e: any) => e.id === this.selectedEventId);
+    this.selectedEventName = ev?.nombre || '';
+    this.selectedEventMensaje = ev?.mensajeInvitacion || '';
     this.loadGrupos();
   }
 
@@ -202,5 +209,55 @@ export class InvitadosComponent implements OnInit {
 
   getTotalInvitados(): number {
     return this.grupos.reduce((sum, g) => sum + (g.invitados?.length || 0), 0);
+  }
+
+  getInvitationUrl(grupo: any): string {
+    const name = this.selectedEventName.replace(/\s+/g, '-');
+    return `${window.location.origin}/invitacion/${encodeURIComponent(name)}/${this.selectedEventId}/${grupo.idInvitacion}`;
+  }
+
+  sendWhatsApp(grupo: any) {
+    const url = this.getInvitationUrl(grupo);
+    const message = `${this.selectedEventMensaje}\n\n${url}`;
+    const phone = grupo.whatsApp?.replace(/\D/g, '') || '';
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
+  }
+
+  sendEmail(grupo: any) {
+    const url = this.getInvitationUrl(grupo);
+    const body = `${this.selectedEventMensaje}\n\n${url}`;
+    const subject = `Invitación - ${this.selectedEventName}`;
+    window.open(`mailto:${grupo.email || ''}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
+  }
+
+  exportCsv() {
+    const statusLabel = (s: number) => s === 1 ? 'Confirmado' : s === 2 ? 'Rechazado' : 'Pendiente';
+    const lines: string[] = [];
+    lines.push('Grupo,Tipo,Nombre Invitado,Email,WhatsApp,Estatus,Confirmado Por,Mesa');
+
+    for (const grupo of this.grupos) {
+      const grupoName = grupo.nombreFamilia || grupo.invitados?.[0]?.nombre || 'Sin nombre';
+      for (const inv of (grupo.invitados || [])) {
+        lines.push([
+          `"${grupoName}"`,
+          grupo.tipoInvitacion,
+          `"${inv.nombre || ''}"`,
+          grupo.email || '',
+          grupo.whatsApp || '',
+          statusLabel(inv.invitacionConfirmada),
+          inv.confirmadoPor || '',
+          inv.mesaNumero || ''
+        ].join(','));
+      }
+    }
+
+    const csv = lines.join('\n');
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Invitados_${this.selectedEventName.replace(/\s+/g, '_')}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 }

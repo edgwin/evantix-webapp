@@ -1,17 +1,16 @@
 <div class="sideBar">
   <div style="text-align: center;">
-    <img src="../../../../assets/images/Evantix.png" alt="Logo" height="128px" width="128px"/>  
+    <img src="../../../../assets/images/Evantix.png" alt="Logo" height="128px" width="128px" />
   </div>
-  <mat-nav-list>    
+  <mat-nav-list>
     <mat-list-item (click)="toggleInvitacionesSubmenu()">
       <span>Invitaciones</span>
       <mat-icon class="expand-icon">{{ submenuInvitacionesOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
     </mat-list-item>
     <div *ngIf="!submenuInvitacionesOpen" class="submenu">
-      <a mat-list-item routerLink="/dashboard" 
-            [ngClass]="{ 'selected': selectedRoute === '/dashboard' }"
-            (click)="selectRoute('/dashboard')">
-          <span>Mis Eventos</span>
+      <a mat-list-item routerLink="/dashboard" [ngClass]="{ 'selected': selectedRoute === '/dashboard' }"
+        (click)="selectRoute('/dashboard')">
+        <span>Mis Eventos</span>
       </a>
       <!-- <a mat-list-item
         *ngIf="showInvitaciones; else invitacionesDisabled"
@@ -25,19 +24,17 @@
           <span>Mis Invitaciones</span>
         </a>
       </ng-template> -->
-      <a mat-list-item 
-          *ngIf="showInvitados; else invitadosDisabled"
-          routerLink="/invitados" 
-          [ngClass]="{ 'selected': selectedRoute === '/invitados' }"
-          (click)="selectRoute('/invitados')"><span>Mis Invitados</span></a>
+      <a mat-list-item *ngIf="showInvitados; else invitadosDisabled" routerLink="/invitados"
+        [ngClass]="{ 'selected': selectedRoute === '/invitados' }" (click)="selectRoute('/invitados')"><span>Mis
+          Invitados</span></a>
       <ng-template #invitadosDisabled>
-        <a mat-list-item class="disabled-link" style="pointer-events: none; opacity: 0.5;" title="Funcionalidad disponible una vez que una de sus invitaciones este publicada">
+        <a mat-list-item class="disabled-link" style="pointer-events: none; opacity: 0.5;"
+          title="Funcionalidad disponible una vez que una de sus invitaciones este publicada">
           <span>Mis Invitados</span>
         </a>
       </ng-template>
-      <a mat-list-item routerLink="/mesas" 
-          [ngClass]="{ 'selected': selectedRoute === '/mesas' }"
-          (click)="selectRoute('/mesas')"><span>Acomodo de Mesas</span></a>
+      <a mat-list-item routerLink="/mesas" [ngClass]="{ 'selected': selectedRoute === '/mesas' }"
+        (click)="selectRoute('/mesas')"><span>Asignación de Mesas</span></a>
     </div>
     <mat-list-item (click)="toggleConfirmacionesSubmenu()">
       <span>Confirmaciones</span>
@@ -45,8 +42,8 @@
     </mat-list-item>
     <div *ngIf="submenuConfirmacionesOpen" class="submenu">
       <a mat-list-item routerLink="/profile"><span>Campañas</span></a>
-      <a mat-list-item routerLink="/account"><span>Lista de Confirmaciones</span></a>      
+      <a mat-list-item routerLink="/account"><span>Lista de Confirmaciones</span></a>
     </div>
     <a mat-list-item routerLink="/settings"><span>Configuraciones</span></a>
-  </mat-nav-list>  
+  </mat-nav-list>
 </div>

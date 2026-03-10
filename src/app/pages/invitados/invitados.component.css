@@ -222,6 +222,21 @@
     color: #e74c3c;
 }
 
+.status-pending {
+    color: #e67e22;
+    font-weight: 500;
+}
+
+.status-confirmed {
+    color: #27ae60;
+    font-weight: 600;
+}
+
+.status-declined {
+    color: #e74c3c;
+    font-weight: 500;
+}
+
 .form-row {
     display: flex;
     gap: 16px;

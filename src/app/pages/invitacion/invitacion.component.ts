@@ -22,6 +22,8 @@ import { PricingService, EventCostResponse } from '../../services/pricing.servic
 import { CostBarComponent } from '../../component/invitacion/cost-bar/cost-bar.component';
 import { SectionToggleComponent } from '../../component/invitacion/section-toggle/section-toggle.component';
 import { Subscription } from 'rxjs';
+import { InvitadoService } from '../../services/invitado.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-invitacion',
@@ -30,18 +32,18 @@ import { Subscription } from 'rxjs';
   styleUrl: './invitacion.component.css',
   imports: [PortadaComponent, CommonModule, FestejadosComponent, DondeCuandoComponent, IntinerarioComponent, IndicacionesComponent,
     MesaRegalosComponent, PersonasFavoritasComponent, HistoriaComponent, GaleriaComponent, HospedajeComponent,
-    PhotoUploaderComponent, MusicaComponent, MuroFotosComponent, TemplateSelectorComponent, CostBarComponent, SectionToggleComponent],
+    PhotoUploaderComponent, MusicaComponent, MuroFotosComponent, TemplateSelectorComponent, CostBarComponent, SectionToggleComponent, FormsModule],
 })
 
 export class InvitacionComponent implements OnDestroy {
   constructor(private route: ActivatedRoute, private invitationService: InvitationService,
     private notificationService: NotificationService, public templateService: TemplateService,
-    private router: Router, private pricingService: PricingService) { }
+    private router: Router, private pricingService: PricingService, private invitadoService: InvitadoService) { }
   eventId: any;
   loading: boolean = true;
   data: any;
   isReadOnly: boolean = false;
-  isGuestView: boolean = false; // Flag para pruebas: true = simula vista de invitado
+  isGuestView: boolean = false;
   isAdmin: boolean = false;
   eventStatus: string = '';
   canSendToReview: boolean = false;
@@ -50,6 +52,13 @@ export class InvitacionComponent implements OnDestroy {
   pricingLoading: boolean = true;
   private mutationSub: Subscription | null = null;
   private pricingLoadingSub: Subscription | null = null;
+
+  // RSVP data
+  idInvitacion: string | null = null;
+  guestGroup: any = null;
+  rsvpSubmitted: boolean = false;
+  rsvpSubmitting: boolean = false;
+  rsvpFormSubmitted: boolean = false;
 
   // Secciones opcionales habilitadas/deshabilitadas
   sections: { [key: string]: { isEnabled: boolean, enableCost: number, sectionName: string, maxItems: number } } = {};
@@ -66,10 +75,18 @@ export class InvitacionComponent implements OnDestroy {
 
   ngOnInit(): void {
     this.eventId = this.route.snapshot.paramMap.get('idEvent');
-    if (this.eventId === null || this.eventId === undefined) return
+    this.idInvitacion = this.route.snapshot.paramMap.get('idInvitado');
+    if (this.eventId === null || this.eventId === undefined) return;
 
     this.loading = true;
     if (!this.eventId) return;
+
+    // If guest view, set flags and load guest group
+    if (this.idInvitacion) {
+      this.isGuestView = true;
+      this.isReadOnly = true;
+      this.loadGuestGroup();
+    }
 
     this.invitationService.getInvitacion(this.eventId).subscribe({
       next: (res: any) => {
@@ -247,6 +264,52 @@ export class InvitacionComponent implements OnDestroy {
       error: (err) => {
         this.notificationService.show('error', `Hubo un error al marcar como revisado: ${err.message}`);
         this.sendingToReview = false;
+      }
+    });
+  }
+
+  // === RSVP Methods ===
+  loadGuestGroup(): void {
+    if (!this.eventId || !this.idInvitacion) return;
+    this.invitadoService.getGrupoByInvitacion(this.eventId, this.idInvitacion).subscribe({
+      next: (group: any) => {
+        // Set invitacionConfirmada to null for pending guests (state 0)
+        group.invitados?.forEach((inv: any) => {
+          if (inv.invitacionConfirmada === 0) {
+            inv.invitacionConfirmada = null;
+          }
+        });
+        this.guestGroup = group;
+        this.rsvpSubmitted = group.invitados?.every((i: any) => i.confirmadoPor) || false;
+      },
+      error: (err) => {
+        console.error('Error loading guest group', err);
+      }
+    });
+  }
+
+  submitRsvp(): void {
+    this.rsvpFormSubmitted = true;
+    // Validate all names filled and all have a selection
+    const hasEmpty = this.guestGroup.invitados.some((inv: any) => !inv.nombre?.trim());
+    const hasNoSelection = this.guestGroup.invitados.some((inv: any) => inv.invitacionConfirmada === null || inv.invitacionConfirmada === 0);
+    if (hasEmpty || hasNoSelection) return;
+
+    this.rsvpSubmitting = true;
+    const confirmaciones = this.guestGroup.invitados.map((inv: any) => ({
+      id: inv.id,
+      nombre: inv.nombre,
+      invitacionConfirmada: inv.invitacionConfirmada
+    }));
+
+    this.invitadoService.confirmInvitacion(this.eventId, this.idInvitacion!, confirmaciones).subscribe({
+      next: () => {
+        this.rsvpSubmitted = true;
+        this.rsvpSubmitting = false;
+      },
+      error: (err) => {
+        this.rsvpSubmitting = false;
+        console.error('Error confirming RSVP', err);
       }
     });
   }

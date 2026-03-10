@@ -116,6 +116,60 @@
     </app-section-toggle>
   </div>
 
+  <!-- RSVP Section (Guest View) -->
+  <div class="rsvp-section" *ngIf="isGuestView && guestGroup" [ngStyle]="{
+      'background-image': 'url(' + templateService.getMarbleBackground() + ')',
+      'background-size': 'cover',
+      'background-position': 'center',
+      'padding': '40px 20px'
+    }">
+
+    <div class="rsvp-card" *ngIf="!rsvpSubmitted">
+      <h2 class="rsvp-title" [ngStyle]="{ 'color': templateService.getCurrentTemplate()?.theme?.colors?.primary }">
+        Confirma tu Asistencia
+      </h2>
+      <p class="rsvp-subtitle">Por favor completa tu nombre y confirma tu asistencia</p>
+
+      <div class="rsvp-guest" *ngFor="let inv of guestGroup.invitados; let i = index">
+        <div class="rsvp-guest-row">
+          <div class="rsvp-name-field">
+            <label>Invitado {{ i + 1 }}</label>
+            <input type="text" [(ngModel)]="inv.nombre" [placeholder]="inv.nombre || 'Nombre del invitado'"
+              class="rsvp-input" [class.rsvp-input-error]="rsvpFormSubmitted && !inv.nombre?.trim()"
+              [ngStyle]="{ 'border-color': inv.nombre?.trim() ? templateService.getCurrentTemplate()?.theme?.colors?.primary : '' }" />
+            <small class="rsvp-error" *ngIf="rsvpFormSubmitted && !inv.nombre?.trim()">
+              El nombre es obligatorio
+            </small>
+          </div>
+          <div class="rsvp-buttons">
+            <button class="rsvp-btn rsvp-confirm" [class.active]="inv.invitacionConfirmada === 1"
+              (click)="inv.invitacionConfirmada = 1" title="Confirmar asistencia" [ngStyle]="inv.invitacionConfirmada === 1 ?
+                { 'background': templateService.getCurrentTemplate()?.theme?.colors?.primary, 'color': '#fff' } : {}">
+              ✅ Asistiré
+            </button>
+            <button class="rsvp-btn rsvp-decline" [class.active]="inv.invitacionConfirmada === 2"
+              (click)="inv.invitacionConfirmada = 2" title="Declinar asistencia">
+              ❌ No asistiré
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button class="rsvp-submit" (click)="submitRsvp()" [disabled]="rsvpSubmitting"
+        [ngStyle]="{ 'background': templateService.getCurrentTemplate()?.theme?.colors?.primary }">
+        {{ rsvpSubmitting ? 'Enviando...' : 'Enviar Confirmación' }}
+      </button>
+    </div>
+
+    <div class="rsvp-card rsvp-success" *ngIf="rsvpSubmitted">
+      <div class="rsvp-success-icon">🎉</div>
+      <h2 class="rsvp-title" [ngStyle]="{ 'color': templateService.getCurrentTemplate()?.theme?.colors?.primary }">
+        ¡Gracias!
+      </h2>
+      <p class="rsvp-subtitle">Tu confirmación ha sido registrada exitosamente</p>
+    </div>
+  </div>
+
   <!-- Spacer para evitar contenido oculto debajo de la barra fija -->
   <div class="bottom-spacer"></div>
 

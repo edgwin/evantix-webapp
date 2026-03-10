@@ -94,3 +94,174 @@
     height: 55px;
   }
 }
+
+/* === RSVP Section === */
+.rsvp-section {
+  padding: 40px 20px;
+}
+
+.rsvp-card {
+  max-width: 500px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 32px 28px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  text-align: center;
+}
+
+.rsvp-title {
+  font-family: var(--heading-font, 'Playfair Display', serif);
+  font-size: 1.6rem;
+  margin: 0 0 8px 0;
+}
+
+.rsvp-subtitle {
+  font-family: var(--body-font, 'Work Sans', sans-serif);
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0 0 24px 0;
+}
+
+.rsvp-guest {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.rsvp-guest:last-child {
+  border-bottom: none;
+}
+
+.rsvp-guest-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rsvp-name-field {
+  text-align: left;
+}
+
+.rsvp-name-field label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #888;
+  margin-bottom: 4px;
+  font-family: var(--body-font, 'Work Sans', sans-serif);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rsvp-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: var(--body-font, 'Work Sans', sans-serif);
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.rsvp-input:focus {
+  outline: none;
+}
+
+.rsvp-input-error {
+  border-color: #e74c3c !important;
+}
+
+.rsvp-error {
+  color: #e74c3c;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+
+.rsvp-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.rsvp-btn {
+  flex: 1;
+  padding: 10px 14px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--body-font, 'Work Sans', sans-serif);
+}
+
+.rsvp-btn:hover {
+  transform: translateY(-1px);
+}
+
+.rsvp-confirm.active {
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.rsvp-decline.active {
+  background: #f5f5f5;
+  border-color: #ccc;
+  color: #888;
+}
+
+.rsvp-submit {
+  margin-top: 24px;
+  padding: 12px 40px;
+  border: none;
+  border-radius: 30px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--body-font, 'Work Sans', sans-serif);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.rsvp-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.rsvp-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.rsvp-success {
+  padding: 40px 28px;
+}
+
+.rsvp-success-icon {
+  font-size: 3rem;
+  margin-bottom: 12px;
+}
+
+@media screen and (max-width: 480px) {
+  .rsvp-card {
+    padding: 20px 16px;
+  }
+
+  .rsvp-title {
+    font-size: 1.3rem;
+  }
+
+  .rsvp-buttons {
+    flex-direction: column;
+  }
+
+  .rsvp-btn {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+}
