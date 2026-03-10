@@ -16,6 +16,7 @@ export class MuroFotosComponent implements OnInit {
     @Input() eventId: string = '';
     @Input() isReadOnly: boolean = false;
     @Input() isGuestView: boolean = false;
+    @Input() idInvitacion: string | null = null;
     @Input() maxItems: number = 200;
 
     fotos: any[] = [];
@@ -35,7 +36,7 @@ export class MuroFotosComponent implements OnInit {
     cargarFotos(): void {
         if (!this.eventId) return;
         this.loading = true;
-        this.invitationService.getFotosInvitados(this.eventId).subscribe({
+        this.invitationService.getFotosInvitados(this.eventId, this.idInvitacion ?? undefined).subscribe({
             next: (res) => {
                 this.fotos = res || [];
                 this.loading = false;
@@ -48,7 +49,15 @@ export class MuroFotosComponent implements OnInit {
     }
 
     get canUpload(): boolean {
-        return this.isGuestView && !this.isReadOnly;
+        return this.isGuestView;
+    }
+
+    deleteFoto(fotoId: string): void {
+        if (!confirm('¿Eliminar esta foto?')) return;
+        this.invitationService.deleteFotoInvitado(fotoId).subscribe({
+            next: () => this.cargarFotos(),
+            error: (err: any) => this.notificationService.show('error', 'Error al eliminar foto')
+        });
     }
 
     triggerUpload(): void {
@@ -84,7 +93,7 @@ export class MuroFotosComponent implements OnInit {
                 `Subiendo ${files.length} foto(s)... Este proceso puede tardar varios minutos.`
             );
 
-            this.invitationService.uploadFotosInvitados(this.eventId, files).subscribe({
+            this.invitationService.uploadFotosInvitados(this.eventId, files, this.idInvitacion ?? undefined).subscribe({
                 next: (res) => {
                     this.fotos = res || [];
                     this.uploading = false;

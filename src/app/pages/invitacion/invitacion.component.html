@@ -91,7 +91,7 @@
       [enabledByDefault]="false" [isReadOnly]="isReadOnly" [loading]="togglingSection === 'MuroFotos'"
       (enable)="onEnableSection($event)" (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
       <app-muro-fotos [eventId]="eventId" [isReadOnly]="isReadOnly" [isGuestView]="isGuestView"
-        [maxItems]="getSectionMaxItems('MuroFotos')"></app-muro-fotos>
+        [idInvitacion]="idInvitacion" [maxItems]="25"></app-muro-fotos>
     </app-section-toggle>
 
     <!-- Música -->

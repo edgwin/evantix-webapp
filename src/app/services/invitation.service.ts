@@ -323,17 +323,24 @@ export class InvitationService {
   }
 
   // --- Muro de Fotos (Guest Uploads) ---
-  getFotosInvitados(eventId: string) {
-    const url = `${this.apiUrl}${this.getInvitationData}MuroFotos/${eventId}`;
+  getFotosInvitados(eventId: string, idInvitacion?: string) {
+    let url = `${this.apiUrl}${this.getInvitationData}MuroFotos/${eventId}`;
+    if (idInvitacion) url += `?idInvitacion=${idInvitacion}`;
     return this.http.get<any[]>(url);
   }
 
-  uploadFotosInvitados(eventId: string, files: File[]) {
+  uploadFotosInvitados(eventId: string, files: File[], idInvitacion?: string) {
     const formData = new FormData();
     files.forEach(file => {
       formData.append('images', file);
     });
-    const url = `${this.apiUrl}${this.getInvitationData}MuroFotos/${eventId}`;
+    let url = `${this.apiUrl}${this.getInvitationData}MuroFotos/${eventId}`;
+    if (idInvitacion) url += `?idInvitacion=${idInvitacion}`;
     return this.http.post<any[]>(url, formData);
+  }
+
+  deleteFotoInvitado(fotoId: string) {
+    const url = `${this.apiUrl}${this.getInvitationData}MuroFotos/${fotoId}`;
+    return this.http.delete(url);
   }
 }

@@ -18,6 +18,8 @@
             <div class="photo-card" *ngFor="let foto of fotos; let i = index"
                 [style.animation-delay]="(i * 0.05) + 's'">
                 <img [src]="foto.imagen" alt="Foto de invitado" appDisableDownload loading="lazy">
+                <button class="delete-foto-btn" *ngIf="canUpload" (click)="deleteFoto(foto.id)"
+                    title="Eliminar foto">✕</button>
             </div>
         </div>
 
