@@ -74,7 +74,8 @@
                 <label>Invitados</label>
                 <div class="invitado-row" *ngFor="let inv of invitados; let i = index">
                     <span class="invitado-number">{{ i + 1 }}</span>
-                    <input type="text" [(ngModel)]="inv.nombre" [placeholder]="getDefaultName(i)" class="form-input" />
+                    <input #invitadoInput type="text" [(ngModel)]="inv.nombre" [placeholder]="getDefaultName(i)"
+                        class="form-input" />
                     <button class="btn-remove" (click)="removeInvitado(i)" *ngIf="invitados.length > 1"
                         title="Quitar">✕</button>
                 </div>
@@ -102,8 +103,8 @@
                     <th style="width: 30px;"></th>
                     <th>Nombre</th>
                     <th>Email</th>
-                    <th>Inv. Confirmada</th>
-                    <th>Confirmado por</th>
+                    <th *ngIf="confirmacionEnabled">Inv. Confirmada</th>
+                    <th *ngIf="confirmacionEnabled">Confirmado por</th>
                     <th>Mesa #</th>
                     <th>Opciones</th>
                 </tr>
@@ -127,8 +128,8 @@
                             <span class="count-badge">({{ grupo.invitados?.length }})</span>
                         </td>
                         <td>{{ grupo.email || '—' }}</td>
-                        <td></td>
-                        <td></td>
+                        <td *ngIf="confirmacionEnabled"></td>
+                        <td *ngIf="confirmacionEnabled"></td>
                         <td></td>
                         <td class="actions-cell">
                             <button class="action-btn edit" (click)="editGrupo(grupo)" title="Editar">✏️</button>
@@ -144,14 +145,14 @@
                         <td></td>
                         <td class="invitado-name">↳ {{ inv.nombre }}</td>
                         <td></td>
-                        <td>
+                        <td *ngIf="confirmacionEnabled">
                             <span
                                 [ngClass]="{'status-pending': inv.invitacionConfirmada === 0, 'status-confirmed': inv.invitacionConfirmada === 1, 'status-declined': inv.invitacionConfirmada === 2}">
                                 {{ inv.invitacionConfirmada === 1 ? 'Confirmado ✅' : inv.invitacionConfirmada === 2 ?
                                 'Rechazado ❌' : 'Pendiente ⏳' }}
                             </span>
                         </td>
-                        <td>{{ inv.confirmadoPor || '—' }}</td>
+                        <td *ngIf="confirmacionEnabled">{{ inv.confirmadoPor || '—' }}</td>
                         <td>{{ inv.mesa?.nombre || '—' }}</td>
                         <td></td>
                     </tr>

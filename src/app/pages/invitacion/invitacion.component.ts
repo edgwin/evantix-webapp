@@ -63,12 +63,18 @@ export class InvitacionComponent implements OnDestroy {
   // Secciones opcionales habilitadas/deshabilitadas
   sections: { [key: string]: { isEnabled: boolean, enableCost: number, sectionName: string, maxItems: number } } = {};
 
+  // Track ID actual (se actualiza al seleccionar melodía sin necesidad de refrescar)
+  currentTrackId: string = '';
+
   toggleReadOnly(): void {
     if (this.eventStatus === 'Creado' || this.isAdmin) {
       this.isReadOnly = !this.isReadOnly;
       // Refrescar costo al volver a modo edición o al ver previo
       if (!this.isReadOnly) {
         this.loadPricing();
+      } else {
+        // Scroll al inicio al entrar a vista previa
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
   }
@@ -93,35 +99,28 @@ export class InvitacionComponent implements OnDestroy {
         this.data = res;
         this.eventStatus = res.eventStatus || 'Creado';
 
-        // Detect admin from query param
-        this.isAdmin = this.route.snapshot.queryParamMap.get('admin') === 'true';
-
+        const wantsAdmin = this.route.snapshot.queryParamMap.get('admin') === 'true';
         const isPaid = ['Pagado', 'Pago Creado'].includes(this.eventStatus);
 
-        if (this.isAdmin) {
-          this.isReadOnly = false;
-          this.canSendToReview = false; // Admin uses "Revisado" button instead
-        } else if (isPaid) {
-          this.isReadOnly = true;
-          this.canSendToReview = false;
-        } else if (this.eventStatus === 'Creado') {
-          this.isReadOnly = false;
-          this.canSendToReview = true;
+        // Si el query param pide admin, verificar con el backend
+        if (wantsAdmin) {
+          this.invitationService.checkAdmin().subscribe({
+            next: (adminRes: any) => {
+              this.isAdmin = adminRes?.isAdmin === true;
+              this.applyViewMode(isPaid);
+              this.finishInit(res);
+            },
+            error: () => {
+              this.isAdmin = false;
+              this.applyViewMode(isPaid);
+              this.finishInit(res);
+            }
+          });
         } else {
-          this.isReadOnly = true;
-          this.canSendToReview = false;
+          this.isAdmin = false;
+          this.applyViewMode(isPaid);
+          this.finishInit(res);
         }
-
-        if (res.template) {
-          this.templateService.applyTemplateFromData(res.template);
-        }
-
-        // Cargar precios y secciones habilitadas
-        if ((this.eventStatus === 'Creado' || this.isAdmin) && !isPaid) {
-          this.loadPricing();
-        }
-
-        this.loading = false;
       },
       error: (err) => {
         this.notificationService.show(
@@ -150,6 +149,60 @@ export class InvitacionComponent implements OnDestroy {
     this.pricingLoadingSub?.unsubscribe();
   }
 
+  private applyViewMode(isPaid: boolean): void {
+    if (this.isAdmin) {
+      this.isReadOnly = false;
+      this.canSendToReview = false; // Admin uses "Revisado" button instead
+    } else if (isPaid) {
+      this.isReadOnly = true;
+      this.canSendToReview = false;
+      // General link (no idInvitacion) to a paid event = guest view
+      if (!this.idInvitacion) {
+        this.isGuestView = true;
+      }
+    } else if (this.eventStatus === 'Creado') {
+      this.isReadOnly = false;
+      this.canSendToReview = true;
+    } else {
+      this.isReadOnly = true;
+      this.canSendToReview = false;
+    }
+  }
+
+  private finishInit(res: any): void {
+    if (res.template) {
+      this.templateService.applyTemplateFromData(res.template);
+    }
+
+    // Initialize current track ID from API response
+    this.currentTrackId = res.portada?.trackId || '';
+
+    // Populate sections from invitation response (works for all views including guest)
+    if (res.enabledSections) {
+      for (const [key, isEnabled] of Object.entries(res.enabledSections)) {
+        this.sections[key] = {
+          ...this.sections[key],
+          isEnabled: isEnabled as boolean,
+          enableCost: this.sections[key]?.enableCost ?? 0,
+          sectionName: this.sections[key]?.sectionName ?? key,
+          maxItems: this.sections[key]?.maxItems ?? 0
+        };
+      }
+    }
+
+    // Cargar precios y secciones habilitadas con detalle (solo para usuarios autenticados)
+    if (!this.isGuestView) {
+      this.loadPricing();
+    }
+
+    this.loading = false;
+  }
+
+  onTrackChanged(trackId: string): void {
+    this.currentTrackId = trackId;
+    this.data.portada.trackId = trackId;
+  }
+
   loadPricing(): void {
     this.pricingService.getEventCost(this.eventId).subscribe({
       next: (cost: EventCostResponse) => {
@@ -173,9 +226,13 @@ export class InvitacionComponent implements OnDestroy {
   }
 
   isSectionEnabled(sectionKey: string): boolean {
-    if (this.isReadOnly) return true; // En readonly, mostrar todo lo que tenga datos
     const section = this.sections[sectionKey];
-    return section?.isEnabled ?? false;
+    // If sections data is loaded, always use the actual value
+    if (section !== undefined) {
+      return section.isEnabled;
+    }
+    // Sections data not loaded yet: hide until we know the actual state
+    return false;
   }
 
   getSectionEnableCost(sectionKey: string): number {
@@ -209,6 +266,33 @@ export class InvitacionComponent implements OnDestroy {
   }
 
   onRemoveSection(sectionKey: string): void {
+    // Verificar si AISuggestions ya fue utilizada
+    if (sectionKey === 'AISuggestions') {
+      this.togglingSection = sectionKey;
+      this.invitationService.getAiUsageCount(this.eventId).subscribe({
+        next: (res) => {
+          if (res.usedCount > 0) {
+            this.togglingSection = '';
+            this.notificationService.show(
+              'info',
+              `No es posible desactivar "Sugerencias con IA" porque ya utilizaste ${res.usedCount} sugerencia(s).`
+            );
+            return;
+          }
+          this.doRemoveSection(sectionKey);
+        },
+        error: () => {
+          // Si falla la verificación, permitir igualmente
+          this.doRemoveSection(sectionKey);
+        }
+      });
+      return;
+    }
+
+    this.doRemoveSection(sectionKey);
+  }
+
+  private doRemoveSection(sectionKey: string): void {
     this.togglingSection = sectionKey;
     this.pricingService.toggleSection(this.eventId, sectionKey, false).subscribe({
       next: (cost) => {
@@ -218,6 +302,14 @@ export class InvitacionComponent implements OnDestroy {
         };
         this.togglingSection = '';
         this.notificationService.show('success', `${this.getSectionName(sectionKey)} deshabilitada`);
+
+        // AC2.2: Si se quita Musica, restaurar TrackId al default
+        if (sectionKey === 'Musica') {
+          const defaultTrackId = '1271187';
+          this.invitationService.addTrack(this.eventId, defaultTrackId).subscribe();
+          this.data.portada.trackId = defaultTrackId;
+          this.currentTrackId = defaultTrackId;
+        }
       },
       error: (err) => {
         this.togglingSection = '';

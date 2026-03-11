@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InvitationService } from '../../../services/invitation.service';
 import { FormsModule } from '@angular/forms';
@@ -21,6 +21,7 @@ export class MusicaComponent implements OnInit, OnChanges, OnDestroy {
   @Input() eventId: string = '';
   @Input() trackId: string = '';
   @Input() isReadOnly: boolean = false;
+  @Output() trackChanged = new EventEmitter<string>();
   availableTags: MusicTag[] = [
     { label: 'Ambiente', value: 'ambient' },
     { label: 'Soundtrack', value: 'soundtrack' },
@@ -236,6 +237,17 @@ export class MusicaComponent implements OnInit, OnChanges, OnDestroy {
 
     this.audio.play();
     this.isPlaying = true;
+
+    // Auto-guardar la selección en la BD
+    this.invitationService.addTrack(this.eventId, this.selectedTrack.id)
+      .subscribe({
+        next: () => {
+          this.saved = true;
+          this.trackId = this.selectedTrack.id;
+          this.trackChanged.emit(this.selectedTrack.id);
+        },
+        error: () => { }
+      });
   }
 
   togglePlayPause() {
@@ -258,6 +270,7 @@ export class MusicaComponent implements OnInit, OnChanges, OnDestroy {
         {
           next: () => {
             this.saved = true;
+            this.trackId = this.selectedTrack.id;
           },
           error: (err) => {
           }

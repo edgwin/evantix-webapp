@@ -73,6 +73,11 @@ export class InvitationService {
     return this.http.get(url);
   }
 
+  checkAdmin(): Observable<any> {
+    const url = `${this.apiUrl}${this.getInvitationData}check-admin`;
+    return this.http.get(url, { headers: this.getAuthHeaders() });
+  }
+
   // Obtiene la invitación final desde MongoDB (para eventos pagados)
   getInvitacionFinal(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}final/${eventId}`;
@@ -284,6 +289,11 @@ export class InvitationService {
   generateText(payload: AiTextRequest) {
     const url = `${this.apiUrl}${this.getAIController}${this.getText}`;
     return this.http.post<{ text: string }>(url, payload);
+  }
+
+  getAiUsageCount(eventId: string): Observable<{ usedCount: number }> {
+    const url = `${this.apiUrl}${this.getAIController}UsageCount/${eventId}`;
+    return this.http.get<{ usedCount: number }>(url);
   }
 
   getAssetImages(folder: string) {

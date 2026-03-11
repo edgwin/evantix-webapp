@@ -85,8 +85,8 @@
         [maxItems]="getSectionMaxItems('Hospedaje')"></app-hospedaje>
     </app-section-toggle>
 
-    <!-- Muro de Fotos -->
-    <app-section-toggle sectionKey="MuroFotos" [sectionName]="getSectionName('MuroFotos')"
+    <!-- Muro de Fotos (editor: toggle para habilitar/deshabilitar) -->
+    <app-section-toggle *ngIf="!isReadOnly" sectionKey="MuroFotos" [sectionName]="getSectionName('MuroFotos')"
       [isEnabled]="isSectionEnabled('MuroFotos')" [enableCost]="getSectionEnableCost('MuroFotos')"
       [enabledByDefault]="false" [isReadOnly]="isReadOnly" [loading]="togglingSection === 'MuroFotos'"
       (enable)="onEnableSection($event)" (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
@@ -94,13 +94,36 @@
         [idInvitacion]="idInvitacion" [maxItems]="25"></app-muro-fotos>
     </app-section-toggle>
 
-    <!-- Música -->
-    <app-section-toggle sectionKey="Musica" [sectionName]="getSectionName('Musica')"
+    <!-- Muro de Fotos (guest view only: visible solo para invitados, NO en vista previa) -->
+    <app-muro-fotos *ngIf="isGuestView && isSectionEnabled('MuroFotos')" [eventId]="eventId" [isReadOnly]="true"
+      [isGuestView]="true" [idInvitacion]="idInvitacion" [maxItems]="25"></app-muro-fotos>
+
+    <!-- Confirmación de Invitados -->
+    <app-section-toggle *ngIf="!isReadOnly" sectionKey="ConfirmacionInvitados"
+      [sectionName]="getSectionName('ConfirmacionInvitados')" [isEnabled]="isSectionEnabled('ConfirmacionInvitados')"
+      [enableCost]="getSectionEnableCost('ConfirmacionInvitados')" [enabledByDefault]="false" [isReadOnly]="isReadOnly"
+      [loading]="togglingSection === 'ConfirmacionInvitados'" (enable)="onEnableSection($event)"
+      (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
+      <div style="text-align:center; padding: 20px; color: #555;">
+        <span style="font-size: 2rem;">✉️</span>
+        <p>Permite que tus invitados confirmen su asistencia directamente desde la invitación.</p>
+        <p style="font-size: 0.85rem; color: #888;">Se enviará una invitación personalizada por grupo de invitados con
+          opción de confirmar o declinar.</p>
+      </div>
+    </app-section-toggle>
+
+    <!-- Música (editor: dentro del toggle, solo cuando no es readonly) -->
+    <app-section-toggle *ngIf="!isReadOnly" sectionKey="Musica" [sectionName]="getSectionName('Musica')"
       [isEnabled]="isSectionEnabled('Musica')" [enableCost]="getSectionEnableCost('Musica')" [enabledByDefault]="false"
       [isReadOnly]="isReadOnly" [loading]="togglingSection === 'Musica'" (enable)="onEnableSection($event)"
       (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
-      <app-musica [eventId]="eventId" [trackId]="data.portada.trackId" [isReadOnly]="isReadOnly"></app-musica>
+      <app-musica [eventId]="eventId" [trackId]="currentTrackId" [isReadOnly]="isReadOnly"
+        (trackChanged)="onTrackChanged($event)"></app-musica>
     </app-section-toggle>
+
+    <!-- Música (readonly: siempre visible para pausar/reanudar melodía) -->
+    <app-musica *ngIf="isReadOnly" [eventId]="eventId" [trackId]="currentTrackId"
+      [isReadOnly]="isReadOnly"></app-musica>
 
     <!-- Sugerencias con IA -->
     <app-section-toggle *ngIf="!isReadOnly" sectionKey="AISuggestions" [sectionName]="getSectionName('AISuggestions')"
@@ -116,8 +139,8 @@
     </app-section-toggle>
   </div>
 
-  <!-- RSVP Section (Guest View) -->
-  <div class="rsvp-section" *ngIf="isGuestView && guestGroup" [ngStyle]="{
+  <!-- RSVP Section (Guest View) - Confirmación habilitada -->
+  <div class="rsvp-section" *ngIf="isGuestView && guestGroup && data?.confirmacionInvitadosEnabled" [ngStyle]="{
       'background-image': 'url(' + templateService.getMarbleBackground() + ')',
       'background-size': 'cover',
       'background-position': 'center',
@@ -167,6 +190,37 @@
         ¡Gracias!
       </h2>
       <p class="rsvp-subtitle">Tu confirmación ha sido registrada exitosamente</p>
+    </div>
+  </div>
+
+  <!-- RSVP Section (Guest View) - Confirmación NO habilitada: contacto alternativo -->
+  <div class="rsvp-section" *ngIf="isGuestView && !data?.confirmacionInvitadosEnabled" [ngStyle]="{
+      'background-image': 'url(' + templateService.getMarbleBackground() + ')',
+      'background-size': 'cover',
+      'background-position': 'center',
+      'padding': '40px 20px'
+    }">
+    <div class="rsvp-card">
+      <h2 class="rsvp-title" [ngStyle]="{ 'color': templateService.getCurrentTemplate()?.theme?.colors?.primary }">
+        Confirma tu Asistencia
+      </h2>
+      <p class="rsvp-subtitle">Favor de confirmar por los siguientes medios:</p>
+      <div style="text-align: center; margin-top: 15px; font-size: 1.05rem; color: #555;">
+        <p *ngIf="data?.whatsApp" style="margin: 8px 0;">
+          <strong>📱 WhatsApp:</strong>
+          <a [href]="'https://wa.me/' + data.whatsApp" target="_blank"
+            [ngStyle]="{ 'color': templateService.getCurrentTemplate()?.theme?.colors?.primary }">
+            {{ data.whatsApp }}
+          </a>
+        </p>
+        <p *ngIf="data?.email" style="margin: 8px 0;">
+          <strong>📧 Email:</strong>
+          <a [href]="'mailto:' + data.email"
+            [ngStyle]="{ 'color': templateService.getCurrentTemplate()?.theme?.colors?.primary }">
+            {{ data.email }}
+          </a>
+        </p>
+      </div>
     </div>
   </div>
 

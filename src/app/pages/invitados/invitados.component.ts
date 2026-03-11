@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList, ElementRef } from '@angular/core';
 import { InvitadoService } from '../../services/invitado.service';
 import { NotificationService } from '../../services/notification.service';
+import { PricingService } from '../../services/pricing.service';
 
 @Component({
   selector: 'app-invitados',
@@ -25,10 +26,14 @@ export class InvitadosComponent implements OnInit {
   email = '';
   invitados: { nombre: string }[] = [{ nombre: '' }];
   formSubmitted = false;
+  confirmacionEnabled = false;
+
+  @ViewChildren('invitadoInput') invitadoInputs!: QueryList<ElementRef>;
 
   constructor(
     private invitadoService: InvitadoService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private pricingService: PricingService
   ) { }
 
   ngOnInit(): void {
@@ -48,6 +53,7 @@ export class InvitadosComponent implements OnInit {
           this.selectedEventName = events[0].nombre;
           this.selectedEventMensaje = events[0].mensajeInvitacion || '';
           this.loadGrupos();
+          this.loadConfirmacionState();
         }
       },
       error: (err) => this.notificationService.show('error', 'Error al cargar eventos pagados')
@@ -75,6 +81,17 @@ export class InvitadosComponent implements OnInit {
     this.selectedEventName = ev?.nombre || '';
     this.selectedEventMensaje = ev?.mensajeInvitacion || '';
     this.loadGrupos();
+    this.loadConfirmacionState();
+  }
+
+  private loadConfirmacionState(): void {
+    this.pricingService.getEventCost(this.selectedEventId).subscribe({
+      next: (cost: any) => {
+        const section = cost.sections?.find((s: any) => s.sectionKey === 'ConfirmacionInvitados');
+        this.confirmacionEnabled = section?.isEnabled ?? false;
+      },
+      error: () => this.confirmacionEnabled = false
+    });
   }
 
   // --- Form ---
@@ -112,6 +129,14 @@ export class InvitadosComponent implements OnInit {
     }
     const num = this.invitados.length + 1;
     this.invitados.push({ nombre: '' });
+
+    // Auto-focus en el nuevo input
+    setTimeout(() => {
+      const inputs = this.invitadoInputs?.toArray();
+      if (inputs && inputs.length > 0) {
+        inputs[inputs.length - 1].nativeElement.focus();
+      }
+    });
   }
 
   removeInvitado(index: number) {
@@ -213,7 +238,12 @@ export class InvitadosComponent implements OnInit {
 
   getInvitationUrl(grupo: any): string {
     const name = this.selectedEventName.replace(/\s+/g, '-');
-    return `${window.location.origin}/invitacion/${encodeURIComponent(name)}/${this.selectedEventId}/${grupo.idInvitacion}`;
+    const base = `${window.location.origin}/invitacion/${encodeURIComponent(name)}/${this.selectedEventId}`;
+    // Only include idInvitacion if ConfirmacionInvitados section is enabled
+    if (this.pricingService.isSectionEnabled('ConfirmacionInvitados')) {
+      return `${base}/${grupo.idInvitacion}`;
+    }
+    return base;
   }
 
   sendWhatsApp(grupo: any) {

@@ -7,10 +7,8 @@
 
     <div class="music-widget">
       <div class="tags-container">
-        <button class="tag"
-                *ngFor="let tag of availableTags"
-                [class.active]="selectedTags.includes(tag)"
-                (click)="toggleTag(tag)">
+        <button class="tag" *ngFor="let tag of availableTags" [class.active]="selectedTags.includes(tag)"
+          (click)="toggleTag(tag)">
           {{ tag.label }}
         </button>
       </div>
@@ -28,15 +26,6 @@
         <button class="control-btn play" (click)="togglePlayPause()">
           <span class="btn-icon">{{ isPlaying ? '⏸' : '▶' }}</span>
           <span>{{ isPlaying ? 'Pausar' : 'Reproducir' }}</span>
-        </button>
-
-        <button *ngIf="!saved" class="control-btn save" (click)="saveTrack()">
-          <span class="btn-icon">💾</span>
-          <span>Guardar</span>
-        </button>
-        <button *ngIf="saved" class="control-btn remove" (click)="deleteTrack()">
-          <span class="btn-icon">🧹</span>
-          <span>Quitar</span>
         </button>
       </div>
     </div>
