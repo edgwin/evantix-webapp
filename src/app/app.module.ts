@@ -47,6 +47,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MapaModalComponent } from './component/mapa-modal/mapa-modal.component';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { CommonModule } from '@angular/common';
+import { DescuentosComponent } from './pages/descuentos/descuentos.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import { CommonModule } from '@angular/common';
     PagoDialogComponent,
     UploadImagesComponent,
     PlanCardComponent,
-    MapaModalComponent
+    MapaModalComponent,
+    DescuentosComponent
   ],
   imports: [
     RouterModule,
@@ -90,7 +92,7 @@ import { CommonModule } from '@angular/common';
     MatDatepickerModule,
     MatNativeDateModule,
     GoogleMapsModule,
-    MatDialogModule,    
+    MatDialogModule,
     MatButtonModule,
     PopupHtmlComponent,
     DragDropModule,

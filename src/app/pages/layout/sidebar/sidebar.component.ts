@@ -13,12 +13,19 @@ export class SidebarComponent implements OnInit, OnDestroy {
   submenuConfirmacionesOpen = false;
   selectedRoute: string = '';
   showInvitados: boolean = false;
+  isAdmin: boolean = false;
 
   @Output() menuItemClicked = new EventEmitter<void>();
 
   private sub: Subscription = new Subscription();
 
-  constructor(private router: Router, private storageService: LocalStorageService) { }
+  constructor(private router: Router, private storageService: LocalStorageService) {
+    const localUser = localStorage.getItem('loggedUser');
+    if (localUser) {
+      const user = JSON.parse(localUser);
+      this.isAdmin = user?.role?.toUpperCase() === 'ADMIN';
+    }
+  }
 
   ngOnInit(): void {
     this.sub.add(

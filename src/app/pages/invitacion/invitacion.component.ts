@@ -103,16 +103,19 @@ export class InvitacionComponent implements OnDestroy {
         const wantsPreview = this.route.snapshot.queryParamMap.get('preview') === 'true';
         const isPaid = ['Pagado', 'Pago Creado'].includes(this.eventStatus);
 
-        // Si el query param pide admin, verificar con el backend
+        // Verificar rol admin: backend + fallback local
         if (wantsAdmin) {
+          const localUser = localStorage.getItem('loggedUser');
+          const localIsAdmin = localUser ? JSON.parse(localUser)?.role?.toUpperCase() === 'ADMIN' : false;
+
           this.invitationService.checkAdmin().subscribe({
             next: (adminRes: any) => {
-              this.isAdmin = adminRes?.isAdmin === true;
+              this.isAdmin = adminRes?.isAdmin === true || localIsAdmin;
               this.applyViewMode(isPaid, wantsPreview);
               this.finishInit(res);
             },
             error: () => {
-              this.isAdmin = false;
+              this.isAdmin = localIsAdmin;
               this.applyViewMode(isPaid, wantsPreview);
               this.finishInit(res);
             }
@@ -159,18 +162,23 @@ export class InvitacionComponent implements OnDestroy {
   }
 
   private applyViewMode(isPaid: boolean, wantsPreview: boolean = false): void {
-    if (this.isAdmin) {
+    if (this.isGuestView) {
+      // Modo invitado: siempre preview, sin botones
+      this.isReadOnly = true;
+      this.canSendToReview = false;
+    } else if (this.isAdmin) {
+      // Admin: siempre modo edición
       this.isReadOnly = false;
       this.canSendToReview = false; // Admin uses "Revisado" button instead
     } else if (isPaid) {
       this.isReadOnly = true;
       this.canSendToReview = false;
-      // General link (no idInvitacion) to a paid event = guest view
       if (!this.idInvitacion) {
         this.isGuestView = true;
       }
     } else if (this.eventStatus === 'Creado') {
-      this.isReadOnly = wantsPreview;
+      // Usuario normal: siempre vista previa inicialmente
+      this.isReadOnly = true;
       this.canSendToReview = true;
     } else {
       this.isReadOnly = true;

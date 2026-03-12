@@ -1,0 +1,101 @@
+<div class="descuentos-container">
+    <div class="header-row">
+        <h1>🏷️ Cupones de Descuento</h1>
+        <button class="btn btn-primary" (click)="toggleForm()">
+            {{ showForm ? 'Cancelar' : '+ Nuevo Cupón' }}
+        </button>
+    </div>
+
+    <!-- Formulario de creación -->
+    <div *ngIf="showForm" class="cupon-form">
+        <h3>Crear Nuevo Cupón</h3>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Código del Cupón *</label>
+                <div class="code-input">
+                    <input type="text" [(ngModel)]="nuevoCupon.codigo" maxlength="20" placeholder="Ej: DESCUENTO10" />
+                    <button class="btn btn-secondary btn-sm" type="button" (click)="autogenerarCodigo()">🔄
+                        Autogenerar</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Tipo de Descuento *</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="tipoDescuento" [value]="1" [(ngModel)]="nuevoCupon.tipoDescuento" />
+                        Porcentaje (%)
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="tipoDescuento" [value]="2" [(ngModel)]="nuevoCupon.tipoDescuento" />
+                        Dinero ($)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>{{ nuevoCupon.tipoDescuento === 1 ? 'Porcentaje (%)' : 'Monto ($)' }} *</label>
+                <input type="number" [(ngModel)]="nuevoCupon.montoDescuento" min="0.01" step="0.01"
+                    placeholder="Ej: 10" />
+            </div>
+            <div class="form-group">
+                <label>Cantidad de Cupones *</label>
+                <input type="number" [(ngModel)]="nuevoCupon.cantidad" min="1" step="1" placeholder="Ej: 50" />
+            </div>
+            <div class="form-group">
+                <label>Email (opcional)</label>
+                <input type="email" [(ngModel)]="nuevoCupon.email" placeholder="usuario@email.com" />
+                <small class="hint">Si se deja vacío, cualquier usuario puede usar el cupón</small>
+            </div>
+            <div class="form-group">
+                <label>Fecha de Vencimiento *</label>
+                <input type="date" [(ngModel)]="nuevoCupon.fechaVencimiento" />
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-primary" [disabled]="!isFormValid()" (click)="guardarCupon()">Guardar Cupón</button>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="loading-container">
+        <img src="../../../assets/images/loading2.gif" alt="Cargando..." width="80" />
+    </div>
+
+    <!-- Grid de cupones -->
+    <div *ngIf="!loading && cupones.length === 0 && !showForm" class="empty-state">
+        <p>No hay cupones creados aún. ¡Crea tu primer cupón!</p>
+    </div>
+
+    <div *ngIf="!loading && cupones.length > 0" class="cupones-grid">
+        <table>
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Tipo</th>
+                    <th>Descuento</th>
+                    <th>Usados / Total</th>
+                    <th>Email</th>
+                    <th>Vencimiento</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let cupon of cupones" [class.inactive]="!cupon.activo || isExpired(cupon.fechaVencimiento)">
+                    <td class="code-cell">{{ cupon.codigo }}</td>
+                    <td>{{ getTipoLabel(cupon.tipoDescuento) }}</td>
+                    <td>{{ getDescuentoDisplay(cupon) }}</td>
+                    <td>{{ cupon.cantidadUsada }} / {{ cupon.cantidad }}</td>
+                    <td>{{ cupon.email || '—' }}</td>
+                    <td>{{ cupon.fechaVencimiento | date:'dd/MM/yyyy' }}</td>
+                    <td>
+                        <span class="badge" [class.active]="cupon.activo && !isExpired(cupon.fechaVencimiento)"
+                            [class.expired]="isExpired(cupon.fechaVencimiento)"
+                            [class.used-up]="cupon.cantidadUsada >= cupon.cantidad">
+                            {{ isExpired(cupon.fechaVencimiento) ? 'Expirado' : cupon.cantidadUsada >= cupon.cantidad ?
+                            'Agotado' : cupon.activo ? 'Activo' : 'Inactivo' }}
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

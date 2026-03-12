@@ -1,75 +1,75 @@
 body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f5f6fa;
-      margin: 0;
-      padding: 0;
-    }
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f5f6fa;
+  margin: 0;
+  padding: 0;
+}
 
-    header {
-      background: linear-gradient(to right, #2a0054, #2a0054);
-      padding: 20px 0;
-      text-align: center;
-      color: white;
-      font-size: 24px;
-      font-weight: bold;
-    }
+header {
+  background: linear-gradient(to right, #2a0054, #2a0054);
+  padding: 20px 0;
+  text-align: center;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+}
 
-    .container {
-      max-width: 500px;
-      margin: 30px auto;
-      display: flex;
-      flex-direction: column;
-    }
+.container {
+  max-width: 500px;
+  margin: 30px auto;
+  display: flex;
+  flex-direction: column;
+}
 
-    .payment-option {
-      background-color: #f8f8ff;
-      border-radius: 12px;
-      padding: 15px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
-      cursor: pointer;
-    }
+.payment-option {
+  background-color: #f8f8ff;
+  border-radius: 12px;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+}
 
-    .payment-resume {
-      background-color: #f8f8ff;
-      border-radius: 12px;
-      padding: 15px 20px;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
-    }
+.payment-resume {
+  background-color: #f8f8ff;
+  border-radius: 12px;
+  padding: 15px 20px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+}
 
-    .payment-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+.payment-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
-    .payment-left img.card-icon {
-      width: 40px;
-    }
+.payment-left img.card-icon {
+  width: 40px;
+}
 
-    .payment-left .method-name {
-      font-weight: bold;
-    }
+.payment-left .method-name {
+  font-weight: bold;
+}
 
-    .payment-left .card-number {
-      font-weight: bold;
-      font-size: 14px;
-      color: #333;
-    }
+.payment-left .card-number {
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+}
 
-    .brand {
-      font-weight: bold;
-      color: #357edd;
-      text-decoration: none;
-      margin-left: 8px;
-    }
+.brand {
+  font-weight: bold;
+  color: #357edd;
+  text-decoration: none;
+  margin-left: 8px;
+}
 
-    .logos img {
-      height: 32px;
-      margin-left: 8px;
-    }
+.logos img {
+  height: 32px;
+  margin-left: 8px;
+}
 
 .close-button {
   position: absolute;
@@ -83,4 +83,117 @@ body {
 
 .close-button:hover {
   color: #d00;
+}
+
+/* Cupón de descuento */
+.cupon-section {
+  margin: 16px 0;
+  padding: 12px 16px;
+  background: #faf8ff;
+  border-radius: 10px;
+  border: 1px solid #e8e0f5;
+}
+
+.cupon-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.cupon-toggle input[type="checkbox"] {
+  accent-color: #2a0054;
+  width: 16px;
+  height: 16px;
+}
+
+.cupon-input-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  animation: slideDown 0.2s ease;
+}
+
+.cupon-input-row input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  outline: none;
+}
+
+.cupon-input-row input:focus {
+  border-color: #2a0054;
+}
+
+.btn-aplicar {
+  padding: 8px 18px;
+  background: linear-gradient(135deg, #2a0054, #5e0099);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-aplicar:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(42, 0, 84, 0.3);
+}
+
+.btn-aplicar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cupon-error {
+  color: #c62828;
+  font-size: 12px;
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+.precio-original {
+  margin-top: 4px;
+}
+
+.tachado {
+  text-decoration: line-through;
+  color: #999;
+}
+
+.precio-descuento {
+  color: #2e7d32;
+  font-size: 18px;
+}
+
+.descuento-badge {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

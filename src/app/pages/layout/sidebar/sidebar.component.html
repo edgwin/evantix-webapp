@@ -51,6 +51,9 @@
       <a mat-list-item routerLink="/profile"><span>Campañas</span></a>
       <a mat-list-item routerLink="/account"><span>Lista de Confirmaciones</span></a>
     </div>
+    <a mat-list-item *ngIf="isAdmin" routerLink="/descuentos"
+      [ngClass]="{ 'selected': selectedRoute === '/descuentos' }" (click)="selectRoute('/descuentos')"><span>🏷️
+        Descuentos</span></a>
     <a mat-list-item routerLink="/settings"><span>Configuraciones</span></a>
   </mat-nav-list>
 </div>

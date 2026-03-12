@@ -12,12 +12,36 @@
       <div>
         <b>Estatus: {{ data.evento.estatus }}</b>
       </div>
-      <div>
-        <b>Total a pagar: {{ data.evento.costo | currency:'$' }}</b>
+      <div *ngIf="cuponAplicado" class="precio-original">
+        <b>Total original: <span class="tachado">{{ costoOriginal | currency:'$' }}</span></b>
       </div>
       <div>
-        <b>Elige tu opcion de pago favorito:</b>
+        <b>Total a pagar: <span [class.precio-descuento]="cuponAplicado">{{ data.evento.costo | currency:'$'
+            }}</span></b>
       </div>
+      <div *ngIf="cuponAplicado" class="descuento-badge">
+        ✅ {{ descuentoInfo }}
+      </div>
+    </div>
+
+    <!-- Cupón de descuento -->
+    <div class="cupon-section">
+      <label class="cupon-toggle">
+        <input type="checkbox" [checked]="showCupon" (change)="toggleCupon()" [disabled]="cuponAplicado" />
+        <span>Tengo un código de descuento</span>
+      </label>
+      <div *ngIf="showCupon && !cuponAplicado" class="cupon-input-row">
+        <input type="text" [(ngModel)]="cuponCodigo" placeholder="Ingresa tu código" maxlength="20"
+          [disabled]="cuponLoading" />
+        <button class="btn-aplicar" (click)="aplicarCupon()" [disabled]="cuponLoading || !cuponCodigo.trim()">
+          {{ cuponLoading ? '...' : 'Aplicar' }}
+        </button>
+      </div>
+      <div *ngIf="cuponError" class="cupon-error">{{ cuponError }}</div>
+    </div>
+
+    <div>
+      <b>Elige tu opcion de pago favorito:</b>
     </div>
     <!-- Mercado Pago -->
     <div class="payment-option" name="Mercadolibre" (click)="confirmar($event)">
