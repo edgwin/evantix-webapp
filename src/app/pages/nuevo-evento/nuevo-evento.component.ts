@@ -55,6 +55,10 @@ export class NuevoEventoComponent implements OnInit {
     const localUser = localStorage.getItem('loggedUser');
     if (localUser != null) {
       this.loggedUser = JSON.parse(localUser);
+      // Pre-llenar email con el email registrado del usuario
+      if (this.loggedUser.email) {
+        this.evento.email = this.loggedUser.email;
+      }
     }
   }
 
@@ -146,11 +150,12 @@ export class NuevoEventoComponent implements OnInit {
       });
     } else {
       this.eventService.crearEvento(formData).subscribe({
-        next: () => {
+        next: (res: any) => {
           this.notificationService.show('info', `Evento ${this.evento.nombre} creado`);
           this.loading = false;
-          this.cancelar();
-          this.router.navigateByUrl('/dashboard');
+          // Redirigir a la invitación recién creada en modo vista previa
+          const eventName = encodeURIComponent(this.evento.nombre);
+          this.router.navigateByUrl(`/invitacion/${eventName}/${res.eventId}?preview=true`);
         },
         error: (err) => {
           this.notificationService.show('error', `Hubo un error al crear el evento ${this.evento.nombre}. \n ${err.error}`);

@@ -2,6 +2,15 @@
   <img src="../../../assets/images/loading2.gif" alt="Cargando..." width="25%" />
 </div>
 <div *ngIf="!loading">
+  <!-- Botón flotante: Regresar al Dashboard (solo en edicion/preview, NO guest) -->
+  <button *ngIf="!isGuestView" class="floating-btn floating-back" (click)="goToDashboard()"
+    title="Regresar al Dashboard">
+    ←
+  </button>
+  <!-- Botón flotante: Scroll al inicio (solo en edicion/preview, NO guest) -->
+  <button *ngIf="!isGuestView" class="floating-btn floating-scroll-top" (click)="scrollToTop()" title="Ir al inicio">
+    ↑
+  </button>
   <!-- Barra de costo fixed -->
   <app-cost-bar [isReadOnly]="isReadOnly"></app-cost-bar>
   <div *ngIf="!isReadOnly" style="height: 55px;"></div>

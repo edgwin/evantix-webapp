@@ -265,3 +265,77 @@
     padding: 8px 10px;
   }
 }
+
+/* Botones flotantes persistentes */
+.floating-btn {
+  position: fixed;
+  z-index: 99998;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.floating-btn:hover {
+  transform: scale(1.15);
+  background: var(--primary-color, #F14E95);
+}
+
+/* Botón superior izquierdo - Regresar al Dashboard */
+.floating-back {
+  top: 15px;
+  left: 15px;
+}
+
+/* Botón inferior derecho - Scroll al inicio */
+.floating-scroll-top {
+  bottom: 80px;
+  right: 15px;
+}
+
+@media screen and (max-width: 768px) {
+  .floating-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+
+  .floating-back {
+    top: 10px;
+    left: 10px;
+  }
+
+  .floating-scroll-top {
+    bottom: 70px;
+    right: 10px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .floating-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .floating-back {
+    top: 8px;
+    left: 8px;
+  }
+
+  .floating-scroll-top {
+    bottom: 65px;
+    right: 8px;
+  }
+}

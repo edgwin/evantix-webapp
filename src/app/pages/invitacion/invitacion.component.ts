@@ -100,6 +100,7 @@ export class InvitacionComponent implements OnDestroy {
         this.eventStatus = res.eventStatus || 'Creado';
 
         const wantsAdmin = this.route.snapshot.queryParamMap.get('admin') === 'true';
+        const wantsPreview = this.route.snapshot.queryParamMap.get('preview') === 'true';
         const isPaid = ['Pagado', 'Pago Creado'].includes(this.eventStatus);
 
         // Si el query param pide admin, verificar con el backend
@@ -107,18 +108,18 @@ export class InvitacionComponent implements OnDestroy {
           this.invitationService.checkAdmin().subscribe({
             next: (adminRes: any) => {
               this.isAdmin = adminRes?.isAdmin === true;
-              this.applyViewMode(isPaid);
+              this.applyViewMode(isPaid, wantsPreview);
               this.finishInit(res);
             },
             error: () => {
               this.isAdmin = false;
-              this.applyViewMode(isPaid);
+              this.applyViewMode(isPaid, wantsPreview);
               this.finishInit(res);
             }
           });
         } else {
           this.isAdmin = false;
-          this.applyViewMode(isPaid);
+          this.applyViewMode(isPaid, wantsPreview);
           this.finishInit(res);
         }
       },
@@ -149,7 +150,15 @@ export class InvitacionComponent implements OnDestroy {
     this.pricingLoadingSub?.unsubscribe();
   }
 
-  private applyViewMode(isPaid: boolean): void {
+  goToDashboard(): void {
+    this.router.navigateByUrl('/dashboard');
+  }
+
+  scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  private applyViewMode(isPaid: boolean, wantsPreview: boolean = false): void {
     if (this.isAdmin) {
       this.isReadOnly = false;
       this.canSendToReview = false; // Admin uses "Revisado" button instead
@@ -161,7 +170,7 @@ export class InvitacionComponent implements OnDestroy {
         this.isGuestView = true;
       }
     } else if (this.eventStatus === 'Creado') {
-      this.isReadOnly = false;
+      this.isReadOnly = wantsPreview;
       this.canSendToReview = true;
     } else {
       this.isReadOnly = true;

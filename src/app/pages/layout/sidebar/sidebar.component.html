@@ -33,8 +33,15 @@
           <span>Mis Invitados</span>
         </a>
       </ng-template>
-      <a mat-list-item routerLink="/mesas" [ngClass]="{ 'selected': selectedRoute === '/mesas' }"
-        (click)="selectRoute('/mesas')"><span>Asignación de Mesas</span></a>
+      <a mat-list-item *ngIf="showInvitados; else mesasDisabled" routerLink="/mesas"
+        [ngClass]="{ 'selected': selectedRoute === '/mesas' }" (click)="selectRoute('/mesas')"><span>Asignación de
+          Mesas</span></a>
+      <ng-template #mesasDisabled>
+        <a mat-list-item class="disabled-link" style="pointer-events: none; opacity: 0.5;"
+          title="Funcionalidad disponible una vez que tengas invitados dados de alta">
+          <span>Asignación de Mesas</span>
+        </a>
+      </ng-template>
     </div>
     <mat-list-item (click)="toggleConfirmacionesSubmenu()">
       <span>Confirmaciones</span>
