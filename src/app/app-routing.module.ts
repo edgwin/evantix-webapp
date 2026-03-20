@@ -14,11 +14,12 @@ import { NuevoEventoComponent } from './pages/nuevo-evento/nuevo-evento.componen
 import { InvitacionComponent } from './pages/invitacion/invitacion.component';
 import { DescuentosComponent } from './pages/descuentos/descuentos.component';
 import { CheckinComponent } from './pages/checkin/checkin.component';
+import { LandingComponent } from './pages/landing/landing.component';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'login',
+    component: LandingComponent,
     pathMatch: 'full'
   },
   {

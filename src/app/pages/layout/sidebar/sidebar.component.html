@@ -43,17 +43,17 @@
         </a>
       </ng-template>
     </div>
-    <mat-list-item (click)="toggleConfirmacionesSubmenu()">
+    <!-- <mat-list-item (click)="toggleConfirmacionesSubmenu()">
       <span>Confirmaciones</span>
       <mat-icon class="expand-icon">{{ submenuConfirmacionesOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
     </mat-list-item>
     <div *ngIf="submenuConfirmacionesOpen" class="submenu">
       <a mat-list-item routerLink="/profile"><span>Campañas</span></a>
       <a mat-list-item routerLink="/account"><span>Lista de Confirmaciones</span></a>
-    </div>
+    </div> -->
     <a mat-list-item *ngIf="isAdmin" routerLink="/descuentos"
       [ngClass]="{ 'selected': selectedRoute === '/descuentos' }" (click)="selectRoute('/descuentos')"><span>🏷️
         Descuentos</span></a>
-    <a mat-list-item routerLink="/settings"><span>Configuraciones</span></a>
+    <!-- <a mat-list-item routerLink="/settings"><span>Configuraciones</span></a> -->
   </mat-nav-list>
 </div>
