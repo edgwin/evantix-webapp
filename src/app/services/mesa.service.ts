@@ -1,10 +1,11 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class MesaService {
-    private apiUrl = 'https://localhost:7282/api/Mesa/';
+    private apiUrl = `${environment.coreApiUrl}/api/Mesa/`;
 
     constructor(private http: HttpClient) { }
 

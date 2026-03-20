@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/pages/dashboard/dashboard.component.css"],
-  "sourcesContent": [".header-row {\r\n  display: flex;\r\n  justify-content: space-between;\r\n  align-items: center;\r\n  padding: 8px;\r\n  width: 90%;\r\n}\r\n\r\nh1 {\r\n  font-size: 35px;\r\n}\r\n\r\ntd span[title] {\r\n  cursor: help;\r\n}\r\n\r\n.loading-container {\r\n  text-align: center;\r\n  margin: 40px 0;\r\n}\r\n\r\n.loading-container img {\r\n  width: 50px;\r\n  height: 50px;\r\n}\r\n\r\n.btn-space {\r\n  margin-right: 10px;\r\n}\r\n\r\n@media (max-width: 768px) {\r\n  .header-row {\r\n    flex-direction: column;\r\n    align-items: flex-start;\r\n    width: 100%;\r\n    gap: 8px;\r\n    padding: 8px 4px;\r\n  }\r\n\r\n  h1 {\r\n    font-size: 22px;\r\n  }\r\n\r\n  .header-row>div:last-child {\r\n    display: flex;\r\n    width: 100%;\r\n    gap: 8px;\r\n  }\r\n\r\n  .header-row .btn {\r\n    flex: 1;\r\n    font-size: 13px;\r\n    padding: 6px 10px;\r\n    text-align: center;\r\n  }\r\n}"],
-  "mappings": ";AAAA,CAAC;AACC,WAAS;AACT,mBAAiB;AACjB,eAAa;AACb,WAAS;AACT,SAAO;AACT;AAEA;AACE,aAAW;AACb;AAEA,GAAG,IAAI,CAAC;AACN,UAAQ;AACV;AAEA,CAAC;AACC,cAAY;AACZ,UAAQ,KAAK;AACf;AAEA,CALC,kBAKkB;AACjB,SAAO;AACP,UAAQ;AACV;AAEA,CAAC;AACC,gBAAc;AAChB;AAEA,OAAO,CAAC,SAAS,EAAE;AACjB,GA/BD;AAgCG,oBAAgB;AAChB,iBAAa;AACb,WAAO;AACP,SAAK;AACL,aAAS,IAAI;AACf;AAEA;AACE,eAAW;AACb;AAEA,GA3CD,WA2CY,EAAC,GAAG;AACb,aAAS;AACT,WAAO;AACP,SAAK;AACP;AAEA,GAjDD,WAiDa,CAAC;AACX,UAAM;AACN,eAAW;AACX,aAAS,IAAI;AACb,gBAAY;AACd;AACF;",
-  "names": []
-}

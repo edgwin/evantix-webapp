@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/pages/layout/sidebar/sidebar.component.css"],
-  "sourcesContent": [".topbar {\r\n  display: flex;\r\n  justify-content: flex-end;\r\n  align-items: center;\r\n  background-color: #0f1d29;\r\n  flex-direction: column-reverse;\r\n}\r\n\r\n.spacer {\r\n  flex: 1;\r\n}\r\n\r\n.avatar {\r\n  border-radius: 50%;\r\n  margin-right: 50px;\r\n}\r\n\r\n.username {\r\n  font-weight: bold;\r\n}\r\n\r\nspan{\r\n  color:white;\r\n}\r\n\r\n.sideBar {\r\n  width: 280px;\r\n  padding-left: 5px; \r\n  padding-right: 10px; \r\n  background-color: #0f1d29; \r\n  height: 100%;\r\n}\r\n\r\n.submenu {\r\n  padding-left: 32px;\r\n}\r\n\r\n.expand-icon {\r\n  margin-left: auto;\r\n  color: white;\r\n}\r\n\r\n.selected {\r\n  background-color: black !important;  \r\n}"],
-  "mappings": ";AAAA,CAAC;AACC,WAAS;AACT,mBAAiB;AACjB,eAAa;AACb,oBAAkB;AAClB,kBAAgB;AAClB;AAEA,CAAC;AACC,QAAM;AACR;AAEA,CAAC;AACC,iBAAe;AACf,gBAAc;AAChB;AAEA,CAAC;AACC,eAAa;AACf;AAEA;AACE,SAAM;AACR;AAEA,CAAC;AACC,SAAO;AACP,gBAAc;AACd,iBAAe;AACf,oBAAkB;AAClB,UAAQ;AACV;AAEA,CAAC;AACC,gBAAc;AAChB;AAEA,CAAC;AACC,eAAa;AACb,SAAO;AACT;AAEA,CAAC;AACC,oBAAkB;AACpB;",
-  "names": []
-}

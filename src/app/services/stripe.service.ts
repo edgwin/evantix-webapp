@@ -1,11 +1,12 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class StripeService {
     constructor(private http: HttpClient) { }
 
-    apiUrl = 'https://localhost:7282/api/Event/';
+    apiUrl = `${environment.coreApiUrl}/api/Event/`;
     createSessionEndpoint = 'CreateStripeSession';
 
     createSession(event: any, eventPayment: boolean = true) {

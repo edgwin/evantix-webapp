@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from '../../environments/environment';
 
 declare var MercadoPago: any;
 
@@ -8,7 +9,7 @@ export class MercadoPagoService {
   private mp = new MercadoPago('APP_USR-9704cb72-d38e-4478-b0a5-13ee7cf26554', { locale: 'es-MX' });
 
   constructor(private http: HttpClient) { }
-  apiUrl = 'https://localhost:7282/api/Event/';
+  apiUrl = `${environment.coreApiUrl}/api/Event/`;
   createReferenceEndpoint = 'CreatePaymentReference';
   createPreference(event: any, eventPayment: boolean = true) {
     const token = localStorage.getItem('access_token');

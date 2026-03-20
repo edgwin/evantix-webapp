@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface UserCreateRequest {
   Email: string;
@@ -34,8 +35,8 @@ export interface ResetPassRequest {
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = 'http://localhost:53056/api/User';
-  private loginApiUrl = 'http://localhost:53056/api/Auth';  
+  private apiUrl = `${environment.identityApiUrl}/api/User`;
+  private loginApiUrl = `${environment.identityApiUrl}/api/Auth`;
 
   constructor(private http: HttpClient) { }
 

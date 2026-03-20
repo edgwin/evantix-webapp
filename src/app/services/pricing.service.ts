@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 export interface SectionPricing {
     sectionKey: string;
@@ -38,7 +39,7 @@ export interface EventCostResponse {
 })
 export class PricingService {
 
-    private apiUrl = 'https://localhost:7282/api/pricing/';
+    private apiUrl = `${environment.coreApiUrl}/api/pricing/`;
 
     private costSubject = new BehaviorSubject<EventCostResponse | null>(null);
     public cost$ = this.costSubject.asObservable();

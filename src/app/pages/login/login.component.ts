@@ -7,6 +7,7 @@ import { NotificationService } from '../../services/notification.service';
 import { ActivatedRoute } from '@angular/router';
 import { PasswordHelper } from '../../helpers/email'
 import { FacebookLoginProvider, SocialAuthService } from '@abacritt/angularx-social-login';
+import { environment } from '../../../environments/environment';
 
 declare const google: any;
 declare const FB: any;
@@ -71,7 +72,7 @@ export class LoginComponent implements AfterViewInit, OnInit {
   
   sendToBackend(provider: 'google' | 'facebook', token: string) {
     this.isLoading = true;
-    this.http.post(`http://localhost:53056/api/User/${provider==='facebook'?'facebook':'google'}`, { appId: 1605, role: 'User',  token }).subscribe({
+    this.http.post(`${environment.identityApiUrl}/api/User/${provider==='facebook'?'facebook':'google'}`, { appId: 1605, role: 'User',  token }).subscribe({
       next: (res: any) => {
         localStorage.setItem('access_token', res.access_token);    
         localStorage.setItem('loggedUser', JSON.stringify(res.user));

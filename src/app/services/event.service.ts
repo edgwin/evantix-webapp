@@ -1,11 +1,12 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventService {
-  private apiUrl = 'https://localhost:7282/';
+  private apiUrl = `${environment.coreApiUrl}/`;
   private eventCreate = 'api/Event/Create';
   private getEventByUserId = 'api/Event/GetUserEvents/';
   private getEventById = 'api/Event/GetEventById/';

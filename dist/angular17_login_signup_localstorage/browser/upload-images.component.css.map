@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/component/upload-images/upload-images.component.css"],
-  "sourcesContent": [".upload-container {\r\n  border: 2px dashed #aaa;\r\n  border-radius: 8px;\r\n  padding: 2rem;\r\n  text-align: center;\r\n  background-color: #f9f9f9;\r\n  cursor: pointer;\r\n  transition: 0.3s ease;\r\n}\r\n.upload-container:hover {\r\n  background-color: #e6f7ff;\r\n}\r\n\r\n.preview-container {\r\n  margin-top: 1rem;\r\n}\r\n\r\n.preview-grid {\r\n  display: flex;\r\n  flex-wrap: wrap;\r\n  gap: 1rem;\r\n  margin-top: 1rem;\r\n}\r\n.preview-grid img {\r\n  width: 150px;\r\n  height: 150px;\r\n  object-fit: cover;\r\n  border-radius: 8px;\r\n  box-shadow: 0 0 5px rgba(0,0,0,0.1);\r\n}\r\n"],
-  "mappings": ";AAAA,CAAC;AACC,UAAQ,IAAI,OAAO;AACnB,iBAAe;AACf,WAAS;AACT,cAAY;AACZ,oBAAkB;AAClB,UAAQ;AACR,cAAY,KAAK;AACnB;AACA,CATC,gBASgB;AACf,oBAAkB;AACpB;AAEA,CAAC;AACC,cAAY;AACd;AAEA,CAAC;AACC,WAAS;AACT,aAAW;AACX,OAAK;AACL,cAAY;AACd;AACA,CANC,aAMa;AACZ,SAAO;AACP,UAAQ;AACR,cAAY;AACZ,iBAAe;AACf,cAAY,EAAE,EAAE,IAAI,KAAK,CAAC,EAAC,CAAC,EAAC,CAAC,EAAC;AACjC;",
-  "names": []
-}

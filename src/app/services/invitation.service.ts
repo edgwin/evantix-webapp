@@ -1,4 +1,5 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -21,7 +22,7 @@ export interface AiTextRequest {
 export class InvitationService {
 
   constructor(private http: HttpClient) { }
-  private apiUrl = 'https://localhost:7282/';
+  private apiUrl = `${environment.coreApiUrl}/`;
   private postNewInvitationData = 'api/invitaciones/Create';
   private getInvitationData = 'api/invitacion/';
   private getAIController = 'api/Ai/';
