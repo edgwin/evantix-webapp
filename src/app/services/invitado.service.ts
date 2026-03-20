@@ -18,6 +18,10 @@ export class InvitadoService {
         return this.http.get<any[]>(`${this.apiUrl}PaidEvents/${userId}`, { headers: this.getHeaders() });
     }
 
+    getAllPaidEvents(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}AllPaidEvents`, { headers: this.getHeaders() });
+    }
+
     getGruposByEvent(eventId: string): Observable<any[]> {
         return this.http.get<any[]>(`${this.apiUrl}ByEvent/${eventId}`, { headers: this.getHeaders() });
     }

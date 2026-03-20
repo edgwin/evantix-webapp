@@ -23,6 +23,7 @@ export class InvitadosComponent implements OnInit {
   loggedUserId: string = '';
   grupos: any[] = [];
   loading = false;
+  isAdmin = false;
   expandedRows: Set<string> = new Set();
 
   // Form state
@@ -94,6 +95,7 @@ export class InvitadosComponent implements OnInit {
     if (localUser) {
       const user = JSON.parse(localUser);
       this.loggedUserId = user.userId;
+      this.isAdmin = user.role?.toUpperCase() === 'ADMIN';
       this.loadPaidEvents(user.userId);
     }
 
@@ -123,7 +125,11 @@ export class InvitadosComponent implements OnInit {
   }
 
   loadPaidEvents(userId: string) {
-    this.invitadoService.getPaidEvents(userId).subscribe({
+    const events$ = this.isAdmin
+      ? this.invitadoService.getAllPaidEvents()
+      : this.invitadoService.getPaidEvents(userId);
+
+    events$.subscribe({
       next: (events) => {
         this.paidEvents = events;
         if (events.length > 0) {

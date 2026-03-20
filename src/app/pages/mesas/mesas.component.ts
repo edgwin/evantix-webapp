@@ -14,6 +14,7 @@ export class MesasComponent implements OnInit {
   mesas: any[] = [];
   allInvitados: any[] = []; // flat list of all invitados across groups
   loading = false;
+  isAdmin = false;
   hasInvitados = false;
 
   // Form
@@ -35,12 +36,17 @@ export class MesasComponent implements OnInit {
     const localUser = localStorage.getItem('loggedUser');
     if (localUser) {
       const user = JSON.parse(localUser);
+      this.isAdmin = user.role?.toUpperCase() === 'ADMIN';
       this.loadPaidEvents(user.userId);
     }
   }
 
   loadPaidEvents(userId: string) {
-    this.invitadoService.getPaidEvents(userId).subscribe({
+    const events$ = this.isAdmin
+      ? this.invitadoService.getAllPaidEvents()
+      : this.invitadoService.getPaidEvents(userId);
+
+    events$.subscribe({
       next: (events) => {
         this.paidEvents = events;
         if (events.length > 0) {
