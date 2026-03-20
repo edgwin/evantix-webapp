@@ -49,6 +49,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { CommonModule } from '@angular/common';
 import { DescuentosComponent } from './pages/descuentos/descuentos.component';
 import { WhatsAppPaqueteDialogComponent } from './component/whatsapp-paquete-dialog/whatsapp-paquete-dialog.component';
+import { CheckinComponent } from './pages/checkin/checkin.component';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { WhatsAppPaqueteDialogComponent } from './component/whatsapp-paquete-dia
     PlanCardComponent,
     MapaModalComponent,
     DescuentosComponent,
-    WhatsAppPaqueteDialogComponent
+    WhatsAppPaqueteDialogComponent,
+    CheckinComponent
   ],
   imports: [
     RouterModule,

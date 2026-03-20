@@ -13,6 +13,7 @@ import { MesasComponent } from './pages/mesas/mesas.component';
 import { NuevoEventoComponent } from './pages/nuevo-evento/nuevo-evento.component';
 import { InvitacionComponent } from './pages/invitacion/invitacion.component';
 import { DescuentosComponent } from './pages/descuentos/descuentos.component';
+import { CheckinComponent } from './pages/checkin/checkin.component';
 
 const routes: Routes = [
   {
@@ -38,6 +39,7 @@ const routes: Routes = [
   },
   { path: 'invitacion/:name/:idEvent', component: InvitacionComponent },
   { path: 'invitacion/:name/:idEvent/:idInvitado', component: InvitacionComponent },
+  { path: 'checkin/:grupoId', component: CheckinComponent },
   {
     path: '',
     component: LayoutComponent,

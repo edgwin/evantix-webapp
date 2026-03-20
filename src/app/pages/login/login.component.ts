@@ -26,6 +26,7 @@ export class LoginComponent implements AfterViewInit, OnInit {
   isSignDivVisiable: boolean  = false;
   isForgotVisible: boolean = false;
   loginObj: LoginModel  = new LoginModel();
+  private facebookLoginInProgress = false;
 
   constructor(private fb: FormBuilder, private router: Router, private userService: UserService, private notificationService: NotificationService, 
               private http: HttpClient, private route: ActivatedRoute, private passwordHelper: PasswordHelper, private authService: SocialAuthService){
@@ -34,18 +35,22 @@ export class LoginComponent implements AfterViewInit, OnInit {
   }
   
   ngAfterViewInit(): void {
-    google.accounts.id.initialize({
-      client_id: '579973959669-m41nol7osd3i1rvdb1fhhm5p4alnh71o.apps.googleusercontent.com',
-      callback: (res: any) => this.sendToBackend('google', res.credential),
-    });
-    google.accounts.id.renderButton(document.getElementById('googleBtn1'), {
-      theme: 'outline',
-      size: 'medium'
-    });
-    google.accounts.id.renderButton(document.getElementById('googleBtn2'), {
-      theme: 'outline',
-      size: 'medium'
-    });
+    try {
+      google.accounts.id.initialize({
+        client_id: environment.googleClientId,
+        callback: (res: any) => this.sendToBackend('google', res.credential),
+      });
+      google.accounts.id.renderButton(document.getElementById('googleBtn1'), {
+        theme: 'outline',
+        size: 'medium'
+      });
+      google.accounts.id.renderButton(document.getElementById('googleBtn2'), {
+        theme: 'outline',
+        size: 'medium'
+      });
+    } catch (err) {
+      console.warn('Google Identity Services no disponible', err);
+    }
   }
   
   ngOnInit() {
@@ -60,7 +65,8 @@ export class LoginComponent implements AfterViewInit, OnInit {
       }
     });
     this.authService.authState.subscribe((user) => {
-      if (user !== null){
+      if (user !== null && !this.facebookLoginInProgress){
+        this.facebookLoginInProgress = true;
         this.sendToBackend('facebook', user.authToken);
       }
     });
@@ -72,14 +78,20 @@ export class LoginComponent implements AfterViewInit, OnInit {
   
   sendToBackend(provider: 'google' | 'facebook', token: string) {
     this.isLoading = true;
-    this.http.post(`${environment.identityApiUrl}/api/User/${provider==='facebook'?'facebook':'google'}`, { appId: 1605, role: 'User',  token }).subscribe({
+    this.http.post(`${environment.identityApiUrl}/api/User/${provider==='facebook'?'facebook':'google'}`, { appId: environment.appId, role: 'User', token }).subscribe({
       next: (res: any) => {
         localStorage.setItem('access_token', res.access_token);    
         localStorage.setItem('loggedUser', JSON.stringify(res.user));
         this.isLoading = false;
+        this.facebookLoginInProgress = false;
         this.router.navigateByUrl('/dashboard');  
       },
-      error: err => console.error('Error de login', err)
+      error: err => {
+        console.error('Error de login', err);
+        this.isLoading = false;
+        this.facebookLoginInProgress = false;
+        this.notificationService.show('error', 'Error al iniciar sesión. Intente de nuevo.');
+      }
     });
   }
 
@@ -110,7 +122,7 @@ export class LoginComponent implements AfterViewInit, OnInit {
         this.errorMessage = '';
 
         let userData: UserCreateRequest = this.signUpForm.value;
-        userData.AppId = 1605;
+        userData.AppId = environment.appId;
         userData.IsEnabled = true;
         userData.Role = 'User';
 
@@ -135,7 +147,7 @@ export class LoginComponent implements AfterViewInit, OnInit {
       this.errorMessage = '';
       this.isLoading = true;
       let userData: UserLoginRequest = this.signInForm.value;
-      userData.AppId = 1605;      
+      userData.AppId = environment.appId;
       
       this.userService.loginUser(userData).subscribe({
         next: (res: any) => {          
@@ -168,7 +180,7 @@ export class LoginComponent implements AfterViewInit, OnInit {
 
     let userData: ForgotPassRequest = {
       Email: forgotEmail.value,
-      AppId: 1605
+      AppId: environment.appId
     };
     
     this.userService.forgotPass(userData).subscribe({
