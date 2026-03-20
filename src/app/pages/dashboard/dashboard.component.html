@@ -1,24 +1,79 @@
-<div class="header-row">
-  <div>
-    <h1>Mis Eventos</h1>
-  </div>
-  <div>
-    <button class="btn btn-secondary btn-space" type="button" (click)="onRefresh()"
-      title="Refrescar lista de eventos">🔄
-      Refrescar</button>
-    <button class="btn btn-primary" type="button" routerLink="/nuevoEvento">Nuevo Evento</button>
-  </div>
-</div>
-<!-- LOADING GIF -->
-<div *ngIf="loading" class="loading-container">
-  <img src="../../../assets/images/loading2.gif" alt="Cargando..." />
-</div>
+<div class="dashboard-container">
+    <!-- Header -->
+    <div class="section-header">
+        <h2>Mis Eventos</h2>
+        <span class="badge" *ngIf="rowData.length > 0">{{ rowData.length }} evento{{ rowData.length !== 1 ? 's' : ''
+            }}</span>
+    </div>
 
-<div *ngIf="!loading" style="width: 90%; height: 500px;">
-  <app-edgwin-grid [columns]="columns" [data]="rowData" (action)="onActionHandler($event)">
-  </app-edgwin-grid>
+    <!-- Actions Bar -->
+    <div class="actions-bar">
+        <button class="btn btn-secondary" (click)="onRefresh()" title="Refrescar lista de eventos">
+            🔄 Refrescar
+        </button>
+        <button class="btn btn-primary" routerLink="/nuevoEvento">
+            <span class="btn-icon">+</span> Nuevo Evento
+        </button>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading" *ngIf="loading">
+        <div class="loader"></div>
+        <p>Cargando eventos...</p>
+    </div>
+
+    <!-- Grid -->
+    <div class="grid-container" *ngIf="!loading && rowData.length > 0">
+        <table class="eventos-grid">
+            <thead>
+                <tr>
+                    <th>Evento</th>
+                    <th>Fecha</th>
+                    <th>Estatus</th>
+                    <th>Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="evento-row" *ngFor="let evento of rowData">
+                    <td class="evento-name-cell">
+                        <img *ngIf="evento.imagen" [src]="evento.imagen" alt="" class="evento-thumb" />
+                        <div *ngIf="!evento.imagen" class="evento-thumb-placeholder">📅</div>
+                        <span>{{ evento.nombre }}</span>
+                    </td>
+                    <td>{{ evento.fecha }}</td>
+                    <td>
+                        <span class="status-badge" [ngClass]="{
+                                'status-pagado': evento.estatus === 'Pagado',
+                                'status-revisado': evento.estatus === 'Revisado',
+                                'status-rechazado': evento.estatus === 'Pago Rechazado',
+                                'status-pendiente': evento.estatus === 'Pago Pendiente' || evento.estatus === 'En Proceso',
+                                'status-cancelado': evento.estatus === 'Pago Cancelado'
+                            }" [title]="evento.estatusDescripcion || ''">
+                            {{ evento.estatus }}
+                        </span>
+                    </td>
+                    <td class="actions-cell">
+                        <button class="action-btn edit" (click)="onActionHandler({type: 'edit', row: evento})"
+                            title="Editar">✏️</button>
+                        <!-- <button class="action-btn" (click)="onActionHandler({type: 'invitacion', row: evento})" title="Diseñar Invitación" *ngIf="evento.showInvitation">🎨</button> -->
+                        <button class="action-btn" (click)="onActionHandler({type: 'verInvitacion', row: evento})"
+                            title="Ver Invitación" *ngIf="evento.showInvitation">👁️</button>
+                        <button class="action-btn pay" (click)="onActionHandler({type: 'pay', row: evento})"
+                            title="Pagar" *ngIf="evento.showPayment !== false">💳</button>
+                        <button class="action-btn delete" (click)="onActionHandler({type: 'delete', row: evento})"
+                            title="Eliminar" *ngIf="evento.showDelete !== false">🗑️</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Empty state -->
+    <div class="no-data" *ngIf="!loading && rowData.length === 0">
+        <p>No tienes eventos creados aún. ¡Crea tu primer evento!</p>
+    </div>
 </div>
 
 <app-popup-html [visible]="showPopup" [htmlContent]="terminosHtml" [title]="'Seleccione su metodo de pago'"
-  (closed)="showPopup = false">
+    (closed)="showPopup = false">
 </app-popup-html>
