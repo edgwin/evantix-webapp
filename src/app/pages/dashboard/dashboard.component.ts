@@ -185,7 +185,10 @@ export class DashboardComponent {
     });
 
     dialogRef.afterClosed().subscribe((metodoPago: string | null) => {
-      if (metodoPago !== null && metodoPago.toLowerCase() === 'mercado pago') {
+      if (metodoPago === '__FREE_CLAIMED__') {
+        this.notificationService.show('info', '🎉 ¡Evento obtenido exitosamente!');
+        this.loadData();
+      } else if (metodoPago !== null && metodoPago.toLowerCase() === 'mercado pago') {
         this.notificationService.show('info', `Redirigiendo a MercadoPago, espere un momento`);
         this.mercadoPago.createPreference(event).subscribe({
           next: (res: any) => {

@@ -266,6 +266,14 @@
   }
 }
 
+.rsvp-nota {
+  margin-top: 8px;
+  resize: vertical;
+  font-size: 0.9rem;
+  font-family: inherit;
+  min-height: 40px;
+}
+
 /* Botones flotantes persistentes */
 .floating-btn {
   position: fixed;

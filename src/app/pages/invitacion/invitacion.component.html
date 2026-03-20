@@ -172,6 +172,10 @@
             <small class="rsvp-error" *ngIf="rsvpFormSubmitted && !inv.nombre?.trim()">
               El nombre es obligatorio
             </small>
+            <textarea [(ngModel)]="inv.notaEspecial"
+              placeholder="¿Alguna alergia alimentaria o trato especial? (opcional)" class="rsvp-input rsvp-nota"
+              rows="2"
+              [ngStyle]="{ 'border-color': inv.notaEspecial?.trim() ? templateService.getCurrentTemplate()?.theme?.colors?.primary : '' }"></textarea>
           </div>
           <div class="rsvp-buttons">
             <button class="rsvp-btn rsvp-confirm" [class.active]="inv.invitacionConfirmada === 1"

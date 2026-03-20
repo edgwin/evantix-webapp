@@ -25,4 +25,8 @@ export class CuponService {
     aplicarCupon(codigo: string, eventId: string) {
         return this.http.post(`${this.apiUrl}api/Cupon/Apply`, { codigo, eventId }, { headers: this.getHeaders() });
     }
+
+    claimFree(eventId: string) {
+        return this.http.post(`${this.apiUrl}api/Cupon/ClaimFree`, { eventId }, { headers: this.getHeaders() });
+    }
 }

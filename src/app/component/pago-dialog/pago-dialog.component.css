@@ -197,3 +197,41 @@ header {
     transform: translateY(0);
   }
 }
+
+/* Free claim ($0) */
+.free-claim-section {
+  text-align: center;
+  margin-top: 16px;
+  animation: slideDown 0.3s ease;
+}
+
+.free-msg {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2e7d32;
+  margin-bottom: 16px;
+}
+
+.btn-obtener {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #2e7d32, #43a047);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+
+.btn-obtener:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(46, 125, 50, 0.35);
+}
+
+.btn-obtener:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

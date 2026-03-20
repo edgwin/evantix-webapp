@@ -30,12 +30,33 @@ export class NuevoEventoComponent implements OnInit {
   codigosPais = [
     { name: 'México', dialCode: '+52' },
     { name: 'Estados Unidos', dialCode: '+1' },
+    { name: 'Canadá', dialCode: '+1' },
+    { name: 'Guatemala', dialCode: '+502' },
+    { name: 'Belice', dialCode: '+501' },
+    { name: 'Honduras', dialCode: '+504' },
+    { name: 'El Salvador', dialCode: '+503' },
+    { name: 'Nicaragua', dialCode: '+505' },
+    { name: 'Costa Rica', dialCode: '+506' },
+    { name: 'Panamá', dialCode: '+507' },
     { name: 'Colombia', dialCode: '+57' },
-    { name: 'Argentina', dialCode: '+54' },
-    { name: 'España', dialCode: '+34' },
-    { name: 'Chile', dialCode: '+56' },
-    { name: 'Perú', dialCode: '+51' },
+    { name: 'Venezuela', dialCode: '+58' },
     { name: 'Ecuador', dialCode: '+593' },
+    { name: 'Perú', dialCode: '+51' },
+    { name: 'Bolivia', dialCode: '+591' },
+    { name: 'Brasil', dialCode: '+55' },
+    { name: 'Chile', dialCode: '+56' },
+    { name: 'Argentina', dialCode: '+54' },
+    { name: 'Uruguay', dialCode: '+598' },
+    { name: 'Paraguay', dialCode: '+595' },
+    { name: 'Cuba', dialCode: '+53' },
+    { name: 'República Dominicana', dialCode: '+1-809' },
+    { name: 'Puerto Rico', dialCode: '+1-787' },
+    { name: 'Haití', dialCode: '+509' },
+    { name: 'Jamaica', dialCode: '+1-876' },
+    { name: 'Trinidad y Tobago', dialCode: '+1-868' },
+    { name: 'Guyana', dialCode: '+592' },
+    { name: 'Surinam', dialCode: '+597' },
+    { name: 'España', dialCode: '+34' },
   ];
 
   tipoEventoTxtHidden: boolean = true;
@@ -93,7 +114,7 @@ export class NuevoEventoComponent implements OnInit {
     this.eventService.getEventsById(eventId).subscribe({
       next: (res: any) => {
         this.evento.nombre = res.nombre || '';
-        this.evento.fecha = res.fecha ? new Date(res.fecha) as any : '';
+        this.evento.fecha = res.fechaISO ? new Date(res.fechaISO) as any : '';
         this.evento.email = res.email || '';
         this.evento.whatsapp = res.whatsApp || '';
         this.evento.mensajeInvitacion = res.mensajeInvitacion || '';
@@ -129,7 +150,11 @@ export class NuevoEventoComponent implements OnInit {
     formData.append('Nombre', this.evento.nombre);
     formData.append('TipoEvento', this.evento.tipoEvento);
     formData.append('Fecha', fechaISO);
-    formData.append('WhatsApp', this.evento.whatsapp);
+    const codigoLimpio = this.evento.codigoPais.replace(/[^\d]/g, '');
+    const fullWhatsApp = this.isEditMode
+      ? this.evento.whatsapp
+      : codigoLimpio + this.evento.whatsapp;
+    formData.append('WhatsApp', fullWhatsApp);
     formData.append('Email', this.evento.email);
     formData.append('MensajeInvitacion', this.evento.mensajeInvitacion);
 

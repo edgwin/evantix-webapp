@@ -8,7 +8,7 @@ export class StripeService {
     apiUrl = 'https://localhost:7282/api/Event/';
     createSessionEndpoint = 'CreateStripeSession';
 
-    createSession(event: any) {
+    createSession(event: any, eventPayment: boolean = true) {
         const token = localStorage.getItem('access_token');
         const headers = new HttpHeaders({
             Authorization: `Bearer ${token}`
@@ -16,10 +16,11 @@ export class StripeService {
 
         return this.http.post<{ sessionUrl: string }>(`${this.apiUrl}${this.createSessionEndpoint}`, {
             title: event.nombre,
-            description: `Pago del plan ${event.plan} del event ID: ${event.id}`,
+            description: `Pago del Evento ${event.nombre}`,
             quantity: 1,
             unitPrice: event.costo,
-            eventId: event.id
+            externalReference: eventPayment ? event.id : `wa_${event.id}`,
+            callbackUrl: event.callbackUrl || null
         }, { headers });
     }
 }

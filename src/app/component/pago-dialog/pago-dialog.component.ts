@@ -16,6 +16,7 @@ export class PagoDialogComponent {
   cuponLoading: boolean = false;
   costoOriginal: number = 0;
   descuentoInfo: string = '';
+  claimingFree: boolean = false;
 
   constructor(
     public dialogRef: MatDialogRef<PagoDialogComponent>,
@@ -64,6 +65,21 @@ export class PagoDialogComponent {
       error: (err: any) => {
         this.cuponLoading = false;
         this.cuponError = err.error || 'Código no válido';
+      }
+    });
+  }
+
+  claimFree() {
+    this.claimingFree = true;
+    this.cuponService.claimFree(this.data.evento.id).subscribe({
+      next: () => {
+        this.claimingFree = false;
+        // Cerrar el dialog con un marcador especial para que el dashboard sepa que se obtuvo gratis
+        this.dialogRef.close('__FREE_CLAIMED__');
+      },
+      error: (err: any) => {
+        this.claimingFree = false;
+        this.cuponError = err.error || 'Error al obtener el evento';
       }
     });
   }

@@ -1,7 +1,14 @@
 import { Component, OnInit, ViewChildren, QueryList, ElementRef } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { InvitadoService } from '../../services/invitado.service';
 import { NotificationService } from '../../services/notification.service';
 import { PricingService } from '../../services/pricing.service';
+import { WhatsAppMasivoService } from '../../services/whatsapp-masivo.service';
+import { MercadoPagoService } from '../../services/mercado-pago.service.service';
+import { StripeService } from '../../services/stripe.service';
+import { MatDialog } from '@angular/material/dialog';
+import { WhatsAppPaqueteDialogComponent } from '../../component/whatsapp-paquete-dialog/whatsapp-paquete-dialog.component';
+import { PagoDialogComponent } from '../../component/pago-dialog/pago-dialog.component';
 
 @Component({
   selector: 'app-invitados',
@@ -13,6 +20,7 @@ export class InvitadosComponent implements OnInit {
   selectedEventId: string = '';
   selectedEventName: string = '';
   selectedEventMensaje: string = '';
+  loggedUserId: string = '';
   grupos: any[] = [];
   loading = false;
   expandedRows: Set<string> = new Set();
@@ -23,25 +31,95 @@ export class InvitadosComponent implements OnInit {
   tipoInvitacion: 'Familiar' | 'Individual' = 'Familiar';
   nombreFamilia = '';
   whatsApp = '';
+  codigoPaisInvitado = '+52';
+  codigosPaisInvitado = [
+    { name: 'México', dialCode: '+52' },
+    { name: 'Estados Unidos', dialCode: '+1' },
+    { name: 'Canadá', dialCode: '+1' },
+    { name: 'Guatemala', dialCode: '+502' },
+    { name: 'Belice', dialCode: '+501' },
+    { name: 'Honduras', dialCode: '+504' },
+    { name: 'El Salvador', dialCode: '+503' },
+    { name: 'Nicaragua', dialCode: '+505' },
+    { name: 'Costa Rica', dialCode: '+506' },
+    { name: 'Panamá', dialCode: '+507' },
+    { name: 'Colombia', dialCode: '+57' },
+    { name: 'Venezuela', dialCode: '+58' },
+    { name: 'Ecuador', dialCode: '+593' },
+    { name: 'Perú', dialCode: '+51' },
+    { name: 'Bolivia', dialCode: '+591' },
+    { name: 'Brasil', dialCode: '+55' },
+    { name: 'Chile', dialCode: '+56' },
+    { name: 'Argentina', dialCode: '+54' },
+    { name: 'Uruguay', dialCode: '+598' },
+    { name: 'Paraguay', dialCode: '+595' },
+    { name: 'Cuba', dialCode: '+53' },
+    { name: 'República Dominicana', dialCode: '+1-809' },
+    { name: 'Puerto Rico', dialCode: '+1-787' },
+    { name: 'Haití', dialCode: '+509' },
+    { name: 'Jamaica', dialCode: '+1-876' },
+    { name: 'Trinidad y Tobago', dialCode: '+1-868' },
+    { name: 'Guyana', dialCode: '+592' },
+    { name: 'Surinam', dialCode: '+597' },
+    { name: 'España', dialCode: '+34' },
+  ];
   email = '';
   invitados: { nombre: string }[] = [{ nombre: '' }];
   formSubmitted = false;
   confirmacionEnabled = false;
+
+  // WhatsApp masivo
+  waCreditsTotales = 0;
+  waCreditsDisponibles = 0;
+  waSending = false;
+  waEnvios: any[] = [];
+  waInfoExpanded = false;
 
   @ViewChildren('invitadoInput') invitadoInputs!: QueryList<ElementRef>;
 
   constructor(
     private invitadoService: InvitadoService,
     private notificationService: NotificationService,
-    private pricingService: PricingService
+    private pricingService: PricingService,
+    private waService: WhatsAppMasivoService,
+    private mercadoPago: MercadoPagoService,
+    private stripeService: StripeService,
+    private dialog: MatDialog,
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
     const localUser = localStorage.getItem('loggedUser');
     if (localUser) {
       const user = JSON.parse(localUser);
+      this.loggedUserId = user.userId;
       this.loadPaidEvents(user.userId);
     }
+
+    // Handle payment callback
+    this.route.queryParams.subscribe(params => {
+      const status = params['status'];
+      const waPkg = params['wa_pkg'];
+      const eventId = params['external_reference'];
+
+      if (status && waPkg && eventId) {
+        if (status === 'approved') {
+          // Registrar paquete después de pago exitoso
+          this.waService.buyPackage(this.loggedUserId, parseInt(waPkg)).subscribe({
+            next: (res: any) => {
+              this.notificationService.show('info', `✅ Paquete de ${res.mensajesTotales} mensajes comprado exitosamente`);
+              this.loadWaCredits();
+            },
+            error: () => this.notificationService.show('error', 'Error al registrar paquete')
+          });
+        } else {
+          this.notificationService.show('error', `Pago ${status === 'cancelled' ? 'cancelado' : 'no aprobado'}`);
+        }
+        // Limpiar query params
+        this.router.navigate(['/invitados'], { replaceUrl: true });
+      }
+    });
   }
 
   loadPaidEvents(userId: string) {
@@ -67,6 +145,8 @@ export class InvitadosComponent implements OnInit {
       next: (grupos) => {
         this.grupos = grupos;
         this.loading = false;
+        this.loadWaCredits();
+        this.loadWaEnvios();
       },
       error: (err) => {
         this.notificationService.show('error', 'Error al cargar invitados');
@@ -82,6 +162,8 @@ export class InvitadosComponent implements OnInit {
     this.selectedEventMensaje = ev?.mensajeInvitacion || '';
     this.loadGrupos();
     this.loadConfirmacionState();
+    this.loadWaCredits();
+    this.loadWaEnvios();
   }
 
   private loadConfirmacionState(): void {
@@ -101,6 +183,7 @@ export class InvitadosComponent implements OnInit {
     this.tipoInvitacion = 'Familiar';
     this.nombreFamilia = '';
     this.whatsApp = '';
+    this.codigoPaisInvitado = '+52';
     this.email = '';
     this.invitados = [{ nombre: '' }];
   }
@@ -160,14 +243,16 @@ export class InvitadosComponent implements OnInit {
       nombre: inv.nombre.trim() || this.getDefaultName(i)
     }));
 
+    const codigoLimpio = this.codigoPaisInvitado.replace(/[^\d]/g, '');
     const grupo: any = {
       eventId: this.selectedEventId,
       tipoInvitacion: this.tipoInvitacion,
       nombreFamilia: this.tipoInvitacion === 'Familiar' ? this.nombreFamilia : null,
-      whatsApp: this.whatsApp,
+      whatsApp: codigoLimpio + this.whatsApp,
       email: this.email,
       invitados: invitadosToSave
     };
+    console.log('saveGrupo -> whatsApp enviado:', grupo.whatsApp, '| codigoLimpio:', codigoLimpio, '| raw:', this.whatsApp);
 
     if (this.editingGrupoId) {
       this.invitadoService.updateGrupo(this.editingGrupoId, grupo).subscribe({
@@ -195,10 +280,26 @@ export class InvitadosComponent implements OnInit {
     this.editingGrupoId = grupo.id;
     this.tipoInvitacion = grupo.tipoInvitacion;
     this.nombreFamilia = grupo.nombreFamilia || '';
-    this.whatsApp = grupo.whatsApp || '';
     this.email = grupo.email || '';
     this.invitados = grupo.invitados.map((i: any) => ({ nombre: i.nombre }));
     if (this.invitados.length === 0) this.invitados = [{ nombre: '' }];
+
+    // Detect and strip country code from stored number
+    const fullNumber = grupo.whatsApp || '';
+    const codes = this.codigosPaisInvitado
+      .map(p => p.dialCode.replace(/[^\d]/g, ''))
+      .filter((v, i, a) => a.indexOf(v) === i) // unique
+      .sort((a, b) => b.length - a.length); // longest first (e.g. 593 before 5)
+
+    const matched = codes.find(code => fullNumber.startsWith(code));
+    if (matched) {
+      const dialCode = this.codigosPaisInvitado.find(p => p.dialCode.replace(/[^\d]/g, '') === matched);
+      this.codigoPaisInvitado = dialCode ? dialCode.dialCode : '+52';
+      this.whatsApp = fullNumber.substring(matched.length);
+    } else {
+      this.codigoPaisInvitado = '+52';
+      this.whatsApp = fullNumber;
+    }
   }
 
   deleteGrupo(grupo: any) {
@@ -289,5 +390,138 @@ export class InvitadosComponent implements OnInit {
     a.download = `Invitados_${this.selectedEventName.replace(/\s+/g, '_')}.csv`;
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  // ===== WhatsApp Masivo =====
+
+  loadWaCredits() {
+    if (!this.loggedUserId) return;
+    this.waService.getCredits(this.loggedUserId).subscribe({
+      next: (res: any) => {
+        this.waCreditsTotales = res.totalCreditos;
+        this.waCreditsDisponibles = res.disponibles;
+      },
+      error: () => { }
+    });
+  }
+
+  loadWaEnvios() {
+    if (!this.selectedEventId) return;
+    this.waService.getEnvios(this.selectedEventId).subscribe({
+      next: (envios) => this.waEnvios = envios,
+      error: () => { }
+    });
+  }
+
+  openBuyPackage() {
+    const dialogRef = this.dialog.open(WhatsAppPaqueteDialogComponent, {
+      width: '560px',
+      data: { eventId: this.selectedEventId }
+    });
+
+    dialogRef.afterClosed().subscribe((paquete: any) => {
+      if (!paquete) return;
+
+      // Abrir PagoDialog con la info del paquete
+      const ev = this.paidEvents.find((e: any) => e.id === this.selectedEventId);
+      const pagoRef = this.dialog.open(PagoDialogComponent, {
+        width: '500px',
+        data: {
+          evento: {
+            id: this.selectedEventId,
+            nombre: `Paquete WhatsApp – ${paquete.mensajes} mensajes`,
+            fecha: ev?.fecha || '',
+            estatus: 'Pendiente',
+            costo: paquete.precio
+          },
+          isWhatsAppPackage: true
+        }
+      });
+
+      pagoRef.afterClosed().subscribe((metodo: string) => {
+        if (!metodo) return;
+
+        const callbackBase = `${window.location.origin}/invitados`;
+        const callbackUrl = `${callbackBase}?wa_pkg=${paquete.mensajes}`;
+
+        const pagoEvento = {
+          id: this.selectedEventId,
+          nombre: `Paquete WhatsApp – ${paquete.mensajes} mensajes`,
+          costo: paquete.precio,
+          callbackUrl: callbackUrl,
+          externalReference: "Paquete WhatsApp"
+        };
+
+        if (metodo.toLowerCase() === 'mercado pago') {
+          this.notificationService.show('info', 'Redirigiendo a MercadoPago, espere un momento');
+          this.mercadoPago.createPreference(pagoEvento, false).subscribe({
+            next: (res: any) => window.open(res.init_point, '_self'),
+            error: () => this.notificationService.show('error', 'Error al crear preferencia de pago')
+          });
+        } else if (metodo.toLowerCase() === 'stripe') {
+          this.notificationService.show('info', 'Redirigiendo a Stripe, espere un momento');
+          this.stripeService.createSession(pagoEvento, false).subscribe({
+            next: (res: any) => window.open(res.sessionUrl, '_self'),
+            error: () => this.notificationService.show('error', 'Error al crear sesión de pago')
+          });
+        }
+      });
+    });
+  }
+
+  massSendAll() {
+    if (this.waSending) return;
+    const template = `${this.selectedEventMensaje}\n\n👉 Confirma tu asistencia aquí: {link}`;
+    this.waSending = true;
+
+    this.waService.sendAll(this.selectedEventId, template).subscribe({
+      next: (res: any) => {
+        this.waSending = false;
+        this.notificationService.show('info', `📤 ${res.enviados} invitaciones enviadas por WhatsApp`);
+        this.loadWaCredits();
+        this.loadWaEnvios();
+      },
+      error: (err: any) => {
+        this.waSending = false;
+        this.notificationService.show('error', err.error || 'Error al enviar');
+      }
+    });
+  }
+
+  massResendUnconfirmed() {
+    if (this.waSending) return;
+    const template = `${this.selectedEventMensaje}\n\n🔔 Recordatorio: Aún no has confirmado tu asistencia.\n\n👉 Confirma tu asistencia aquí: {link}`;
+    this.waSending = true;
+
+    this.waService.resendUnconfirmed(this.selectedEventId, template).subscribe({
+      next: (res: any) => {
+        this.waSending = false;
+        this.notificationService.show('info', `🔄 ${res.enviados} recordatorios enviados`);
+        this.loadWaCredits();
+        this.loadWaEnvios();
+      },
+      error: (err: any) => {
+        this.waSending = false;
+        this.notificationService.show('error', err.error || 'Error al reenviar');
+      }
+    });
+  }
+
+  getWaStatusLabel(grupo: any): string {
+    const envio = this.waEnvios.find(e => e.invitadoGrupoId === grupo.id);
+    if (!envio) return '—';
+    switch (envio.estatus) {
+      case 'Enviado': return '✅ Enviado';
+      case 'Entregado': return '📬 Entregado';
+      case 'Leído': return '👁️ Leído';
+      case 'Error': return '❌ Error';
+      default: return envio.estatus;
+    }
+  }
+
+  getWaStatusClass(grupo: any): string {
+    const envio = this.waEnvios.find(e => e.invitadoGrupoId === grupo.id);
+    if (!envio) return '';
+    return `wa-status-${envio.estatus.toLowerCase()}`;
   }
 }

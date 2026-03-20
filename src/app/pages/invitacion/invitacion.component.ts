@@ -408,7 +408,8 @@ export class InvitacionComponent implements OnDestroy {
     const confirmaciones = this.guestGroup.invitados.map((inv: any) => ({
       id: inv.id,
       nombre: inv.nombre,
-      invitacionConfirmada: inv.invitacionConfirmada
+      invitacionConfirmada: inv.invitacionConfirmada,
+      notaEspecial: inv.notaEspecial || null
     }));
 
     this.invitadoService.confirmInvitacion(this.eventId, this.idInvitacion!, confirmaciones).subscribe({
