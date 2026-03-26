@@ -183,6 +183,17 @@
     color: #ad1457;
 }
 
+.status-configurando {
+    background: #e3f2fd;
+    color: #1565c0;
+    animation: pulse-status 2s ease-in-out infinite;
+}
+
+@keyframes pulse-status {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
 /* Action Buttons */
 .actions-cell {
     display: flex;

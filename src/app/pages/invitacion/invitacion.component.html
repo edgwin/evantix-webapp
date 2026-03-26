@@ -148,8 +148,8 @@
     </app-section-toggle>
   </div>
 
-  <!-- RSVP Section (Guest View) - Confirmación habilitada -->
-  <div class="rsvp-section" *ngIf="isGuestView && guestGroup && data?.confirmacionInvitadosEnabled" [ngStyle]="{
+  <!-- RSVP Section - Confirmación habilitada (guest con idInvitacion) -->
+  <div class="rsvp-section" *ngIf="isReadOnly && guestGroup && data?.confirmacionInvitadosEnabled" [ngStyle]="{
       'background-image': 'url(' + templateService.getMarbleBackground() + ')',
       'background-size': 'cover',
       'background-position': 'center',
@@ -206,8 +206,8 @@
     </div>
   </div>
 
-  <!-- RSVP Section (Guest View) - Confirmación NO habilitada: contacto alternativo -->
-  <div class="rsvp-section" *ngIf="isGuestView && !data?.confirmacionInvitadosEnabled" [ngStyle]="{
+  <!-- RSVP Section - Contacto alternativo (preview, custom domain, o sin confirmación) -->
+  <div class="rsvp-section" *ngIf="isReadOnly && (!data?.confirmacionInvitadosEnabled || !guestGroup)" [ngStyle]="{
       'background-image': 'url(' + templateService.getMarbleBackground() + ')',
       'background-size': 'cover',
       'background-position': 'center',
@@ -237,11 +237,18 @@
     </div>
   </div>
 
-  <!-- Spacer para evitar contenido oculto debajo de la barra fija -->
-  <div class="bottom-spacer"></div>
+  <!-- Hecho en Evantix Banner (solo vista invitado) -->
+  <div class="evantix-banner" *ngIf="isReadOnly">
+    <a [href]="homeUrl" target="_blank" class="evantix-banner-link">
+      Hecho con ❤️ en <strong>Evantix</strong>
+    </a>
+  </div>
 
-  <!-- Botón Ver Previo / Editar Invitación (oculto en Vista Invitado) -->
-  <div class="preview-toggle-container" *ngIf="!isGuestView">
+  <!-- Spacer para evitar contenido oculto debajo de la barra fija (solo editor) -->
+  <div class="bottom-spacer" *ngIf="!isGuestView"></div>
+
+  <!-- Botón Ver Previo / Editar Invitación (oculto en Vista Invitado y en Revisado) -->
+  <div class="preview-toggle-container" *ngIf="!isGuestView && eventStatus !== 'Revisado'">
     <button class="preview-toggle-btn" (click)="toggleReadOnly()" *ngIf="eventStatus === 'Creado' || isAdmin"
       [disabled]="pricingLoading">
       {{ isReadOnly ? 'Editar Invitación' : 'Vista Previa' }}

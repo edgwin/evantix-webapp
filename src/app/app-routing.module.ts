@@ -15,6 +15,8 @@ import { InvitacionComponent } from './pages/invitacion/invitacion.component';
 import { DescuentosComponent } from './pages/descuentos/descuentos.component';
 import { CheckinComponent } from './pages/checkin/checkin.component';
 import { LandingComponent } from './pages/landing/landing.component';
+import { DominioComponent } from './pages/dominio/dominio.component';
+import { DomainResolverComponent } from './pages/domain-resolver/domain-resolver.component';
 
 const routes: Routes = [
   {
@@ -41,6 +43,9 @@ const routes: Routes = [
   { path: 'invitacion/:name/:idEvent', component: InvitacionComponent },
   { path: 'invitacion/:name/:idEvent/:idInvitado', component: InvitacionComponent },
   { path: 'checkin/:grupoId', component: CheckinComponent },
+  { path: 'i/:slug', component: DomainResolverComponent },
+  { path: 'i/:slug/:idInvitado', component: DomainResolverComponent },
+  { path: 'resolve-domain', component: DomainResolverComponent },
   {
     path: '',
     component: LayoutComponent,
@@ -52,7 +57,8 @@ const routes: Routes = [
       { path: 'invitados', component: InvitadosComponent },
       { path: 'mesas', component: MesasComponent },
       { path: 'nuevoEvento', component: NuevoEventoComponent },
-      { path: 'descuentos', component: DescuentosComponent }
+      { path: 'descuentos', component: DescuentosComponent },
+      { path: 'dominio', component: DominioComponent }
     ]
   }
 ];

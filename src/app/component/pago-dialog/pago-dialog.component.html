@@ -6,7 +6,7 @@
       <div>
         <b>Producto: {{ data.evento.nombre }}</b>
       </div>
-      <div>
+      <div *ngIf="data.evento.fecha">
         <b>Fecha: {{ data.evento.fecha }}</b>
       </div>
       <div *ngIf="cuponAplicado" class="precio-original">
@@ -22,7 +22,7 @@
     </div>
 
     <!-- Cupón de descuento -->
-    <div class="cupon-section" *ngIf="!data.isWhatsAppPackage">
+    <div class="cupon-section" *ngIf="!data.isWhatsAppPackage && !data.isCustomDomain">
       <label class="cupon-toggle">
         <input type="checkbox" [checked]="showCupon" (change)="toggleCupon()" [disabled]="cuponAplicado" />
         <span>Tengo un código de descuento</span>

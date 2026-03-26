@@ -24,6 +24,7 @@ import { SectionToggleComponent } from '../../component/invitacion/section-toggl
 import { Subscription } from 'rxjs';
 import { InvitadoService } from '../../services/invitado.service';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-invitacion',
@@ -46,6 +47,7 @@ export class InvitacionComponent implements OnDestroy {
   isGuestView: boolean = false;
   isAdmin: boolean = false;
   eventStatus: string = '';
+  homeUrl: string = environment.homeUrl;
   canSendToReview: boolean = false;
   sendingToReview: boolean = false;
   togglingSection: string = '';
@@ -99,32 +101,18 @@ export class InvitacionComponent implements OnDestroy {
         this.data = res;
         this.eventStatus = res.eventStatus || 'Creado';
 
-        const wantsAdmin = this.route.snapshot.queryParamMap.get('admin') === 'true';
         const wantsPreview = this.route.snapshot.queryParamMap.get('preview') === 'true';
         const isPaid = ['Pagado', 'Pago Creado'].includes(this.eventStatus);
 
-        // Verificar rol admin: backend + fallback local
-        if (wantsAdmin) {
-          const localUser = localStorage.getItem('loggedUser');
-          const localIsAdmin = localUser ? JSON.parse(localUser)?.role?.toUpperCase() === 'ADMIN' : false;
-
-          this.invitationService.checkAdmin().subscribe({
-            next: (adminRes: any) => {
-              this.isAdmin = adminRes?.isAdmin === true || localIsAdmin;
-              this.applyViewMode(isPaid, wantsPreview);
-              this.finishInit(res);
-            },
-            error: () => {
-              this.isAdmin = localIsAdmin;
-              this.applyViewMode(isPaid, wantsPreview);
-              this.finishInit(res);
-            }
-          });
-        } else {
-          this.isAdmin = false;
-          this.applyViewMode(isPaid, wantsPreview);
-          this.finishInit(res);
+        // Detect admin from localStorage (no query param needed)
+        const localUser = localStorage.getItem('loggedUser');
+        if (localUser) {
+          const parsed = JSON.parse(localUser);
+          this.isAdmin = parsed?.role?.toUpperCase() === 'ADMIN';
         }
+
+        this.applyViewMode(isPaid, wantsPreview);
+        this.finishInit(res);
       },
       error: (err) => {
         this.notificationService.show(
@@ -166,18 +154,22 @@ export class InvitacionComponent implements OnDestroy {
       // Modo invitado: siempre preview, sin botones
       this.isReadOnly = true;
       this.canSendToReview = false;
-    } else if (this.isAdmin) {
-      // Admin: siempre modo edición
-      this.isReadOnly = false;
-      this.canSendToReview = false; // Admin uses "Revisado" button instead
+    } else if (this.eventStatus === 'Revisado') {
+      // Revisado: siempre read-only, sin botones (para TODOS los usuarios)
+      this.isReadOnly = true;
+      this.canSendToReview = false;
     } else if (isPaid) {
       this.isReadOnly = true;
       this.canSendToReview = false;
       if (!this.idInvitacion) {
         this.isGuestView = true;
       }
+    } else if (this.isAdmin && this.eventStatus === 'Creado') {
+      // Admin con evento en Creado: modo edición
+      this.isReadOnly = false;
+      this.canSendToReview = false;
     } else if (this.eventStatus === 'Creado') {
-      // Usuario normal: siempre vista previa inicialmente
+      // Usuario normal: vista previa con opción de editar
       this.isReadOnly = true;
       this.canSendToReview = true;
     } else {

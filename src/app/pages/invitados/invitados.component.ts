@@ -9,6 +9,8 @@ import { StripeService } from '../../services/stripe.service';
 import { MatDialog } from '@angular/material/dialog';
 import { WhatsAppPaqueteDialogComponent } from '../../component/whatsapp-paquete-dialog/whatsapp-paquete-dialog.component';
 import { PagoDialogComponent } from '../../component/pago-dialog/pago-dialog.component';
+import { CustomDomainService } from '../../services/custom-domain.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-invitados',
@@ -25,6 +27,7 @@ export class InvitadosComponent implements OnInit {
   loading = false;
   isAdmin = false;
   expandedRows: Set<string> = new Set();
+  customDomainUrl: string | null = null;
 
   // Form state
   showForm = false;
@@ -87,7 +90,8 @@ export class InvitadosComponent implements OnInit {
     private stripeService: StripeService,
     private dialog: MatDialog,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private customDomainService: CustomDomainService
   ) { }
 
   ngOnInit(): void {
@@ -138,6 +142,7 @@ export class InvitadosComponent implements OnInit {
           this.selectedEventMensaje = events[0].mensajeInvitacion || '';
           this.loadGrupos();
           this.loadConfirmacionState();
+          this.loadCustomDomainUrl();
         }
       },
       error: (err) => this.notificationService.show('error', 'Error al cargar eventos pagados')
@@ -168,8 +173,33 @@ export class InvitadosComponent implements OnInit {
     this.selectedEventMensaje = ev?.mensajeInvitacion || '';
     this.loadGrupos();
     this.loadConfirmacionState();
+    this.loadCustomDomainUrl();
     this.loadWaCredits();
     this.loadWaEnvios();
+  }
+
+  private loadCustomDomainUrl(): void {
+    this.customDomainUrl = null;
+    if (!this.selectedEventId) return;
+    this.customDomainService.getByEventId(this.selectedEventId).subscribe({
+      next: (domain: any) => {
+        console.log('[CustomDomain] Response for event', this.selectedEventId, ':', domain);
+        if (domain && domain.estatus === 'Activo') {
+          const homeUrl = new URL(environment.homeUrl);
+          const baseDomain = homeUrl.hostname;
+          const baseUrl = environment.homeUrl.replace(/\/$/, '');
+          switch (domain.tipoOpcion) {
+            case 1: this.customDomainUrl = `https://${domain.dominioValor}.${baseDomain}`; break;
+            case 2: this.customDomainUrl = `https://www.${domain.dominioValor}`; break;
+            case 3: this.customDomainUrl = `${baseUrl}/i/${domain.dominioValor}`; break;
+          }
+          console.log('[CustomDomain] URL set to:', this.customDomainUrl);
+        } else {
+          console.log('[CustomDomain] No active domain found');
+        }
+      },
+      error: (err) => { console.log('[CustomDomain] Error:', err); }
+    });
   }
 
   private loadConfirmacionState(): void {
@@ -344,6 +374,11 @@ export class InvitadosComponent implements OnInit {
   }
 
   getInvitationUrl(grupo: any): string {
+    // Custom domain configured: append idInvitacion for personalized RSVP
+    if (this.customDomainUrl) {
+      return `${this.customDomainUrl}/${grupo.idInvitacion}`;
+    }
+    // No custom domain: use traditional URL
     const name = this.selectedEventName.replace(/\s+/g, '-');
     const base = `${window.location.origin}/invitacion/${encodeURIComponent(name)}/${this.selectedEventId}`;
     // Only include idInvitacion if ConfirmacionInvitados section is enabled

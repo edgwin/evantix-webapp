@@ -5,6 +5,8 @@
 .main-content {
   padding-top: 10px;
   padding-left: 70px;
+  overflow-y: auto;
+  height: calc(100vh - 64px);
 }
 
 @media (max-width: 768px) {

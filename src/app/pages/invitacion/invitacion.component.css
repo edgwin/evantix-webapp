@@ -347,3 +347,28 @@
     right: 8px;
   }
 }
+
+/* Hecho en Evantix Banner */
+.evantix-banner {
+  text-align: center;
+  padding: 18px 16px;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+}
+
+.evantix-banner-link {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: 13px;
+  font-family: 'Inter', 'Work Sans', sans-serif;
+  letter-spacing: 0.5px;
+  transition: color 0.2s;
+}
+
+.evantix-banner-link:hover {
+  color: #fff;
+}
+
+.evantix-banner-link strong {
+  color: #fff;
+  font-weight: 700;
+}

@@ -47,7 +47,8 @@
                                 'status-revisado': evento.estatus === 'Revisado',
                                 'status-rechazado': evento.estatus === 'Pago Rechazado',
                                 'status-pendiente': evento.estatus === 'Pago Pendiente' || evento.estatus === 'En Proceso',
-                                'status-cancelado': evento.estatus === 'Pago Cancelado'
+                                'status-cancelado': evento.estatus === 'Pago Cancelado',
+                                'status-configurando': evento.estatus === 'Configurando Sitio'
                             }" [title]="evento.estatusDescripcion || ''">
                             {{ evento.estatus }}
                         </span>
@@ -58,6 +59,8 @@
                         <!-- <button class="action-btn" (click)="onActionHandler({type: 'invitacion', row: evento})" title="Diseñar Invitación" *ngIf="evento.showInvitation">🎨</button> -->
                         <button class="action-btn" (click)="onActionHandler({type: 'verInvitacion', row: evento})"
                             title="Ver Invitación" *ngIf="evento.showInvitation">👁️</button>
+                        <button class="action-btn domain" (click)="onActionHandler({type: 'dominio', row: evento})"
+                            title="Dominio Personalizado" *ngIf="evento.showInvitation && (evento.estatus === 'Pagado' || evento.estatus === 'Pago Creado')">🌐</button>
                         <button class="action-btn pay" (click)="onActionHandler({type: 'pay', row: evento})"
                             title="Pagar" *ngIf="evento.showPayment !== false">💳</button>
                         <button class="action-btn delete" (click)="onActionHandler({type: 'delete', row: evento})"

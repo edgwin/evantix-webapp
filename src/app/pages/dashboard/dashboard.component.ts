@@ -142,6 +142,8 @@ export class DashboardComponent {
       this.onPay(event.row);
     } else if (event.type === 'verInvitacion') {
       this.onVerInvitacion(event.row);
+    } else if (event.type === 'dominio') {
+      this.onDominio(event.row);
     }
   }
 
@@ -150,16 +152,16 @@ export class DashboardComponent {
   }
 
   onVerInvitacion(evento: any) {
-    const isAdmin = this.loggedUser.role.toUpperCase() === 'ADMIN';
-    const queryParams: any = {};
-    if (isAdmin) queryParams.admin = 'true';
-
     const url = this.router.serializeUrl(
-      this.router.createUrlTree(['/invitacion', `${this.replaceNameForUrl(evento.nombre)}`, `${evento.id}`],
-        Object.keys(queryParams).length > 0 ? { queryParams } : {})
+      this.router.createUrlTree(['/invitacion', `${this.replaceNameForUrl(evento.nombre)}`, `${evento.id}`])
     );
+    window.open(url, '_blank');
+  }
 
-    window.open(url, isAdmin ? '_self' : '_blank');
+  onDominio(evento: any) {
+    this.router.navigate(['/dominio'], {
+      queryParams: { eventId: evento.id, eventName: evento.nombre }
+    });
   }
 
   replaceNameForUrl(name: string) {
