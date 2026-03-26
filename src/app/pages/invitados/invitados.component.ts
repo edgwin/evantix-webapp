@@ -70,6 +70,7 @@ export class InvitadosComponent implements OnInit {
   email = '';
   invitados: { nombre: string }[] = [{ nombre: '' }];
   formSubmitted = false;
+  saving = false;
   confirmacionEnabled = false;
 
   // WhatsApp masivo
@@ -228,6 +229,7 @@ export class InvitadosComponent implements OnInit {
     this.showForm = false;
     this.editingGrupoId = null;
     this.formSubmitted = false;
+    this.saving = false;
   }
 
   switchTipo(tipo: 'Familiar' | 'Individual') {
@@ -270,10 +272,13 @@ export class InvitadosComponent implements OnInit {
 
   saveGrupo() {
     this.formSubmitted = true;
+    if (this.saving) return;
 
     // Validations
     if (!this.whatsApp?.trim()) return;
     if (this.tipoInvitacion === 'Familiar' && !this.nombreFamilia?.trim()) return;
+
+    this.saving = true;
 
     const invitadosToSave = this.invitados.map((inv, i) => ({
       nombre: inv.nombre.trim() || this.getDefaultName(i)
@@ -293,20 +298,28 @@ export class InvitadosComponent implements OnInit {
     if (this.editingGrupoId) {
       this.invitadoService.updateGrupo(this.editingGrupoId, grupo).subscribe({
         next: () => {
+          this.saving = false;
           this.notificationService.show('success', 'Invitados actualizados');
           this.closeForm();
           this.loadGrupos();
         },
-        error: () => this.notificationService.show('error', 'Error al actualizar')
+        error: () => {
+          this.saving = false;
+          this.notificationService.show('error', 'Error al actualizar');
+        }
       });
     } else {
       this.invitadoService.createGrupo(grupo).subscribe({
         next: () => {
+          this.saving = false;
           this.notificationService.show('success', 'Invitados registrados');
           this.closeForm();
           this.loadGrupos();
         },
-        error: () => this.notificationService.show('error', 'Error al registrar')
+        error: () => {
+          this.saving = false;
+          this.notificationService.show('error', 'Error al registrar');
+        }
       });
     }
   }
