@@ -101,7 +101,7 @@ export class InvitacionComponent implements OnDestroy {
         this.data = res;
         this.eventStatus = res.eventStatus || 'Creado';
 
-        const wantsPreview = this.route.snapshot.queryParamMap.get('preview') === 'true';
+
         const isPaid = ['Pagado', 'Pago Creado'].includes(this.eventStatus);
 
         // Detect admin from localStorage (no query param needed)
@@ -111,7 +111,7 @@ export class InvitacionComponent implements OnDestroy {
           this.isAdmin = parsed?.role?.toUpperCase() === 'ADMIN';
         }
 
-        this.applyViewMode(isPaid, wantsPreview);
+        this.applyViewMode(isPaid);
         this.finishInit(res);
       },
       error: (err) => {
@@ -149,7 +149,7 @@ export class InvitacionComponent implements OnDestroy {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  private applyViewMode(isPaid: boolean, wantsPreview: boolean = false): void {
+  private applyViewMode(isPaid: boolean): void {
     if (this.isGuestView) {
       // Modo invitado: siempre preview, sin botones
       this.isReadOnly = true;

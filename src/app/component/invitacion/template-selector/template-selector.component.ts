@@ -20,6 +20,7 @@ export class TemplateSelectorComponent implements OnInit {
   selectedCategory: string = 'all';
   selectedTemplateId: string | null = null;
   isOpen: boolean = false;
+  originalTemplate: Template | null = null; // Template before hover preview
   loading: boolean = true;
 
   categories = [
@@ -86,6 +87,7 @@ export class TemplateSelectorComponent implements OnInit {
   selectTemplate(template: Template): void {
     this.selectedTemplateId = template.id;
     this.templateService.setTemplate(template);
+    this.originalTemplate = null; // Click = commit, clear the revert point
     
     this.invitationService.updateEventTemplate(this.eventId, template.id).subscribe({
       next: () => {
@@ -99,11 +101,27 @@ export class TemplateSelectorComponent implements OnInit {
   }
 
   previewTemplate(template: Template): void {
+    // Store original template before first preview hover
+    if (!this.originalTemplate) {
+      this.originalTemplate = this.templateService.getCurrentTemplate();
+    }
     this.templateService.applyTemplateToDOM(template);
+  }
+
+  revertPreview(): void {
+    // Revert to original template on mouseout
+    if (this.originalTemplate) {
+      this.templateService.applyTemplateToDOM(this.originalTemplate);
+    }
   }
 
   toggleSelector(): void {
     this.isOpen = !this.isOpen;
+    // Revert preview when closing the panel
+    if (!this.isOpen && this.originalTemplate) {
+      this.templateService.applyTemplateToDOM(this.originalTemplate);
+      this.originalTemplate = null;
+    }
   }
 
   getStyleLabel(style: string): string {

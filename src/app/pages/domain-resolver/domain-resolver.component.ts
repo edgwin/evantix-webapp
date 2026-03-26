@@ -119,10 +119,8 @@ export class DomainResolverComponent implements OnInit {
       // With guest ID: navigate to personalized invitation
       this.router.navigate(['/invitacion', name, res.eventId, idInvitado]);
     } else {
-      // Without guest ID: navigate to preview
-      this.router.navigate(['/invitacion', name, res.eventId], {
-        queryParams: { preview: 'true' }
-      });
+      // Without guest ID: navigate to invitation
+      this.router.navigate(['/invitacion', name, res.eventId]);
     }
   }
 
