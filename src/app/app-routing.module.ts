@@ -16,6 +16,7 @@ import { DescuentosComponent } from './pages/descuentos/descuentos.component';
 import { CheckinComponent } from './pages/checkin/checkin.component';
 import { LandingComponent } from './pages/landing/landing.component';
 import { DominioComponent } from './pages/dominio/dominio.component';
+import { TemplateEditorComponent } from './pages/template-editor/template-editor.component';
 import { DomainResolverComponent } from './pages/domain-resolver/domain-resolver.component';
 
 const routes: Routes = [
@@ -58,7 +59,8 @@ const routes: Routes = [
       { path: 'mesas', component: MesasComponent },
       { path: 'nuevoEvento', component: NuevoEventoComponent },
       { path: 'descuentos', component: DescuentosComponent },
-      { path: 'dominio', component: DominioComponent }
+      { path: 'dominio', component: DominioComponent },
+      { path: 'editor-templates', component: TemplateEditorComponent }
     ]
   }
 ];

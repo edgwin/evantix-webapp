@@ -52,6 +52,7 @@ import { WhatsAppPaqueteDialogComponent } from './component/whatsapp-paquete-dia
 import { CheckinComponent } from './pages/checkin/checkin.component';
 import { LandingComponent } from './pages/landing/landing.component';
 import { DominioComponent } from './pages/dominio/dominio.component';
+import { TemplateEditorComponent } from './pages/template-editor/template-editor.component';
 
 @NgModule({
   declarations: [
@@ -79,7 +80,8 @@ import { DominioComponent } from './pages/dominio/dominio.component';
     WhatsAppPaqueteDialogComponent,
     CheckinComponent,
     LandingComponent,
-    DominioComponent
+    DominioComponent,
+    TemplateEditorComponent
   ],
   imports: [
     RouterModule,

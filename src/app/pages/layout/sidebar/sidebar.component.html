@@ -54,6 +54,9 @@
     <a mat-list-item *ngIf="isAdmin" routerLink="/descuentos"
       [ngClass]="{ 'selected': selectedRoute === '/descuentos' }" (click)="selectRoute('/descuentos')"><span>🏷️
         Descuentos</span></a>
+    <a mat-list-item *ngIf="isAdmin" routerLink="/editor-templates"
+      [ngClass]="{ 'selected': selectedRoute === '/editor-templates' }" (click)="selectRoute('/editor-templates')"><span>🎨
+        Editor de Templates</span></a>
     <!-- <a mat-list-item routerLink="/settings"><span>Configuraciones</span></a> -->
   </mat-nav-list>
 </div>

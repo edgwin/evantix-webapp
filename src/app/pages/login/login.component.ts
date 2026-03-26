@@ -38,7 +38,10 @@ export class LoginComponent implements AfterViewInit, OnInit {
     try {
       google.accounts.id.initialize({
         client_id: environment.googleClientId,
-        callback: (res: any) => this.sendToBackend('google', res.credential),
+        callback: (res: any) => {
+          this.isLoading = true;
+          this.sendToBackend('google', res.credential);
+        },
       });
       google.accounts.id.renderButton(document.getElementById('googleBtn1'), {
         theme: 'outline',
@@ -72,8 +75,11 @@ export class LoginComponent implements AfterViewInit, OnInit {
     });
   }  
 
-  facebookLogin() {    
-    this.authService.signIn(FacebookLoginProvider.PROVIDER_ID);
+  facebookLogin() {
+    this.isLoading = true;
+    this.authService.signIn(FacebookLoginProvider.PROVIDER_ID).catch(() => {
+      this.isLoading = false;
+    });
   }
   
   sendToBackend(provider: 'google' | 'facebook', token: string) {

@@ -316,6 +316,21 @@ export class InvitationService {
     return this.http.get<any[]>(url, { headers: this.getAuthHeaders() });
   }
 
+  createTemplate(template: any) {
+    const url = `${this.apiUrl}${this.getInvitationData}Templates`;
+    return this.http.post<any>(url, template, { headers: this.getAuthHeaders() });
+  }
+
+  updateTemplate(id: string, template: any) {
+    const url = `${this.apiUrl}${this.getInvitationData}Templates/${id}`;
+    return this.http.put<any>(url, template, { headers: this.getAuthHeaders() });
+  }
+
+  deleteTemplate(id: string) {
+    const url = `${this.apiUrl}${this.getInvitationData}Templates/${id}`;
+    return this.http.delete<any>(url, { headers: this.getAuthHeaders() });
+  }
+
   updateEventTemplate(eventId: string, templateId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${eventId}/template/${templateId}`;
     return this.http.post(url, {}, { headers: this.getAuthHeaders() });
