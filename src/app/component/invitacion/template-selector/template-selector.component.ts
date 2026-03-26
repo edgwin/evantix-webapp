@@ -28,6 +28,10 @@ export class TemplateSelectorComponent implements OnInit {
     { value: 'boda', label: 'Boda' },
     { value: 'xv', label: 'XV Años' },
     { value: 'bautizo', label: 'Bautizo' },
+    { value: 'graduacion', label: 'Graduación' },
+    { value: 'cumpleanos', label: 'Cumpleaños' },
+    { value: 'religioso', label: 'Religioso' },
+    { value: 'aniversario', label: 'Aniversario' },
     { value: 'general', label: 'General' }
   ];
 
@@ -65,7 +69,18 @@ export class TemplateSelectorComponent implements OnInit {
       const categoryMap: { [key: string]: string } = {
         'Boda': 'boda',
         'XV': 'xv',
-        'Bautizo': 'bautizo'
+        'Bautizo': 'bautizo',
+        'Graduación': 'graduacion',
+        'Graduacion': 'graduacion',
+        'Cumpleaños': 'cumpleanos',
+        'Cumpleanos': 'cumpleanos',
+        'Primera Comunión': 'religioso',
+        'Confirmación': 'religioso',
+        'Religioso': 'religioso',
+        'Bodas de Oro': 'aniversario',
+        'Bodas de Plata': 'aniversario',
+        'Bodas de Bronce': 'aniversario',
+        'Aniversario': 'aniversario'
       };
       const mappedCategory = categoryMap[this.eventType] || 'all';
       this.selectedCategory = mappedCategory;

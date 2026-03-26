@@ -31,7 +31,7 @@ export interface TemplateTheme {
 export interface Template {
   id: string;
   name: string;
-  category: 'boda' | 'xv' | 'bautizo' | 'general';
+  category: 'boda' | 'xv' | 'bautizo' | 'graduacion' | 'cumpleanos' | 'religioso' | 'aniversario' | 'general';
   style: 'moderno' | 'vintage' | 'elegante' | 'romantico' | 'minimalista';
   theme: TemplateTheme;
   preview?: string;
