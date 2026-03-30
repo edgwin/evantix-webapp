@@ -22,6 +22,12 @@
         <p>Cargando eventos...</p>
     </div>
 
+    <!-- Deleting overlay -->
+    <div class="deleting-overlay" *ngIf="deleting">
+        <div class="loader"></div>
+        <p>Eliminando evento...</p>
+    </div>
+
     <!-- Grid -->
     <div class="grid-container" *ngIf="!loading && rowData.length > 0">
         <table class="eventos-grid">

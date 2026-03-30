@@ -15,6 +15,7 @@ export class NuevoEventoComponent implements OnInit {
   loading = false;
   isEditMode = false;
   editEventId: string | null = null;
+  minDate = new Date();
 
   evento = {
     nombre: '',

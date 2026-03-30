@@ -22,7 +22,7 @@
           <label>Fecha del Evento <span class="required">*</span></label>
           <mat-form-field appearance="outline" class="mat-field-modern">
             <input matInput [matDatepicker]="picker" [(ngModel)]="evento.fecha" name="fecha" required
-              placeholder="Selecciona una fecha">
+              [min]="minDate" placeholder="Selecciona una fecha">
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker touchUi="true"></mat-datepicker>
           </mat-form-field>

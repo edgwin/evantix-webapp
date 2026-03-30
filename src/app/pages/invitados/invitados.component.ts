@@ -267,7 +267,7 @@ export class InvitadosComponent implements OnInit {
   }
 
   getDefaultName(index: number): string {
-    return `Invitado ${index + 1}`;
+    return `Nombre de Invitado ${index + 1}`;
   }
 
   saveGrupo() {
@@ -386,6 +386,12 @@ export class InvitadosComponent implements OnInit {
     return this.grupos.reduce((sum, g) => sum + (g.invitados?.length || 0), 0);
   }
 
+  allRespondidos(grupo: any): boolean {
+    const invitados = grupo.invitados;
+    if (!invitados || invitados.length === 0) return false;
+    return invitados.every((inv: any) => inv.invitacionConfirmada === 1 || inv.invitacionConfirmada === 2);
+  }
+
   getInvitationUrl(grupo: any): string {
     // Custom domain configured: append idInvitacion for personalized RSVP
     if (this.customDomainUrl) {
@@ -401,17 +407,32 @@ export class InvitadosComponent implements OnInit {
     return base;
   }
 
-  sendWhatsApp(grupo: any) {
+  private buildInvitationMessage(grupo: any): string {
+    const eventName = this.selectedEventName;
+    const displayName = this.getDisplayName(grupo);
+    const guestName = grupo.tipoInvitacion === 'Familiar' ? `Familia ${displayName}` : displayName;
+    const mensaje = this.selectedEventMensaje;
     const url = this.getInvitationUrl(grupo);
-    const message = `${this.selectedEventMensaje}\n\n${url}`;
+    const home = environment.homeUrl;
+
+    return `Invitacion a Evento: ${eventName}\n` +
+      `Hola! ${guestName}\n` +
+      `${mensaje}\n` +
+      `${url}\n` +
+      `En caso de no poder asistir, notifícalo en la misma invitación.\n` +
+      `Gracias!\n` +
+      `Enviado desde ${home}`;
+  }
+
+  sendWhatsApp(grupo: any) {
+    const message = this.buildInvitationMessage(grupo);
     const phone = grupo.whatsApp?.replace(/\D/g, '') || '';
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
   }
 
   sendEmail(grupo: any) {
-    const url = this.getInvitationUrl(grupo);
-    const body = `${this.selectedEventMensaje}\n\n${url}`;
-    const subject = `Invitación - ${this.selectedEventName}`;
+    const body = this.buildInvitationMessage(grupo);
+    const subject = `Invitación a Evento de ${this.selectedEventName}`;
     window.open(`mailto:${grupo.email || ''}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
   }
 

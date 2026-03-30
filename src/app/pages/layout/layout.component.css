@@ -1,5 +1,6 @@
 .sidenav-container {
   height: 100vh;
+  overflow: hidden;
 }
 
 .main-content {

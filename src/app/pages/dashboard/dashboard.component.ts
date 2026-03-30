@@ -25,6 +25,7 @@ interface Evento {
 export class DashboardComponent {
   loggedUser: any;
   loading: boolean = true;
+  deleting: boolean = false;
   showPopup: boolean = false;
   noDataMsg: boolean = false;
   terminosHtml = "";
@@ -169,12 +170,15 @@ export class DashboardComponent {
   }
 
   onDelete(evento: any) {
+    this.deleting = true;
     this.eventService.DeleteEvent(evento.id).subscribe({
       next: () => {
+        this.deleting = false;
         this.notificationService.show('info', `Evento eliminado con exito`);
         this.loadData();
       },
       error: () => {
+        this.deleting = false;
         this.notificationService.show('error', `Hubo un error al intentar eliminar el Evento, favor de contactar a soporte`);
       }
     });

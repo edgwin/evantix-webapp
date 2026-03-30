@@ -149,7 +149,7 @@
   </div>
 
   <!-- RSVP Section - Confirmación habilitada (guest con idInvitacion) -->
-  <div class="rsvp-section" *ngIf="isReadOnly && guestGroup && data?.confirmacionInvitadosEnabled" [ngStyle]="{
+  <div class="rsvp-section" *ngIf="isGuestView && isReadOnly && guestGroup && data?.confirmacionInvitadosEnabled" [ngStyle]="{
       'background-image': 'url(' + templateService.getMarbleBackground() + ')',
       'background-size': 'cover',
       'background-position': 'center',
@@ -206,8 +206,8 @@
     </div>
   </div>
 
-  <!-- RSVP Section - Contacto alternativo (preview, custom domain, o sin confirmación) -->
-  <div class="rsvp-section" *ngIf="isReadOnly && (!data?.confirmacionInvitadosEnabled || !guestGroup)" [ngStyle]="{
+  <!-- RSVP Section - Contacto alternativo (guest sin confirmación habilitada) -->
+  <div class="rsvp-section" *ngIf="isGuestView && isReadOnly && (!data?.confirmacionInvitadosEnabled || !guestGroup)" [ngStyle]="{
       'background-image': 'url(' + templateService.getMarbleBackground() + ')',
       'background-size': 'cover',
       'background-position': 'center',
