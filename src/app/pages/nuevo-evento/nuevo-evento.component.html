@@ -4,6 +4,7 @@
   </div>
 
   <form (ngSubmit)="onSubmit()" #eventoForm="ngForm">
+    <fieldset [disabled]="loading" style="border: none; padding: 0; margin: 0;">
     <div class="form-card">
       <div class="form-header">
         <h3>Datos del Evento</h3>
@@ -107,11 +108,12 @@
 
     <!-- Botones -->
     <div class="form-actions">
-      <button class="btn btn-secondary" type="button" (click)="cancelar()">Cancelar</button>
+      <button class="btn btn-secondary" type="button" (click)="cancelar()" [disabled]="loading">Cancelar</button>
       <button class="btn btn-primary" type="submit" [disabled]="!isFormValid || loading">
         {{ isEditMode ? 'Actualizar Evento' : 'Crear Evento' }}
       </button>
     </div>
+    </fieldset>
 
     <app-popup-html [visible]="showPopup" [htmlContent]="terminosHtml" [title]="'Términos y Condiciones'"
       [showCloseButton]="true" (closed)="showPopup = false">
