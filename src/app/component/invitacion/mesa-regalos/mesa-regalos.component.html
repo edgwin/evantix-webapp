@@ -52,7 +52,7 @@
               title="Escribe o pega la URL de tu mesa de regalos" [(ngModel)]="item.url"
               (blur)="saveContent($event, item.id, 'url')" *ngIf="!isReadOnly">
 
-            <a *ngIf="item.url" [href]="item.url" target="_blank" class="action-btn primary">
+            <a *ngIf="item.url" [href]="item.url" target="_blank" class="action-btn primary" id="tour-ir-mesa">
               <span>Ir a la Mesa</span>
               <i class="fa fa-external-link"></i>
             </a>

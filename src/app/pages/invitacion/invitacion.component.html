@@ -149,7 +149,8 @@
   </div>
 
   <!-- RSVP Section - Confirmación habilitada (guest con idInvitacion) -->
-  <div class="rsvp-section" *ngIf="isGuestView && isReadOnly && guestGroup && data?.confirmacionInvitadosEnabled" [ngStyle]="{
+  <div class="rsvp-section" *ngIf="isGuestView && isReadOnly && guestGroup && data?.confirmacionInvitadosEnabled"
+    [ngStyle]="{
       'background-image': 'url(' + templateService.getMarbleBackground() + ')',
       'background-size': 'cover',
       'background-position': 'center',
@@ -207,7 +208,8 @@
   </div>
 
   <!-- RSVP Section - Contacto alternativo (guest sin confirmación habilitada) -->
-  <div class="rsvp-section" *ngIf="isGuestView && isReadOnly && (!data?.confirmacionInvitadosEnabled || !guestGroup)" [ngStyle]="{
+  <div class="rsvp-section" *ngIf="isGuestView && isReadOnly && (!data?.confirmacionInvitadosEnabled || !guestGroup)"
+    [ngStyle]="{
       'background-image': 'url(' + templateService.getMarbleBackground() + ')',
       'background-size': 'cover',
       'background-position': 'center',
@@ -240,7 +242,7 @@
   <!-- Hecho en Evantix Banner (solo vista invitado) -->
   <div class="evantix-banner" *ngIf="isReadOnly">
     <a [href]="homeUrl" target="_blank" class="evantix-banner-link">
-      Hecho con ❤️ en <strong>Evantix</strong>
+      Powered by <strong>Evantix</strong>
     </a>
   </div>
 
@@ -262,4 +264,7 @@
       {{ sendingToReview ? 'Procesando...' : '✅ Revisado' }}
     </button>
   </div>
+
+  <!-- Product Tour Overlay -->
+  <app-tour-overlay></app-tour-overlay>
 </div>

@@ -95,11 +95,11 @@
           </div>
 
           <div class="card-footer">
-            <a href="{{item.ubicacion}}" target="_blank" class="location-btn primary">
+            <a href="{{item.ubicacion}}" target="_blank" class="location-btn primary" id="tour-ver-ubicacion">
               <i class="icon-location"></i>
               Ver Ubicación
             </a>
-            <button class="location-btn secondary" (click)="abrirMapa(item.id)" *ngIf="!isReadOnly">
+            <button class="location-btn secondary" (click)="abrirMapa(item.id)" *ngIf="!isReadOnly" id="tour-editar-mapa">
               Editar Mapa
             </button>
           </div>

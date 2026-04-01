@@ -47,7 +47,7 @@
     </div>
 
     <div class="add-btn-container" *ngIf="!isReadOnly && !loading && (data?.details?.length || 0) < maxItems">
-      <button class="add-btn" (click)="nuevaIndicacion()" title="Click para agregar elemento">
+      <button class="add-btn" (click)="nuevaIndicacion()" title="Click para agregar elemento" id="tour-add-indicacion">
         <span class="add-icon">+</span>
         <span>Agregar indicación</span>
       </button>

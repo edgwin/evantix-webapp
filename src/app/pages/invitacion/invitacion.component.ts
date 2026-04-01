@@ -22,6 +22,8 @@ import { PricingService, EventCostResponse } from '../../services/pricing.servic
 import { CostBarComponent } from '../../component/invitacion/cost-bar/cost-bar.component';
 import { SectionToggleComponent } from '../../component/invitacion/section-toggle/section-toggle.component';
 import { Subscription } from 'rxjs';
+import { TourService } from '../../services/tour.service';
+import { TourOverlayComponent } from '../../component/tour-overlay/tour-overlay.component';
 import { InvitadoService } from '../../services/invitado.service';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../../environments/environment';
@@ -33,13 +35,14 @@ import { environment } from '../../../environments/environment';
   styleUrl: './invitacion.component.css',
   imports: [PortadaComponent, CommonModule, FestejadosComponent, DondeCuandoComponent, IntinerarioComponent, IndicacionesComponent,
     MesaRegalosComponent, PersonasFavoritasComponent, HistoriaComponent, GaleriaComponent, HospedajeComponent,
-    PhotoUploaderComponent, MusicaComponent, MuroFotosComponent, TemplateSelectorComponent, CostBarComponent, SectionToggleComponent, FormsModule],
+    PhotoUploaderComponent, MusicaComponent, MuroFotosComponent, TemplateSelectorComponent, CostBarComponent, SectionToggleComponent, FormsModule, TourOverlayComponent],
 })
 
 export class InvitacionComponent implements OnDestroy {
   constructor(private route: ActivatedRoute, private invitationService: InvitationService,
     private notificationService: NotificationService, public templateService: TemplateService,
-    private router: Router, private pricingService: PricingService, private invitadoService: InvitadoService) { }
+    private router: Router, private pricingService: PricingService, private invitadoService: InvitadoService,
+    private tourService: TourService) { }
   eventId: any;
   loading: boolean = true;
   data: any;
@@ -74,6 +77,8 @@ export class InvitacionComponent implements OnDestroy {
       // Refrescar costo al volver a modo edición o al ver previo
       if (!this.isReadOnly) {
         this.loadPricing();
+        // Start tour after DOM updates with edit-mode elements
+        setTimeout(() => this.tourService.startIfNeeded(), 800);
       } else {
         // Scroll al inicio al entrar a vista previa
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -205,6 +210,11 @@ export class InvitacionComponent implements OnDestroy {
     }
 
     this.loading = false;
+
+    // Start Product Tour after DOM renders (only in edit mode, first time)
+    if (!this.isReadOnly && !this.isGuestView) {
+      setTimeout(() => this.tourService.startIfNeeded(), 1200);
+    }
   }
 
   onTrackChanged(trackId: string): void {

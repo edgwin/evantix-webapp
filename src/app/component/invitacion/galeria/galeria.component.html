@@ -52,7 +52,7 @@
       <div class="loader-galeria" *ngIf="loading"></div><br />
       <div *ngIf="!loading">
         <input #fileInput type="file" accept="image/*" multiple hidden (change)="triggerImageUpload($event)">
-        <button class="add-item-btn" (click)="fileInput.click()">
+        <button class="add-item-btn" (click)="fileInput.click()" id="tour-agregar-fotos">
           <span class="add-icon">+</span>
           <span>Agregar fotos</span>
         </button>

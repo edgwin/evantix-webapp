@@ -1,0 +1,34 @@
+<div class="tour-overlay" *ngIf="isActive" (click)="onOverlayClick($event)">
+  <!-- Dark overlay with spotlight cutout -->
+  <div class="tour-backdrop"></div>
+
+  <!-- Spotlight highlight -->
+  <div class="tour-spotlight" *ngIf="showSpotlight" [ngStyle]="spotlightStyle"></div>
+
+  <!-- Tooltip -->
+  <div class="tour-tooltip" [ngStyle]="tooltipStyle" [ngClass]="arrowClass">
+    <div class="tour-tooltip-header">
+      <span class="tour-step-badge">{{ currentStep + 1 }} / {{ totalSteps }}</span>
+      <button class="tour-skip-btn" (click)="onSkip()" title="Omitir tutorial">✕</button>
+    </div>
+
+    <h3 class="tour-tooltip-title">{{ title }}</h3>
+    <p class="tour-tooltip-description">{{ description }}</p>
+
+    <div class="tour-tooltip-footer">
+      <label class="tour-dont-show">
+        <input type="checkbox" [(ngModel)]="tourService.dontShowAgain" />
+        <span>No volver a mostrar</span>
+      </label>
+
+      <div class="tour-nav-buttons">
+        <button class="tour-btn tour-btn-secondary" (click)="onPrev()" *ngIf="currentStep > 0">
+          ← Anterior
+        </button>
+        <button class="tour-btn tour-btn-primary" (click)="onNext()">
+          {{ currentStep === totalSteps - 1 ? 'Finalizar ✓' : 'Siguiente →' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
