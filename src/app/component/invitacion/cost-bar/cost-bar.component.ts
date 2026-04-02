@@ -4,29 +4,32 @@ import { PricingService, EventCostResponse } from '../../../services/pricing.ser
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-cost-bar',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
-    <div class="cost-bar" *ngIf="!isReadOnly">
-      <div class="cost-bar-content">
-        <div class="cost-label">
-          <span class="cost-icon">💰</span>
-          <span>Costo de tu invitación</span>
-        </div>
-        <div class="cost-right">
-          <div class="cost-loading" *ngIf="isLoading">
-            <div class="spinner"></div>
-            <span class="loading-text">Actualizando...</span>
+    selector: 'app-cost-bar',
+    imports: [CommonModule],
+    template: `
+    @if (!isReadOnly) {
+      <div class="cost-bar">
+        <div class="cost-bar-content">
+          <div class="cost-label">
+            <span class="cost-icon">💰</span>
+            <span>Costo de tu invitación</span>
           </div>
-          <div class="cost-amount" [class.cost-changed]="costChanged" [class.cost-dimmed]="isLoading">
-            {{ displayCost | currency:'MXN':'symbol-narrow':'1.0-0' }}
+          <div class="cost-right">
+            @if (isLoading) {
+              <div class="cost-loading">
+                <div class="spinner"></div>
+                <span class="loading-text">Actualizando...</span>
+              </div>
+            }
+            <div class="cost-amount" [class.cost-changed]="costChanged" [class.cost-dimmed]="isLoading">
+              {{ displayCost | currency:'MXN':'symbol-narrow':'1.0-0' }}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  `,
-  styles: [`
+    }
+    `,
+    styles: [`
     .cost-bar {
       position: fixed;
       top: 0;

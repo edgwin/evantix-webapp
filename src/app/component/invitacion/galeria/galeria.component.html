@@ -1,68 +1,81 @@
 <section class="galeria-section">
   <div class="section-content">
-    <div class="section-header" *ngIf="!loading">
-      <span class="header-decoration-line"></span>
-      <h1>Galeria de Fotos</h1>
-      <span class="header-decoration-line"></span>
-    </div>
+    @if (!loading) {
+      <div class="section-header">
+        <span class="header-decoration-line"></span>
+        <h1>Galeria de Fotos</h1>
+        <span class="header-decoration-line"></span>
+      </div>
+    }
 
-    <div class="gallery-wrapper" *ngIf="showGallery" (pointerdown)="onPointerDown($event)"
-      (pointermove)="onPointerMove($event)" (pointerup)="onPointerUp($event)" (pointercancel)="onPointerUp($event)"
-      (mouseleave)="resumeAutoplayWithDelay()">
+    @if (showGallery) {
+      <div class="gallery-wrapper" (pointerdown)="onPointerDown($event)"
+        (pointermove)="onPointerMove($event)" (pointerup)="onPointerUp($event)" (pointercancel)="onPointerUp($event)"
+        (mouseleave)="resumeAutoplayWithDelay()">
+        <div class="gallery" [ngClass]="animationDirection">
+          <div class="side left">
+            <img [src]="cachedPrevImg" alt="prev" class="side-img" loading="lazy" (contextmenu)="$event.preventDefault()"
+              appDisableDownload>
+            </div>
+            <div class="center">
+              <div class="center-image-wrapper">
+                <img [src]="cachedCurrentImg" alt="current" class="center-img" loading="eager" (click)="openFullScreen()"
+                  (contextmenu)="$event.preventDefault()" appDisableDownload>
+                  @if (!isReadOnly) {
+                    <button class="delete-btn" (click)="triggerImageDelete()" title="Eliminar foto">
+                      <img src="assets/BtnDelete.png" alt="eliminar">
+                    </button>
+                  }
+                </div>
+              </div>
+              <div class="side right">
+                <img [src]="cachedNextImg" alt="next" class="side-img" loading="lazy" (contextmenu)="$event.preventDefault()"
+                  appDisableDownload>
+                </div>
+              </div>
+              <div class="nav-container">
+                <button class="nav-btn" (click)="prev()">
+                  <img src="../../../../assets/left.png" />
+                </button>
+                <button class="nav-btn" (click)="next()">
+                  <img src="../../../../assets/right.png" />
+                </button>
+              </div>
+              @if (data?.length > 1) {
+                <div class="dots">
+                  @for (_ of data; track _; let i = $index) {
+                    <button class="dot" [class.active]="i === currentIndexValue"
+                      (click)="goTo(i)">
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+          }
 
-      <div class="gallery" [ngClass]="animationDirection">
-        <div class="side left">
-          <img [src]="cachedPrevImg" alt="prev" class="side-img" loading="lazy" (contextmenu)="$event.preventDefault()"
-            appDisableDownload>
-        </div>
-
-        <div class="center">
-          <div class="center-image-wrapper">
-            <img [src]="cachedCurrentImg" alt="current" class="center-img" loading="eager" (click)="openFullScreen()"
-              (contextmenu)="$event.preventDefault()" appDisableDownload>
-            <button class="delete-btn" (click)="triggerImageDelete()" *ngIf="!isReadOnly" title="Eliminar foto">
-              <img src="assets/BtnDelete.png" alt="eliminar">
-            </button>
+          @if (!isReadOnly && (data?.length || 0) < maxItems) {
+            <div class="add-item-container">
+              @if (loading) {
+                <div class="loader-galeria"></div>
+                }<br />
+                @if (!loading) {
+                  <div>
+                    <input #fileInput type="file" accept="image/*" multiple hidden (change)="triggerImageUpload($event)">
+                    <button class="add-item-btn" (click)="fileInput.click()" id="tour-agregar-fotos">
+                      <span class="add-icon">+</span>
+                      <span>Agregar fotos</span>
+                    </button>
+                  </div>
+                }
+              </div>
+            }
           </div>
-        </div>
+        </section>
 
-        <div class="side right">
-          <img [src]="cachedNextImg" alt="next" class="side-img" loading="lazy" (contextmenu)="$event.preventDefault()"
-            appDisableDownload>
-        </div>
-      </div>
-
-      <div class="nav-container">
-        <button class="nav-btn" (click)="prev()">
-          <img src="../../../../assets/left.png" />
-        </button>
-        <button class="nav-btn" (click)="next()">
-          <img src="../../../../assets/right.png" />
-        </button>
-      </div>
-
-      <div class="dots" *ngIf="data?.length > 1">
-        <button class="dot" *ngFor="let _ of data; let i = index" [class.active]="i === currentIndexValue"
-          (click)="goTo(i)">
-        </button>
-      </div>
-    </div>
-
-    <div class="add-item-container" *ngIf="!isReadOnly && (data?.length || 0) < maxItems">
-      <div class="loader-galeria" *ngIf="loading"></div><br />
-      <div *ngIf="!loading">
-        <input #fileInput type="file" accept="image/*" multiple hidden (change)="triggerImageUpload($event)">
-        <button class="add-item-btn" (click)="fileInput.click()" id="tour-agregar-fotos">
-          <span class="add-icon">+</span>
-          <span>Agregar fotos</span>
-        </button>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="fullscreen-overlay" *ngIf="selectedImage" (click)="closeFullScreen()">
-  <img [src]="selectedImage" class="fullscreen-image" loading="eager" (click)="$event.stopPropagation()"
-    appDisableDownload>
-  <button class="close-button" (click)="closeFullScreen()">✕</button>
-</div>
+        @if (selectedImage) {
+          <div class="fullscreen-overlay" (click)="closeFullScreen()">
+            <img [src]="selectedImage" class="fullscreen-image" loading="eager" (click)="$event.stopPropagation()"
+              appDisableDownload>
+              <button class="close-button" (click)="closeFullScreen()">✕</button>
+            </div>
+          }

@@ -1,16 +1,20 @@
 <div class="upload-container"
-     (drop)="onDrop($event)"
-     (dragover)="onDragOver($event)">
+  (drop)="onDrop($event)"
+  (dragover)="onDragOver($event)">
   <p>Arrastra y suelta imágenes aquí</p>
   <p>O</p>
   <input type="file" multiple accept="image/*" (change)="onFileInputChange($event)" />
 </div>
 
-<div class="preview-container" *ngIf="previews.length > 0">
-  <h3>Imágenes seleccionadas:</h3>
-  <div class="preview-grid">
-    <img *ngFor="let src of previews" [src]="src" />
+@if (previews.length > 0) {
+  <div class="preview-container">
+    <h3>Imágenes seleccionadas:</h3>
+    <div class="preview-grid">
+      @for (src of previews; track src) {
+        <img [src]="src" />
+      }
+    </div>
+    <button mat-raised-button color="primary" (click)="upload()">Subir</button>
+    <button mat-button color="warn" (click)="clearAll()">Limpiar</button>
   </div>
-  <button mat-raised-button color="primary" (click)="upload()">Subir</button>
-  <button mat-button color="warn" (click)="clearAll()">Limpiar</button>
-</div>
+}

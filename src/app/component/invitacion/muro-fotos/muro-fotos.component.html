@@ -1,48 +1,64 @@
 <section class="muro-fotos-section">
-    <div class="section-content">
-        <div class="section-header">
-            <span class="header-decoration-line"></span>
-            <h1>📸 Muro de Fotos</h1>
-            <span class="header-decoration-line"></span>
-        </div>
-        <p class="section-subtitle">¡Comparte tus mejores momentos del evento!<br />Esta funcionalidad estara disponible
-            para los invitados</p>
-
-        <!-- Loading -->
-        <div class="loading-container" *ngIf="loading">
-            <div class="loader"></div>
-        </div>
-
-        <!-- Grid de fotos -->
-        <div class="photos-grid" *ngIf="!loading && fotos.length > 0">
-            <div class="photo-card" *ngFor="let foto of fotos; let i = index"
-                [style.animation-delay]="(i * 0.05) + 's'">
-                <img [src]="foto.imagen" alt="Foto de invitado" appDisableDownload loading="lazy">
-                <button class="delete-foto-btn" *ngIf="canUpload" (click)="deleteFoto(foto.id)"
-                    title="Eliminar foto">✕</button>
-            </div>
-        </div>
-
-        <!-- Empty state -->
-        <div class="empty-state" *ngIf="!loading && fotos.length === 0">
-            <span class="empty-icon">📷</span>
-            <p>Aún no hay fotos.</p>
-            <p *ngIf="canUpload">¡Sé el primero en compartir una foto!</p>
-        </div>
-
-        <!-- Upload button -->
-        <div class="upload-container" *ngIf="canUpload && !uploading">
-            <button class="upload-btn" (click)="triggerUpload()">
-                <span class="upload-icon">+</span>
-                <span>Subir Foto</span>
-            </button>
-            <p class="upload-hint">{{fotos.length}} / {{maxItems}} fotos</p>
-        </div>
-
-        <!-- Uploading state -->
-        <div class="uploading-container" *ngIf="uploading">
-            <div class="loader"></div>
-            <p>Subiendo fotos...</p>
-        </div>
+  <div class="section-content">
+    <div class="section-header">
+      <span class="header-decoration-line"></span>
+      <h1>📸 Muro de Fotos</h1>
+      <span class="header-decoration-line"></span>
     </div>
+    <p class="section-subtitle">¡Comparte tus mejores momentos del evento!<br />Esta funcionalidad estara disponible
+    para los invitados</p>
+
+    <!-- Loading -->
+    @if (loading) {
+      <div class="loading-container">
+        <div class="loader"></div>
+      </div>
+    }
+
+    <!-- Grid de fotos -->
+    @if (!loading && fotos.length > 0) {
+      <div class="photos-grid">
+        @for (foto of fotos; track foto; let i = $index) {
+          <div class="photo-card"
+            [style.animation-delay]="(i * 0.05) + 's'">
+            <img [src]="foto.imagen" alt="Foto de invitado" appDisableDownload loading="lazy">
+            @if (canUpload) {
+              <button class="delete-foto-btn" (click)="deleteFoto(foto.id)"
+              title="Eliminar foto">✕</button>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Empty state -->
+    @if (!loading && fotos.length === 0) {
+      <div class="empty-state">
+        <span class="empty-icon">📷</span>
+        <p>Aún no hay fotos.</p>
+        @if (canUpload) {
+          <p>¡Sé el primero en compartir una foto!</p>
+        }
+      </div>
+    }
+
+    <!-- Upload button -->
+    @if (canUpload && !uploading) {
+      <div class="upload-container">
+        <button class="upload-btn" (click)="triggerUpload()">
+          <span class="upload-icon">+</span>
+          <span>Subir Foto</span>
+        </button>
+        <p class="upload-hint">{{fotos.length}} / {{maxItems}} fotos</p>
+      </div>
+    }
+
+    <!-- Uploading state -->
+    @if (uploading) {
+      <div class="uploading-container">
+        <div class="loader"></div>
+        <p>Subiendo fotos...</p>
+      </div>
+    }
+  </div>
 </section>

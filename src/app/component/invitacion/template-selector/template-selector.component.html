@@ -11,39 +11,42 @@
     </div>
 
     <div class="category-filters">
-      <button *ngFor="let cat of categories" class="category-btn" [class.active]="selectedCategory === cat.value"
-        (click)="onCategoryChange(cat.value)">
-        {{ cat.label }}
-      </button>
+      @for (cat of categories; track cat) {
+        <button class="category-btn" [class.active]="selectedCategory === cat.value"
+          (click)="onCategoryChange(cat.value)">
+          {{ cat.label }}
+        </button>
+      }
     </div>
 
     <div class="templates-grid">
-      <div *ngFor="let template of filteredTemplates" class="template-card"
-        [class.selected]="selectedTemplateId === template.id" (click)="selectTemplate(template)"
-        (mouseenter)="previewTemplate(template)" (mouseleave)="revertPreview()">
-
-        <div class="template-preview"
-          [style.background]="'linear-gradient(135deg, ' + template.theme.colors.primary + ', ' + template.theme.colors.secondary + ')'">
-          <div class="preview-content">
-            <span class="preview-title" [style.font-family]="template.theme.fonts.title">Aa</span>
-            <span class="preview-body" [style.font-family]="template.theme.fonts.body">Texto</span>
+      @for (template of filteredTemplates; track template) {
+        <div class="template-card"
+          [class.selected]="selectedTemplateId === template.id" (click)="selectTemplate(template)"
+          (mouseenter)="previewTemplate(template)" (mouseleave)="revertPreview()">
+          <div class="template-preview"
+            [style.background]="'linear-gradient(135deg, ' + template.theme.colors.primary + ', ' + template.theme.colors.secondary + ')'">
+            <div class="preview-content">
+              <span class="preview-title" [style.font-family]="template.theme.fonts.title">Aa</span>
+              <span class="preview-body" [style.font-family]="template.theme.fonts.body">Texto</span>
+            </div>
+            <div class="color-swatches">
+              <span class="swatch" [style.background-color]="template.theme.colors.primary"></span>
+              <span class="swatch" [style.background-color]="template.theme.colors.secondary"></span>
+              <span class="swatch" [style.background-color]="template.theme.colors.accent"></span>
+            </div>
           </div>
-          <div class="color-swatches">
-            <span class="swatch" [style.background-color]="template.theme.colors.primary"></span>
-            <span class="swatch" [style.background-color]="template.theme.colors.secondary"></span>
-            <span class="swatch" [style.background-color]="template.theme.colors.accent"></span>
+          <div class="template-info">
+            <h4>{{ template.name }}</h4>
+            <span class="template-style">{{ getStyleLabel(template.style) }}</span>
           </div>
+          @if (selectedTemplateId === template.id) {
+            <div class="selected-indicator">
+              ✓
+            </div>
+          }
         </div>
-
-        <div class="template-info">
-          <h4>{{ template.name }}</h4>
-          <span class="template-style">{{ getStyleLabel(template.style) }}</span>
-        </div>
-
-        <div class="selected-indicator" *ngIf="selectedTemplateId === template.id">
-          ✓
-        </div>
-      </div>
+      }
     </div>
   </div>
 </div>

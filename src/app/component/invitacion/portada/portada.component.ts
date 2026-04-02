@@ -1,4 +1,4 @@
-import { Component, Input, HostListener, OnInit, OnDestroy } from '@angular/core';
+﻿import { Component, Input, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { CommonModule } from '@angular/common';
@@ -11,18 +11,17 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { AiEditableDirective } from '../../../directives/ai-editable.directive';
 
 @Component({
-  selector: 'app-portada',
-  standalone: true,
-  templateUrl: './portada.component.html',
-  styleUrls: ['./portada.component.css'],
-  imports: [CommonModule,
-    CountdownTimerComponent,
-    FormsModule,
-    MatDatepickerModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatNativeDateModule,
-    AiEditableDirective]
+    selector: 'app-portada',
+    templateUrl: './portada.component.html',
+    styleUrls: ['./portada.component.css'],
+    imports: [CommonModule,
+        CountdownTimerComponent,
+        FormsModule,
+        MatDatepickerModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatNativeDateModule,
+        AiEditableDirective]
 })
 export class PortadaComponent implements OnInit, OnDestroy {
   loadingImg: boolean = false;
@@ -166,7 +165,7 @@ export class PortadaComponent implements OnInit, OnDestroy {
   }
 
   maxLength = 35;
-  onKeyDown(event: KeyboardEvent | any) {
+  onKeyDown(event: Event | any) {
     const key = (event as KeyboardEvent).key;
     if (key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
       event.preventDefault();
@@ -310,7 +309,7 @@ export class PortadaComponent implements OnInit, OnDestroy {
   }
 
   // --- ESC para cancelar ---
-  @HostListener('document:keydown.escape', ['$event'])
+  @HostListener('document:keydown.escape')
   onEscape() {
     if (this.editingTitle) {
       const element = document.querySelector('.text-center.fh5co-heading.editablePortadaTitulo') as HTMLElement;

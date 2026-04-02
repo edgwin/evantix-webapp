@@ -2,57 +2,65 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-section-toggle',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
+    selector: 'app-section-toggle',
+    imports: [CommonModule],
+    template: `
     <!-- Wrapper principal: siempre muestra el contenido -->
-    <div class="section-wrapper" *ngIf="!isReadOnly || isEnabled">
-
-      <!-- Barra de quitar (solo cuando habilitada y no es base) -->
-      <div class="section-remove-bar" *ngIf="isEnabled && !isReadOnly && !enabledByDefault">
-        <button class="remove-section-btn" (click)="onRemove()" [disabled]="loading">
-          <ng-container *ngIf="!loading">
-            <span>✕</span>
-            <span *ngIf="!pricingLoading">Quitar {{ sectionName }} (-{{ enableCost | currency:'MXN':'symbol-narrow':'1.0-0' }})</span>
-            <span *ngIf="pricingLoading" class="btn-loading">
-              <span class="mini-spinner"></span>
-              Cargando...
-            </span>
-          </ng-container>
-          <ng-container *ngIf="loading">
-            <span class="mini-spinner"></span>
-            <span>Quitando...</span>
-          </ng-container>
-        </button>
-      </div>
-
-      <!-- Contenido de la sección (siempre visible) -->
-      <div class="section-content-area" [class.disabled-blur]="!isEnabled && !isReadOnly">
-        <ng-content></ng-content>
-      </div>
-
-      <!-- Overlay translúcido cuando deshabilitada -->
-      <div class="section-disabled-curtain" *ngIf="!isEnabled && !isReadOnly">
-        <div class="curtain-content">
-          <span class="curtain-icon">🔒</span>
-          <h3 class="curtain-title">{{ sectionName }}</h3>
-          <p class="curtain-desc">Agrega esta sección a tu invitación</p>
-          <button class="enable-section-btn" (click)="onEnable()" [disabled]="loading || pricingLoading">
-            <ng-container *ngIf="loading">Activando...</ng-container>
-            <ng-container *ngIf="!loading && pricingLoading">
-              <span class="mini-spinner white"></span>
-              Cargando precio...
-            </ng-container>
-            <ng-container *ngIf="!loading && !pricingLoading">
-              Habilitar (+{{ enableCost | currency:'MXN':'symbol-narrow':'1.0-0' }})
-            </ng-container>
-          </button>
+    @if (!isReadOnly || isEnabled) {
+      <div class="section-wrapper">
+        <!-- Barra de quitar (solo cuando habilitada y no es base) -->
+        @if (isEnabled && !isReadOnly && !enabledByDefault) {
+          <div class="section-remove-bar">
+            <button class="remove-section-btn" (click)="onRemove()" [disabled]="loading">
+              @if (!loading) {
+                <span>✕</span>
+                @if (!pricingLoading) {
+                  <span>Quitar {{ sectionName }} (-{{ enableCost | currency:'MXN':'symbol-narrow':'1.0-0' }})</span>
+                }
+                @if (pricingLoading) {
+                  <span class="btn-loading">
+                    <span class="mini-spinner"></span>
+                    Cargando...
+                  </span>
+                }
+              }
+              @if (loading) {
+                <span class="mini-spinner"></span>
+                <span>Quitando...</span>
+              }
+            </button>
+          </div>
+        }
+        <!-- Contenido de la sección (siempre visible) -->
+        <div class="section-content-area" [class.disabled-blur]="!isEnabled && !isReadOnly">
+          <ng-content></ng-content>
         </div>
+        <!-- Overlay translúcido cuando deshabilitada -->
+        @if (!isEnabled && !isReadOnly) {
+          <div class="section-disabled-curtain">
+            <div class="curtain-content">
+              <span class="curtain-icon">🔒</span>
+              <h3 class="curtain-title">{{ sectionName }}</h3>
+              <p class="curtain-desc">Agrega esta sección a tu invitación</p>
+              <button class="enable-section-btn" (click)="onEnable()" [disabled]="loading || pricingLoading">
+                @if (loading) {
+                  Activando...
+                }
+                @if (!loading && pricingLoading) {
+                  <span class="mini-spinner white"></span>
+                  Cargando precio...
+                }
+                @if (!loading && !pricingLoading) {
+                  Habilitar (+{{ enableCost | currency:'MXN':'symbol-narrow':'1.0-0' }})
+                }
+              </button>
+            </div>
+          </div>
+        }
       </div>
-    </div>
-  `,
-  styles: [`
+    }
+    `,
+    styles: [`
     .section-wrapper {
       position: relative;
     }

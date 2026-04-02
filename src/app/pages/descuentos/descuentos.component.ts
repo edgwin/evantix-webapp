@@ -5,7 +5,8 @@ import { NotificationService } from '../../services/notification.service';
 @Component({
     selector: 'app-descuentos',
     templateUrl: './descuentos.component.html',
-    styleUrls: ['./descuentos.component.css']
+    styleUrls: ['./descuentos.component.css'],
+    standalone: false
 })
 export class DescuentosComponent implements OnInit {
     cupones: any[] = [];

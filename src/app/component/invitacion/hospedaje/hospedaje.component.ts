@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+﻿
 import { Component, Input } from '@angular/core';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
@@ -7,11 +7,10 @@ import { MapaModalComponent } from '../../mapa-modal/mapa-modal.component';
 import { TemplateService } from '../../../services/template.service';
 
 @Component({
-  selector: 'app-hospedaje',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './hospedaje.component.html',
-  styleUrls: ['./hospedaje.component.css', './../invitacion.component.css']
+    selector: 'app-hospedaje',
+    imports: [],
+    templateUrl: './hospedaje.component.html',
+    styleUrls: ['./hospedaje.component.css', './../invitacion.component.css']
 })
 export class HospedajeComponent {
   constructor(private invitationService: InvitationService, private notificationService: NotificationService,
@@ -92,7 +91,7 @@ export class HospedajeComponent {
     });
   }
 
-  onKeyDown(event: KeyboardEvent | any, maxLength: number) {
+  onKeyDown(event: Event | any, maxLength: number) {
     const el = event.target as HTMLElement;
     const text = el.innerText || '';
 

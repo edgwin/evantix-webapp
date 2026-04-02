@@ -1,4 +1,4 @@
-import { Component, HostListener, Input } from '@angular/core';
+﻿import { Component, HostListener, Input } from '@angular/core';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { CommonModule } from '@angular/common';
@@ -13,11 +13,10 @@ import { PopupHtmlComponent } from '../../popup-html/popup-html.component';
 
 
 @Component({
-  selector: 'app-donde-cuando',
-  templateUrl: './donde-cuando.component.html',
-  styleUrls: ['./donde-cuando.component.css', './../icomoon.css'],
-  standalone: true,
-  imports: [CommonModule, FormsModule, MatInputModule, DragDropModule, PopupHtmlComponent]
+    selector: 'app-donde-cuando',
+    templateUrl: './donde-cuando.component.html',
+    styleUrls: ['./donde-cuando.component.css', './../icomoon.css'],
+    imports: [CommonModule, FormsModule, MatInputModule, DragDropModule, PopupHtmlComponent]
 })
 export class DondeCuandoComponent {
   constructor(
@@ -258,7 +257,7 @@ export class DondeCuandoComponent {
   }
 
   //genericos
-  onKeyDown(event: KeyboardEvent | any, item: any) {
+  onKeyDown(event: Event | any, item: any) {
     const key = (event as KeyboardEvent).key;
     if (key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
       event.preventDefault();
@@ -452,8 +451,8 @@ export class DondeCuandoComponent {
     });
   }
 
-  @HostListener('document:keydown.escape', ['$event'])
-  onEscape(event: KeyboardEvent) {
+  @HostListener('document:keydown.escape')
+  onEscape() {
     if (this.editingActividadId) {
       const item = this.data.details.find((d: { id: string }) => d.id === this.editingActividadId);
       const element = document.querySelector(`[contenteditable][data-id-actividad="${this.editingActividadId}"]`) as HTMLElement;

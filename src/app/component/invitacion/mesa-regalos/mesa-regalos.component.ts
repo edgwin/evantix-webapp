@@ -1,5 +1,5 @@
-import { Component, HostListener, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+﻿import { Component, HostListener, Input } from '@angular/core';
+
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { FormsModule } from '@angular/forms';
@@ -7,11 +7,10 @@ import { PopupHtmlComponent } from '../../popup-html/popup-html.component';
 import { AiEditableDirective } from '../../../directives/ai-editable.directive';
 
 @Component({
-  selector: 'app-mesa-regalos',
-  standalone: true,
-  imports: [CommonModule, FormsModule, PopupHtmlComponent, AiEditableDirective],
-  templateUrl: './mesa-regalos.component.html',
-  styleUrls: ['./mesa-regalos.component.css', './../invitacion.component.css']
+    selector: 'app-mesa-regalos',
+    imports: [FormsModule, PopupHtmlComponent, AiEditableDirective],
+    templateUrl: './mesa-regalos.component.html',
+    styleUrls: ['./mesa-regalos.component.css', './../invitacion.component.css']
 })
 
 export class MesaRegalosComponent {
@@ -89,7 +88,7 @@ export class MesaRegalosComponent {
     });
   }
 
-  onKeyDown(event: KeyboardEvent | any, maxLength: number) {
+  onKeyDown(event: Event | any, maxLength: number) {
     const el = event.target as HTMLElement;
     const text = el.innerText || '';
 
@@ -253,8 +252,8 @@ export class MesaRegalosComponent {
     });
   }
 
-  @HostListener('document:keydown.escape', ['$event'])
-  onEscape(event: KeyboardEvent) {
+  @HostListener('document:keydown.escape')
+  onEscape() {
     if (this.editingTituloId) {
       const item = this.data.details.find((d: { id: string }) => d.id === this.editingTituloId);
       const element = document.querySelector(`[contenteditable][data-id-titulo="${this.editingTituloId}"]`) as HTMLElement;

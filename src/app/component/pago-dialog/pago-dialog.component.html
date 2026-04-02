@@ -6,70 +6,84 @@
       <div>
         <b>Producto: {{ data.evento.nombre }}</b>
       </div>
-      <div *ngIf="data.evento.fecha">
-        <b>Fecha: {{ data.evento.fecha }}</b>
-      </div>
-      <div *ngIf="cuponAplicado" class="precio-original">
-        <b>Total original: <span class="tachado">{{ costoOriginal | currency:'$' }}</span></b>
-      </div>
+      @if (data.evento.fecha) {
+        <div>
+          <b>Fecha: {{ data.evento.fecha }}</b>
+        </div>
+      }
+      @if (cuponAplicado) {
+        <div class="precio-original">
+          <b>Total original: <span class="tachado">{{ costoOriginal | currency:'$' }}</span></b>
+        </div>
+      }
       <div>
         <b>Total a pagar: <span [class.precio-descuento]="cuponAplicado">{{ data.evento.costo | currency:'$'
-            }}</span></b>
+        }}</span></b>
       </div>
-      <div *ngIf="cuponAplicado" class="descuento-badge">
-        ✅ {{ descuentoInfo }}
-      </div>
+      @if (cuponAplicado) {
+        <div class="descuento-badge">
+          ✅ {{ descuentoInfo }}
+        </div>
+      }
     </div>
 
     <!-- Cupón de descuento -->
-    <div class="cupon-section" *ngIf="!data.isWhatsAppPackage && !data.isCustomDomain">
-      <label class="cupon-toggle">
-        <input type="checkbox" [checked]="showCupon" (change)="toggleCupon()" [disabled]="cuponAplicado" />
-        <span>Tengo un código de descuento</span>
-      </label>
-      <div *ngIf="showCupon && !cuponAplicado" class="cupon-input-row">
-        <input type="text" [(ngModel)]="cuponCodigo" placeholder="Ingresa tu código" maxlength="20"
-          [disabled]="cuponLoading" />
-        <button class="btn-aplicar" (click)="aplicarCupon()" [disabled]="cuponLoading || !cuponCodigo.trim()">
-          {{ cuponLoading ? '...' : 'Aplicar' }}
-        </button>
-      </div>
-      <div *ngIf="cuponError" class="cupon-error">{{ cuponError }}</div>
-    </div>
+    @if (!data.isWhatsAppPackage && !data.isCustomDomain) {
+      <div class="cupon-section">
+        <label class="cupon-toggle">
+          <input type="checkbox" [checked]="showCupon" (change)="toggleCupon()" [disabled]="cuponAplicado" />
+          <span>Tengo un código de descuento</span>
+        </label>
+        @if (showCupon && !cuponAplicado) {
+          <div class="cupon-input-row">
+            <input type="text" [(ngModel)]="cuponCodigo" placeholder="Ingresa tu código" maxlength="20"
+              [disabled]="cuponLoading" />
+              <button class="btn-aplicar" (click)="aplicarCupon()" [disabled]="cuponLoading || !cuponCodigo.trim()">
+                {{ cuponLoading ? '...' : 'Aplicar' }}
+              </button>
+            </div>
+          }
+          @if (cuponError) {
+            <div class="cupon-error">{{ cuponError }}</div>
+          }
+        </div>
+      }
 
-    <!-- Opciones de pago (solo si costo > 0) -->
-    <ng-container *ngIf="data.evento.costo > 0">
-      <div>
-        <b>Elige tu opcion de pago favorito:</b>
-      </div>
-      <!-- Mercado Pago -->
-      <div class="payment-option" name="Mercadolibre" (click)="confirmar($event)">
-        <div class="payment-left">
-          <span class="method-name">Mercado Pago</span>
+      <!-- Opciones de pago (solo si costo > 0) -->
+      @if (data.evento.costo > 0) {
+        <div>
+          <b>Elige tu opcion de pago favorito:</b>
         </div>
-        <div class="logos">
-          <img src="../../../assets/tarjetas.png" alt="MercadoPago"
-            title="Acepta Visa, Mastercard, AMEX, MercadoPago y Pago en efectivo">
-        </div>
-      </div>
-      <!-- Stripe -->
-      <div class="payment-option" (click)="confirmar($event)" style="margin-top: 10px;">
-        <div class="payment-left">
-          <span class="method-name">Stripe</span>
-        </div>
-        <div class="logos">
-          <img src="../../../assets/tarjetasStripe.png" alt="Stripe"
-            title="Acepta Visa, Mastercard, AMEX, Apple Pay, Google Pay, Stripe Link Pay">
-        </div>
-      </div>
-    </ng-container>
+        <!-- Mercado Pago -->
+        <div class="payment-option" name="Mercadolibre" (click)="confirmar($event)">
+          <div class="payment-left">
+            <span class="method-name">Mercado Pago</span>
+          </div>
+          <div class="logos">
+            <img src="../../../assets/tarjetas.png" alt="MercadoPago"
+              title="Acepta Visa, Mastercard, AMEX, MercadoPago y Pago en efectivo">
+            </div>
+          </div>
+          <!-- Stripe -->
+          <div class="payment-option" (click)="confirmar($event)" style="margin-top: 10px;">
+            <div class="payment-left">
+              <span class="method-name">Stripe</span>
+            </div>
+            <div class="logos">
+              <img src="../../../assets/tarjetasStripe.png" alt="Stripe"
+                title="Acepta Visa, Mastercard, AMEX, Apple Pay, Google Pay, Stripe Link Pay">
+              </div>
+            </div>
+          }
 
-    <!-- Botón Obtener (cuando el costo es $0) -->
-    <div *ngIf="cuponAplicado && data.evento.costo <= 0" class="free-claim-section">
-      <p class="free-msg">🎉 ¡Tu evento es completamente gratuito con este cupón!</p>
-      <button class="btn-obtener" (click)="claimFree()" [disabled]="claimingFree">
-        {{ claimingFree ? 'Procesando...' : 'Obtener' }}
-      </button>
-    </div>
-  </div>
-</body>
+          <!-- Botón Obtener (cuando el costo es $0) -->
+          @if (cuponAplicado && data.evento.costo <= 0) {
+            <div class="free-claim-section">
+              <p class="free-msg">🎉 ¡Tu evento es completamente gratuito con este cupón!</p>
+              <button class="btn-obtener" (click)="claimFree()" [disabled]="claimingFree">
+                {{ claimingFree ? 'Procesando...' : 'Obtener' }}
+              </button>
+            </div>
+          }
+        </div>
+      </body>

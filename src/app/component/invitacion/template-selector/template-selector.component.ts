@@ -1,14 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Template, TemplateService } from '../../../services/template.service';
 import { InvitationService } from '../../../services/invitation.service';
 
 @Component({
-  selector: 'app-template-selector',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './template-selector.component.html',
-  styleUrls: ['./template-selector.component.css']
+    selector: 'app-template-selector',
+    imports: [],
+    templateUrl: './template-selector.component.html',
+    styleUrls: ['./template-selector.component.css']
 })
 export class TemplateSelectorComponent implements OnInit {
   @Input() eventId: string = '';

@@ -1,5 +1,7 @@
-<div *ngIf="message" class="notification" [ngClass]="message.type">
-  <span class="close-btn" (click)="clearNotification()" title="Cerrar notificación">✕</span>
-  <pre>{{ message.text }}</pre>
-</div>
+@if (message) {
+  <div class="notification" [ngClass]="message.type">
+    <span class="close-btn" (click)="clearNotification()" title="Cerrar notificación">✕</span>
+    <pre>{{ message.text }}</pre>
+  </div>
+}
 

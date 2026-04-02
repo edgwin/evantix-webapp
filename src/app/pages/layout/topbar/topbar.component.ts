@@ -2,12 +2,14 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
-import { SocialAuthService } from '@abacritt/angularx-social-login';
+declare const FB: any;
+
 
 @Component({
-  selector: 'app-topbar',
-  templateUrl: './topbar.component.html',
-  styleUrl: './topbar.component.css'
+    selector: 'app-topbar',
+    templateUrl: './topbar.component.html',
+    styleUrl: './topbar.component.css',
+    standalone: false
 })
 export class TopbarComponent {
   svgImage: SafeHtml | null = null;
@@ -18,7 +20,7 @@ export class TopbarComponent {
   @Input() showMenuButton = false;
   @Output() toggleSidenav = new EventEmitter<void>();
 
-  constructor(private router: Router, private authService: AuthService, private sanitizer: DomSanitizer, private socialAuthService: SocialAuthService) {
+  constructor(private router: Router, private authService: AuthService, private sanitizer: DomSanitizer) {
     const localUser = localStorage.getItem('loggedUser');
     if (localUser != null) {
       this.loggedUser = JSON.parse(localUser);
@@ -38,7 +40,8 @@ export class TopbarComponent {
   onLogoff() {
     localStorage.removeItem('loggedUser');
     this.authService.logout();
-    this.socialAuthService.signOut();
+    // Sign out from Facebook if SDK is loaded
+    try { if (typeof FB !== 'undefined') FB.logout(); } catch(e) {}
     this.router.navigateByUrl('/login')
   }
 

@@ -9,9 +9,10 @@ import { PagoDialogComponent } from '../../component/pago-dialog/pago-dialog.com
 import { environment } from '../../../environments/environment';
 
 @Component({
-  selector: 'app-dominio',
-  templateUrl: './dominio.component.html',
-  styleUrls: ['./dominio.component.css']
+    selector: 'app-dominio',
+    templateUrl: './dominio.component.html',
+    styleUrls: ['./dominio.component.css'],
+    standalone: false
 })
 export class DominioComponent implements OnInit {
   eventId = '';

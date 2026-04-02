@@ -1,7 +1,9 @@
 <div class="plan-card">
   <div class="plan-header" [ngStyle]="{ 'background-color': headerColor }">
     <h3>{{ planTitle }}</h3>
-    <p *ngIf="planSubtitle" class="plan-subtitle">{{ planSubtitle }}</p>
+    @if (planSubtitle) {
+      <p class="plan-subtitle">{{ planSubtitle }}</p>
+    }
   </div>
   <div class="plan-price">
     <div class="price-circle">
@@ -9,8 +11,10 @@
     </div>
   </div>
   <ul class="plan-features">
-    <li *ngFor="let feature of features">
-      {{ feature }}
-    </li>
+    @for (feature of features; track feature) {
+      <li>
+        {{ feature }}
+      </li>
+    }
   </ul>
 </div>

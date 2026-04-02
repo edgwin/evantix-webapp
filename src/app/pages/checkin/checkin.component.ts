@@ -21,9 +21,10 @@ interface CheckInData {
 }
 
 @Component({
-  selector: 'app-checkin',
-  templateUrl: './checkin.component.html',
-  styleUrls: ['./checkin.component.css']
+    selector: 'app-checkin',
+    templateUrl: './checkin.component.html',
+    styleUrls: ['./checkin.component.css'],
+    standalone: false
 })
 export class CheckinComponent implements OnInit {
   data: CheckInData | null = null;

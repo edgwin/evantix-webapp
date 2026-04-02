@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+﻿import { CommonModule } from '@angular/common';
 import { Component, Input, HostListener, signal, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
@@ -8,11 +8,10 @@ import { AiEditableDirective } from '../../../directives/ai-editable.directive';
 import { TemplateService } from '../../../services/template.service';
 
 @Component({
-  selector: 'app-personas-favoritas',
-  standalone: true,
-  imports: [CommonModule, PopupHtmlComponent, DisableDownloadDirective, AiEditableDirective],
-  templateUrl: './personas-favoritas.component.html',
-  styleUrls: ['./personas-favoritas.component.css']
+    selector: 'app-personas-favoritas',
+    imports: [CommonModule, PopupHtmlComponent, DisableDownloadDirective, AiEditableDirective],
+    templateUrl: './personas-favoritas.component.html',
+    styleUrls: ['./personas-favoritas.component.css']
 })
 export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
@@ -294,7 +293,7 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
     this.autoplayIntervalId = setTimeout(() => this.startAutoplayIfNeeded(), delay);
   }
 
-  onKeyDown(event: KeyboardEvent | any, maxLength: number) {
+  onKeyDown(event: Event | any, maxLength: number) {
     const key = (event as KeyboardEvent).key;
     if (key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
       event.preventDefault();
@@ -412,8 +411,8 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
     element.blur();
   }
 
-  @HostListener('document:keydown.escape', ['$event'])
-  onEscape(event: KeyboardEvent) {
+  @HostListener('document:keydown.escape')
+  onEscape() {
     if (this.editingTituloPF) {
       const element = document.querySelector('#TituloPF') as HTMLElement;
       this.restoreTituloPF(element);

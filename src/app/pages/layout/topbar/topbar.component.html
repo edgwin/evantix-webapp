@@ -1,8 +1,10 @@
 <nav class="navbar navbar-expand-sm bg-white navbar-dark">
   <div class="container-fluid">
-    <button *ngIf="showMenuButton" class="hamburger-btn" (click)="onToggleSidenav()">
-      <mat-icon>menu</mat-icon>
-    </button>
+    @if (showMenuButton) {
+      <button class="hamburger-btn" (click)="onToggleSidenav()">
+        <mat-icon>menu</mat-icon>
+      </button>
+    }
     <ul class="navbar-nav">
       <li class="nav-item">
         <a class="nav-link active" href="#">Active</a>

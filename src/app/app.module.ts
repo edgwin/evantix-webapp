@@ -8,7 +8,7 @@ import { LayoutComponent } from './pages/layout/layout.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NotificationComponent } from './pages/notification/notification.component';
 import { PrivacidadComponent } from './pages/privacidad/privacidad.component';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
@@ -20,7 +20,7 @@ import { TopbarComponent } from './pages/layout/topbar/topbar.component';
 import { SidebarComponent } from './pages/layout/sidebar/sidebar.component';
 import { MatIconModule } from '@angular/material/icon';
 import { CondicionesComponent } from './pages/condiciones/condiciones.component';
-import { FacebookLoginProvider, SocialAuthServiceConfig, SocialLoginModule } from '@abacritt/angularx-social-login';
+
 import { InvitacionesComponent } from './pages/invitaciones/invitaciones.component';
 import { InvitadosComponent } from './pages/invitados/invitados.component';
 import { MesasComponent } from './pages/mesas/mesas.component';
@@ -54,87 +54,65 @@ import { LandingComponent } from './pages/landing/landing.component';
 import { DominioComponent } from './pages/dominio/dominio.component';
 import { TemplateEditorComponent } from './pages/template-editor/template-editor.component';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    LayoutComponent,
-    DashboardComponent,
-    NotificationComponent,
-    PrivacidadComponent,
-    ForgotPasswordComponent,
-    TopbarComponent,
-    SidebarComponent,
-    CondicionesComponent,
-    InvitacionesComponent,
-    InvitadosComponent,
-    MesasComponent,
-    AccionesCellRendererComponent,
-    NuevoEventoComponent,
-    EdgwinGridComponent,
-    PagoDialogComponent,
-    UploadImagesComponent,
-    PlanCardComponent,
-    MapaModalComponent,
-    DescuentosComponent,
-    WhatsAppPaqueteDialogComponent,
-    CheckinComponent,
-    LandingComponent,
-    DominioComponent,
-    TemplateEditorComponent
-  ],
-  imports: [
-    RouterModule,
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    MatToolbarModule,
-    MatSidenavModule,
-    MatListModule,
-    MatIconModule,
-    SocialLoginModule,
-    AgGridModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    GoogleMapsModule,
-    MatDialogModule,
-    MatButtonModule,
-    PopupHtmlComponent,
-    DragDropModule,
-    BrowserAnimationsModule,
-    CommonModule,
-  ],
-  exports: [UploadImagesComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  providers: [
-    {
-      provide: 'SocialAuthServiceConfig',
-      useValue: {
-        autoLogin: false,
-        lang: 'en',
-        providers: [
-          {
-            id: FacebookLoginProvider.PROVIDER_ID,
-            provider: new FacebookLoginProvider('616411058067807')
-          }
-        ],
-        onError: (err) => {
-          console.error(err);
-        }
-      } as SocialAuthServiceConfig,
-    },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true
-    },
-    provideAnimationsAsync()
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        LoginComponent,
+        LayoutComponent,
+        DashboardComponent,
+        NotificationComponent,
+        PrivacidadComponent,
+        ForgotPasswordComponent,
+        TopbarComponent,
+        SidebarComponent,
+        CondicionesComponent,
+        InvitacionesComponent,
+        InvitadosComponent,
+        MesasComponent,
+        AccionesCellRendererComponent,
+        NuevoEventoComponent,
+        EdgwinGridComponent,
+        PagoDialogComponent,
+        UploadImagesComponent,
+        PlanCardComponent,
+        MapaModalComponent,
+        DescuentosComponent,
+        WhatsAppPaqueteDialogComponent,
+        CheckinComponent,
+        LandingComponent,
+        DominioComponent,
+        TemplateEditorComponent
+    ],
+    exports: [UploadImagesComponent],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    bootstrap: [AppComponent], imports: [RouterModule,
+        BrowserModule,
+        AppRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatToolbarModule,
+        MatSidenavModule,
+        MatListModule,
+        MatIconModule,
+
+        AgGridModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        GoogleMapsModule,
+        MatDialogModule,
+        MatButtonModule,
+        PopupHtmlComponent,
+        DragDropModule,
+        BrowserAnimationsModule,
+        CommonModule], providers: [
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthInterceptor,
+            multi: true
+        },
+        provideAnimationsAsync(),
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule { }

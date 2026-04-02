@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 
 @Component({
-  selector: 'app-acciones-cell-renderer',
-  template: `
+    selector: 'app-acciones-cell-renderer',
+    template: `
     <button 
       (click)="onPay()" 
       [disabled]="isPaid" 
@@ -26,7 +26,8 @@ import { ICellRendererAngularComp } from 'ag-grid-angular';
     >
       🗑️
     </button>
-  `
+  `,
+    standalone: false
 })
 export class AccionesCellRendererComponent implements ICellRendererAngularComp {
   params: any;

@@ -1,9 +1,10 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
-  selector: 'app-edgwin-grid',
-  templateUrl: './edgwin-grid.component.html',
-  styleUrls: ['./edgwin-grid.component.css']
+    selector: 'app-edgwin-grid',
+    templateUrl: './edgwin-grid.component.html',
+    styleUrls: ['./edgwin-grid.component.css'],
+    standalone: false
 })
 export class EdgwinGridComponent {
   @Input() columns: any[] = [];

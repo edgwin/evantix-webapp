@@ -1,15 +1,14 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { InvitationService, AiTextRequest } from '../../services/invitation.service';
 import { NotificationService } from '../../services/notification.service';
 
 @Component({
-  selector: 'app-ai-text-widget',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './ai-text-widget.component.html',
-  styleUrl: './ai-text-widget.component.css'
+    selector: 'app-ai-text-widget',
+    imports: [FormsModule],
+    templateUrl: './ai-text-widget.component.html',
+    styleUrl: './ai-text-widget.component.css'
 })
 export class AiTextWidgetComponent {
   @Input() section: string = '';

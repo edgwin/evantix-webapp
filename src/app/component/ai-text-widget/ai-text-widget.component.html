@@ -1,15 +1,17 @@
 <!-- Overlay - solo visible cuando está expandido -->
-<div class="ai-widget-overlay" *ngIf="isExpanded" (click)="closeWidget()"></div>
+@if (isExpanded) {
+  <div class="ai-widget-overlay" (click)="closeWidget()"></div>
+}
 
-<div class="ai-widget-container" 
-     [class.collapsed]="!isExpanded"
-     [style.top.px]="position.top" 
-     [style.left.px]="position.left">
-  
+<div class="ai-widget-container"
+  [class.collapsed]="!isExpanded"
+  [style.top.px]="position.top"
+  [style.left.px]="position.left">
+
   <!-- Header - siempre visible -->
   <div class="ai-widget-header" (click)="toggleExpand()">
     <h3>
-      <span class="icon">✨</span> 
+      <span class="icon">✨</span>
       Mejorar Texto con IA
       <span class="expand-indicator" [class.expanded]="isExpanded">▼</span>
     </h3>
@@ -17,44 +19,52 @@
   </div>
 
   <!-- Body - solo visible cuando está expandido -->
-  <div class="ai-widget-body" *ngIf="isExpanded">
-    <!-- Selector de tono -->
-    <div class="form-group">
-      <label>Tono:</label>
-      <select [(ngModel)]="tone" class="form-control">
-        <option *ngFor="let t of tones" [value]="t.value">{{ t.label }}</option>
-      </select>
-    </div>
-
-    <!-- Versión corta -->
-    <!-- <div class="form-group checkbox-group">
+  @if (isExpanded) {
+    <div class="ai-widget-body">
+      <!-- Selector de tono -->
+      <div class="form-group">
+        <label>Tono:</label>
+        <select [(ngModel)]="tone" class="form-control">
+          @for (t of tones; track t) {
+            <option [value]="t.value">{{ t.label }}</option>
+          }
+        </select>
+      </div>
+      <!-- Versión corta -->
+      <!-- <div class="form-group checkbox-group">
       <label>
         <input type="checkbox" [(ngModel)]="shortVersion">
         Versión corta para móvil
       </label>
     </div> -->
-
     <!-- Longitud máxima (solo si es versión corta) -->
-    <div class="form-group" *ngIf="shortVersion">
-      <label>Longitud máxima (caracteres):</label>
-      <input type="number" [(ngModel)]="maxLength" class="form-control" min="50" max="500">
-    </div>
-
+    @if (shortVersion) {
+      <div class="form-group">
+        <label>Longitud máxima (caracteres):</label>
+        <input type="number" [(ngModel)]="maxLength" class="form-control" min="50" max="500">
+      </div>
+    }
     <!-- Mensaje de error -->
-    <div class="error-message" *ngIf="errorMessage">
-      {{ errorMessage }}
-    </div>
-
+    @if (errorMessage) {
+      <div class="error-message">
+        {{ errorMessage }}
+      </div>
+    }
     <!-- Botón de generar -->
-    <button 
-      class="generate-btn" 
-      (click)="generateText(); $event.stopPropagation()" 
+    <button
+      class="generate-btn"
+      (click)="generateText(); $event.stopPropagation()"
       [disabled]="isLoading"
       type="button">
-      <span *ngIf="!isLoading">🪄 Generar Texto con IA</span>
-      <span *ngIf="isLoading">
-        <span class="spinner"></span> Generando...
-      </span>
+      @if (!isLoading) {
+        <span>🪄 Generar Texto con IA</span>
+      }
+      @if (isLoading) {
+        <span>
+          <span class="spinner"></span> Generando...
+        </span>
+      }
     </button>
   </div>
+}
 </div>

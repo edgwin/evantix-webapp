@@ -2,24 +2,27 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CustomDomainService } from '../../services/custom-domain.service';
 import { environment } from '../../../environments/environment';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
-  selector: 'app-domain-resolver',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
-    <div class="resolver-container" *ngIf="loading">
-      <div class="spinner"></div>
-      <p>Cargando invitación...</p>
-    </div>
-    <div class="resolver-container error" *ngIf="error">
-      <h2>😕 No encontramos una invitación aquí</h2>
-      <p>{{ error }}</p>
-      <a href="/">Ir al inicio</a>
-    </div>
-  `,
-  styles: [`
+    selector: 'app-domain-resolver',
+    imports: [],
+    template: `
+    @if (loading) {
+      <div class="resolver-container">
+        <div class="spinner"></div>
+        <p>Cargando invitación...</p>
+      </div>
+    }
+    @if (error) {
+      <div class="resolver-container error">
+        <h2>😕 No encontramos una invitación aquí</h2>
+        <p>{{ error }}</p>
+        <a href="/">Ir al inicio</a>
+      </div>
+    }
+    `,
+    styles: [`
     .resolver-container {
       display: flex; flex-direction: column; align-items: center;
       justify-content: center; height: 100vh; font-family: 'Inter', sans-serif;

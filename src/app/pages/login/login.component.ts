@@ -6,16 +6,17 @@ import { UserService, UserCreateRequest, UserLoginRequest, ForgotPassRequest } f
 import { NotificationService } from '../../services/notification.service';
 import { ActivatedRoute } from '@angular/router';
 import { PasswordHelper } from '../../helpers/email'
-import { FacebookLoginProvider, SocialAuthService } from '@abacritt/angularx-social-login';
+
 import { environment } from '../../../environments/environment';
 
 declare const google: any;
 declare const FB: any;
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.css'],
+    standalone: false
 })
 export class LoginComponent implements AfterViewInit, OnInit {
   isLoading = false;
@@ -29,7 +30,7 @@ export class LoginComponent implements AfterViewInit, OnInit {
   private facebookLoginInProgress = false;
 
   constructor(private fb: FormBuilder, private router: Router, private userService: UserService, private notificationService: NotificationService, 
-              private http: HttpClient, private route: ActivatedRoute, private passwordHelper: PasswordHelper, private authService: SocialAuthService){
+              private http: HttpClient, private route: ActivatedRoute, private passwordHelper: PasswordHelper){
     this.createSignUpForm();
     this.createSignInForm();
   }
@@ -67,19 +68,23 @@ export class LoginComponent implements AfterViewInit, OnInit {
         this.notificationService.show('info','Usuario confirmado exitosamente, ahora puede ingresar a su nueva cuenta');
       }
     });
-    this.authService.authState.subscribe((user) => {
-      if (user !== null && !this.facebookLoginInProgress){
-        this.facebookLoginInProgress = true;
-        this.sendToBackend('facebook', user.authToken);
-      }
-    });
   }  
 
   facebookLogin() {
     this.isLoading = true;
-    this.authService.signIn(FacebookLoginProvider.PROVIDER_ID).catch(() => {
+    if (typeof FB === 'undefined') {
       this.isLoading = false;
-    });
+      this.notificationService.show('error', 'Facebook SDK no disponible. Intente de nuevo.');
+      return;
+    }
+    FB.login((response: any) => {
+      if (response.authResponse) {
+        this.facebookLoginInProgress = true;
+        this.sendToBackend('facebook', response.authResponse.accessToken);
+      } else {
+        this.isLoading = false;
+      }
+    }, { scope: 'email,public_profile' });
   }
   
   sendToBackend(provider: 'google' | 'facebook', token: string) {

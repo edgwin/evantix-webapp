@@ -1,6 +1,6 @@
 <header id="fh5co-header" class="fh5co-cover" role="banner" data-stellar-background-ratio="0.5">
   <div class="carousel-container">
-    <ng-container *ngFor="let img of imagenes; let i = index">
+    @for (img of imagenes; track img; let i = $index) {
       <!-- Fondo blur -->
       <div class="carousel-slide-blur" [ngClass]="{ 'active': i === currentImageIndex }" [ngStyle]="{
           'background-image': 'url(' + img + ')',
@@ -11,23 +11,29 @@
           'background-image': 'url(' + img + ')',
           'z-index': i === currentImageIndex ? 2 : 1
         }"></div>
-    </ng-container>
+    }
     <!-- Overlay oscuro -->
     <div class="carousel-overlay"></div>
 
     <!-- Fallback cuando no hay imagenes -->
-    <ng-container *ngIf="imagenes.length === 0">
+    @if (imagenes.length === 0) {
       <div class="carousel-slide-blur active" [ngStyle]="{ 'background-image': 'url(' + (data?.imagen || '') + ')' }">
       </div>
       <div class="carousel-slide active" [ngStyle]="{ 'background-image': 'url(' + (data?.imagen || '') + ')' }"></div>
       <div class="carousel-overlay"></div>
-    </ng-container>
+    }
   </div>
-  <div class="editImage" *ngIf="!isReadOnly">
-    <img src="../../../../assets/editarImagen2.png" class="edit-imagePortada-btn" alt=""
-      title="Click para editar imagen de fondo" (click)="triggerImageUpload()" *ngIf="!loadingImg">
-    <div class="loaderPortada" *ngIf="loadingImg"></div>
-  </div>
+  @if (!isReadOnly) {
+    <div class="editImage">
+      @if (!loadingImg) {
+        <img src="../../../../assets/editarImagen2.png" class="edit-imagePortada-btn" alt=""
+          title="Click para editar imagen de fondo" (click)="triggerImageUpload()">
+      }
+      @if (loadingImg) {
+        <div class="loaderPortada"></div>
+      }
+    </div>
+  }
 
   <div class="text-center">
     <div class="display-t">
@@ -47,70 +53,78 @@
         </div>
         <!-- Fechas -->
         <div class="divFechas">
-          <div class="fechaTxt" *ngIf="!editingDate; else editDate" (click)="!isReadOnly && enableDateEdit()">
-            {{ stringDate }}
-          </div>
-
-          <ng-template #editDate>
+          @if (!editingDate) {
+            <div class="fechaTxt" (click)="!isReadOnly && enableDateEdit()">
+              {{ stringDate }}
+            </div>
+          } @else {
             <div>
               <!-- Selector de fecha -->
               <mat-form-field appearance="fill" class="campo-4">
                 <mat-label>Selecciona fecha</mat-label>
                 <input matInput [matDatepicker]="picker" [(ngModel)]="tempDate" (dateChange)="onDateChange($event)"
                   required />
-                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-              </mat-form-field>
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+                <!-- Selector de hora -->
+                <mat-form-field appearance="fill" class="campo-4">
+                  <mat-label>Hora</mat-label>
+                  <input matInput type="time" [(ngModel)]="tempTime" (blur)="saveDate()" required />
+                </mat-form-field>
+              </div>
+            }
 
-              <!-- Selector de hora -->
-              <mat-form-field appearance="fill" class="campo-4">
-                <mat-label>Hora</mat-label>
-                <input matInput type="time" [(ngModel)]="tempTime" (blur)="saveDate()" required />
-              </mat-form-field>
-            </div>
-          </ng-template>
 
-          <!-- Countdown -->
-          <div>
-            <div class="left" *ngIf="!loadingImg">Faltan</div>
+            <!-- Countdown -->
             <div>
-              <app-countdown-timer *ngIf="data?.fecha" [targetDate]="data?.fecha"
-                [showLabels]="true"></app-countdown-timer>
+              @if (!loadingImg) {
+                <div class="left">Faltan</div>
+              }
+              <div>
+                @if (data?.fecha) {
+                  <app-countdown-timer [targetDate]="data?.fecha"
+                  [showLabels]="true"></app-countdown-timer>
+                }
+              </div>
+            </div>
+
+            <!-- Agregar al Calendario -->
+            @if (isReadOnly && data?.fecha) {
+              <div class="calendar-wrapper">
+                <button class="calendar-btn" (click)="toggleCalendarDropdown()">
+                  <span class="calendar-icon">📅</span>
+                  <span>Agregar a mi Calendario</span>
+                </button>
+                @if (showCalendarDropdown) {
+                  <div class="calendar-dropdown">
+                    <button class="calendar-option" (click)="addToGoogleCalendar()">
+                      <span class="option-icon">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg"
+                          alt="Google" width="20" height="20">
+                        </span>
+                        <span>Google Calendar</span>
+                      </button>
+                      <button class="calendar-option" (click)="addToOutlook()">
+                        <span class="option-icon">📧</span>
+                        <span>Outlook</span>
+                      </button>
+                      <button class="calendar-option" (click)="addToYahoo()">
+                        <span class="option-icon">📆</span>
+                        <span>Yahoo Calendar</span>
+                      </button>
+                      <div class="calendar-divider"></div>
+                      <button class="calendar-option" (click)="downloadICS()">
+                        <span class="option-icon">⬇️</span>
+                        <span>Descargar archivo .ics</span>
+                      </button>
+                    </div>
+                  }
+                </div>
+              }
+
             </div>
           </div>
-
-          <!-- Agregar al Calendario -->
-          <div class="calendar-wrapper" *ngIf="isReadOnly && data?.fecha">
-            <button class="calendar-btn" (click)="toggleCalendarDropdown()">
-              <span class="calendar-icon">📅</span>
-              <span>Agregar a mi Calendario</span>
-            </button>
-            <div class="calendar-dropdown" *ngIf="showCalendarDropdown">
-              <button class="calendar-option" (click)="addToGoogleCalendar()">
-                <span class="option-icon">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg"
-                    alt="Google" width="20" height="20">
-                </span>
-                <span>Google Calendar</span>
-              </button>
-              <button class="calendar-option" (click)="addToOutlook()">
-                <span class="option-icon">📧</span>
-                <span>Outlook</span>
-              </button>
-              <button class="calendar-option" (click)="addToYahoo()">
-                <span class="option-icon">📆</span>
-                <span>Yahoo Calendar</span>
-              </button>
-              <div class="calendar-divider"></div>
-              <button class="calendar-option" (click)="downloadICS()">
-                <span class="option-icon">⬇️</span>
-                <span>Descargar archivo .ics</span>
-              </button>
-            </div>
-          </div>
-
         </div>
       </div>
-    </div>
-  </div>
-</header>
+    </header>

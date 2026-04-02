@@ -1,19 +1,27 @@
 <div class="countdown">
   <div class="time-box">
     <span class="number">{{ days }}</span>
-    <span *ngIf="showLabels">Días</span>
+    @if (showLabels) {
+      <span>Días</span>
+    }
   </div>
   <div class="time-box">
     <span class="number">{{ hours }}</span>
-    <span *ngIf="showLabels">Horas</span>
+    @if (showLabels) {
+      <span>Horas</span>
+    }
   </div>
   <div class="time-box">
     <span class="number">{{ minutes }}</span>
-    <span *ngIf="showLabels">Mins</span>
+    @if (showLabels) {
+      <span>Mins</span>
+    }
   </div>
   <div class="time-box">
     <span class="number">{{ seconds }}</span>
-    <span *ngIf="showLabels">Segs</span>
+    @if (showLabels) {
+      <span>Segs</span>
+    }
   </div>
 </div>
 

@@ -1,12 +1,16 @@
 <section class="mesa-regalos-section"
   [style.background-image]="'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(' + data.imagen + ')'">
 
-  <button class="bg-edit-btn" (click)="triggerImageUpload()" *ngIf="!isReadOnly && !loadingImg" title="Cambiar fondo">
-    <img src="assets/editarImagen.png" alt="editar">
-  </button>
-  <div class="bg-loader" *ngIf="loadingImg">
-    <div class="loader"></div>
-  </div>
+  @if (!isReadOnly && !loadingImg) {
+    <button class="bg-edit-btn" (click)="triggerImageUpload()" title="Cambiar fondo">
+      <img src="assets/editarImagen.png" alt="editar">
+    </button>
+  }
+  @if (loadingImg) {
+    <div class="bg-loader">
+      <div class="loader"></div>
+    </div>
+  }
 
   <div class="section-content">
     <div class="section-header">
@@ -16,57 +20,63 @@
     </div>
 
     <div class="cards-container">
-      <div class="gift-card" *ngFor="let item of data.details; let i = index"
-        [style.animation-delay]="(i * 0.15) + 's'">
+      @for (item of data.details; track item; let i = $index) {
+        <div class="gift-card"
+          [style.animation-delay]="(i * 0.15) + 's'">
+          @if (!isReadOnly) {
+            <button class="card-delete-btn" (click)="triggerElementDelete(item.id)" title="Eliminar">
+              <img src="assets/BtnDelete.png" alt="eliminar">
+            </button>
+          }
+          <div class="card-icon-wrapper">
+            <div class="card-icon">
+              <img [src]="item.imagen" alt="icono">
+            </div>
+            @if (!isReadOnly) {
+              <button class="icon-edit-btn" (click)="openPopup(i)" title="Cambiar icono">
+                <img src="assets/editarImagen.png" alt="editar">
+              </button>
+            }
+          </div>
+          <div class="card-content">
+            <h3 class="card-title" [attr.contenteditable]="!isReadOnly" [attr.data-id-titulo]="item.id"
+              (keydown)="onKeyDown($event, 22)" (blur)="saveContent($event, item.id, 'titulo')"
+              (click)="!isReadOnly && onClickTitulo(item.id)">
+              {{item.titulo}}
+            </h3>
+            <p class="card-description" [attr.contenteditable]="!isReadOnly" [attr.data-id-descripcion]="item.id"
+              (keydown)="onKeyDown($event, 200)" (blur)="saveContent($event, item.id, 'descripcion')"
+              (click)="!isReadOnly && onClickDescripcion(item.id)" appAiEditable [aiSection]="'Mesa de Regalos'"
+              [aiEventType]="eventType" [maxLength]="200" [aiReadOnly]="isReadOnly" [aiEnabled]="aiEnabled"
+              [aiEventId]="eventId">
+              {{item.descripcion}}
+            </p>
+            <div class="card-actions">
+              @if (!isReadOnly) {
+                <input type="text" class="url-input" placeholder="URL de tu mesa de regalos"
+                  title="Escribe o pega la URL de tu mesa de regalos" [(ngModel)]="item.url"
+                  (blur)="saveContent($event, item.id, 'url')">
+              }
+              @if (item.url) {
+                <a [href]="item.url" target="_blank" class="action-btn primary" id="tour-ir-mesa">
+                  <span>Ir a la Mesa</span>
+                  <i class="fa fa-external-link"></i>
+                </a>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
 
-        <button class="card-delete-btn" (click)="triggerElementDelete(item.id)" *ngIf="!isReadOnly" title="Eliminar">
-          <img src="assets/BtnDelete.png" alt="eliminar">
+    @if (!isReadOnly && !loading && (data?.details?.length || 0) < maxItems) {
+      <div class="add-card-container">
+        <button class="add-card-btn" (click)="nuevaMesa()">
+          <span class="add-icon">+</span>
+          <span>Agregar mesa</span>
         </button>
-
-        <div class="card-icon-wrapper">
-          <div class="card-icon">
-            <img [src]="item.imagen" alt="icono">
-          </div>
-          <button class="icon-edit-btn" (click)="openPopup(i)" *ngIf="!isReadOnly" title="Cambiar icono">
-            <img src="assets/editarImagen.png" alt="editar">
-          </button>
-        </div>
-
-        <div class="card-content">
-          <h3 class="card-title" [attr.contenteditable]="!isReadOnly" [attr.data-id-titulo]="item.id"
-            (keydown)="onKeyDown($event, 22)" (blur)="saveContent($event, item.id, 'titulo')"
-            (click)="!isReadOnly && onClickTitulo(item.id)">
-            {{item.titulo}}
-          </h3>
-
-          <p class="card-description" [attr.contenteditable]="!isReadOnly" [attr.data-id-descripcion]="item.id"
-            (keydown)="onKeyDown($event, 200)" (blur)="saveContent($event, item.id, 'descripcion')"
-            (click)="!isReadOnly && onClickDescripcion(item.id)" appAiEditable [aiSection]="'Mesa de Regalos'"
-            [aiEventType]="eventType" [maxLength]="200" [aiReadOnly]="isReadOnly" [aiEnabled]="aiEnabled"
-            [aiEventId]="eventId">
-            {{item.descripcion}}
-          </p>
-
-          <div class="card-actions">
-            <input type="text" class="url-input" placeholder="URL de tu mesa de regalos"
-              title="Escribe o pega la URL de tu mesa de regalos" [(ngModel)]="item.url"
-              (blur)="saveContent($event, item.id, 'url')" *ngIf="!isReadOnly">
-
-            <a *ngIf="item.url" [href]="item.url" target="_blank" class="action-btn primary" id="tour-ir-mesa">
-              <span>Ir a la Mesa</span>
-              <i class="fa fa-external-link"></i>
-            </a>
-          </div>
-        </div>
       </div>
-    </div>
-
-    <div class="add-card-container" *ngIf="!isReadOnly && !loading && (data?.details?.length || 0) < maxItems">
-      <button class="add-card-btn" (click)="nuevaMesa()">
-        <span class="add-icon">+</span>
-        <span>Agregar mesa</span>
-      </button>
-    </div>
+    }
   </div>
 </section>
 

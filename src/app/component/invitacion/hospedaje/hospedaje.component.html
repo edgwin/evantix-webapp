@@ -1,12 +1,16 @@
 <section class="hospedaje-section"
   [style.background-image]="'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(' + data.imagen + ')'">
 
-  <button class="bg-edit-btn" (click)="triggerImageUpload()" *ngIf="!isReadOnly && !loadingImg" title="Cambiar fondo">
-    <img src="assets/editarImagen.png" alt="editar">
-  </button>
-  <div class="bg-loader" *ngIf="loadingImg">
-    <div class="loader"></div>
-  </div>
+  @if (!isReadOnly && !loadingImg) {
+    <button class="bg-edit-btn" (click)="triggerImageUpload()" title="Cambiar fondo">
+      <img src="assets/editarImagen.png" alt="editar">
+    </button>
+  }
+  @if (loadingImg) {
+    <div class="bg-loader">
+      <div class="loader"></div>
+    </div>
+  }
 
   <div class="section-content">
     <div class="section-header">
@@ -16,51 +20,53 @@
     </div>
 
     <div class="cards-container">
-      <div class="hotel-card" *ngFor="let item of data.details; let i = index"
-        [style.animation-delay]="(i * 0.15) + 's'">
-
-        <button class="card-delete-btn" (click)="triggerElementDelete(item.id)" *ngIf="!isReadOnly" title="Eliminar">
-          <img src="assets/BtnDelete.png" alt="eliminar">
-        </button>
-
-        <div class="card-icon-wrapper">
-          <div class="card-icon">
-            <img [src]="templateService.getIconForSection('hospedaje')" alt="hospedaje">
-          </div>
-        </div>
-
-        <div class="card-content">
-          <h3 class="card-title" [attr.contenteditable]="!isReadOnly" (keydown)="onKeyDown($event, 40)"
-            (blur)="saveContent($event, item.id, 'nombre')" (click)="!isReadOnly && onClickTitulo(item.id)">
-            {{item.nombre}}
-          </h3>
-
-          <p class="card-address" [attr.contenteditable]="!isReadOnly" (keydown)="onKeyDown($event, 60)"
-            (blur)="saveContent($event, item.id, 'direccion')" (click)="!isReadOnly && onClickTitulo(item.id)">
-            <i class="fa fa-map-marker"></i>
-            {{item.direccion}}
-          </p>
-
-          <div class="card-actions">
-            <a [href]="item.ubicacion" target="_blank" class="action-btn primary">
-              <i class="fa fa-map"></i>
-              <span>Ver Ubicacion</span>
-            </a>
-
-            <button class="action-btn secondary" (click)="abrirMapa(item.id)" *ngIf="!isReadOnly">
-              <i class="fa fa-edit"></i>
-              <span>Editar</span>
+      @for (item of data.details; track item; let i = $index) {
+        <div class="hotel-card"
+          [style.animation-delay]="(i * 0.15) + 's'">
+          @if (!isReadOnly) {
+            <button class="card-delete-btn" (click)="triggerElementDelete(item.id)" title="Eliminar">
+              <img src="assets/BtnDelete.png" alt="eliminar">
             </button>
+          }
+          <div class="card-icon-wrapper">
+            <div class="card-icon">
+              <img [src]="templateService.getIconForSection('hospedaje')" alt="hospedaje">
+            </div>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title" [attr.contenteditable]="!isReadOnly" (keydown)="onKeyDown($event, 40)"
+              (blur)="saveContent($event, item.id, 'nombre')" (click)="!isReadOnly && onClickTitulo(item.id)">
+              {{item.nombre}}
+            </h3>
+            <p class="card-address" [attr.contenteditable]="!isReadOnly" (keydown)="onKeyDown($event, 60)"
+              (blur)="saveContent($event, item.id, 'direccion')" (click)="!isReadOnly && onClickTitulo(item.id)">
+              <i class="fa fa-map-marker"></i>
+              {{item.direccion}}
+            </p>
+            <div class="card-actions">
+              <a [href]="item.ubicacion" target="_blank" class="action-btn primary">
+                <i class="fa fa-map"></i>
+                <span>Ver Ubicacion</span>
+              </a>
+              @if (!isReadOnly) {
+                <button class="action-btn secondary" (click)="abrirMapa(item.id)">
+                  <i class="fa fa-edit"></i>
+                  <span>Editar</span>
+                </button>
+              }
+            </div>
           </div>
         </div>
-      </div>
+      }
     </div>
 
-    <div class="add-card-container" *ngIf="!isReadOnly && !loading && (data?.details?.length || 0) < maxItems">
-      <button class="add-card-btn" (click)="nuevoHospedaje()">
-        <span class="add-icon">+</span>
-        <span>Agregar hospedaje</span>
-      </button>
-    </div>
+    @if (!isReadOnly && !loading && (data?.details?.length || 0) < maxItems) {
+      <div class="add-card-container">
+        <button class="add-card-btn" (click)="nuevoHospedaje()">
+          <span class="add-icon">+</span>
+          <span>Agregar hospedaje</span>
+        </button>
+      </div>
+    }
   </div>
 </section>

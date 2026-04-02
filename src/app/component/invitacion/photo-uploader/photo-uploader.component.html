@@ -1,12 +1,12 @@
-  <div class="container">
-    <div class="row">
-      <div class="text-center editableTitulo"        
-        id="Titulo"        
+<div class="container">
+  <div class="row">
+    <div class="text-center editableTitulo"
+      id="Titulo"
       >
-        ¡Sube tus fotos del Evento!
-      </div>      
+      ¡Sube tus fotos del Evento!
     </div>
   </div>
+</div>
 
 <div class="uploader">
 
@@ -17,22 +17,30 @@
     accept=".jpg,.jpeg,.png,.heic,.heif"
     hidden
     (change)="onFilesSelected($event)"
-  />
+    />
 
-  <div
-    class="drop-zone"
-    [class.dragging]="isDragging"
-    (click)="openFileDialog()"
-    (drop)="onDrop($event)"
-    (dragover)="onDragOver($event)"
-    (dragleave)="onDragLeave()"
-  >
-    <p *ngIf="!isUploading">Haz click o arrastra imágenes aquí</p>
-    <p *ngIf="isUploading">Subiendo imágenes...</p>
+    <div
+      class="drop-zone"
+      [class.dragging]="isDragging"
+      (click)="openFileDialog()"
+      (drop)="onDrop($event)"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave()"
+      >
+      @if (!isUploading) {
+        <p>Haz click o arrastra imágenes aquí</p>
+      }
+      @if (isUploading) {
+        <p>Subiendo imágenes...</p>
+      }
+    </div>
+
+    @if (previews.length) {
+      <div class="preview-grid">
+        @for (img of previews; track img) {
+          <img [src]="img" />
+        }
+      </div>
+    }
+
   </div>
-
-  <div class="preview-grid" *ngIf="previews.length">
-    <img *ngFor="let img of previews" [src]="img" />
-  </div>
-
-</div>

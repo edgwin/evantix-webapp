@@ -1,214 +1,228 @@
 <div class="editor-container">
-    <div class="header-row">
-        <h1>🎨 Editor de Templates</h1>
-        <button class="btn btn-primary" (click)="toggleForm()">
-            {{ showForm ? 'Cancelar' : '+ Crear Template' }}
+  <div class="header-row">
+    <h1>🎨 Editor de Templates</h1>
+    <button class="btn btn-primary" (click)="toggleForm()">
+      {{ showForm ? 'Cancelar' : '+ Crear Template' }}
+    </button>
+  </div>
+
+  <!-- Formulario Crear/Editar -->
+  @if (showForm) {
+    <div class="template-form">
+      <h3>{{ editingId ? 'Editar Template' : 'Crear Nuevo Template' }}</h3>
+      <div class="form-section">
+        <h4>Información General</h4>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Nombre *</label>
+            <input type="text" [(ngModel)]="form.name" placeholder="Ej: Elegante Dorado"
+              (blur)="autoGenerateKey()" />
+          </div>
+          <div class="form-group">
+            <label>Key (identificador único)</label>
+            <input type="text" [(ngModel)]="form.key" placeholder="elegant_gold" />
+          </div>
+          <div class="form-group">
+            <label>Categoría *</label>
+            <select [(ngModel)]="form.category">
+              @for (cat of categories; track cat) {
+                <option [value]="cat.value">{{ cat.label }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Estilo *</label>
+            <select [(ngModel)]="form.style">
+              @for (s of styles; track s) {
+                <option [value]="s.value">{{ s.label }}</option>
+              }
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="form-section">
+        <h4>🎨 Colores</h4>
+        <div class="color-grid">
+          <div class="color-field">
+            <label>Primary</label>
+            <div class="color-input-row">
+              <input type="color" [(ngModel)]="form.theme.colors.primary" />
+              <input type="text" [(ngModel)]="form.theme.colors.primary" class="color-text" />
+            </div>
+          </div>
+          <div class="color-field">
+            <label>Primary Dark</label>
+            <div class="color-input-row">
+              <input type="color" [(ngModel)]="form.theme.colors.primaryDark" />
+              <input type="text" [(ngModel)]="form.theme.colors.primaryDark" class="color-text" />
+            </div>
+          </div>
+          <div class="color-field">
+            <label>Secondary</label>
+            <div class="color-input-row">
+              <input type="color" [(ngModel)]="form.theme.colors.secondary" />
+              <input type="text" [(ngModel)]="form.theme.colors.secondary" class="color-text" />
+            </div>
+          </div>
+          <div class="color-field">
+            <label>Background</label>
+            <div class="color-input-row">
+              <input type="color" [(ngModel)]="form.theme.colors.background" />
+              <input type="text" [(ngModel)]="form.theme.colors.background" class="color-text" />
+            </div>
+          </div>
+          <div class="color-field">
+            <label>Background Alt</label>
+            <div class="color-input-row">
+              <input type="color" [(ngModel)]="form.theme.colors.backgroundAlt" />
+              <input type="text" [(ngModel)]="form.theme.colors.backgroundAlt" class="color-text" />
+            </div>
+          </div>
+          <div class="color-field">
+            <label>Text</label>
+            <div class="color-input-row">
+              <input type="color" [(ngModel)]="form.theme.colors.text" />
+              <input type="text" [(ngModel)]="form.theme.colors.text" class="color-text" />
+            </div>
+          </div>
+          <div class="color-field">
+            <label>Text Light</label>
+            <div class="color-input-row">
+              <input type="color" [(ngModel)]="form.theme.colors.textLight" />
+              <input type="text" [(ngModel)]="form.theme.colors.textLight" class="color-text" />
+            </div>
+          </div>
+          <div class="color-field">
+            <label>Accent</label>
+            <div class="color-input-row">
+              <input type="color" [(ngModel)]="form.theme.colors.accent" />
+              <input type="text" [(ngModel)]="form.theme.colors.accent" class="color-text" />
+            </div>
+          </div>
+          <div class="color-field">
+            <label>Shadow</label>
+            <input type="text" [(ngModel)]="form.theme.colors.shadow" placeholder="rgba(0,0,0,0.3)" />
+          </div>
+          <div class="color-field">
+            <label>Overlay</label>
+            <input type="text" [(ngModel)]="form.theme.colors.overlay" placeholder="rgba(0,0,0,0.5)" />
+          </div>
+        </div>
+      </div>
+      <div class="form-section">
+        <h4>🔤 Fuentes</h4>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Fuente de Títulos</label>
+            <select [(ngModel)]="form.theme.fonts.title">
+              @for (f of fontOptions; track f) {
+                <option [value]="f">{{ f }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Fuente de Cuerpo</label>
+            <select [(ngModel)]="form.theme.fonts.body">
+              @for (f of fontOptions; track f) {
+                <option [value]="f">{{ f }}</option>
+              }
+            </select>
+          </div>
+        </div>
+        <div class="font-preview">
+          <p class="preview-title" [style.font-family]="form.theme.fonts.title"
+          [style.color]="form.theme.colors.primary">Título de Ejemplo</p>
+          <p class="preview-body" [style.font-family]="form.theme.fonts.body"
+            [style.color]="form.theme.colors.text">Este es un texto de ejemplo para el cuerpo de la
+          invitación.</p>
+        </div>
+      </div>
+      <div class="form-section">
+        <h4>⚙️ Configuración</h4>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Border Radius</label>
+            <input type="text" [(ngModel)]="form.theme.borderRadius" placeholder="12px" />
+          </div>
+          <div class="form-group">
+            <label>Estilo de Iconos</label>
+            <select [(ngModel)]="form.theme.iconStyle">
+              <option value="classic">Classic</option>
+              <option value="modern">Modern</option>
+              <option value="minimal">Minimal</option>
+              <option value="vintage">Vintage</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <!-- Live Preview Swatch -->
+      <div class="form-section">
+        <h4>👁️ Vista Previa de Paleta</h4>
+        <div class="palette-preview">
+          <div class="swatch" [style.background]="form.theme.colors.primary" title="Primary"></div>
+          <div class="swatch" [style.background]="form.theme.colors.primaryDark" title="Primary Dark"></div>
+          <div class="swatch" [style.background]="form.theme.colors.secondary" title="Secondary"></div>
+          <div class="swatch" [style.background]="form.theme.colors.accent" title="Accent"></div>
+          <div class="swatch" [style.background]="form.theme.colors.background" title="Background"></div>
+          <div class="swatch" [style.background]="form.theme.colors.backgroundAlt" title="Bg Alt"></div>
+          <div class="swatch" [style.background]="form.theme.colors.text" title="Text"></div>
+          <div class="swatch" [style.background]="form.theme.colors.textLight" title="Text Light"></div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" [disabled]="!isFormValid() || saving" (click)="saveTemplate()">
+          {{ saving ? 'Guardando...' : (editingId ? 'Actualizar Template' : 'Guardar Template') }}
         </button>
+      </div>
     </div>
+  }
 
-    <!-- Formulario Crear/Editar -->
-    <div *ngIf="showForm" class="template-form">
-        <h3>{{ editingId ? 'Editar Template' : 'Crear Nuevo Template' }}</h3>
-
-        <div class="form-section">
-            <h4>Información General</h4>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>Nombre *</label>
-                    <input type="text" [(ngModel)]="form.name" placeholder="Ej: Elegante Dorado"
-                        (blur)="autoGenerateKey()" />
-                </div>
-                <div class="form-group">
-                    <label>Key (identificador único)</label>
-                    <input type="text" [(ngModel)]="form.key" placeholder="elegant_gold" />
-                </div>
-                <div class="form-group">
-                    <label>Categoría *</label>
-                    <select [(ngModel)]="form.category">
-                        <option *ngFor="let cat of categories" [value]="cat.value">{{ cat.label }}</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Estilo *</label>
-                    <select [(ngModel)]="form.style">
-                        <option *ngFor="let s of styles" [value]="s.value">{{ s.label }}</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-section">
-            <h4>🎨 Colores</h4>
-            <div class="color-grid">
-                <div class="color-field">
-                    <label>Primary</label>
-                    <div class="color-input-row">
-                        <input type="color" [(ngModel)]="form.theme.colors.primary" />
-                        <input type="text" [(ngModel)]="form.theme.colors.primary" class="color-text" />
-                    </div>
-                </div>
-                <div class="color-field">
-                    <label>Primary Dark</label>
-                    <div class="color-input-row">
-                        <input type="color" [(ngModel)]="form.theme.colors.primaryDark" />
-                        <input type="text" [(ngModel)]="form.theme.colors.primaryDark" class="color-text" />
-                    </div>
-                </div>
-                <div class="color-field">
-                    <label>Secondary</label>
-                    <div class="color-input-row">
-                        <input type="color" [(ngModel)]="form.theme.colors.secondary" />
-                        <input type="text" [(ngModel)]="form.theme.colors.secondary" class="color-text" />
-                    </div>
-                </div>
-                <div class="color-field">
-                    <label>Background</label>
-                    <div class="color-input-row">
-                        <input type="color" [(ngModel)]="form.theme.colors.background" />
-                        <input type="text" [(ngModel)]="form.theme.colors.background" class="color-text" />
-                    </div>
-                </div>
-                <div class="color-field">
-                    <label>Background Alt</label>
-                    <div class="color-input-row">
-                        <input type="color" [(ngModel)]="form.theme.colors.backgroundAlt" />
-                        <input type="text" [(ngModel)]="form.theme.colors.backgroundAlt" class="color-text" />
-                    </div>
-                </div>
-                <div class="color-field">
-                    <label>Text</label>
-                    <div class="color-input-row">
-                        <input type="color" [(ngModel)]="form.theme.colors.text" />
-                        <input type="text" [(ngModel)]="form.theme.colors.text" class="color-text" />
-                    </div>
-                </div>
-                <div class="color-field">
-                    <label>Text Light</label>
-                    <div class="color-input-row">
-                        <input type="color" [(ngModel)]="form.theme.colors.textLight" />
-                        <input type="text" [(ngModel)]="form.theme.colors.textLight" class="color-text" />
-                    </div>
-                </div>
-                <div class="color-field">
-                    <label>Accent</label>
-                    <div class="color-input-row">
-                        <input type="color" [(ngModel)]="form.theme.colors.accent" />
-                        <input type="text" [(ngModel)]="form.theme.colors.accent" class="color-text" />
-                    </div>
-                </div>
-                <div class="color-field">
-                    <label>Shadow</label>
-                    <input type="text" [(ngModel)]="form.theme.colors.shadow" placeholder="rgba(0,0,0,0.3)" />
-                </div>
-                <div class="color-field">
-                    <label>Overlay</label>
-                    <input type="text" [(ngModel)]="form.theme.colors.overlay" placeholder="rgba(0,0,0,0.5)" />
-                </div>
-            </div>
-        </div>
-
-        <div class="form-section">
-            <h4>🔤 Fuentes</h4>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>Fuente de Títulos</label>
-                    <select [(ngModel)]="form.theme.fonts.title">
-                        <option *ngFor="let f of fontOptions" [value]="f">{{ f }}</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Fuente de Cuerpo</label>
-                    <select [(ngModel)]="form.theme.fonts.body">
-                        <option *ngFor="let f of fontOptions" [value]="f">{{ f }}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="font-preview">
-                <p class="preview-title" [style.font-family]="form.theme.fonts.title"
-                    [style.color]="form.theme.colors.primary">Título de Ejemplo</p>
-                <p class="preview-body" [style.font-family]="form.theme.fonts.body"
-                    [style.color]="form.theme.colors.text">Este es un texto de ejemplo para el cuerpo de la
-                    invitación.</p>
-            </div>
-        </div>
-
-        <div class="form-section">
-            <h4>⚙️ Configuración</h4>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>Border Radius</label>
-                    <input type="text" [(ngModel)]="form.theme.borderRadius" placeholder="12px" />
-                </div>
-                <div class="form-group">
-                    <label>Estilo de Iconos</label>
-                    <select [(ngModel)]="form.theme.iconStyle">
-                        <option value="classic">Classic</option>
-                        <option value="modern">Modern</option>
-                        <option value="minimal">Minimal</option>
-                        <option value="vintage">Vintage</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <!-- Live Preview Swatch -->
-        <div class="form-section">
-            <h4>👁️ Vista Previa de Paleta</h4>
-            <div class="palette-preview">
-                <div class="swatch" [style.background]="form.theme.colors.primary" title="Primary"></div>
-                <div class="swatch" [style.background]="form.theme.colors.primaryDark" title="Primary Dark"></div>
-                <div class="swatch" [style.background]="form.theme.colors.secondary" title="Secondary"></div>
-                <div class="swatch" [style.background]="form.theme.colors.accent" title="Accent"></div>
-                <div class="swatch" [style.background]="form.theme.colors.background" title="Background"></div>
-                <div class="swatch" [style.background]="form.theme.colors.backgroundAlt" title="Bg Alt"></div>
-                <div class="swatch" [style.background]="form.theme.colors.text" title="Text"></div>
-                <div class="swatch" [style.background]="form.theme.colors.textLight" title="Text Light"></div>
-            </div>
-        </div>
-
-        <div class="form-actions">
-            <button class="btn btn-primary" [disabled]="!isFormValid() || saving" (click)="saveTemplate()">
-                {{ saving ? 'Guardando...' : (editingId ? 'Actualizar Template' : 'Guardar Template') }}
-            </button>
-        </div>
+  <!-- Loading -->
+  @if (loading) {
+    <div class="loading-container">
+      <img src="../../../assets/images/loading2.gif" alt="Cargando..." width="80" />
     </div>
+  }
 
-    <!-- Loading -->
-    <div *ngIf="loading" class="loading-container">
-        <img src="../../../assets/images/loading2.gif" alt="Cargando..." width="80" />
+  <!-- Empty state -->
+  @if (!loading && templates.length === 0 && !showForm) {
+    <div class="empty-state">
+      <p>No hay templates creados aún. ¡Crea tu primer template!</p>
     </div>
+  }
 
-    <!-- Empty state -->
-    <div *ngIf="!loading && templates.length === 0 && !showForm" class="empty-state">
-        <p>No hay templates creados aún. ¡Crea tu primer template!</p>
-    </div>
-
-    <!-- Templates Grid -->
-    <div *ngIf="!loading && templates.length > 0" class="templates-grid">
-        <div class="template-card" *ngFor="let t of templates">
-            <div class="card-palette">
-                <div class="mini-swatch" [style.background]="t.theme?.colors?.primary || '#ccc'"></div>
-                <div class="mini-swatch" [style.background]="t.theme?.colors?.primaryDark || '#aaa'"></div>
-                <div class="mini-swatch" [style.background]="t.theme?.colors?.secondary || '#888'"></div>
-                <div class="mini-swatch" [style.background]="t.theme?.colors?.accent || '#666'"></div>
-                <div class="mini-swatch" [style.background]="t.theme?.colors?.background || '#fff'"></div>
+  <!-- Templates Grid -->
+  @if (!loading && templates.length > 0) {
+    <div class="templates-grid">
+      @for (t of templates; track t) {
+        <div class="template-card">
+          <div class="card-palette">
+            <div class="mini-swatch" [style.background]="t.theme?.colors?.primary || '#ccc'"></div>
+            <div class="mini-swatch" [style.background]="t.theme?.colors?.primaryDark || '#aaa'"></div>
+            <div class="mini-swatch" [style.background]="t.theme?.colors?.secondary || '#888'"></div>
+            <div class="mini-swatch" [style.background]="t.theme?.colors?.accent || '#666'"></div>
+            <div class="mini-swatch" [style.background]="t.theme?.colors?.background || '#fff'"></div>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">{{ t.name }}</h3>
+            <div class="card-badges">
+              <span class="badge category">{{ getCategoryLabel(t.category) }}</span>
+              <span class="badge style-badge">{{ getStyleLabel(t.style) }}</span>
             </div>
-            <div class="card-body">
-                <h3 class="card-title">{{ t.name }}</h3>
-                <div class="card-badges">
-                    <span class="badge category">{{ getCategoryLabel(t.category) }}</span>
-                    <span class="badge style-badge">{{ getStyleLabel(t.style) }}</span>
-                </div>
-                <p class="card-key">{{ t.key }}</p>
-                <div class="card-fonts" *ngIf="t.theme?.fonts">
-                    <small>Título: {{ t.theme.fonts.title }}</small><br />
-                    <small>Cuerpo: {{ t.theme.fonts.body }}</small>
-                </div>
-            </div>
-            <div class="card-actions">
-                <button class="btn btn-sm btn-edit" (click)="editTemplate(t)">✏️ Editar</button>
-                <button class="btn btn-sm btn-delete" (click)="deleteTemplate(t)">🗑️ Eliminar</button>
-            </div>
+            <p class="card-key">{{ t.key }}</p>
+            @if (t.theme?.fonts) {
+              <div class="card-fonts">
+                <small>Título: {{ t.theme.fonts.title }}</small><br />
+                <small>Cuerpo: {{ t.theme.fonts.body }}</small>
+              </div>
+            }
+          </div>
+          <div class="card-actions">
+            <button class="btn btn-sm btn-edit" (click)="editTemplate(t)">✏️ Editar</button>
+            <button class="btn btn-sm btn-delete" (click)="deleteTemplate(t)">🗑️ Eliminar</button>
+          </div>
         </div>
+      }
     </div>
+  }
 </div>

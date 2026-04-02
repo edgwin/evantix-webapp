@@ -7,9 +7,10 @@ import { InvitationService } from '../../services/invitation.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
-  selector: 'app-invitaciones',
-  templateUrl: './invitaciones.component.html',
-  styleUrl: './invitaciones.component.css'
+    selector: 'app-invitaciones',
+    templateUrl: './invitaciones.component.html',
+    styleUrl: './invitaciones.component.css',
+    standalone: false
 })
 
 export class InvitacionesComponent implements OnInit {

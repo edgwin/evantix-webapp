@@ -1,4 +1,4 @@
-import { Component, HostListener, Input } from '@angular/core';
+﻿import { Component, HostListener, Input } from '@angular/core';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { CommonModule } from '@angular/common';
@@ -6,11 +6,10 @@ import { DisableDownloadDirective } from '../../../directives/disable-download.d
 import { AiEditableDirective } from '../../../directives/ai-editable.directive';
 
 @Component({
-  selector: 'app-historia',
-  standalone: true,
-  imports: [CommonModule, DisableDownloadDirective, AiEditableDirective],
-  templateUrl: './historia.component.html',
-  styleUrls: ['./../invitacion.component.css', './historia.component.css']
+    selector: 'app-historia',
+    imports: [CommonModule, DisableDownloadDirective, AiEditableDirective],
+    templateUrl: './historia.component.html',
+    styleUrls: ['./../invitacion.component.css', './historia.component.css']
 })
 export class HistoriaComponent {
   constructor(private invitationService: InvitationService, private notificationService: NotificationService) { }
@@ -222,7 +221,7 @@ export class HistoriaComponent {
     return !this.loading && (this.dataHistoria?.details?.length || 0) < this.maxItems
   }
 
-  onKeyDown(event: KeyboardEvent | any, maxLength: number) {
+  onKeyDown(event: Event | any, maxLength: number) {
     const key = (event as KeyboardEvent).key;
     if (key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
       event.preventDefault();
@@ -244,8 +243,8 @@ export class HistoriaComponent {
     (event.target as HTMLElement).click();
   }
 
-  @HostListener('document:keydown.escape', ['$event'])
-  onEscape(event: KeyboardEvent) {
+  @HostListener('document:keydown.escape')
+  onEscape() {
     if (this.editingTituloHistoria) {
       const element = document.querySelector('#TituloHistoria') as HTMLElement;
       this.restoreTituloHistoria(element);

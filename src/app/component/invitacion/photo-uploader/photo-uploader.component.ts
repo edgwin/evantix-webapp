@@ -1,15 +1,14 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+
+import { HttpClient } from '@angular/common/http';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 
 @Component({
-  selector: 'app-photo-uploader',
-  standalone: true,
-  imports: [CommonModule, HttpClientModule],
-  templateUrl: './photo-uploader.component.html',
-  styleUrls: ['./../invitacion.component.css', './photo-uploader.component.css']
+    selector: 'app-photo-uploader',
+    imports: [],
+    templateUrl: './photo-uploader.component.html',
+    styleUrls: ['./../invitacion.component.css', './photo-uploader.component.css']
 })
 export class PhotoUploaderComponent {    
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;

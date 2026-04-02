@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, signal } from '@angular/core';
+﻿import { Component, HostListener, Input, signal } from '@angular/core';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { CommonModule } from '@angular/common';
@@ -6,11 +6,10 @@ import { DisableDownloadDirective } from '../../../directives/disable-download.d
 import { TemplateService } from '../../../services/template.service';
 
 @Component({
-  selector: 'app-galeria',
-  standalone: true,
-  imports: [CommonModule, DisableDownloadDirective],
-  templateUrl: './galeria.component.html',
-  styleUrls: ['./galeria.component.css']
+    selector: 'app-galeria',
+    imports: [CommonModule, DisableDownloadDirective],
+    templateUrl: './galeria.component.html',
+    styleUrls: ['./galeria.component.css']
 })
 export class GaleriaComponent {
   constructor(
@@ -297,7 +296,7 @@ export class GaleriaComponent {
     this.autoplayIntervalId = setTimeout(() => this.startAutoplayIfNeeded(), delay);
   }
 
-  onKeyDown(event: KeyboardEvent | any, maxLength: number) {
+  onKeyDown(event: Event | any, maxLength: number) {
     const key = (event as KeyboardEvent).key;
     if (key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
       event.preventDefault();
@@ -410,7 +409,7 @@ export class GaleriaComponent {
     document.body.style.overflow = 'auto'; // restablece scroll
   }
 
-  @HostListener('document:keydown.escape', ['$event'])
-  onEscape(event: KeyboardEvent) {
+  @HostListener('document:keydown.escape')
+  onEscape() {
   }
 }

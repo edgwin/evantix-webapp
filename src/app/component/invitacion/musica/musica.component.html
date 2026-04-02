@@ -1,43 +1,52 @@
-<section class="musica-section" *ngIf="!isLoading && !isReadOnly">
-  <div class="section-content">
-    <div class="section-header">
-      <span class="header-icon">🎵</span>
-      <h1>Elige tu Cancion de Fondo</h1>
+@if (!isLoading && !isReadOnly) {
+  <section class="musica-section">
+    <div class="section-content">
+      <div class="section-header">
+        <span class="header-icon">🎵</span>
+        <h1>Elige tu Cancion de Fondo</h1>
+      </div>
+      <div class="music-widget">
+        <div class="tags-container">
+          @for (tag of availableTags; track tag) {
+            <button class="tag" [class.active]="selectedTags.includes(tag)"
+              (click)="toggleTag(tag)">
+              {{ tag.label }}
+            </button>
+          }
+        </div>
+        @if (tracks.length) {
+          <div class="track-selector">
+            <select [(ngModel)]="selectedTrackId" (change)="onTrackChange()">
+              <option value="">Selecciona una cancion</option>
+              @for (t of tracks; track t) {
+                <option [value]="t.id">
+                  {{ t.name }} - {{ t.artist_Name }}
+                </option>
+              }
+            </select>
+          </div>
+        }
+        @if (selectedTrack) {
+          <div class="controls">
+            <button class="control-btn play" (click)="togglePlayPause()">
+              <span class="btn-icon">{{ isPlaying ? '⏸' : '▶' }}</span>
+              <span>{{ isPlaying ? 'Pausar' : 'Reproducir' }}</span>
+            </button>
+          </div>
+        }
+      </div>
     </div>
+  </section>
+}
 
-    <div class="music-widget">
-      <div class="tags-container">
-        <button class="tag" *ngFor="let tag of availableTags" [class.active]="selectedTags.includes(tag)"
-          (click)="toggleTag(tag)">
-          {{ tag.label }}
-        </button>
-      </div>
-
-      <div class="track-selector" *ngIf="tracks.length">
-        <select [(ngModel)]="selectedTrackId" (change)="onTrackChange()">
-          <option value="">Selecciona una cancion</option>
-          <option *ngFor="let t of tracks" [value]="t.id">
-            {{ t.name }} - {{ t.artist_Name }}
-          </option>
-        </select>
-      </div>
-
-      <div class="controls" *ngIf="selectedTrack">
-        <button class="control-btn play" (click)="togglePlayPause()">
-          <span class="btn-icon">{{ isPlaying ? '⏸' : '▶' }}</span>
-          <span>{{ isPlaying ? 'Pausar' : 'Reproducir' }}</span>
-        </button>
-      </div>
+@if (isReadOnly && selectedTrack) {
+  <div class="music-player-readonly">
+    <div class="music-player-info">
+      <span class="music-icon">🎵</span>
+      <span class="track-info">{{ selectedTrack.name }} - {{ selectedTrack.artist_Name }}</span>
     </div>
+    <button class="play-pause-btn" (click)="togglePlayPause()">
+      {{ isPlaying ? '⏸' : '▶' }}
+    </button>
   </div>
-</section>
-
-<div *ngIf="isReadOnly && selectedTrack" class="music-player-readonly">
-  <div class="music-player-info">
-    <span class="music-icon">🎵</span>
-    <span class="track-info">{{ selectedTrack.name }} - {{ selectedTrack.artist_Name }}</span>
-  </div>
-  <button class="play-pause-btn" (click)="togglePlayPause()">
-    {{ isPlaying ? '⏸' : '▶' }}
-  </button>
-</div>
+}

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { TemplateService } from '../../../services/template.service';
@@ -9,8 +9,7 @@ import { DisableDownloadDirective } from '../../../directives/disable-download.d
     selector: 'app-muro-fotos',
     templateUrl: './muro-fotos.component.html',
     styleUrls: ['./muro-fotos.component.css'],
-    standalone: true,
-    imports: [CommonModule, DisableDownloadDirective]
+    imports: [DisableDownloadDirective]
 })
 export class MuroFotosComponent implements OnInit {
     @Input() eventId: string = '';

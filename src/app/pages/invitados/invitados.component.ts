@@ -13,9 +13,10 @@ import { CustomDomainService } from '../../services/custom-domain.service';
 import { environment } from '../../../environments/environment';
 
 @Component({
-  selector: 'app-invitados',
-  templateUrl: './invitados.component.html',
-  styleUrls: ['./invitados.component.css']
+    selector: 'app-invitados',
+    templateUrl: './invitados.component.html',
+    styleUrls: ['./invitados.component.css'],
+    standalone: false
 })
 export class InvitadosComponent implements OnInit {
   paidEvents: any[] = [];

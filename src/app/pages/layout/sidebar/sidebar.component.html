@@ -7,12 +7,13 @@
       <span>Invitaciones</span>
       <mat-icon class="expand-icon">{{ submenuInvitacionesOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
     </mat-list-item>
-    <div *ngIf="!submenuInvitacionesOpen" class="submenu">
-      <a mat-list-item routerLink="/dashboard" [ngClass]="{ 'selected': selectedRoute === '/dashboard' }"
-        (click)="selectRoute('/dashboard')">
-        <span>Mis Eventos</span>
-      </a>
-      <!-- <a mat-list-item
+    @if (!submenuInvitacionesOpen) {
+      <div class="submenu">
+        <a mat-list-item routerLink="/dashboard" [ngClass]="{ 'selected': selectedRoute === '/dashboard' }"
+          (click)="selectRoute('/dashboard')">
+          <span>Mis Eventos</span>
+        </a>
+        <!-- <a mat-list-item
         *ngIf="showInvitaciones; else invitacionesDisabled"
         routerLink="/invitaciones"
         [ngClass]="{ 'selected': selectedRoute === '/invitaciones' }"
@@ -20,43 +21,50 @@
         <span>Mis Invitaciones</span>
       </a> -->
       <!-- <ng-template #invitacionesDisabled>
-        <a mat-list-item class="disabled-link" style="pointer-events: none; opacity: 0.5;" title="Funcionalidad no disponible con tu plan">
-          <span>Mis Invitaciones</span>
-        </a>
-      </ng-template> -->
-      <a mat-list-item *ngIf="showInvitados; else invitadosDisabled" routerLink="/invitados"
+      <a mat-list-item class="disabled-link" style="pointer-events: none; opacity: 0.5;" title="Funcionalidad no disponible con tu plan">
+        <span>Mis Invitaciones</span>
+      </a>
+    </ng-template> -->
+    @if (showInvitados) {
+      <a mat-list-item routerLink="/invitados"
         [ngClass]="{ 'selected': selectedRoute === '/invitados' }" (click)="selectRoute('/invitados')"><span>Mis
-          Invitados</span></a>
-      <ng-template #invitadosDisabled>
-        <a mat-list-item class="disabled-link" style="pointer-events: none; opacity: 0.5;"
-          title="Funcionalidad disponible una vez que una de sus invitaciones este publicada">
-          <span>Mis Invitados</span>
-        </a>
-      </ng-template>
-      <a mat-list-item *ngIf="showInvitados; else mesasDisabled" routerLink="/mesas"
+      Invitados</span></a>
+    } @else {
+      <a mat-list-item class="disabled-link" style="pointer-events: none; opacity: 0.5;"
+        title="Funcionalidad disponible una vez que una de sus invitaciones este publicada">
+        <span>Mis Invitados</span>
+      </a>
+    }
+    @if (showInvitados) {
+      <a mat-list-item routerLink="/mesas"
         [ngClass]="{ 'selected': selectedRoute === '/mesas' }" (click)="selectRoute('/mesas')"><span>Asignación de
-          Mesas</span></a>
-      <ng-template #mesasDisabled>
-        <a mat-list-item class="disabled-link" style="pointer-events: none; opacity: 0.5;"
-          title="Funcionalidad disponible una vez que tengas invitados dados de alta">
-          <span>Asignación de Mesas</span>
-        </a>
-      </ng-template>
-    </div>
-    <!-- <mat-list-item (click)="toggleConfirmacionesSubmenu()">
-      <span>Confirmaciones</span>
-      <mat-icon class="expand-icon">{{ submenuConfirmacionesOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
-    </mat-list-item>
-    <div *ngIf="submenuConfirmacionesOpen" class="submenu">
-      <a mat-list-item routerLink="/profile"><span>Campañas</span></a>
-      <a mat-list-item routerLink="/account"><span>Lista de Confirmaciones</span></a>
-    </div> -->
-    <a mat-list-item *ngIf="isAdmin" routerLink="/descuentos"
-      [ngClass]="{ 'selected': selectedRoute === '/descuentos' }" (click)="selectRoute('/descuentos')"><span>🏷️
-        Descuentos</span></a>
-    <a mat-list-item *ngIf="isAdmin" routerLink="/editor-templates"
-      [ngClass]="{ 'selected': selectedRoute === '/editor-templates' }" (click)="selectRoute('/editor-templates')"><span>🎨
-        Editor de Templates</span></a>
-    <!-- <a mat-list-item routerLink="/settings"><span>Configuraciones</span></a> -->
-  </mat-nav-list>
+      Mesas</span></a>
+    } @else {
+      <a mat-list-item class="disabled-link" style="pointer-events: none; opacity: 0.5;"
+        title="Funcionalidad disponible una vez que tengas invitados dados de alta">
+        <span>Asignación de Mesas</span>
+      </a>
+    }
+  </div>
+}
+<!-- <mat-list-item (click)="toggleConfirmacionesSubmenu()">
+<span>Confirmaciones</span>
+<mat-icon class="expand-icon">{{ submenuConfirmacionesOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
+</mat-list-item>
+<div *ngIf="submenuConfirmacionesOpen" class="submenu">
+  <a mat-list-item routerLink="/profile"><span>Campañas</span></a>
+  <a mat-list-item routerLink="/account"><span>Lista de Confirmaciones</span></a>
+</div> -->
+@if (isAdmin) {
+  <a mat-list-item routerLink="/descuentos"
+    [ngClass]="{ 'selected': selectedRoute === '/descuentos' }" (click)="selectRoute('/descuentos')"><span>🏷️
+  Descuentos</span></a>
+}
+@if (isAdmin) {
+  <a mat-list-item routerLink="/editor-templates"
+    [ngClass]="{ 'selected': selectedRoute === '/editor-templates' }" (click)="selectRoute('/editor-templates')"><span>🎨
+  Editor de Templates</span></a>
+}
+<!-- <a mat-list-item routerLink="/settings"><span>Configuraciones</span></a> -->
+</mat-nav-list>
 </div>

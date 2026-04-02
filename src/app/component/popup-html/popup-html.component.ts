@@ -1,15 +1,14 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { SafeHtml } from '@angular/platform-browser';
 import { InvitationService } from '../../services/invitation.service';
 import { NotificationService } from '../../services/notification.service';
 
 @Component({
-  selector: 'app-popup-html',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './popup-html.component.html',
-  styleUrls: ['./popup-html.component.css']
+    selector: 'app-popup-html',
+    imports: [],
+    templateUrl: './popup-html.component.html',
+    styleUrls: ['./popup-html.component.css']
 })
 export class PopupHtmlComponent {
   constructor(

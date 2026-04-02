@@ -29,13 +29,12 @@ import { FormsModule } from '@angular/forms';
 import { environment } from '../../../environments/environment';
 
 @Component({
-  selector: 'app-invitacion',
-  standalone: true,
-  templateUrl: './invitacion.component.html',
-  styleUrl: './invitacion.component.css',
-  imports: [PortadaComponent, CommonModule, FestejadosComponent, DondeCuandoComponent, IntinerarioComponent, IndicacionesComponent,
-    MesaRegalosComponent, PersonasFavoritasComponent, HistoriaComponent, GaleriaComponent, HospedajeComponent,
-    PhotoUploaderComponent, MusicaComponent, MuroFotosComponent, TemplateSelectorComponent, CostBarComponent, SectionToggleComponent, FormsModule, TourOverlayComponent],
+    selector: 'app-invitacion',
+    templateUrl: './invitacion.component.html',
+    styleUrl: './invitacion.component.css',
+    imports: [PortadaComponent, CommonModule, FestejadosComponent, DondeCuandoComponent, IntinerarioComponent, IndicacionesComponent,
+        MesaRegalosComponent, PersonasFavoritasComponent, HistoriaComponent, GaleriaComponent, HospedajeComponent,
+        PhotoUploaderComponent, MusicaComponent, MuroFotosComponent, TemplateSelectorComponent, CostBarComponent, SectionToggleComponent, FormsModule, TourOverlayComponent]
 })
 
 export class InvitacionComponent implements OnDestroy {

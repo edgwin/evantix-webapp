@@ -3,9 +3,10 @@ import { InvitationService } from '../../services/invitation.service';
 import { NotificationService } from '../../services/notification.service';
 
 @Component({
-  selector: 'app-template-editor',
-  templateUrl: './template-editor.component.html',
-  styleUrls: ['./template-editor.component.css']
+    selector: 'app-template-editor',
+    templateUrl: './template-editor.component.html',
+    styleUrls: ['./template-editor.component.css'],
+    standalone: false
 })
 export class TemplateEditorComponent implements OnInit {
   templates: any[] = [];

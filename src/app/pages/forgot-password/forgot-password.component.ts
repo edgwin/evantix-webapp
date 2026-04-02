@@ -6,9 +6,10 @@ import { ResetPassRequest, UserService } from '../../services/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  selector: 'app-forgot-password',
-  templateUrl: './forgot-password.component.html',
-  styleUrl: './forgot-password.component.css'
+    selector: 'app-forgot-password',
+    templateUrl: './forgot-password.component.html',
+    styleUrl: './forgot-password.component.css',
+    standalone: false
 })
 export class ForgotPasswordComponent {
   resetForm!: FormGroup;

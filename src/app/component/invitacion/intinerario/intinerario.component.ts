@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnInit } from '@angular/core';
+﻿import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { CommonModule } from '@angular/common';
@@ -6,11 +6,10 @@ import { PopupHtmlComponent } from '../../popup-html/popup-html.component';
 import { AiEditableDirective } from '../../../directives/ai-editable.directive';
 
 @Component({
-  selector: 'app-intinerario',
-  standalone: true,
-  imports: [CommonModule, PopupHtmlComponent, AiEditableDirective],
-  templateUrl: './intinerario.component.html',
-  styleUrls: ['./intinerario.component.css']
+    selector: 'app-intinerario',
+    imports: [CommonModule, PopupHtmlComponent, AiEditableDirective],
+    templateUrl: './intinerario.component.html',
+    styleUrls: ['./intinerario.component.css']
 })
 export class IntinerarioComponent implements OnInit {
   constructor(private invitationService: InvitationService,
@@ -99,7 +98,7 @@ export class IntinerarioComponent implements OnInit {
     element.blur();
   }
 
-  onKeyDown(event: KeyboardEvent | any, item: any) {
+  onKeyDown(event: Event | any, item: any) {
     const key = (event as KeyboardEvent).key;
     if (key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
       event.preventDefault();
@@ -285,8 +284,8 @@ export class IntinerarioComponent implements OnInit {
     }
   }
 
-  @HostListener('document:keydown.escape', ['$event'])
-  onEscape(event: KeyboardEvent) {
+  @HostListener('document:keydown.escape')
+  onEscape() {
     if (this.editingActividadIntId) {
       const item = this.dataIntinerario.details.find((d: { id: string }) => d.id === this.editingActividadIntId);
       const element = document.querySelector(`[contenteditable][data-id-actividad-int="${this.editingActividadIntId}"]`) as HTMLElement;

@@ -6,6 +6,7 @@ import { WhatsAppMasivoService } from '../../services/whatsapp-masivo.service';
     selector: 'app-whatsapp-paquete-dialog',
     templateUrl: './whatsapp-paquete-dialog.component.html',
     styleUrl: './whatsapp-paquete-dialog.component.css',
+    standalone: false
 })
 export class WhatsAppPaqueteDialogComponent {
     paquetes = [

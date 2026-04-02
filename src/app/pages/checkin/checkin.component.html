@@ -1,63 +1,74 @@
 <div class="checkin-page">
-    <div class="checkin-card" *ngIf="loading">
-        <div class="loader"></div>
-        <p class="loading-text">Cargando información...</p>
+  @if (loading) {
+    <div class="checkin-card">
+      <div class="loader"></div>
+      <p class="loading-text">Cargando información...</p>
     </div>
+  }
 
-    <div class="checkin-card error-card" *ngIf="!loading && error">
-        <div class="error-icon">⚠️</div>
-        <h2>Invitación no encontrada</h2>
-        <p>{{ errorMsg }}</p>
+  @if (!loading && error) {
+    <div class="checkin-card error-card">
+      <div class="error-icon">⚠️</div>
+      <h2>Invitación no encontrada</h2>
+      <p>{{ errorMsg }}</p>
     </div>
+  }
 
-    <div class="checkin-card" *ngIf="!loading && !error && data">
-        <!-- Event Header -->
-        <div class="event-header">
-            <span class="event-badge">📋 Check-in</span>
-            <h1 class="event-name">{{ data.eventoNombre }}</h1>
-            <span class="event-date">{{ data.eventoFecha }}</span>
+  @if (!loading && !error && data) {
+    <div class="checkin-card">
+      <!-- Event Header -->
+      <div class="event-header">
+        <span class="event-badge">📋 Check-in</span>
+        <h1 class="event-name">{{ data.eventoNombre }}</h1>
+        <span class="event-date">{{ data.eventoFecha }}</span>
+      </div>
+      <!-- Group Name (only for Familiar) -->
+      @if (data.tipoInvitacion === 'Familiar' && data.nombreFamilia) {
+        <div class="group-name">
+          <span class="family-icon">👨‍👩‍👧‍👦</span>
+          <h2>{{ data.nombreFamilia }}</h2>
         </div>
-
-        <!-- Group Name (only for Familiar) -->
-        <div class="group-name" *ngIf="data.tipoInvitacion === 'Familiar' && data.nombreFamilia">
-            <span class="family-icon">👨‍👩‍👧‍👦</span>
-            <h2>{{ data.nombreFamilia }}</h2>
+      }
+      <!-- Warning if nobody confirmed -->
+      @if (allPending()) {
+        <div class="warning-banner">
+          ⚠️ Ningún invitado ha confirmado o rechazado la invitación
         </div>
-
-        <!-- Warning if nobody confirmed -->
-        <div class="warning-banner" *ngIf="allPending()">
-            ⚠️ Ningún invitado ha confirmado o rechazado la invitación
-        </div>
-
-        <!-- Invitados List -->
-        <div class="invitados-section">
-            <h3 class="section-title">Invitados</h3>
-            <div class="invitado-card" *ngFor="let inv of data.invitados">
-                <div class="invitado-info">
-                    <span class="invitado-name">{{ inv.nombre }}</span>
-                    <span class="invitado-status" [ngClass]="getStatusClass(inv.invitacionConfirmada)">
-                        {{ getStatusText(inv.invitacionConfirmada) }}
-                    </span>
-                </div>
-                <button class="btn-attendance"
-                    *ngIf="inv.invitacionConfirmada !== 3"
-                    (click)="markAttendance(inv)"
-                    [disabled]="inv.marking">
-                    {{ inv.marking ? '⏳ Registrando...' : '✅ Registrar Asistencia' }}
-                </button>
-                <span class="attended-label" *ngIf="inv.invitacionConfirmada === 3">
-                    🎉 Asistencia registrada
-                </span>
+      }
+      <!-- Invitados List -->
+      <div class="invitados-section">
+        <h3 class="section-title">Invitados</h3>
+        @for (inv of data.invitados; track inv) {
+          <div class="invitado-card">
+            <div class="invitado-info">
+              <span class="invitado-name">{{ inv.nombre }}</span>
+              <span class="invitado-status" [ngClass]="getStatusClass(inv.invitacionConfirmada)">
+                {{ getStatusText(inv.invitacionConfirmada) }}
+              </span>
             </div>
+            @if (inv.invitacionConfirmada !== 3) {
+              <button class="btn-attendance"
+                (click)="markAttendance(inv)"
+                [disabled]="inv.marking">
+                {{ inv.marking ? '⏳ Registrando...' : '✅ Registrar Asistencia' }}
+              </button>
+            }
+            @if (inv.invitacionConfirmada === 3) {
+              <span class="attended-label">
+                🎉 Asistencia registrada
+              </span>
+            }
+          </div>
+        }
+      </div>
+      <!-- Mesa -->
+      <div class="mesa-section">
+        <span class="mesa-icon">🪑</span>
+        <div class="mesa-info">
+          <span class="mesa-label">Mesa asignada</span>
+          <span class="mesa-value">{{ getMesaDisplay() }}</span>
         </div>
-
-        <!-- Mesa -->
-        <div class="mesa-section">
-            <span class="mesa-icon">🪑</span>
-            <div class="mesa-info">
-                <span class="mesa-label">Mesa asignada</span>
-                <span class="mesa-value">{{ getMesaDisplay() }}</span>
-            </div>
-        </div>
+      </div>
     </div>
+  }
 </div>

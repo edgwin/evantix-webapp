@@ -4,9 +4,10 @@ import { InvitadoService } from '../../services/invitado.service';
 import { NotificationService } from '../../services/notification.service';
 
 @Component({
-  selector: 'app-mesas',
-  templateUrl: './mesas.component.html',
-  styleUrl: './mesas.component.css'
+    selector: 'app-mesas',
+    templateUrl: './mesas.component.html',
+    styleUrl: './mesas.component.css',
+    standalone: false
 })
 export class MesasComponent implements OnInit {
   paidEvents: any[] = [];

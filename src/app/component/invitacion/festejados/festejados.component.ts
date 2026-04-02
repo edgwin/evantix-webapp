@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+﻿import { CommonModule } from '@angular/common';
 import { Component, HostListener, Input } from '@angular/core';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
@@ -9,19 +9,18 @@ import { AiEditableDirective } from '../../../directives/ai-editable.directive';
 import { TemplateService } from '../../../services/template.service';
 
 @Component({
-  selector: 'app-festejados',
-  templateUrl: './festejados.component.html',
-  styleUrl: './festejados.component.css',
-  standalone: true,
-  imports: [CommonModule, FormsModule, DisableDownloadDirective, AiEditableDirective],
-  animations: [
-    trigger('fadeInScale', [
-      transition(':enter', [
-        style({ opacity: 0, transform: 'scale(0.5)' }),
-        animate('600ms ease-out', style({ opacity: 1, transform: 'scale(1)' }))
-      ])
-    ])
-  ]
+    selector: 'app-festejados',
+    templateUrl: './festejados.component.html',
+    styleUrl: './festejados.component.css',
+    imports: [CommonModule, FormsModule, DisableDownloadDirective, AiEditableDirective],
+    animations: [
+        trigger('fadeInScale', [
+            transition(':enter', [
+                style({ opacity: 0, transform: 'scale(0.5)' }),
+                animate('600ms ease-out', style({ opacity: 1, transform: 'scale(1)' }))
+            ])
+        ])
+    ]
 })
 export class FestejadosComponent {
   constructor(
@@ -94,7 +93,7 @@ export class FestejadosComponent {
     element.blur();
   }
 
-  onKeyDown(event: KeyboardEvent | any, maxLength: number) {
+  onKeyDown(event: Event | any, maxLength: number) {
     const key = (event as KeyboardEvent).key;
     if (key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
       event.preventDefault();
@@ -160,7 +159,7 @@ export class FestejadosComponent {
   }
 
   // --- ESC para cancelar ---
-  @HostListener('document:keydown.escape', ['$event'])
+  @HostListener('document:keydown.escape')
   onEscape() {
     if (this.editingTitle) {
       const element = document.querySelector('#TituloFestejados') as HTMLElement;

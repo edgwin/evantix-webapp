@@ -1,12 +1,11 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-countdown-timer',
-  templateUrl: './countdown-timer.component.html',
-  styleUrls: ['./countdown-timer.component.css'],
-  imports: [CommonModule],
-  standalone: true
+    selector: 'app-countdown-timer',
+    templateUrl: './countdown-timer.component.html',
+    styleUrls: ['./countdown-timer.component.css'],
+    imports: []
 })
 export class CountdownTimerComponent implements OnInit, OnDestroy {
 

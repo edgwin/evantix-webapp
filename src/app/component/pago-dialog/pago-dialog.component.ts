@@ -3,9 +3,10 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CuponService } from '../../services/cupon.service';
 
 @Component({
-  selector: 'app-pago-dialog',
-  templateUrl: './pago-dialog.component.html',
-  styleUrl: './pago-dialog.component.css',
+    selector: 'app-pago-dialog',
+    templateUrl: './pago-dialog.component.html',
+    styleUrl: './pago-dialog.component.css',
+    standalone: false
 })
 export class PagoDialogComponent {
   metodoPago: string = "";

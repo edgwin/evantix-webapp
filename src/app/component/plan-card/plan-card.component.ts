@@ -1,9 +1,10 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'app-plan-card',
-  templateUrl: './plan-card.component.html',
-  styleUrls: ['./plan-card.component.css']
+    selector: 'app-plan-card',
+    templateUrl: './plan-card.component.html',
+    styleUrls: ['./plan-card.component.css'],
+    standalone: false
 })
 export class PlanCardComponent {
   @Input() planTitle: string = '';

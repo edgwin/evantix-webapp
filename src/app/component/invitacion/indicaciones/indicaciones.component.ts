@@ -1,16 +1,15 @@
-import { Component, Input, HostListener } from '@angular/core';
-import { CommonModule } from '@angular/common';
+﻿import { Component, Input, HostListener } from '@angular/core';
+
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { AiEditableDirective } from '../../../directives/ai-editable.directive';
 import { TemplateService } from '../../../services/template.service';
 
 @Component({
-  selector: 'app-indicaciones',
-  standalone: true,
-  imports: [CommonModule, AiEditableDirective],
-  templateUrl: './indicaciones.component.html',
-  styleUrl: './indicaciones.component.css'
+    selector: 'app-indicaciones',
+    imports: [AiEditableDirective],
+    templateUrl: './indicaciones.component.html',
+    styleUrl: './indicaciones.component.css'
 })
 export class IndicacionesComponent {
   constructor(private invitationService: InvitationService, private notificationService: NotificationService,
@@ -207,7 +206,7 @@ export class IndicacionesComponent {
     });
   }
 
-  @HostListener('document:keydown.escape', ['$event'])
+  @HostListener('document:keydown.escape')
   onEscape() {
     if (this.editingTituloId) {
       const item = this.data.details.find((d: { id: string }) => d.id === this.editingTituloId);

@@ -4,75 +4,81 @@
     <input type="text" [(ngModel)]="filterText" placeholder="Filtrar..." class="form-control" />
   </div>
 
-  <div *ngIf="data && data.length > 0; else noData">
-    <table>
-      <thead>
-        <tr>
-          <ng-container *ngFor="let col of columns">
-            <th *ngIf="col" (click)="onHeaderClick(col.field)">
-              {{ col.headerName }}
-              <span *ngIf="sortColumn === col.field">{{ sortAsc ? '▲' : '▼' }}</span>
-            </th>
-          </ng-container>
-          <th style="text-align: center;">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let row of paginatedData">
-          <ng-container *ngFor="let col of columns">
-            <td *ngIf="col">
-              <ng-container [ngSwitch]="col.type">
-                <ng-container *ngSwitchCase="'image+text'">
-                  <div style="display: flex; align-items: center;">
-                    <!-- <img [src]="row[col.imageField]" class="img-cell" /> -->
-                    <span style="margin-left: 8px;">{{ row[col.field] }}</span>
-                  </div>
-                </ng-container>
-
-                <ng-container *ngSwitchCase="'status'">
-                  <span [ngStyle]="getStatusStyle(row[col.field])" [title]="row.estatusDescripcion"
-                    style="cursor: help;">
-                    {{ row[col.field] }}
-                  </span>
-                </ng-container>
-
-                <ng-container *ngSwitchDefault>
-                  {{ row[col.field] }}
-                </ng-container>
-              </ng-container>
-            </td>
-          </ng-container>
-
-          <!-- Acciones -->
-          <td>
-            <div class="action-buttons">
-              <button (click)="onAction('edit', row)" class="icon-button" title="Editar Evento">✏️</button>
-              <button (click)="onAction('pay', row)" class="icon-button" title="Pagar Evento"
-                [disabled]="!row.showPayment">💳</button>
-              <button (click)="onAction('delete', row)" class="icon-button" title="Eliminar Evento"
-                [disabled]="!row.showDelete">🗑️</button>
-              <button (click)="onAction('verInvitacion', row)" class="icon-button"
-                [title]="row.estatus?.toUpperCase() === 'PAGADO' ? 'Ver Invitación' : 'Editar/Ver la invitacion'"
-                [disabled]="!row.showInvitation">✉️</button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <!-- Si no hay registros, muestra este mensaje -->
-  <ng-template #noData>
+  @if (data && data.length > 0) {
+    <div>
+      <table>
+        <thead>
+          <tr>
+            @for (col of columns; track col) {
+              @if (col) {
+                <th (click)="onHeaderClick(col.field)">
+                  {{ col.headerName }}
+                  @if (sortColumn === col.field) {
+                    <span>{{ sortAsc ? '▲' : '▼' }}</span>
+                  }
+                </th>
+              }
+            }
+            <th style="text-align: center;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of paginatedData; track row) {
+            <tr>
+              @for (col of columns; track col) {
+                @if (col) {
+                  <td>
+                    @switch (col.type) {
+                      @case ('image+text') {
+                        <div style="display: flex; align-items: center;">
+                          <!-- <img [src]="row[col.imageField]" class="img-cell" /> -->
+                          <span style="margin-left: 8px;">{{ row[col.field] }}</span>
+                        </div>
+                      }
+                      @case ('status') {
+                        <span [ngStyle]="getStatusStyle(row[col.field])" [title]="row.estatusDescripcion"
+                          style="cursor: help;">
+                          {{ row[col.field] }}
+                        </span>
+                      }
+                      @default {
+                        {{ row[col.field] }}
+                      }
+                    }
+                  </td>
+                }
+              }
+              <!-- Acciones -->
+              <td>
+                <div class="action-buttons">
+                  <button (click)="onAction('edit', row)" class="icon-button" title="Editar Evento">✏️</button>
+                  <button (click)="onAction('pay', row)" class="icon-button" title="Pagar Evento"
+                  [disabled]="!row.showPayment">💳</button>
+                  <button (click)="onAction('delete', row)" class="icon-button" title="Eliminar Evento"
+                  [disabled]="!row.showDelete">🗑️</button>
+                  <button (click)="onAction('verInvitacion', row)" class="icon-button"
+                    [title]="row.estatus?.toUpperCase() === 'PAGADO' ? 'Ver Invitación' : 'Editar/Ver la invitacion'"
+                  [disabled]="!row.showInvitation">✉️</button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
     <div style="margin-top: 20px; text-align: center; font-style: italic;">
       No existen registros para mostrar.<br />
       Para crear un evento, da clic en el botón <strong>"Crear Evento"</strong>.
     </div>
-  </ng-template>
+  }
+  <!-- Si no hay registros, muestra este mensaje -->
   <!-- PAGINACIÓN -->
   <div style="margin-top: 10px; display: flex; justify-content: right; gap: 8px;">
     <button (click)="changePage(-1)" [disabled]="currentPage === 1">Anterior</button>
-    <ng-container *ngFor="let p of [].constructor(totalPages); let i = index">
+    @for (p of [].constructor(totalPages); track p; let i = $index) {
       <button (click)="setPage(i + 1)" [disabled]="currentPage === (i + 1)">{{ i + 1 }}</button>
-    </ng-container>
+    }
     <button (click)="changePage(1)" [disabled]="currentPage === totalPages">Siguiente</button>
   </div>
 </div>

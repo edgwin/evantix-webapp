@@ -3,30 +3,33 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-mapa-modal',
-  template: `
+    selector: 'app-mapa-modal',
+    template: `
     <h2 mat-dialog-title>Selecciona la ubicación</h2>
     <mat-dialog-content class="mapa-container">
-      <google-map 
-        height="400px" 
-        width="100%" 
+      <google-map
+        height="400px"
+        width="100%"
         [center]="center"
         [zoom]="15"
         (mapClick)="seleccionarUbicacion($event)">
-        <map-marker *ngIf="marker" [position]="marker"></map-marker>
+        @if (marker) {
+          <map-marker [position]="marker"></map-marker>
+        }
       </google-map>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button (click)="cancelar()">Cancelar</button>
       <button mat-raised-button color="primary" (click)="guardar()">Guardar</button>
     </mat-dialog-actions>
-  `,
-  styles: [`
+    `,
+    styles: [`
     .mapa-container {
       width: 100%;
       height: 400px;
     }
-  `]
+  `],
+    standalone: false
 })
 export class MapaModalComponent {
   center: google.maps.LatLngLiteral = { lat: 19.4326, lng: -99.1332 }; // CDMX default

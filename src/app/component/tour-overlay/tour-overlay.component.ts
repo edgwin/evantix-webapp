@@ -5,11 +5,10 @@ import { TourService } from '../../services/tour.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-tour-overlay',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './tour-overlay.component.html',
-  styleUrls: ['./tour-overlay.component.css']
+    selector: 'app-tour-overlay',
+    imports: [CommonModule, FormsModule],
+    templateUrl: './tour-overlay.component.html',
+    styleUrls: ['./tour-overlay.component.css']
 })
 export class TourOverlayComponent implements OnInit, OnDestroy {
   isActive = false;

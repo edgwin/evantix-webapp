@@ -1,11 +1,13 @@
 <div class="login-page">
   <!-- LOADING OVERLAY -->
-  <div class="login-overlay" *ngIf="isLoading">
-    <div class="overlay-content">
-      <div class="spinner"></div>
-      <p>Iniciando sesión...</p>
+  @if (isLoading) {
+    <div class="login-overlay">
+      <div class="overlay-content">
+        <div class="spinner"></div>
+        <p>Iniciando sesión...</p>
+      </div>
     </div>
-  </div>
+  }
   <!-- LEFT BRANDING PANEL -->
   <div class="brand-panel">
     <div class="brand-bg-shapes">
@@ -38,122 +40,136 @@
       </div>
 
       <!-- SIGN IN FORM -->
-      <div class="auth-form" *ngIf="!isSignDivVisiable">
-        <h2>Bienvenido de vuelta</h2>
-        <p class="auth-subtitle">Ingresa a tu cuenta para continuar</p>
-
-        <div class="social-buttons">
-          <div id="googleBtn2" class="social-btn google-btn">
-            <img src="https://static.cdnlogo.com/logos/g/35/google-icon.svg" alt="Google" />
+      @if (!isSignDivVisiable) {
+        <div class="auth-form">
+          <h2>Bienvenido de vuelta</h2>
+          <p class="auth-subtitle">Ingresa a tu cuenta para continuar</p>
+          <div class="social-buttons">
+            <div id="googleBtn2" class="social-btn google-btn">
+              <img src="https://static.cdnlogo.com/logos/g/35/google-icon.svg" alt="Google" />
+            </div>
+            <div class="social-btn fb-btn" (click)="facebookLogin()">
+              <img src="../../../assets/images/facebook.png" alt="Facebook" width="20" />
+              <span>Facebook</span>
+            </div>
           </div>
-          <div class="social-btn fb-btn" (click)="facebookLogin()">
-            <img src="../../../assets/images/facebook.png" alt="Facebook" width="20" />
-            <span>Facebook</span>
+          <div class="divider">
+            <span>o usa tu email</span>
           </div>
+          <form [formGroup]="signInForm" (ngSubmit)="onLogin()">
+            <div class="input-group">
+              <label>Email</label>
+              <input type="text" placeholder="tu@email.com" formControlName="UserName" />
+              @if (signInForm.get('UserName')?.invalid && signInForm.get('UserName')?.touched) {
+                <small class="error-msg">
+                  Email es requerido
+                </small>
+              }
+            </div>
+            <div class="input-group">
+              <label>Contraseña</label>
+              <input type="password" placeholder="••••••••" formControlName="Password" />
+              @if (signInForm.get('Password')?.invalid && signInForm.get('Password')?.touched) {
+                <small class="error-msg">
+                  Contraseña es requerida
+                </small>
+              }
+            </div>
+            <div class="forgot-link" (click)="onForgotClick()">¿Olvidaste tu contraseña?</div>
+            @if (isForgotVisible) {
+              <div class="forgot-row">
+                <input type="text" placeholder="Email de recuperación" id="forgotEmail" />
+                <button type="button" class="btn-forgot" (click)="forgotPassword()" [disabled]="isLoading">Enviar</button>
+              </div>
+            }
+            <button type="submit" class="btn-primary" [disabled]="isLoading" [class.loading]="isLoading">
+              @if (!isLoading) {
+                <span>Ingresar</span>
+              }
+              @if (isLoading) {
+                <img src="../../../assets/images/loading.gif" width="24" height="24" />
+              }
+            </button>
+          </form>
         </div>
-
-        <div class="divider">
-          <span>o usa tu email</span>
-        </div>
-
-        <form [formGroup]="signInForm" (ngSubmit)="onLogin()">
-          <div class="input-group">
-            <label>Email</label>
-            <input type="text" placeholder="tu@email.com" formControlName="UserName" />
-            <small class="error-msg" *ngIf="signInForm.get('UserName')?.invalid && signInForm.get('UserName')?.touched">
-              Email es requerido
-            </small>
-          </div>
-
-          <div class="input-group">
-            <label>Contraseña</label>
-            <input type="password" placeholder="••••••••" formControlName="Password" />
-            <small class="error-msg" *ngIf="signInForm.get('Password')?.invalid && signInForm.get('Password')?.touched">
-              Contraseña es requerida
-            </small>
-          </div>
-
-          <div class="forgot-link" (click)="onForgotClick()">¿Olvidaste tu contraseña?</div>
-
-          <div class="forgot-row" *ngIf="isForgotVisible">
-            <input type="text" placeholder="Email de recuperación" id="forgotEmail" />
-            <button type="button" class="btn-forgot" (click)="forgotPassword()" [disabled]="isLoading">Enviar</button>
-          </div>
-
-          <button type="submit" class="btn-primary" [disabled]="isLoading" [class.loading]="isLoading">
-            <span *ngIf="!isLoading">Ingresar</span>
-            <img *ngIf="isLoading" src="../../../assets/images/loading.gif" width="24" height="24" />
-          </button>
-        </form>
-      </div>
+      }
 
       <!-- SIGN UP FORM -->
-      <div class="auth-form" *ngIf="isSignDivVisiable">
-        <h2>Crea tu cuenta</h2>
-        <p class="auth-subtitle">Empieza a crear invitaciones increíbles</p>
-
-        <div class="social-buttons">
-          <div id="googleBtn1" class="social-btn google-btn">
-            <img src="https://static.cdnlogo.com/logos/g/35/google-icon.svg" alt="Google" />
-          </div>
-          <div class="social-btn fb-btn" (click)="facebookLogin()">
-            <img src="../../../assets/images/facebook.png" alt="Facebook" width="20" />
-            <span>Facebook</span>
-          </div>
-        </div>
-
-        <div class="divider">
-          <span>o regístrate con tu email</span>
-        </div>
-
-        <form [formGroup]="signUpForm" (ngSubmit)="onRegister()">
-          <div class="input-group">
-            <label>Email</label>
-            <input type="text" placeholder="tu@email.com" formControlName="Email" />
-            <small class="error-msg" *ngIf="signUpForm.get('Email')?.invalid && signUpForm.get('Email')?.touched">
-              Email válido es requerido
-            </small>
-          </div>
-
-          <div class="input-row">
-            <div class="input-group">
-              <label>Nombres</label>
-              <input type="text" placeholder="Juan" formControlName="FirstName" />
-              <small class="error-msg" *ngIf="signUpForm.get('FirstName')?.invalid && signUpForm.get('FirstName')?.touched">
-                Requerido
-              </small>
+      @if (isSignDivVisiable) {
+        <div class="auth-form">
+          <h2>Crea tu cuenta</h2>
+          <p class="auth-subtitle">Empieza a crear invitaciones increíbles</p>
+          <div class="social-buttons">
+            <div id="googleBtn1" class="social-btn google-btn">
+              <img src="https://static.cdnlogo.com/logos/g/35/google-icon.svg" alt="Google" />
             </div>
-            <div class="input-group">
-              <label>Apellidos</label>
-              <input type="text" placeholder="Pérez" formControlName="LastName" />
-              <small class="error-msg" *ngIf="signUpForm.get('LastName')?.invalid && signUpForm.get('LastName')?.touched">
-                Requerido
-              </small>
+            <div class="social-btn fb-btn" (click)="facebookLogin()">
+              <img src="../../../assets/images/facebook.png" alt="Facebook" width="20" />
+              <span>Facebook</span>
             </div>
           </div>
-
-          <div class="input-group">
-            <label>Contraseña</label>
-            <input type="password" placeholder="Mínimo 8 caracteres" formControlName="Password" />
-            <small class="error-msg" *ngIf="signUpForm.get('Password')?.invalid && signUpForm.get('Password')?.touched">
-              Mínimo 8 caracteres
-            </small>
+          <div class="divider">
+            <span>o regístrate con tu email</span>
           </div>
-
-          <div class="input-group">
-            <label>Confirmar Contraseña</label>
-            <input type="password" placeholder="Repite tu contraseña" formControlName="Password2" />
-            <small class="error-msg" *ngIf="signUpForm.get('Password2')?.invalid && signUpForm.get('Password2')?.touched">
-              Mínimo 8 caracteres
-            </small>
-          </div>
-
-          <button type="submit" class="btn-primary" [disabled]="isLoading" [class.loading]="isLoading">
-            <span *ngIf="!isLoading">Crear Cuenta</span>
-            <img *ngIf="isLoading" src="../../../assets/images/loading.gif" width="24" height="24" />
-          </button>
-        </form>
-      </div>
+          <form [formGroup]="signUpForm" (ngSubmit)="onRegister()">
+            <div class="input-group">
+              <label>Email</label>
+              <input type="text" placeholder="tu@email.com" formControlName="Email" />
+              @if (signUpForm.get('Email')?.invalid && signUpForm.get('Email')?.touched) {
+                <small class="error-msg">
+                  Email válido es requerido
+                </small>
+              }
+            </div>
+            <div class="input-row">
+              <div class="input-group">
+                <label>Nombres</label>
+                <input type="text" placeholder="Juan" formControlName="FirstName" />
+                @if (signUpForm.get('FirstName')?.invalid && signUpForm.get('FirstName')?.touched) {
+                  <small class="error-msg">
+                    Requerido
+                  </small>
+                }
+              </div>
+              <div class="input-group">
+                <label>Apellidos</label>
+                <input type="text" placeholder="Pérez" formControlName="LastName" />
+                @if (signUpForm.get('LastName')?.invalid && signUpForm.get('LastName')?.touched) {
+                  <small class="error-msg">
+                    Requerido
+                  </small>
+                }
+              </div>
+            </div>
+            <div class="input-group">
+              <label>Contraseña</label>
+              <input type="password" placeholder="Mínimo 8 caracteres" formControlName="Password" />
+              @if (signUpForm.get('Password')?.invalid && signUpForm.get('Password')?.touched) {
+                <small class="error-msg">
+                  Mínimo 8 caracteres
+                </small>
+              }
+            </div>
+            <div class="input-group">
+              <label>Confirmar Contraseña</label>
+              <input type="password" placeholder="Repite tu contraseña" formControlName="Password2" />
+              @if (signUpForm.get('Password2')?.invalid && signUpForm.get('Password2')?.touched) {
+                <small class="error-msg">
+                  Mínimo 8 caracteres
+                </small>
+              }
+            </div>
+            <button type="submit" class="btn-primary" [disabled]="isLoading" [class.loading]="isLoading">
+              @if (!isLoading) {
+                <span>Crear Cuenta</span>
+              }
+              @if (isLoading) {
+                <img src="../../../assets/images/loading.gif" width="24" height="24" />
+              }
+            </button>
+          </form>
+        </div>
+      }
 
       <div class="back-link">
         <a routerLink="/">← Volver al inicio</a>

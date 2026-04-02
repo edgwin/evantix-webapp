@@ -5,118 +5,132 @@
 
   <form (ngSubmit)="onSubmit()" #eventoForm="ngForm">
     <fieldset [disabled]="loading" style="border: none; padding: 0; margin: 0;">
-    <div class="form-card">
-      <div class="form-header">
-        <h3>Datos del Evento</h3>
-      </div>
-
-      <div class="form-body">
-        <!-- Nombre del Evento -->
-        <div class="form-group">
-          <label>Nombre del Evento <span class="required">*</span></label>
-          <input type="text" name="nombre" [(ngModel)]="evento.nombre" required placeholder="Ej: Boda de Ana y Carlos"
-            class="form-input" />
+      <div class="form-card">
+        <div class="form-header">
+          <h3>Datos del Evento</h3>
         </div>
 
-        <!-- Fecha -->
-        <div class="form-group">
-          <label>Fecha del Evento <span class="required">*</span></label>
-          <mat-form-field appearance="outline" class="mat-field-modern">
-            <input matInput [matDatepicker]="picker" [(ngModel)]="evento.fecha" name="fecha" required
-              [min]="minDate" placeholder="Selecciona una fecha">
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker touchUi="true"></mat-datepicker>
-          </mat-form-field>
-        </div>
+        <div class="form-body">
+          <!-- Nombre del Evento -->
+          <div class="form-group">
+            <label>Nombre del Evento <span class="required">*</span></label>
+            <input type="text" name="nombre" [(ngModel)]="evento.nombre" required placeholder="Ej: Boda de Ana y Carlos"
+              class="form-input" />
+            </div>
 
-        <!-- Tipo de Evento -->
-        <div class="form-group">
-          <label>Tipo de Evento <span class="required">*</span></label>
-          <mat-form-field appearance="outline" class="mat-field-modern">
-            <mat-select name="tipoEvento" [(value)]="evento.tipoEvento" (selectionChange)="tipoEventoChange($event)"
-              required placeholder="Selecciona un tipo">
-              <mat-option *ngFor="let tipo of tipoEvento" [value]="tipo.name">
-                {{ tipo.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
+            <!-- Fecha -->
+            <div class="form-group">
+              <label>Fecha del Evento <span class="required">*</span></label>
+              <mat-form-field appearance="outline" class="mat-field-modern">
+                <input matInput [matDatepicker]="picker" [(ngModel)]="evento.fecha" name="fecha" required
+                  [min]="minDate" placeholder="Selecciona una fecha">
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker touchUi="true"></mat-datepicker>
+                </mat-form-field>
+              </div>
 
-        <!-- Otro tipo de Evento -->
-        <div class="form-group" *ngIf="!tipoEventoTxtHidden">
-          <label>Especifica el tipo de Evento <span class="required">*</span></label>
-          <input type="text" name="tipoEventoTxt" [(ngModel)]="evento.tipoEvento" required
-            placeholder="Escribe el tipo de evento" class="form-input" />
-        </div>
+              <!-- Tipo de Evento -->
+              <div class="form-group">
+                <label>Tipo de Evento <span class="required">*</span></label>
+                <mat-form-field appearance="outline" class="mat-field-modern">
+                  <mat-select name="tipoEvento" [(value)]="evento.tipoEvento" (selectionChange)="tipoEventoChange($event)"
+                    required placeholder="Selecciona un tipo">
+                    @for (tipo of tipoEvento; track tipo) {
+                      <mat-option [value]="tipo.name">
+                        {{ tipo.name }}
+                      </mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              </div>
 
-        <!-- País y WhatsApp -->
-        <div class="form-row">
-          <div class="form-group form-group-small">
-            <label>País <span class="required">*</span></label>
-            <mat-form-field appearance="outline" class="mat-field-modern">
-              <mat-select [(ngModel)]="evento.codigoPais" name="codigoPais" required>
-                <mat-option *ngFor="let pais of codigosPais" [value]="pais.dialCode">
-                  {{ pais.name }} ({{ pais.dialCode }})
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
+              <!-- Otro tipo de Evento -->
+              @if (!tipoEventoTxtHidden) {
+                <div class="form-group">
+                  <label>Especifica el tipo de Evento <span class="required">*</span></label>
+                  <input type="text" name="tipoEventoTxt" [(ngModel)]="evento.tipoEvento" required
+                    placeholder="Escribe el tipo de evento" class="form-input" />
+                  </div>
+                }
+
+                <!-- País y WhatsApp -->
+                <div class="form-row">
+                  <div class="form-group form-group-small">
+                    <label>País <span class="required">*</span></label>
+                    <mat-form-field appearance="outline" class="mat-field-modern">
+                      <mat-select [(ngModel)]="evento.codigoPais" name="codigoPais" required>
+                        @for (pais of codigosPais; track pais) {
+                          <mat-option [value]="pais.dialCode">
+                            {{ pais.name }} ({{ pais.dialCode }})
+                          </mat-option>
+                        }
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="form-group form-group-large">
+                    <label>Número de WhatsApp <span class="required">*</span></label>
+                    <input type="tel" name="numero" #numeroField="ngModel" [(ngModel)]="evento.whatsapp" required
+                      pattern="[0-9]*" maxlength="15" placeholder="Ej: 3312345678" class="form-input"
+                      [class.input-error]="numeroField.invalid && numeroField.touched" />
+                      @if (numeroField.hasError('pattern') && numeroField.touched) {
+                        <small class="error-msg">Solo se permiten
+                        números</small>
+                      }
+                    </div>
+                  </div>
+
+                  <!-- Email -->
+                  <div class="form-group">
+                    <label>Email <span class="required">*</span></label>
+                    <input type="email" name="email" #emailField="ngModel" [(ngModel)]="evento.email" required
+                      pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" placeholder="Ej: contacto@evento.com"
+                      class="form-input" [class.input-error]="emailField.invalid && emailField.touched" />
+                      @if (emailField.hasError('pattern') && emailField.touched) {
+                        <small class="error-msg">Ingresa un email
+                        válido</small>
+                      }
+                    </div>
+
+                    <!-- Mensaje de Invitación -->
+                    <div class="form-group">
+                      <label>Mensaje de Invitación <span class="required">*</span></label>
+                      <textarea name="mensajeInvitacion" [(ngModel)]="evento.mensajeInvitacion" required rows="4"
+                        placeholder="Escribe el mensaje que recibirán tus invitados por email o WhatsApp..."
+                      class="form-input form-textarea"></textarea>
+                      <small class="hint">Este mensaje se enviará junto con la invitación</small>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Términos y Condiciones -->
+                @if (!isEditMode) {
+                  <div class="terms-row">
+                    <label class="checkbox-label">
+                      <input name="condiciones" type="checkbox" (click)="checkBoxClick()" class="checkbox-input">
+                      <span>He leído los <a class="terms-link" (click)="openPopup()">términos y condiciones</a></span>
+                    </label>
+                  </div>
+                }
+
+                <!-- Loading -->
+                @if (loading) {
+                  <div class="loading">
+                    <div class="loader"></div>
+                    <p>{{ isEditMode ? 'Guardando Información...' : 'Creando evento...' }}</p>
+                  </div>
+                }
+
+                <!-- Botones -->
+                <div class="form-actions">
+                  <button class="btn btn-secondary" type="button" (click)="cancelar()" [disabled]="loading">Cancelar</button>
+                  <button class="btn btn-primary" type="submit" [disabled]="!isFormValid || loading">
+                    {{ isEditMode ? 'Actualizar Evento' : 'Crear Evento' }}
+                  </button>
+                </div>
+              </fieldset>
+
+              <app-popup-html [visible]="showPopup" [htmlContent]="terminosHtml" [title]="'Términos y Condiciones'"
+                [showCloseButton]="true" (closed)="showPopup = false">
+              </app-popup-html>
+            </form>
           </div>
-          <div class="form-group form-group-large">
-            <label>Número de WhatsApp <span class="required">*</span></label>
-            <input type="tel" name="numero" #numeroField="ngModel" [(ngModel)]="evento.whatsapp" required
-              pattern="[0-9]*" maxlength="15" placeholder="Ej: 3312345678" class="form-input"
-              [class.input-error]="numeroField.invalid && numeroField.touched" />
-            <small class="error-msg" *ngIf="numeroField.hasError('pattern') && numeroField.touched">Solo se permiten
-              números</small>
-          </div>
-        </div>
-
-        <!-- Email -->
-        <div class="form-group">
-          <label>Email <span class="required">*</span></label>
-          <input type="email" name="email" #emailField="ngModel" [(ngModel)]="evento.email" required
-            pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" placeholder="Ej: contacto@evento.com"
-            class="form-input" [class.input-error]="emailField.invalid && emailField.touched" />
-          <small class="error-msg" *ngIf="emailField.hasError('pattern') && emailField.touched">Ingresa un email
-            válido</small>
-        </div>
-
-        <!-- Mensaje de Invitación -->
-        <div class="form-group">
-          <label>Mensaje de Invitación <span class="required">*</span></label>
-          <textarea name="mensajeInvitacion" [(ngModel)]="evento.mensajeInvitacion" required rows="4"
-            placeholder="Escribe el mensaje que recibirán tus invitados por email o WhatsApp..."
-            class="form-input form-textarea"></textarea>
-          <small class="hint">Este mensaje se enviará junto con la invitación</small>
-        </div>
-      </div>
-    </div>
-
-    <!-- Términos y Condiciones -->
-    <div class="terms-row" *ngIf="!isEditMode">
-      <label class="checkbox-label">
-        <input name="condiciones" type="checkbox" (click)="checkBoxClick()" class="checkbox-input">
-        <span>He leído los <a class="terms-link" (click)="openPopup()">términos y condiciones</a></span>
-      </label>
-    </div>
-
-    <!-- Loading -->
-    <div *ngIf="loading" class="loading">
-      <div class="loader"></div>
-      <p>{{ isEditMode ? 'Guardando Información...' : 'Creando evento...' }}</p>
-    </div>
-
-    <!-- Botones -->
-    <div class="form-actions">
-      <button class="btn btn-secondary" type="button" (click)="cancelar()" [disabled]="loading">Cancelar</button>
-      <button class="btn btn-primary" type="submit" [disabled]="!isFormValid || loading">
-        {{ isEditMode ? 'Actualizar Evento' : 'Crear Evento' }}
-      </button>
-    </div>
-    </fieldset>
-
-    <app-popup-html [visible]="showPopup" [htmlContent]="terminosHtml" [title]="'Términos y Condiciones'"
-      [showCloseButton]="true" (closed)="showPopup = false">
-    </app-popup-html>
-  </form>
-</div>

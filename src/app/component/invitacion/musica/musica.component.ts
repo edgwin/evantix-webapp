@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { InvitationService } from '../../../services/invitation.service';
 import { FormsModule } from '@angular/forms';
 import { TemplateService } from '../../../services/template.service';
@@ -10,11 +10,10 @@ interface MusicTag {
 }
 
 @Component({
-  selector: 'app-musica',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './musica.component.html',
-  styleUrls: ['./musica.component.css']
+    selector: 'app-musica',
+    imports: [FormsModule],
+    templateUrl: './musica.component.html',
+    styleUrls: ['./musica.component.css']
 })
 export class MusicaComponent implements OnInit, OnChanges, OnDestroy {
 

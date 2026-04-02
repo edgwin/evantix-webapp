@@ -4,9 +4,10 @@ import { NotificationService } from '../../services/notification.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  selector: 'app-nuevo-evento',
-  templateUrl: './nuevo-evento.component.html',
-  styleUrls: ['./nuevo-evento.component.css']
+    selector: 'app-nuevo-evento',
+    templateUrl: './nuevo-evento.component.html',
+    styleUrls: ['./nuevo-evento.component.css'],
+    standalone: false
 })
 export class NuevoEventoComponent implements OnInit {
   @ViewChild('swiperRef', { static: false }) swiperRef!: ElementRef;

@@ -3,9 +3,10 @@ import { Router } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
-  selector: 'app-landing',
-  templateUrl: './landing.component.html',
-  styleUrls: ['./landing.component.css']
+    selector: 'app-landing',
+    templateUrl: './landing.component.html',
+    styleUrls: ['./landing.component.css'],
+    standalone: false
 })
 export class LandingComponent {
 

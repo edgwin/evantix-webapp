@@ -18,62 +18,72 @@
       {{ data.frase }}
     </p>
 
-    <div class="gallery-wrapper" *ngIf="showGallery" (pointerdown)="onPointerDown($event)"
-      (pointermove)="onPointerMove($event)" (pointerup)="onPointerUp($event)" (pointercancel)="onPointerUp($event)"
-      (mouseleave)="resumeAutoplayWithDelay()">
-
-      <div class="gallery" [ngClass]="animationDirection">
-        <div class="side left">
-          <img [src]="prevImg()" alt="prev" class="side-img" appDisableDownload>
-        </div>
-
-        <div class="center">
-          <div class="center-image-wrapper">
-            <img [src]="currentImg()" alt="current" class="center-img" appDisableDownload>
-            <button class="edit-btn" (click)="onOpenPopup()" *ngIf="!isReadOnly" title="Editar" id="tour-edit-data">
-              <img src="assets/editData.png" alt="editar">
-            </button>
+    @if (showGallery) {
+      <div class="gallery-wrapper" (pointerdown)="onPointerDown($event)"
+        (pointermove)="onPointerMove($event)" (pointerup)="onPointerUp($event)" (pointercancel)="onPointerUp($event)"
+        (mouseleave)="resumeAutoplayWithDelay()">
+        <div class="gallery" [ngClass]="animationDirection">
+          <div class="side left">
+            <img [src]="prevImg()" alt="prev" class="side-img" appDisableDownload>
+          </div>
+          <div class="center">
+            <div class="center-image-wrapper">
+              <img [src]="currentImg()" alt="current" class="center-img" appDisableDownload>
+              @if (!isReadOnly) {
+                <button class="edit-btn" (click)="onOpenPopup()" title="Editar" id="tour-edit-data">
+                  <img src="assets/editData.png" alt="editar">
+                </button>
+              }
+            </div>
+          </div>
+          <div class="side right">
+            <img [src]="nextImg()" alt="next" class="side-img" appDisableDownload>
           </div>
         </div>
-
-        <div class="side right">
-          <img [src]="nextImg()" alt="next" class="side-img" appDisableDownload>
+        @if (currentParentesco() || currentNombres()) {
+          <div class="person-info">
+            @if (currentParentesco()) {
+              <span class="person-role">{{ currentParentesco() }}</span>
+            }
+            @if (currentNombres()) {
+              <span class="person-name">{{ currentNombres() }}</span>
+            }
+          </div>
+        }
+        <div class="nav-container">
+          <button class="nav-btn" (click)="prev()">
+            <img src="../../../../assets/left.png" />
+          </button>
+          <button class="nav-btn" (click)="next()">
+            <img src="../../../../assets/right.png" />
+          </button>
         </div>
+        @if (data?.details?.length > 1) {
+          <div class="dots">
+            @for (_ of data?.details; track _; let i = $index) {
+              <button class="dot" [class.active]="i === currentIndexValue"
+                (click)="goTo(i)">
+              </button>
+            }
+          </div>
+        }
       </div>
+    }
 
-      <div class="person-info" *ngIf="currentParentesco() || currentNombres()">
-        <span class="person-role" *ngIf="currentParentesco()">{{ currentParentesco() }}</span>
-        <span class="person-name" *ngIf="currentNombres()">{{ currentNombres() }}</span>
-      </div>
-
-      <div class="nav-container">
-        <button class="nav-btn" (click)="prev()">
-          <img src="../../../../assets/left.png" />
-        </button>
-        <button class="nav-btn" (click)="next()">
-          <img src="../../../../assets/right.png" />
-        </button>
-      </div>
-
-      <div class="dots" *ngIf="data?.details?.length > 1">
-        <button class="dot" *ngFor="let _ of data?.details; let i = index" [class.active]="i === currentIndexValue"
-          (click)="goTo(i)">
+    @if (!isReadOnly && !loading && (data?.details?.length || 0) < maxItems) {
+      <div class="add-item-container">
+        <button class="add-item-btn" (click)="addNewPersonaFavorita()">
+          <span class="add-icon">+</span>
+          <span>Agregar persona</span>
         </button>
       </div>
-    </div>
-
-    <div class="add-item-container" *ngIf="!isReadOnly && !loading && (data?.details?.length || 0) < maxItems">
-      <button class="add-item-btn" (click)="addNewPersonaFavorita()">
-        <span class="add-icon">+</span>
-        <span>Agregar persona</span>
-      </button>
-    </div>
+    }
   </div>
 </section>
 
-<ng-container *ngIf="showPopup">
+@if (showPopup) {
   <app-popup-html [visible]="showPopup" title="Modifica la informacion" [personasFavoritasEdit]="true"
     [imagenPF]="currentImagen4Popup" [parentescoPF]="currentParentesco4Popup" [nombresPF]="currentNombre4Popup"
     [personaFavoritaId]="currentId4Popup" (closed)="onClosePopup()">
   </app-popup-html>
-</ng-container>
+}

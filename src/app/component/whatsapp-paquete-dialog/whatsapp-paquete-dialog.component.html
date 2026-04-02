@@ -1,33 +1,37 @@
 <div class="dialog-container">
-    <div class="dialog-header">
-        <h2>📱 Paquetes de Mensajes WhatsApp</h2>
-        <button class="close-btn" (click)="cancelar()">✖</button>
-    </div>
+  <div class="dialog-header">
+    <h2>📱 Paquetes de Mensajes WhatsApp</h2>
+    <button class="close-btn" (click)="cancelar()">✖</button>
+  </div>
 
-    <p class="dialog-subtitle">Elige el paquete que mejor se adapte a tu evento</p>
+  <p class="dialog-subtitle">Elige el paquete que mejor se adapte a tu evento</p>
 
-    <div class="paquetes-grid">
-        <div *ngFor="let paq of paquetes" class="paquete-card" [class.selected]="selectedPaquete === paq"
-            [class.popular]="paq.popular" (click)="selectPaquete(paq)">
+  <div class="paquetes-grid">
+    @for (paq of paquetes; track paq) {
+      <div class="paquete-card" [class.selected]="selectedPaquete === paq"
+        [class.popular]="paq.popular" (click)="selectPaquete(paq)">
+        @if (paq.popular) {
+          <div class="popular-badge">⭐ Más popular</div>
+        }
+        <div class="paquete-mensajes">{{ paq.mensajes }}</div>
+        <div class="paquete-label">mensajes</div>
+        <div class="paquete-precio">${{ paq.precio }}</div>
+        <div class="paquete-per-msg">${{ getPrecioPerMsg(paq) }} / mensaje</div>
+        @if (selectedPaquete === paq) {
+          <div class="paquete-check">✅</div>
+        }
+      </div>
+    }
+  </div>
 
-            <div class="popular-badge" *ngIf="paq.popular">⭐ Más popular</div>
+  @if (error) {
+    <div class="dialog-error">{{ error }}</div>
+  }
 
-            <div class="paquete-mensajes">{{ paq.mensajes }}</div>
-            <div class="paquete-label">mensajes</div>
-
-            <div class="paquete-precio">${{ paq.precio }}</div>
-            <div class="paquete-per-msg">${{ getPrecioPerMsg(paq) }} / mensaje</div>
-
-            <div class="paquete-check" *ngIf="selectedPaquete === paq">✅</div>
-        </div>
-    </div>
-
-    <div class="dialog-error" *ngIf="error">{{ error }}</div>
-
-    <div class="dialog-actions">
-        <button class="btn-cancelar" (click)="cancelar()">Cancelar</button>
-        <button class="btn-comprar" (click)="comprar()" [disabled]="!selectedPaquete || purchasing">
-            {{ purchasing ? 'Procesando...' : 'Comprar Paquete' }}
-        </button>
-    </div>
+  <div class="dialog-actions">
+    <button class="btn-cancelar" (click)="cancelar()">Cancelar</button>
+    <button class="btn-comprar" (click)="comprar()" [disabled]="!selectedPaquete || purchasing">
+      {{ purchasing ? 'Procesando...' : 'Comprar Paquete' }}
+    </button>
+  </div>
 </div>
