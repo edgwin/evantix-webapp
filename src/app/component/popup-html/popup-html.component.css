@@ -212,3 +212,59 @@ button {
 .buttons button:hover {
   background-color: #0056b3;
 }
+
+/* ── Estilos para contenido HTML renderizado con [innerHTML] ── */
+.raw-html {
+  text-align: left;
+  width: 100%;
+  padding: 0 1.5rem 1.5rem;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+  color: #2d2d2d;
+  line-height: 1.7;
+  max-height: 65vh;
+  overflow-y: auto;
+}
+
+.raw-html h2 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin: 20px 0 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #eee;
+}
+
+.raw-html h3 {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: #333;
+  margin: 14px 0 6px;
+}
+
+.raw-html p {
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  text-align: justify;
+}
+
+.raw-html ul,
+.raw-html ol {
+  padding-left: 22px;
+  margin-bottom: 10px;
+}
+
+.raw-html ul li,
+.raw-html ol li {
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+}
+
+.raw-html strong {
+  font-weight: 600;
+}
+
+.raw-html em {
+  color: #999;
+  font-size: 0.85rem;
+}

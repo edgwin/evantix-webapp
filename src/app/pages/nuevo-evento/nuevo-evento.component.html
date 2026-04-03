@@ -102,12 +102,12 @@
                   </div>
                 </div>
 
-                <!-- Términos y Condiciones -->
+                <!-- Términos y Condiciones + Aviso de Privacidad -->
                 @if (!isEditMode) {
                   <div class="terms-row">
                     <label class="checkbox-label">
                       <input name="condiciones" type="checkbox" (click)="checkBoxClick()" class="checkbox-input">
-                      <span>He leído los <a class="terms-link" (click)="openPopup()">términos y condiciones</a></span>
+                      <span>He leído los <a class="terms-link" (click)="openPopup()">términos y condiciones</a> y el <a class="terms-link" (click)="openPrivacyPopup()">aviso de privacidad</a></span>
                     </label>
                   </div>
                 }
@@ -131,6 +131,10 @@
 
               <app-popup-html [visible]="showPopup" [htmlContent]="terminosHtml" [title]="'Términos y Condiciones'"
                 [showCloseButton]="true" (closed)="showPopup = false">
+              </app-popup-html>
+
+              <app-popup-html [visible]="showPrivacyPopup" [htmlContent]="privacidadHtml" [title]="'Aviso de Privacidad'"
+                [showCloseButton]="true" (closed)="showPrivacyPopup = false">
               </app-popup-html>
             </form>
           </div>

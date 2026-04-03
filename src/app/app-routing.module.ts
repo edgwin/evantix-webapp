@@ -3,10 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './pages/login/login.component';
 import { LayoutComponent } from './pages/layout/layout.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { PrivacidadComponent } from './pages/privacidad/privacidad.component';
 import { AuthGuard } from './auth.guard';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
-import { CondicionesComponent } from './pages/condiciones/condiciones.component';
 import { InvitacionesComponent } from './pages/invitaciones/invitaciones.component';
 import { InvitadosComponent } from './pages/invitados/invitados.component';
 import { MesasComponent } from './pages/mesas/mesas.component';
@@ -28,14 +26,6 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent
-  },
-  {
-    path: 'privacidad',
-    component: PrivacidadComponent
-  },
-  {
-    path: 'condiciones',
-    component: CondicionesComponent
   },
   {
     path: 'forgotPassword',

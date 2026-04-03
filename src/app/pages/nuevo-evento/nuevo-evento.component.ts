@@ -87,6 +87,7 @@ export class NuevoEventoComponent implements OnInit {
 
   terminosHtml = "";
   terminosId = "";
+  privacidadHtml = "";
 
   ngOnInit(): void {
     this.eventService.getTermsAndCoditions().subscribe({
@@ -97,6 +98,16 @@ export class NuevoEventoComponent implements OnInit {
       },
       error: () => {
         this.notificationService.show('error', `Hubo un error favor de comunicarse a soporte`);
+      }
+    });
+
+    // Load Privacy Policy from API
+    this.eventService.getPrivacyPolicy().subscribe({
+      next: (res: any) => {
+        this.privacidadHtml = res.text;
+      },
+      error: () => {
+        this.privacidadHtml = '<p>Error al cargar el aviso de privacidad.</p>';
       }
     });
 
@@ -207,9 +218,14 @@ export class NuevoEventoComponent implements OnInit {
   }
 
   showPopup = false;
+  showPrivacyPopup = false;
 
   openPopup() {
     this.showPopup = true;
+  }
+
+  openPrivacyPopup() {
+    this.showPrivacyPopup = true;
   }
 
   checkBoxClick() {

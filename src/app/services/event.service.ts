@@ -11,6 +11,7 @@ export class EventService {
   private getEventByUserId = 'api/Event/GetUserEvents/';
   private getEventById = 'api/Event/GetEventById/';
   private getTermsAndConditions = 'api/Event/GetTermsAndConditions';
+  private getPrivacyPolicyUrl = 'api/Event/GetPrivacyPolicy';
   private getEventForInvitationById = 'api/Event/GetUserEventsForInvitations/';
   private getPlansData = 'api/Event/GetPlans';
   private deleteEventById = 'api/Event/Delete/';
@@ -68,6 +69,17 @@ export class EventService {
     });
 
     const url = `${this.apiUrl}${this.getTermsAndConditions}`;
+    return this.http.get(url, { headers });
+  }
+
+  getPrivacyPolicy() {
+    const token = localStorage.getItem('access_token');
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    const url = `${this.apiUrl}${this.getPrivacyPolicyUrl}`;
     return this.http.get(url, { headers });
   }
 

@@ -10,7 +10,6 @@ import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NotificationComponent } from './pages/notification/notification.component';
-import { PrivacidadComponent } from './pages/privacidad/privacidad.component';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -19,7 +18,7 @@ import { MatListModule } from '@angular/material/list';
 import { TopbarComponent } from './pages/layout/topbar/topbar.component';
 import { SidebarComponent } from './pages/layout/sidebar/sidebar.component';
 import { MatIconModule } from '@angular/material/icon';
-import { CondicionesComponent } from './pages/condiciones/condiciones.component';
+
 
 import { InvitacionesComponent } from './pages/invitaciones/invitaciones.component';
 import { InvitadosComponent } from './pages/invitados/invitados.component';
@@ -60,11 +59,9 @@ import { TemplateEditorComponent } from './pages/template-editor/template-editor
         LayoutComponent,
         DashboardComponent,
         NotificationComponent,
-        PrivacidadComponent,
         ForgotPasswordComponent,
         TopbarComponent,
         SidebarComponent,
-        CondicionesComponent,
         InvitacionesComponent,
         InvitadosComponent,
         MesasComponent,
