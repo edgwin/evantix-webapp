@@ -131,7 +131,15 @@ export class DashboardComponent {
     { headerName: 'Estatus', field: 'estatus', type: 'status' }
   ];
 
+  copiedPin: string | null = null;
   rowData: any = [];
+
+  copyPin(pin: string) {
+    navigator.clipboard.writeText(pin).then(() => {
+      this.copiedPin = pin;
+      setTimeout(() => this.copiedPin = null, 2000);
+    });
+  }
 
   onActionHandler(event: { type: string, row: Evento }) {
     if (event.type === 'edit') {

@@ -379,3 +379,46 @@
     font-weight: 600;
     font-size: 16px;
 }
+
+/* PIN Check-In */
+.pin-cell {
+    min-width: 120px;
+}
+
+.pin-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pin-code {
+    background: linear-gradient(135deg, #e8f5e9, #e3f2fd);
+    color: #1a5c2a;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    border: 1px solid #c8e6c9;
+}
+
+.pin-copy-btn {
+    background: none;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 3px 6px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.15s;
+}
+
+.pin-copy-btn:hover {
+    background: #e3f2fd;
+    border-color: #2196f3;
+}
+
+.pin-na {
+    color: #bbb;
+    font-size: 16px;
+}

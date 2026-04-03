@@ -43,6 +43,7 @@
             <th>Evento</th>
             <th>Fecha</th>
             <th>Estatus</th>
+            <th>PIN Check-In</th>
             <th>Opciones</th>
           </tr>
         </thead>
@@ -70,6 +71,18 @@
                             }" [title]="evento.estatusDescripcion || ''">
                   {{ evento.estatus }}
                 </span>
+              </td>
+              <td class="pin-cell">
+                @if (evento.checkInPin) {
+                  <div class="pin-container">
+                    <code class="pin-code">{{ evento.checkInPin }}</code>
+                    <button class="pin-copy-btn" (click)="copyPin(evento.checkInPin)" title="Copiar PIN">
+                      {{ copiedPin === evento.checkInPin ? '✅' : '📋' }}
+                    </button>
+                  </div>
+                } @else {
+                  <span class="pin-na">—</span>
+                }
               </td>
               <td class="actions-cell">
                 <button class="action-btn edit" (click)="onActionHandler({type: 'edit', row: evento})"

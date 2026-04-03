@@ -31,11 +31,15 @@ export class CheckinComponent implements OnInit {
   loading = true;
   error = false;
   errorMsg = '';
+  private pin = '';
 
   constructor(private route: ActivatedRoute, private http: HttpClient) {}
 
   ngOnInit(): void {
     const grupoId = this.route.snapshot.paramMap.get('grupoId');
+    this.pin = this.route.snapshot.queryParamMap.get('PIN')
+            || this.route.snapshot.queryParamMap.get('pin') || '';
+
     if (!grupoId) {
       this.error = true;
       this.errorMsg = 'No se proporcionó un código válido.';
@@ -43,7 +47,14 @@ export class CheckinComponent implements OnInit {
       return;
     }
 
-    this.http.get<CheckInData>(`${environment.coreApiUrl}/api/Invitado/CheckIn/${grupoId}`)
+    if (!this.pin) {
+      this.error = true;
+      this.errorMsg = 'No se proporcionó el PIN de check-in.';
+      this.loading = false;
+      return;
+    }
+
+    this.http.get<CheckInData>(`${environment.coreApiUrl}/api/Invitado/CheckIn/${grupoId}?pin=${this.pin}`)
       .subscribe({
         next: (res) => {
           this.data = res;
@@ -51,9 +62,13 @@ export class CheckinComponent implements OnInit {
         },
         error: (err) => {
           this.error = true;
-          this.errorMsg = err.status === 404
-            ? 'No se encontró la invitación.'
-            : 'Error al cargar la información.';
+          if (err.status === 403) {
+            this.errorMsg = err.error?.message || 'Acceso denegado.';
+          } else if (err.status === 404) {
+            this.errorMsg = 'No se encontró la invitación.';
+          } else {
+            this.errorMsg = 'Error al cargar la información.';
+          }
           this.loading = false;
         }
       });
@@ -92,15 +107,16 @@ export class CheckinComponent implements OnInit {
   markAttendance(inv: CheckInInvitado): void {
     if (inv.marking) return;
     inv.marking = true;
-    this.http.put(`${environment.coreApiUrl}/api/Invitado/CheckIn/Attendance/${inv.id}`, {})
+    this.http.put(`${environment.coreApiUrl}/api/Invitado/CheckIn/Attendance/${inv.id}?pin=${this.pin}`, {})
       .subscribe({
         next: () => {
           inv.invitacionConfirmada = 3;
           inv.marking = false;
         },
-        error: () => {
+        error: (err) => {
           inv.marking = false;
-          alert('Error al registrar asistencia');
+          const msg = err.error?.message || 'Error al registrar asistencia';
+          alert(msg);
         }
       });
   }
