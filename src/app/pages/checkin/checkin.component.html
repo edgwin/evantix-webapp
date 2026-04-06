@@ -61,6 +61,22 @@
           </div>
         }
       </div>
+      <!-- PIN Input -->
+      <div class="pin-section">
+        <label class="pin-label" for="checkin-pin">🔑 PIN de Check-in</label>
+        <input
+          id="checkin-pin"
+          type="text"
+          class="pin-input"
+          [(ngModel)]="pin"
+          placeholder="Ingresa el PIN del evento"
+          maxlength="10"
+          autocomplete="off"
+        />
+        @if (pinError) {
+          <span class="pin-error">{{ pinError }}</span>
+        }
+      </div>
       <!-- Mesa -->
       <div class="mesa-section">
         <span class="mesa-icon">🪑</span>

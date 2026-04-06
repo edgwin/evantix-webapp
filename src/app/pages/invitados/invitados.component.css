@@ -237,6 +237,11 @@
     font-weight: 500;
 }
 
+.status-attended {
+    color: #1b5e20;
+    font-weight: 600;
+}
+
 .form-row {
     display: flex;
     gap: 16px;

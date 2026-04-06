@@ -76,13 +76,14 @@ export class MesasComponent implements OnInit {
         for (const grupo of grupos) {
           const grupoName = grupo.nombreFamilia || grupo.invitados?.[0]?.nombre || 'Sin nombre';
           for (const inv of (grupo.invitados || [])) {
-            // Solo incluir invitados que confirmaron (1 = Confirmado)
-            if (inv.invitacionConfirmada !== 1) continue;
+            // Incluir invitados Confirmados (1) y que Asistieron (3)
+            const status = Number(inv.invitacionConfirmada);
+            if (status !== 1 && status !== 3) continue;
             this.allInvitados.push({
               id: inv.id,
               nombre: inv.nombre,
               grupoNombre: grupoName,
-              mesaId: inv.mesaId || null,
+              mesaId: inv.mesaId || inv.MesaId || null,
               displayName: `${grupoName} - ${inv.nombre}`
             });
           }

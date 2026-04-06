@@ -13,10 +13,10 @@ import { CustomDomainService } from '../../services/custom-domain.service';
 import { environment } from '../../../environments/environment';
 
 @Component({
-    selector: 'app-invitados',
-    templateUrl: './invitados.component.html',
-    styleUrls: ['./invitados.component.css'],
-    standalone: false
+  selector: 'app-invitados',
+  templateUrl: './invitados.component.html',
+  styleUrls: ['./invitados.component.css'],
+  standalone: false
 })
 export class InvitadosComponent implements OnInit {
   paidEvents: any[] = [];
@@ -390,7 +390,7 @@ export class InvitadosComponent implements OnInit {
   allRespondidos(grupo: any): boolean {
     const invitados = grupo.invitados;
     if (!invitados || invitados.length === 0) return false;
-    return invitados.every((inv: any) => inv.invitacionConfirmada === 1 || inv.invitacionConfirmada === 2);
+    return invitados.every((inv: any) => inv.invitacionConfirmada === 1 || inv.invitacionConfirmada === 2 || inv.invitacionConfirmada === 3);
   }
 
   getInvitationUrl(grupo: any): string {
@@ -438,7 +438,7 @@ export class InvitadosComponent implements OnInit {
   }
 
   exportCsv() {
-    const statusLabel = (s: number) => s === 1 ? 'Confirmado' : s === 2 ? 'Rechazado' : 'Pendiente';
+    const statusLabel = (s: number) => s === 1 ? 'Confirmado' : s === 2 ? 'Rechazado' : s === 3 ? 'Asistió' : 'Pendiente';
     const lines: string[] = [];
     lines.push('Grupo,Tipo,Nombre Invitado,Email,WhatsApp,Estatus,Confirmado Por,Mesa');
 
@@ -453,19 +453,21 @@ export class InvitadosComponent implements OnInit {
           grupo.whatsApp || '',
           statusLabel(inv.invitacionConfirmada),
           inv.confirmadoPor || '',
-          inv.mesaNumero || ''
+          inv.mesa?.nombre || ''
         ].join(','));
       }
     }
 
-    const csv = lines.join('\n');
+    const csv = lines.join('\r\n');
     const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = `Invitados_${this.selectedEventName.replace(/\s+/g, '_')}.csv`;
+    document.body.appendChild(a);
     a.click();
-    URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 100);
   }
 
   // ===== WhatsApp Masivo =====
@@ -566,7 +568,7 @@ export class InvitadosComponent implements OnInit {
 
   massResendUnconfirmed() {
     if (this.waSending) return;
-    const template = `${this.selectedEventMensaje}\n\n🔔 Recordatorio: Aún no has confirmado tu asistencia.\n\n👉 Confirma tu asistencia aquí: {link}`;
+    const template = `${this.selectedEventMensaje}\n\n👉 Confirma tu asistencia aquí: {link}`;
     this.waSending = true;
 
     this.waService.resendUnconfirmed(this.selectedEventId, template).subscribe({

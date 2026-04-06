@@ -279,9 +279,9 @@
                       @if (confirmacionEnabled) {
                         <td>
                           <span
-                            [ngClass]="{'status-pending': inv.invitacionConfirmada === 0, 'status-confirmed': inv.invitacionConfirmada === 1, 'status-declined': inv.invitacionConfirmada === 2}">
+                            [ngClass]="{'status-pending': inv.invitacionConfirmada === 0, 'status-confirmed': inv.invitacionConfirmada === 1, 'status-declined': inv.invitacionConfirmada === 2, 'status-attended': inv.invitacionConfirmada === 3}">
                             {{ inv.invitacionConfirmada === 1 ? 'Confirmado ✅' : inv.invitacionConfirmada === 2 ?
-                            'Rechazado ❌' : 'Pendiente ⏳' }}
+                            'Rechazado ❌' : inv.invitacionConfirmada === 3 ? 'Asistió 🎉' : 'Pendiente ⏳' }}
                           </span>
                         </td>
                       }

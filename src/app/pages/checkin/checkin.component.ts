@@ -31,14 +31,18 @@ export class CheckinComponent implements OnInit {
   loading = true;
   error = false;
   errorMsg = '';
-  private pin = '';
+  pin = '';
+  pinError = '';
+
+  private readonly PIN_STORAGE_KEY = 'evantix_checkin_pin';
 
   constructor(private route: ActivatedRoute, private http: HttpClient) {}
 
   ngOnInit(): void {
+    // Restore PIN from localStorage
+    this.pin = localStorage.getItem(this.PIN_STORAGE_KEY) || '';
+
     const grupoId = this.route.snapshot.paramMap.get('grupoId');
-    this.pin = this.route.snapshot.queryParamMap.get('PIN')
-            || this.route.snapshot.queryParamMap.get('pin') || '';
 
     if (!grupoId) {
       this.error = true;
@@ -47,14 +51,8 @@ export class CheckinComponent implements OnInit {
       return;
     }
 
-    if (!this.pin) {
-      this.error = true;
-      this.errorMsg = 'No se proporcionó el PIN de check-in.';
-      this.loading = false;
-      return;
-    }
-
-    this.http.get<CheckInData>(`${environment.coreApiUrl}/api/Invitado/CheckIn/${grupoId}?pin=${this.pin}`)
+    // Load guest info without PIN
+    this.http.get<CheckInData>(`${environment.coreApiUrl}/api/Invitado/CheckIn/${grupoId}`)
       .subscribe({
         next: (res) => {
           this.data = res;
@@ -62,9 +60,7 @@ export class CheckinComponent implements OnInit {
         },
         error: (err) => {
           this.error = true;
-          if (err.status === 403) {
-            this.errorMsg = err.error?.message || 'Acceso denegado.';
-          } else if (err.status === 404) {
+          if (err.status === 404) {
             this.errorMsg = 'No se encontró la invitación.';
           } else {
             this.errorMsg = 'Error al cargar la información.';
@@ -106,17 +102,34 @@ export class CheckinComponent implements OnInit {
 
   markAttendance(inv: CheckInInvitado): void {
     if (inv.marking) return;
+
+    // Validate PIN before calling the endpoint
+    if (!this.pin || this.pin.trim() === '') {
+      this.pinError = 'Debe proporcionar el PIN de check-in';
+      return;
+    }
+
+    this.pinError = '';
     inv.marking = true;
-    this.http.put(`${environment.coreApiUrl}/api/Invitado/CheckIn/Attendance/${inv.id}?pin=${this.pin}`, {})
+
+    // Persist PIN in localStorage so it doesn't need to be re-entered
+    localStorage.setItem(this.PIN_STORAGE_KEY, this.pin.trim());
+
+    this.http.put(`${environment.coreApiUrl}/api/Invitado/CheckIn/Attendance/${inv.id}?pin=${this.pin.trim()}`, {})
       .subscribe({
         next: () => {
           inv.invitacionConfirmada = 3;
           inv.marking = false;
+          this.pinError = '';
         },
         error: (err) => {
           inv.marking = false;
-          const msg = err.error?.message || 'Error al registrar asistencia';
-          alert(msg);
+          if (err.status === 403) {
+            this.pinError = err.error?.message || 'PIN inválido';
+          } else {
+            const msg = err.error?.message || 'Error al registrar asistencia';
+            alert(msg);
+          }
         }
       });
   }
