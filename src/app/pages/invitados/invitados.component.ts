@@ -440,7 +440,7 @@ export class InvitadosComponent implements OnInit {
   exportCsv() {
     const statusLabel = (s: number) => s === 1 ? 'Confirmado' : s === 2 ? 'Rechazado' : s === 3 ? 'Asistió' : 'Pendiente';
     const lines: string[] = [];
-    lines.push('Grupo,Tipo,Nombre Invitado,Email,WhatsApp,Estatus,Confirmado Por,Mesa');
+    lines.push('Grupo,Tipo,Nombre Invitado,Email,WhatsApp,Estatus,Confirmado Por,Mesa,Nota Especial');
 
     for (const grupo of this.grupos) {
       const grupoName = grupo.nombreFamilia || grupo.invitados?.[0]?.nombre || 'Sin nombre';
@@ -453,7 +453,8 @@ export class InvitadosComponent implements OnInit {
           grupo.whatsApp || '',
           statusLabel(inv.invitacionConfirmada),
           inv.confirmadoPor || '',
-          inv.mesa?.nombre || ''
+          inv.mesa?.nombre || '',
+          `"${(inv.notaEspecial || '').replace(/"/g, '""')}"`
         ].join(','));
       }
     }
