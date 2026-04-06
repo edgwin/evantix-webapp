@@ -95,7 +95,7 @@ export class LoginComponent implements AfterViewInit, OnInit {
         localStorage.setItem('loggedUser', JSON.stringify(res.user));
         this.isLoading = false;
         this.facebookLoginInProgress = false;
-        this.router.navigateByUrl('/dashboard');  
+        this.redirectAfterLogin();
       },
       error: err => {
         console.error('Error de login', err);
@@ -164,7 +164,7 @@ export class LoginComponent implements AfterViewInit, OnInit {
         next: (res: any) => {          
           localStorage.setItem('access_token', res.access_token);    
           localStorage.setItem('loggedUser', JSON.stringify(res.user));
-          this.router.navigateByUrl('/dashboard');
+          this.redirectAfterLogin();
           this.isLoading = false;
         },
         error: err => {
@@ -210,6 +210,15 @@ export class LoginComponent implements AfterViewInit, OnInit {
     return regex.test(email);
   }
 
+  private redirectAfterLogin(): void {
+    const hasLoggedBefore = localStorage.getItem('evantix_has_logged_in');
+    localStorage.setItem('evantix_has_logged_in', 'true');
+    if (!hasLoggedBefore) {
+      this.router.navigateByUrl('/nuevoEvento');
+    } else {
+      this.router.navigateByUrl('/dashboard');
+    }
+  }
 }
 
 export class SignUpModel  {

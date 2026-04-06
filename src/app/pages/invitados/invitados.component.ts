@@ -11,6 +11,7 @@ import { WhatsAppPaqueteDialogComponent } from '../../component/whatsapp-paquete
 import { PagoDialogComponent } from '../../component/pago-dialog/pago-dialog.component';
 import { CustomDomainService } from '../../services/custom-domain.service';
 import { environment } from '../../../environments/environment';
+import { TourService } from '../../services/tour.service';
 
 @Component({
   selector: 'app-invitados',
@@ -93,7 +94,8 @@ export class InvitadosComponent implements OnInit {
     private dialog: MatDialog,
     private route: ActivatedRoute,
     private router: Router,
-    private customDomainService: CustomDomainService
+    private customDomainService: CustomDomainService,
+    private tourService: TourService
   ) { }
 
   ngOnInit(): void {
@@ -160,6 +162,9 @@ export class InvitadosComponent implements OnInit {
         this.loading = false;
         this.loadWaCredits();
         this.loadWaEnvios();
+
+        // Start Product Tour after data loads (first time only)
+        setTimeout(() => this.tourService.startIfNeeded('invitados'), 800);
       },
       error: (err) => {
         this.notificationService.show('error', 'Error al cargar invitados');

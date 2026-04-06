@@ -32,6 +32,7 @@ export class TourOverlayComponent implements OnInit, OnDestroy {
       this.tourService.isActive$.subscribe(active => {
         this.isActive = active;
         if (active) {
+          this.totalSteps = this.tourService.totalSteps;
           document.body.style.overflow = 'hidden';
         } else {
           document.body.style.overflow = '';

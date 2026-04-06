@@ -7,6 +7,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStorageService } from '../../services/local-storage.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PagoDialogComponent } from '../../component/pago-dialog/pago-dialog.component';
+import { TourService } from '../../services/tour.service';
+import { TourOverlayComponent } from '../../component/tour-overlay/tour-overlay.component';
 
 interface Evento {
   nombre: string;
@@ -31,7 +33,7 @@ export class DashboardComponent {
   noDataMsg: boolean = false;
   terminosHtml = "";
   constructor(private eventService: EventService, private notificationService: NotificationService, private mercadoPago: MercadoPagoService,
-    private stripeService: StripeService, private route: ActivatedRoute, private localStorageService: LocalStorageService, private router: Router, private dialog: MatDialog) {
+    private stripeService: StripeService, private route: ActivatedRoute, private localStorageService: LocalStorageService, private router: Router, private dialog: MatDialog, private tourService: TourService) {
     const localUser = localStorage.getItem('loggedUser');
     if (localUser != null) {
       this.loggedUser = JSON.parse(localUser);
@@ -112,6 +114,9 @@ export class DashboardComponent {
         this.loading = false;
         const showInvitations = this.rowData.find((item: any) => item.showInvitation === true)?.showInvitation ?? false;
         this.localStorageService.setShowInvitaciones(!!showInvitations);
+
+        // Start Product Tour after data loads (first time only)
+        setTimeout(() => this.tourService.startIfNeeded('dashboard'), 800);
       },
       error: err => {
         this.notificationService.show('error', `Hubo un error al obtener los eventos del usuario ${err.message}`);

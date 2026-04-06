@@ -8,7 +8,7 @@
   @if (paidEvents.length > 0) {
     <div class="event-selector">
       <label>Selecciona un evento:</label>
-      <select [(ngModel)]="selectedEventId" (change)="onEventChange()" class="event-dropdown">
+      <select id="tour-mesa-event-selector" [(ngModel)]="selectedEventId" (change)="onEventChange()" class="event-dropdown">
         @for (event of paidEvents; track event) {
           <option [value]="event.id">
             {{ event.nombre }} — {{ event.fecha }} ({{ event.tipoEvento }})
@@ -16,7 +16,7 @@
         }
       </select>
       @if (!showForm && hasInvitados) {
-        <button class="btn btn-primary" (click)="openForm()">
+        <button id="tour-nueva-mesa" class="btn btn-primary" (click)="openForm()">
           <span class="btn-icon">+</span> Nueva Mesa
         </button>
       }
@@ -151,3 +151,6 @@
         </div>
       }
     </div>
+
+<!-- Product Tour Overlay -->
+<app-tour-overlay></app-tour-overlay>

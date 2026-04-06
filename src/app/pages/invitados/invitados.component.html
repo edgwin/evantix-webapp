@@ -11,7 +11,7 @@
   @if (paidEvents.length > 0) {
     <div class="event-selector">
       <label>Selecciona un evento:</label>
-      <select [(ngModel)]="selectedEventId" (change)="onEventChange()" class="event-dropdown">
+      <select id="tour-event-selector" [(ngModel)]="selectedEventId" (change)="onEventChange()" class="event-dropdown">
         @for (event of paidEvents; track event) {
           <option [value]="event.id">
             {{ event.nombre }} — {{ event.fecha }} ({{ event.tipoEvento }})
@@ -19,14 +19,14 @@
         }
       </select>
       @if (!showForm) {
-        <button class="btn btn-primary" (click)="openForm()">
+        <button id="tour-alta-invitados" class="btn btn-primary" (click)="openForm()">
           <span class="btn-icon">+</span> Alta de Invitados
         </button>
       }
       <button class="btn btn-secondary" (click)="loadGrupos()" title="Refrescar lista de invitados">🔄
       Refrescar</button>
       @if (grupos.length > 0) {
-        <button class="btn btn-secondary" (click)="exportCsv()" title="Exportar a CSV">📥
+        <button id="tour-exportar-csv" class="btn btn-secondary" (click)="exportCsv()" title="Exportar a CSV">📥
         Exportar CSV</button>
       }
     </div>
@@ -130,7 +130,7 @@
       </div>
       <!-- WhatsApp Credit Bar -->
       @if (selectedEventId && (waCreditsTotales > 0 || grupos.length > 0)) {
-        <div class="wa-section">
+        <div id="tour-wa-section" class="wa-section">
           <h3 class="wa-section-title">📨 Envíos automáticos de tu invitación</h3>
           <div class="wa-credit-bar">
             <div class="wa-credit-info">
@@ -311,3 +311,6 @@
           <p>Cargando invitados...</p>
         </div>
       }
+
+<!-- Product Tour Overlay -->
+<app-tour-overlay></app-tour-overlay>

@@ -52,6 +52,7 @@ import { CheckinComponent } from './pages/checkin/checkin.component';
 import { LandingComponent } from './pages/landing/landing.component';
 import { DominioComponent } from './pages/dominio/dominio.component';
 import { TemplateEditorComponent } from './pages/template-editor/template-editor.component';
+import { TourOverlayComponent } from './component/tour-overlay/tour-overlay.component';
 
 @NgModule({ declarations: [
         AppComponent,
@@ -103,7 +104,8 @@ import { TemplateEditorComponent } from './pages/template-editor/template-editor
         PopupHtmlComponent,
         DragDropModule,
         BrowserAnimationsModule,
-        CommonModule], providers: [
+        CommonModule,
+        TourOverlayComponent], providers: [
         {
             provide: HTTP_INTERCEPTORS,
             useClass: AuthInterceptor,

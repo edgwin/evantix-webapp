@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MesaService } from '../../services/mesa.service';
 import { InvitadoService } from '../../services/invitado.service';
 import { NotificationService } from '../../services/notification.service';
+import { TourService } from '../../services/tour.service';
 
 @Component({
     selector: 'app-mesas',
@@ -30,7 +31,8 @@ export class MesasComponent implements OnInit {
   constructor(
     private mesaService: MesaService,
     private invitadoService: InvitadoService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private tourService: TourService
   ) { }
 
   ngOnInit(): void {
@@ -103,6 +105,9 @@ export class MesasComponent implements OnInit {
       next: (mesas) => {
         this.mesas = mesas;
         this.loading = false;
+
+        // Start Product Tour after mesas load (first time only)
+        setTimeout(() => this.tourService.startIfNeeded('mesas'), 800);
       },
       error: () => {
         this.notificationService.show('error', 'Error al cargar mesas');

@@ -8,11 +8,10 @@ export interface TourStep {
   position: 'top' | 'bottom' | 'left' | 'right';
 }
 
-@Injectable({ providedIn: 'root' })
-export class TourService {
-  private readonly STORAGE_KEY = 'evantix_tour_dismissed';
+export type TourContext = 'invitacion' | 'dashboard' | 'invitados' | 'mesas';
 
-  private steps: TourStep[] = [
+const TOUR_STEPS: Record<TourContext, TourStep[]> = {
+  invitacion: [
     {
       targetSelector: '.edit-imagePortada-btn',
       title: '📷 Cambiar Imagen de Fondo',
@@ -73,7 +72,108 @@ export class TourService {
       description: 'Selecciona una categoría musical y elige la canción de fondo que sonará cuando tus invitados abran la invitación. Puedes previsualizarla con el botón Reproducir.',
       position: 'bottom'
     }
-  ];
+  ],
+
+  dashboard: [
+    {
+      targetSelector: '#tour-nuevo-evento',
+      title: '🎉 Crear un Evento',
+      description: 'Haz clic aquí para crear un nuevo evento. Podrás configurar el nombre, fecha, tipo de evento y más.',
+      position: 'bottom'
+    },
+    {
+      targetSelector: '#tour-refresh-eventos',
+      title: '🔄 Refrescar Lista',
+      description: 'Usa este botón para actualizar la lista de eventos y ver los cambios más recientes.',
+      position: 'bottom'
+    },
+    {
+      targetSelector: '.eventos-grid',
+      title: '📋 Tus Eventos',
+      description: 'Aquí puedes ver todos tus eventos. Cada fila muestra el nombre, fecha, estatus de pago y el PIN de check-in.',
+      position: 'top'
+    },
+    {
+      targetSelector: '.pin-cell',
+      title: '🔑 PIN de Check-In',
+      description: 'Este PIN es necesario para registrar la asistencia de tus invitados el día del evento. Puedes copiarlo con el botón 📋.',
+      position: 'top'
+    },
+    {
+      targetSelector: '.actions-cell',
+      title: '⚙️ Opciones del Evento',
+      description: 'Desde aquí puedes: ✏️ Editar, 👁️ Ver Invitación, 🌐 Dominio Personalizado, 💳 Pagar y 🗑️ Eliminar tu evento.',
+      position: 'top'
+    }
+  ],
+
+  invitados: [
+    {
+      targetSelector: '#tour-event-selector',
+      title: '📋 Seleccionar Evento',
+      description: 'Selecciona el evento para el cual deseas gestionar invitados. Solo se muestran eventos con pago completado.',
+      position: 'bottom'
+    },
+    {
+      targetSelector: '#tour-alta-invitados',
+      title: '👥 Alta de Invitados',
+      description: 'Haz clic aquí para dar de alta un nuevo grupo de invitados. Puedes elegir entre invitación Familiar o Individual.',
+      position: 'bottom'
+    },
+    {
+      targetSelector: '#tour-exportar-csv',
+      title: '📥 Exportar CSV',
+      description: 'Descarga la lista completa de invitados en formato CSV. Incluye nombre, estatus, mesa asignada y notas especiales.',
+      position: 'bottom'
+    },
+    {
+      targetSelector: '.invitados-grid',
+      title: '📊 Lista de Invitados',
+      description: 'Aquí puedes ver todos los grupos de invitados. Haz clic en el botón + para expandir y ver a cada invitado del grupo.',
+      position: 'top'
+    },
+    {
+      targetSelector: '#tour-wa-section',
+      title: '📨 WhatsApp Masivo',
+      description: 'Envía invitaciones automáticas por WhatsApp a todos tus invitados. Compra paquetes de mensajes según lo que necesites.',
+      position: 'top'
+    }
+  ],
+
+  mesas: [
+    {
+      targetSelector: '#tour-mesa-event-selector',
+      title: '📋 Seleccionar Evento',
+      description: 'Selecciona el evento para configurar las mesas. Solo se muestran eventos con invitados confirmados.',
+      position: 'bottom'
+    },
+    {
+      targetSelector: '#tour-nueva-mesa',
+      title: '🪑 Crear Mesa',
+      description: 'Haz clic aquí para crear una nueva mesa. Define el nombre, cantidad de lugares y el orden de la mesa.',
+      position: 'bottom'
+    },
+    {
+      targetSelector: '.mesa-card',
+      title: '📐 Tarjeta de Mesa',
+      description: 'Cada tarjeta muestra los lugares ocupados, los invitados asignados y permite editar o eliminar la mesa.',
+      position: 'top'
+    },
+    {
+      targetSelector: '.invitado-dropdown',
+      title: '➕ Asignar Invitados',
+      description: 'Usa el desplegable para asignar invitados confirmados a cada mesa. Solo se muestran invitados no asignados a otra mesa.',
+      position: 'top'
+    }
+  ]
+};
+
+@Injectable({ providedIn: 'root' })
+export class TourService {
+  private readonly STORAGE_PREFIX = 'evantix_tour_dismissed_';
+
+  private steps: TourStep[] = [];
+  private activeContext: TourContext | null = null;
 
   private _currentStep = new BehaviorSubject<number>(-1);
   private _isActive = new BehaviorSubject<boolean>(false);
@@ -103,14 +203,29 @@ export class TourService {
     this._dontShowAgain = val;
   }
 
-  shouldShowTour(): boolean {
-    return localStorage.getItem(this.STORAGE_KEY) !== 'true';
+  private storageKey(ctx: TourContext): string {
+    return `${this.STORAGE_PREFIX}${ctx}`;
   }
 
-  startIfNeeded(): void {
-    if (this.shouldShowTour()) {
+  shouldShowTour(context?: TourContext): boolean {
+    const ctx = context || this.activeContext;
+    if (!ctx) return false;
+    return localStorage.getItem(this.storageKey(ctx)) !== 'true';
+  }
+
+  /** Set up the tour for a specific page context and auto-start if not dismissed */
+  startIfNeeded(context?: TourContext): void {
+    const ctx = context || 'invitacion';
+    this.setContext(ctx);
+    if (this.shouldShowTour(ctx)) {
       this.start();
     }
+  }
+
+  /** Manually set the context and load its steps */
+  setContext(context: TourContext): void {
+    this.activeContext = context;
+    this.steps = TOUR_STEPS[context] || [];
   }
 
   start(): void {
@@ -142,8 +257,8 @@ export class TourService {
   private complete(): void {
     this._isActive.next(false);
     this._currentStep.next(-1);
-    if (this._dontShowAgain) {
-      localStorage.setItem(this.STORAGE_KEY, 'true');
+    if (this._dontShowAgain && this.activeContext) {
+      localStorage.setItem(this.storageKey(this.activeContext), 'true');
     }
   }
 }
