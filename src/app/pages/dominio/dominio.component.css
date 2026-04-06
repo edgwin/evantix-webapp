@@ -486,3 +486,20 @@
   color: #338da2;
   font-size: 18px;
 }
+
+/* Domain Validation Error */
+.domain-error {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 8px;
+  color: #e65100;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.included-label {
+  color: #27ae60;
+  font-weight: 600;
+}

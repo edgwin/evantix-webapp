@@ -88,7 +88,7 @@
             @if (selectedOption === 1) {
               <div class="domain-input-wrapper">
                 <input type="text" [(ngModel)]="domainValue" placeholder="mi-evento" class="domain-input"
-                  (keyup.enter)="checkAvailability()" />
+                  (input)="onDomainInput()" (keyup.enter)="checkAvailability()" />
                 <span class="domain-suffix">.{{ baseDomain }}</span>
               </div>
             }
@@ -97,7 +97,7 @@
               <div class="domain-input-wrapper">
                 <span class="domain-prefix">www.</span>
                 <input type="text" [(ngModel)]="domainValue" placeholder="mi-evento.com" class="domain-input"
-                  (keyup.enter)="checkAvailability()" />
+                  (input)="onDomainInput()" (keyup.enter)="checkAvailability()" />
               </div>
             }
             <!-- Option 3 -->
@@ -105,7 +105,7 @@
               <div class="domain-input-wrapper">
                 <span class="domain-prefix">{{ baseDomain }}/i/</span>
                 <input type="text" [(ngModel)]="domainValue" placeholder="mi-evento" class="domain-input"
-                  (keyup.enter)="checkAvailability()" />
+                  (input)="onDomainInput()" (keyup.enter)="checkAvailability()" />
               </div>
             }
             <button class="verify-btn" (click)="checkAvailability()" [disabled]="checking || !domainValue.trim()">
@@ -117,6 +117,9 @@
               }
             </button>
           </div>
+          @if (domainError) {
+            <div class="domain-error">⚠️ {{ domainError }}</div>
+          }
           <!-- Preview -->
           @if (domainValue.trim()) {
             <div class="url-preview">

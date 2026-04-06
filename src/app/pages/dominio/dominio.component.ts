@@ -20,6 +20,7 @@ export class DominioComponent implements OnInit {
   userEmail = '';
   selectedOption: number = 0;
   domainValue = '';
+  domainError = '';
   checking = false;
   availabilityResult: any = null;
   creating = false;
@@ -77,7 +78,56 @@ export class DominioComponent implements OnInit {
   selectOption(opt: number) {
     this.selectedOption = opt;
     this.domainValue = '';
+    this.domainError = '';
     this.availabilityResult = null;
+  }
+
+  /** Sanitize input: strip invalid chars in real-time */
+  onDomainInput() {
+    this.domainError = '';
+    const raw = this.domainValue;
+    // Option 2 (custom domain) allows dots; options 1 & 3 do not
+    const pattern = this.selectedOption === 2
+      ? /[^a-zA-Z0-9\-\.]/g   // letters, numbers, hyphens, dots
+      : /[^a-zA-Z0-9\-]/g;    // letters, numbers, hyphens only
+    const sanitized = raw.replace(pattern, '');
+    if (sanitized !== raw) {
+      this.domainValue = sanitized;
+      this.domainError = 'Solo se permiten letras, números y guiones' + (this.selectedOption === 2 ? ' y puntos' : '') + '.';
+    }
+  }
+
+  /** Validate domain value before submitting */
+  private isDomainValid(): boolean {
+    const val = this.domainValue.trim().toLowerCase();
+    if (!val) {
+      this.domainError = 'Ingresa un valor para tu URL.';
+      return false;
+    }
+    if (val.startsWith('-') || val.endsWith('-')) {
+      this.domainError = 'No puede comenzar ni terminar con guión.';
+      return false;
+    }
+    if (val.length < 3) {
+      this.domainError = 'Debe tener al menos 3 caracteres.';
+      return false;
+    }
+    if (val.length > 63) {
+      this.domainError = 'Máximo 63 caracteres.';
+      return false;
+    }
+    const urlPattern = this.selectedOption === 2
+      ? /^[a-z0-9][a-z0-9\-]*[a-z0-9]\.[a-z]{2,}$/
+      : /^[a-z0-9][a-z0-9\-]*[a-z0-9]$/;
+    // Allow 2-char values that pass the basic checks (no hyphens at edges)
+    if (val.length >= 3 && !urlPattern.test(val)) {
+      this.domainError = this.selectedOption === 2
+        ? 'Formato inválido. Ejemplo: mi-evento.com'
+        : 'Formato inválido. Ejemplo: mi-evento';
+      return false;
+    }
+    this.domainError = '';
+    return true;
   }
 
   getPreviewUrl(): string {
@@ -111,7 +161,7 @@ export class DominioComponent implements OnInit {
   }
 
   checkAvailability() {
-    if (!this.domainValue.trim()) return;
+    if (!this.isDomainValid()) return;
     this.checking = true;
     this.availabilityResult = null;
 
