@@ -26,6 +26,7 @@ export class InvitadoService {
         return this.http.get<any[]>(`${this.apiUrl}ByEvent/${eventId}`, { headers: this.getHeaders() });
     }
 
+
     createGrupo(grupo: any): Observable<any> {
         return this.http.post(`${this.apiUrl}Create`, grupo, { headers: this.getHeaders() });
     }

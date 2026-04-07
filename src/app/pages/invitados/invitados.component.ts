@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChildren, QueryList, ElementRef } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChildren, QueryList, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InvitadoService } from '../../services/invitado.service';
 import { NotificationService } from '../../services/notification.service';
@@ -30,6 +30,19 @@ export class InvitadosComponent implements OnInit {
   isAdmin = false;
   expandedRows: Set<string> = new Set();
   customDomainUrl: string | null = null;
+
+  // Pagination, Search, Sort
+  filteredGrupos: any[] = [];
+  visibleGrupos: any[] = [];
+  currentPage = 1;
+  readonly PAGE_SIZE = environment.pageSize;
+  totalPages = 0;
+  pages: number[] = [];
+
+  searchName = '';
+  searchEstatus = '';
+  sortField: string = '';
+  sortDirection: 'asc' | 'desc' = 'asc';
 
   // Form state
   showForm = false;
@@ -115,7 +128,6 @@ export class InvitadosComponent implements OnInit {
 
       if (status && waPkg && eventId) {
         if (status === 'approved') {
-          // Registrar paquete después de pago exitoso
           this.waService.buyPackage(this.loggedUserId, parseInt(waPkg)).subscribe({
             next: (res: any) => {
               this.notificationService.show('info', `✅ Paquete de ${res.mensajesTotales} mensajes comprado exitosamente`);
@@ -126,7 +138,6 @@ export class InvitadosComponent implements OnInit {
         } else {
           this.notificationService.show('error', `Pago ${status === 'cancelled' ? 'cancelado' : 'no aprobado'}`);
         }
-        // Limpiar query params
         this.router.navigate(['/invitados'], { replaceUrl: true });
       }
     });
@@ -163,14 +174,126 @@ export class InvitadosComponent implements OnInit {
         this.loadWaCredits();
         this.loadWaEnvios();
 
-        // Start Product Tour after data loads (first time only)
         setTimeout(() => this.tourService.startIfNeeded('invitados'), 800);
+
+        // Apply filters & pagination
+        this.applyFilters();
       },
       error: (err) => {
         this.notificationService.show('error', 'Error al cargar invitados');
         this.loading = false;
       }
     });
+  }
+
+  // ===== Search & Filter =====
+
+  applyFilters(): void {
+    let data = [...this.grupos];
+
+    // Filter by name (search in grupo name and invitado names)
+    if (this.searchName.trim()) {
+      const term = this.searchName.toLowerCase().trim();
+      data = data.filter((g: any) => {
+        const groupName = this.getDisplayName(g).toLowerCase();
+        const invNames = (g.invitados || []).some((inv: any) => inv.nombre?.toLowerCase().includes(term));
+        return groupName.includes(term) || invNames;
+      });
+    }
+
+    // Filter by estatus (confirmation status)
+    if (this.searchEstatus) {
+      data = data.filter((g: any) => {
+        const invitados = g.invitados || [];
+        if (this.searchEstatus === 'confirmado') return invitados.some((inv: any) => inv.invitacionConfirmada === 1);
+        if (this.searchEstatus === 'rechazado') return invitados.some((inv: any) => inv.invitacionConfirmada === 2);
+        if (this.searchEstatus === 'asistio') return invitados.some((inv: any) => inv.invitacionConfirmada === 3);
+        if (this.searchEstatus === 'pendiente') return invitados.some((inv: any) => inv.invitacionConfirmada === 0);
+        return true;
+      });
+    }
+
+    // Apply sort
+    if (this.sortField) {
+      data.sort((a: any, b: any) => {
+        let valA: string, valB: string;
+        if (this.sortField === 'nombre') {
+          valA = this.getDisplayName(a).toLowerCase();
+          valB = this.getDisplayName(b).toLowerCase();
+        } else if (this.sortField === 'email') {
+          valA = (a.email || '').toLowerCase();
+          valB = (b.email || '').toLowerCase();
+        } else if (this.sortField === 'tipo') {
+          valA = (a.tipoInvitacion || '').toLowerCase();
+          valB = (b.tipoInvitacion || '').toLowerCase();
+        } else {
+          valA = '';
+          valB = '';
+        }
+        const cmp = valA < valB ? -1 : valA > valB ? 1 : 0;
+        return this.sortDirection === 'asc' ? cmp : -cmp;
+      });
+    }
+
+    this.filteredGrupos = data;
+    this.totalPages = Math.max(1, Math.ceil(this.filteredGrupos.length / this.PAGE_SIZE));
+
+    if (this.currentPage > this.totalPages) {
+      this.currentPage = 1;
+    }
+
+    this.updatePages();
+    this.updateVisibleGrupos();
+  }
+
+  onSearchChange(): void {
+    this.currentPage = 1;
+    this.applyFilters();
+  }
+
+  clearFilters(): void {
+    this.searchName = '';
+    this.searchEstatus = '';
+    this.currentPage = 1;
+    this.applyFilters();
+  }
+
+  // ===== Sort =====
+
+  onSort(field: string): void {
+    if (this.sortField === field) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortField = field;
+      this.sortDirection = 'asc';
+    }
+    this.applyFilters();
+  }
+
+  getSortIcon(field: string): string {
+    if (this.sortField !== field) return '↕';
+    return this.sortDirection === 'asc' ? '↑' : '↓';
+  }
+
+  // ===== Pagination =====
+
+  private updatePages(): void {
+    this.pages = [];
+    for (let i = 1; i <= this.totalPages; i++) {
+      this.pages.push(i);
+    }
+  }
+
+  private updateVisibleGrupos(): void {
+    const start = (this.currentPage - 1) * this.PAGE_SIZE;
+    const end = start + this.PAGE_SIZE;
+    this.visibleGrupos = this.filteredGrupos.slice(start, end);
+  }
+
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+    this.updateVisibleGrupos();
   }
 
   onEventChange() {
@@ -242,7 +365,6 @@ export class InvitadosComponent implements OnInit {
     this.tipoInvitacion = tipo;
     if (tipo === 'Individual') {
       this.nombreFamilia = '';
-      // Max 2 for individual
       if (this.invitados.length > 2) {
         this.invitados = this.invitados.slice(0, 2);
       }
@@ -257,7 +379,6 @@ export class InvitadosComponent implements OnInit {
     const num = this.invitados.length + 1;
     this.invitados.push({ nombre: '' });
 
-    // Auto-focus en el nuevo input
     setTimeout(() => {
       const inputs = this.invitadoInputs?.toArray();
       if (inputs && inputs.length > 0) {
@@ -280,7 +401,6 @@ export class InvitadosComponent implements OnInit {
     this.formSubmitted = true;
     if (this.saving) return;
 
-    // Validations
     if (!this.whatsApp?.trim()) return;
     if (this.tipoInvitacion === 'Familiar' && !this.nombreFamilia?.trim()) return;
 
@@ -339,12 +459,11 @@ export class InvitadosComponent implements OnInit {
     this.invitados = grupo.invitados.map((i: any) => ({ nombre: i.nombre }));
     if (this.invitados.length === 0) this.invitados = [{ nombre: '' }];
 
-    // Detect and strip country code from stored number
     const fullNumber = grupo.whatsApp || '';
     const codes = this.codigosPaisInvitado
       .map(p => p.dialCode.replace(/[^\d]/g, ''))
-      .filter((v, i, a) => a.indexOf(v) === i) // unique
-      .sort((a, b) => b.length - a.length); // longest first (e.g. 593 before 5)
+      .filter((v, i, a) => a.indexOf(v) === i)
+      .sort((a, b) => b.length - a.length);
 
     const matched = codes.find(code => fullNumber.startsWith(code));
     if (matched) {
@@ -399,14 +518,11 @@ export class InvitadosComponent implements OnInit {
   }
 
   getInvitationUrl(grupo: any): string {
-    // Custom domain configured: append idInvitacion for personalized RSVP
     if (this.customDomainUrl) {
       return `${this.customDomainUrl}/${grupo.idInvitacion}`;
     }
-    // No custom domain: use traditional URL
     const name = this.selectedEventName.replace(/\s+/g, '-');
     const base = `${window.location.origin}/invitacion/${encodeURIComponent(name)}/${this.selectedEventId}`;
-    // Only include idInvitacion if ConfirmacionInvitados section is enabled
     if (this.pricingService.isSectionEnabled('ConfirmacionInvitados')) {
       return `${base}/${grupo.idInvitacion}`;
     }
@@ -506,7 +622,6 @@ export class InvitadosComponent implements OnInit {
     dialogRef.afterClosed().subscribe((paquete: any) => {
       if (!paquete) return;
 
-      // Abrir PagoDialog con la info del paquete
       const ev = this.paidEvents.find((e: any) => e.id === this.selectedEventId);
       const pagoRef = this.dialog.open(PagoDialogComponent, {
         width: '500px',

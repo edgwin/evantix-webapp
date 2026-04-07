@@ -1,6 +1,16 @@
-.sidenav-container {
+:host {
+  display: block;
   height: 100vh;
   overflow: hidden;
+}
+
+.sidenav-container {
+  height: 100%;
+  overflow: hidden;
+}
+
+:host ::ng-deep .mat-drawer-content {
+  height: auto !important;
 }
 
 .main-content {

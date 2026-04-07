@@ -13,7 +13,7 @@ import { HistoriaComponent } from '../../component/invitacion/historia/historia.
 import { IntinerarioComponent } from '../../component/invitacion/intinerario/intinerario.component';
 import { GaleriaComponent } from '../../component/invitacion/galeria/galeria.component';
 import { HospedajeComponent } from '../../component/invitacion/hospedaje/hospedaje.component';
-import { PhotoUploaderComponent } from '../../component/invitacion/photo-uploader/photo-uploader.component';
+
 import { MusicaComponent } from '../../component/invitacion/musica/musica.component';
 import { MuroFotosComponent } from '../../component/invitacion/muro-fotos/muro-fotos.component';
 import { TemplateService, Template } from '../../services/template.service';
@@ -34,7 +34,7 @@ import { environment } from '../../../environments/environment';
     styleUrl: './invitacion.component.css',
     imports: [PortadaComponent, CommonModule, FestejadosComponent, DondeCuandoComponent, IntinerarioComponent, IndicacionesComponent,
         MesaRegalosComponent, PersonasFavoritasComponent, HistoriaComponent, GaleriaComponent, HospedajeComponent,
-        PhotoUploaderComponent, MusicaComponent, MuroFotosComponent, TemplateSelectorComponent, CostBarComponent, SectionToggleComponent, FormsModule, TourOverlayComponent]
+        MusicaComponent, MuroFotosComponent, TemplateSelectorComponent, CostBarComponent, SectionToggleComponent, FormsModule, TourOverlayComponent]
 })
 
 export class InvitacionComponent implements OnDestroy {

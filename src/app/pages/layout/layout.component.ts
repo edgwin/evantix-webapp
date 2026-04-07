@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
 
 @Component({
     selector: 'app-layout',
@@ -6,12 +6,19 @@ import { Component, HostListener, OnInit } from '@angular/core';
     styleUrl: './layout.component.css',
     standalone: false
 })
-export class LayoutComponent implements OnInit {
+export class LayoutComponent implements OnInit, OnDestroy {
   sidenavOpen = true;
   isMobile = false;
 
   ngOnInit(): void {
     this.checkScreenSize();
+    // Prevent body from scrolling — only .main-content should scroll
+    document.body.style.overflow = 'hidden';
+  }
+
+  ngOnDestroy(): void {
+    // Restore body scroll for pages outside the layout (login, landing, etc.)
+    document.body.style.overflow = '';
   }
 
   @HostListener('window:resize')

@@ -1,4 +1,4 @@
-﻿import { Component, HostListener, Input } from '@angular/core';
+import { Component, HostListener, Input } from '@angular/core';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { CommonModule } from '@angular/common';
@@ -9,14 +9,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { MapaModalComponent } from '../../mapa-modal/mapa-modal.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { PopupHtmlComponent } from '../../popup-html/popup-html.component';
+
 
 
 @Component({
     selector: 'app-donde-cuando',
     templateUrl: './donde-cuando.component.html',
     styleUrls: ['./donde-cuando.component.css', './../icomoon.css'],
-    imports: [CommonModule, FormsModule, MatInputModule, DragDropModule, PopupHtmlComponent]
+    imports: [CommonModule, FormsModule, MatInputModule, DragDropModule]
 })
 export class DondeCuandoComponent {
   constructor(

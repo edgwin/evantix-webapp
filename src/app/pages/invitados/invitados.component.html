@@ -62,7 +62,7 @@
             <input type="text" [(ngModel)]="nombreFamilia" placeholder="Ej: Familia López Sánchez"
               class="form-input"
               [class.input-error]="formSubmitted && tipoInvitacion === 'Familiar' && !nombreFamilia.trim()" />
-              @if (formSubmitted && tipoInvitacion === 'Familiar' && !nombreFamilia?.trim()) {
+              @if (formSubmitted && tipoInvitacion === 'Familiar' && !nombreFamilia.trim()) {
                 <small class="error-msg"
                   >Este campo es
                 obligatorio</small>
@@ -86,7 +86,7 @@
               <label>WhatsApp <span class="required">*</span></label>
               <input type="tel" [(ngModel)]="whatsApp" placeholder="Ej: 3312345678" class="form-input"
                 [class.input-error]="formSubmitted && !whatsApp.trim()" />
-                @if (formSubmitted && !whatsApp?.trim()) {
+                @if (formSubmitted && !whatsApp.trim()) {
                   <small class="error-msg">Este campo es
                   obligatorio</small>
                 }
@@ -149,16 +149,12 @@
             </div>
             <div class="wa-actions">
               <button class="btn wa-btn wa-btn-buy" (click)="openBuyPackage()">💳 Comprar Paquete</button>
-              <!-- <button class="btn wa-btn wa-btn-send" (click)="massSendAll()"
-              [disabled]="waCreditsDisponibles === 0 || waSending" *ngIf="waCreditsDisponibles > 0">
-              {{ waSending ? '⏳ Enviando...' : '📤 Enviar a Todos' }}
-            </button> -->
-            @if (waCreditsDisponibles > 0) {
-              <button class="btn wa-btn wa-btn-resend" (click)="massResendUnconfirmed()"
-                [disabled]="waCreditsDisponibles === 0 || waSending">
-                {{ waSending ? '⏳ Enviando...' : '🔄 Enviar WhatsApp a Invitados aun no Confirmados' }}
-              </button>
-            }
+              @if (waCreditsDisponibles > 0) {
+                <button class="btn wa-btn wa-btn-resend" (click)="massResendUnconfirmed()"
+                  [disabled]="waCreditsDisponibles === 0 || waSending">
+                  {{ waSending ? '⏳ Enviando...' : '🔄 Enviar WhatsApp a Invitados aun no Confirmados' }}
+                </button>
+              }
           </div>
         </div>
         @if (waInfoExpanded) {
@@ -176,16 +172,51 @@
       </div>
     }
 
+    <!-- Search & Filters for Invitados -->
+    @if (selectedEventId && !loading && grupos.length > 0) {
+      <div class="search-bar">
+        <div class="search-field">
+          <label>Nombre</label>
+          <input type="text" [(ngModel)]="searchName" (input)="onSearchChange()" placeholder="Buscar invitado o grupo..." class="search-input" />
+        </div>
+        <div class="search-field">
+          <label>Estatus</label>
+          <select [(ngModel)]="searchEstatus" (change)="onSearchChange()" class="search-input">
+            <option value="">Todos</option>
+            <option value="confirmado">Confirmado</option>
+            <option value="rechazado">Rechazado</option>
+            <option value="asistio">Asistió</option>
+            <option value="pendiente">Pendiente</option>
+          </select>
+        </div>
+        @if (searchName || searchEstatus) {
+          <button class="btn btn-clear" (click)="clearFilters()">✕ Limpiar</button>
+        }
+      </div>
+    }
+
     <!-- Grid -->
     @if (selectedEventId && !loading) {
       <div class="grid-container">
         @if (grupos.length > 0) {
+          @if (filteredGrupos.length > 0) {
+            <div class="results-info">
+              Mostrando {{ (currentPage - 1) * PAGE_SIZE + 1 }}–{{ currentPage * PAGE_SIZE > filteredGrupos.length ? filteredGrupos.length : currentPage * PAGE_SIZE }} de {{ filteredGrupos.length }} grupo{{ filteredGrupos.length !== 1 ? 's' : '' }}
+              @if (filteredGrupos.length !== grupos.length) {
+                <span class="filter-note">(filtrado de {{ grupos.length }})</span>
+              }
+            </div>
+          }
           <table class="invitados-grid">
             <thead>
               <tr>
                 <th style="width: 30px;"></th>
-                <th>Nombre</th>
-                <th>Email</th>
+                <th class="sortable-header" (click)="onSort('nombre')">
+                  Nombre <span class="sort-icon">{{ getSortIcon('nombre') }}</span>
+                </th>
+                <th class="sortable-header" (click)="onSort('email')">
+                  Email <span class="sort-icon">{{ getSortIcon('email') }}</span>
+                </th>
                 @if (confirmacionEnabled) {
                   <th>Inv. Confirmada</th>
                 }
@@ -198,7 +229,7 @@
               </tr>
             </thead>
             <tbody>
-              @for (grupo of grupos; track grupo) {
+              @for (grupo of visibleGrupos; track grupo) {
                 <!-- Main row -->
                 <tr class="grupo-row">
                   <td>
@@ -296,21 +327,40 @@
                 }
               </tbody>
             </table>
-          }
-          @if (grupos.length === 0) {
-            <div class="no-data">
-              <p>Sin invitados para este evento</p>
+
+          <!-- Pagination -->
+          @if (totalPages > 1) {
+            <div class="pagination">
+              <button class="page-btn" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">‹ Anterior</button>
+              @for (page of pages; track page) {
+                <button class="page-btn" [class.active]="page === currentPage" (click)="goToPage(page)">{{ page }}</button>
+              }
+              <button class="page-btn" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">Siguiente ›</button>
             </div>
           }
-        </div>
-      }
 
-      @if (loading) {
-        <div class="loading">
-          <div class="loader"></div>
-          <p>Cargando invitados...</p>
-        </div>
-      }
+          <!-- No results from filter -->
+          @if (filteredGrupos.length === 0) {
+            <div class="no-data">
+              <p>No se encontraron invitados con los filtros aplicados.</p>
+              <button class="btn btn-secondary" (click)="clearFilters()">Limpiar filtros</button>
+            </div>
+          }
+        }
+        @if (grupos.length === 0) {
+          <div class="no-data">
+            <p>Sin invitados para este evento</p>
+          </div>
+        }
+      </div>
+    }
+
+    @if (loading) {
+      <div class="loading">
+        <div class="loader"></div>
+        <p>Cargando invitados...</p>
+      </div>
+    }
 
 <!-- Product Tour Overlay -->
 <app-tour-overlay></app-tour-overlay>

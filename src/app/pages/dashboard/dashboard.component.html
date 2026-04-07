@@ -34,21 +34,61 @@
     </div>
   }
 
+  <!-- Search & Filters -->
+  @if (!loading && rowData.length > 0) {
+    <div class="search-bar">
+      <div class="search-field">
+        <label>Nombre</label>
+        <input type="text" [(ngModel)]="searchName" (input)="onSearchChange()" placeholder="Buscar por nombre..." class="search-input" />
+      </div>
+      <div class="search-field">
+        <label>Estatus</label>
+        <select [(ngModel)]="searchEstatus" (change)="onSearchChange()" class="search-input">
+          <option value="">Todos</option>
+          @for (status of uniqueStatuses; track status) {
+            <option [value]="status">{{ status }}</option>
+          }
+        </select>
+      </div>
+      <div class="search-field">
+        <label>Fecha</label>
+        <input type="text" [(ngModel)]="searchFecha" (input)="onSearchChange()" placeholder="Ej: abril, 2026..." class="search-input" />
+      </div>
+      @if (searchName || searchEstatus || searchFecha) {
+        <button class="btn btn-clear" (click)="clearFilters()">✕ Limpiar</button>
+      }
+    </div>
+  }
+
   <!-- Grid -->
   @if (!loading && rowData.length > 0) {
     <div class="grid-container">
+      @if (filteredRows.length > 0) {
+        <div class="results-info">
+          Mostrando {{ (currentPage - 1) * PAGE_SIZE + 1 }}–{{ currentPage * PAGE_SIZE > filteredRows.length ? filteredRows.length : currentPage * PAGE_SIZE }} de {{ filteredRows.length }} evento{{ filteredRows.length !== 1 ? 's' : '' }}
+          @if (filteredRows.length !== rowData.length) {
+            <span class="filter-note">(filtrado de {{ rowData.length }})</span>
+          }
+        </div>
+      }
       <table class="eventos-grid">
         <thead>
           <tr>
-            <th>Evento</th>
-            <th>Fecha</th>
-            <th>Estatus</th>
+            <th class="sortable-header" (click)="onSort('nombre')">
+              Evento <span class="sort-icon">{{ getSortIcon('nombre') }}</span>
+            </th>
+            <th class="sortable-header" (click)="onSort('fecha')">
+              Fecha <span class="sort-icon">{{ getSortIcon('fecha') }}</span>
+            </th>
+            <th class="sortable-header" (click)="onSort('estatus')">
+              Estatus <span class="sort-icon">{{ getSortIcon('estatus') }}</span>
+            </th>
             <th>PIN Check-In</th>
             <th>Opciones</th>
           </tr>
         </thead>
         <tbody>
-          @for (evento of rowData; track evento) {
+          @for (evento of visibleRows; track evento) {
             <tr class="evento-row">
               <td class="evento-name-cell">
                 @if (evento.imagen) {
@@ -87,7 +127,6 @@
               <td class="actions-cell">
                 <button class="action-btn edit" (click)="onActionHandler({type: 'edit', row: evento})"
                 title="Editar">✏️</button>
-                <!-- <button class="action-btn" (click)="onActionHandler({type: 'invitacion', row: evento})" title="Diseñar Invitación" *ngIf="evento.showInvitation">🎨</button> -->
                 @if (evento.showInvitation) {
                   <button class="action-btn" (click)="onActionHandler({type: 'verInvitacion', row: evento})"
                   title="Ver Invitación">👁️</button>
@@ -110,6 +149,25 @@
         </tbody>
       </table>
     </div>
+
+    <!-- Pagination -->
+    @if (totalPages > 1) {
+      <div class="pagination">
+        <button class="page-btn" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">‹ Anterior</button>
+        @for (page of pages; track page) {
+          <button class="page-btn" [class.active]="page === currentPage" (click)="goToPage(page)">{{ page }}</button>
+        }
+        <button class="page-btn" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">Siguiente ›</button>
+      </div>
+    }
+
+    <!-- No results from filter -->
+    @if (filteredRows.length === 0) {
+      <div class="no-data">
+        <p>No se encontraron eventos con los filtros aplicados.</p>
+        <button class="btn btn-secondary" (click)="clearFilters()">Limpiar filtros</button>
+      </div>
+    }
   }
 
   <!-- Empty state -->
