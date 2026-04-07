@@ -1,0 +1,88 @@
+# =============================================================================
+# Azure DevOps CI/CD Pipeline — Evantix Angular Frontend
+# Triggers on push to main → builds production SPA, deploys to VPS
+# =============================================================================
+
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  nodeVersion: '20.x'
+  buildDir: '$(Build.ArtifactStagingDirectory)/frontend'
+  remoteDir: '/var/www/evantix'
+
+stages:
+  - stage: Build
+    displayName: 'Build Angular'
+    jobs:
+      - job: BuildJob
+        displayName: 'ng build production'
+        steps:
+          - task: NodeTool@0
+            displayName: 'Install Node.js'
+            inputs:
+              versionSpec: '$(nodeVersion)'
+
+          - script: npm ci
+            displayName: 'Install dependencies'
+
+          - script: npx ng build --configuration production
+            displayName: 'Build production'
+
+          - task: CopyFiles@2
+            displayName: 'Copy build output'
+            inputs:
+              SourceFolder: 'dist/angular17_login_signup_localstorage/browser'
+              Contents: '**'
+              TargetFolder: '$(buildDir)'
+
+          - task: PublishBuildArtifacts@1
+            displayName: 'Upload artifact'
+            inputs:
+              PathtoPublish: '$(buildDir)'
+              ArtifactName: 'frontend'
+
+  - stage: Deploy
+    displayName: 'Deploy to VPS'
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - deployment: DeployToVPS
+        displayName: 'Deploy Frontend'
+        environment: 'production'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: DownloadBuildArtifacts@1
+                  displayName: 'Download artifact'
+                  inputs:
+                    buildType: 'current'
+                    downloadType: 'single'
+                    artifactName: 'frontend'
+                    downloadPath: '$(System.ArtifactsDirectory)'
+
+                - task: CopyFilesOverSSH@0
+                  displayName: 'Upload to VPS'
+                  inputs:
+                    sshEndpoint: 'evantix-vps'
+                    sourceFolder: '$(System.ArtifactsDirectory)/frontend'
+                    contents: '**'
+                    targetFolder: '/tmp/deploy-frontend'
+                    cleanTargetFolder: true
+
+                - task: SSH@0
+                  displayName: 'Replace frontend files'
+                  inputs:
+                    sshEndpoint: 'evantix-vps'
+                    runOptions: 'inline'
+                    inline: |
+                      sudo rm -rf $(remoteDir)/*
+                      sudo cp -r /tmp/deploy-frontend/* $(remoteDir)/
+                      sudo chown -R www-data:www-data $(remoteDir)
+                      echo "Frontend deployed: $(date)"
