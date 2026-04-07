@@ -11,6 +11,7 @@ import { environment } from '../../../environments/environment';
 
 declare const google: any;
 declare const FB: any;
+declare const grecaptcha: any;
 
 @Component({
     selector: 'app-login',
@@ -28,6 +29,12 @@ export class LoginComponent implements AfterViewInit, OnInit {
   isForgotVisible: boolean = false;
   loginObj: LoginModel  = new LoginModel();
   private facebookLoginInProgress = false;
+
+  // reCAPTCHA
+  failedAttempts = 0;
+  showCaptcha = false;
+  captchaToken: string | null = null;
+  private captchaWidgetId: number | null = null;
 
   constructor(private fb: FormBuilder, private router: Router, private userService: UserService, private notificationService: NotificationService, 
               private http: HttpClient, private route: ActivatedRoute, private passwordHelper: PasswordHelper){
@@ -153,25 +160,68 @@ export class LoginComponent implements AfterViewInit, OnInit {
   }
 
 
-  onLogin() {    
+  onLogin() {
     if (this.signInForm.status == 'VALID') {
+      // Validate captcha if required
+      if (this.showCaptcha && !this.captchaToken) {
+        this.notificationService.show('error', 'Por favor completa el captcha');
+        return;
+      }
       this.errorMessage = '';
       this.isLoading = true;
       let userData: UserLoginRequest = this.signInForm.value;
       userData.AppId = environment.appId;
-      
+
       this.userService.loginUser(userData).subscribe({
-        next: (res: any) => {          
-          localStorage.setItem('access_token', res.access_token);    
+        next: (res: any) => {
+          localStorage.setItem('access_token', res.access_token);
           localStorage.setItem('loggedUser', JSON.stringify(res.user));
+          this.failedAttempts = 0;
+          this.showCaptcha = false;
           this.redirectAfterLogin();
           this.isLoading = false;
         },
         error: err => {
-          this.notificationService.show('error',err.error)
+          this.notificationService.show('error', err.error);
           this.isLoading = false;
+          this.failedAttempts++;
+          if (this.failedAttempts >= 2 && !this.showCaptcha) {
+            this.showCaptcha = true;
+            this.renderCaptcha();
+          }
+          // Reset captcha after each failed attempt
+          if (this.showCaptcha) {
+            this.captchaToken = null;
+            this.resetCaptcha();
+          }
         }
       });
+    }
+  }
+
+  onCaptchaResolved(token: string) {
+    this.captchaToken = token;
+  }
+
+  private renderCaptcha(): void {
+    // Wait for grecaptcha to load and DOM element to exist
+    setTimeout(() => {
+      if (typeof grecaptcha !== 'undefined' && document.getElementById('recaptcha-container')) {
+        this.captchaWidgetId = grecaptcha.render('recaptcha-container', {
+          sitekey: environment.recaptchaSiteKey,
+          callback: (token: string) => this.onCaptchaResolved(token),
+          'expired-callback': () => { this.captchaToken = null; }
+        });
+      } else {
+        // Retry if not ready yet
+        setTimeout(() => this.renderCaptcha(), 500);
+      }
+    }, 100);
+  }
+
+  private resetCaptcha(): void {
+    if (typeof grecaptcha !== 'undefined' && this.captchaWidgetId !== null) {
+      try { grecaptcha.reset(this.captchaWidgetId); } catch (e) { }
     }
   }
 

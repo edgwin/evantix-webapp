@@ -477,3 +477,25 @@
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+/* ==== CAPTCHA SECTION ==== */
+.captcha-section {
+  margin: 16px 0;
+  animation: slideDown 0.3s ease;
+}
+
+.captcha-warning {
+  font-size: 13px;
+  color: #e65100;
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin: 0 0 12px;
+  font-weight: 500;
+}
+
+#recaptcha-container {
+  display: flex;
+  justify-content: center;
+}

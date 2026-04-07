@@ -82,7 +82,13 @@
                 <button type="button" class="btn-forgot" (click)="forgotPassword()" [disabled]="isLoading">Enviar</button>
               </div>
             }
-            <button type="submit" class="btn-primary" [disabled]="isLoading" [class.loading]="isLoading">
+            @if (showCaptcha) {
+              <div class="captcha-section">
+                <p class="captcha-warning">⚠️ Demasiados intentos fallidos. Verifica que no eres un robot.</p>
+                <div id="recaptcha-container"></div>
+              </div>
+            }
+            <button type="submit" class="btn-primary" [disabled]="isLoading || (showCaptcha && !captchaToken)" [class.loading]="isLoading">
               @if (!isLoading) {
                 <span>Ingresar</span>
               }

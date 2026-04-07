@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MesaService } from '../../services/mesa.service';
 import { InvitadoService } from '../../services/invitado.service';
 import { NotificationService } from '../../services/notification.service';
+import { PricingService } from '../../services/pricing.service';
 import { TourService } from '../../services/tour.service';
 
 @Component({
@@ -14,10 +15,11 @@ export class MesasComponent implements OnInit {
   paidEvents: any[] = [];
   selectedEventId: string = '';
   mesas: any[] = [];
-  allInvitados: any[] = []; // flat list of all invitados across groups
+  allInvitados: any[] = [];
   loading = false;
   isAdmin = false;
   hasInvitados = false;
+  confirmacionEnabled = false;
 
   // Form
   showForm = false;
@@ -32,6 +34,7 @@ export class MesasComponent implements OnInit {
     private mesaService: MesaService,
     private invitadoService: InvitadoService,
     private notificationService: NotificationService,
+    private pricingService: PricingService,
     private tourService: TourService
   ) { }
 
@@ -54,6 +57,7 @@ export class MesasComponent implements OnInit {
         this.paidEvents = events;
         if (events.length > 0) {
           this.selectedEventId = events[0].id;
+          this.loadConfirmacionState();
           this.loadData();
         }
       },
@@ -63,7 +67,18 @@ export class MesasComponent implements OnInit {
 
   onEventChange() {
     this.closeForm();
+    this.loadConfirmacionState();
     this.loadData();
+  }
+
+  private loadConfirmacionState(): void {
+    this.pricingService.getEventCost(this.selectedEventId).subscribe({
+      next: (cost: any) => {
+        const section = cost.sections?.find((s: any) => s.sectionKey === 'ConfirmacionInvitados');
+        this.confirmacionEnabled = section?.isEnabled ?? false;
+      },
+      error: () => this.confirmacionEnabled = false
+    });
   }
 
   loadData() {
@@ -73,20 +88,23 @@ export class MesasComponent implements OnInit {
     // Load invitados first, then mesas
     this.invitadoService.getGruposByEvent(this.selectedEventId).subscribe({
       next: (grupos) => {
-        // Build flat invitado list: { id, nombre, grupoNombre, mesaId }
+        // Build flat invitado list — include ALL invitados
         this.allInvitados = [];
         for (const grupo of grupos) {
           const grupoName = grupo.nombreFamilia || grupo.invitados?.[0]?.nombre || 'Sin nombre';
           for (const inv of (grupo.invitados || [])) {
-            // Incluir invitados Confirmados (1) y que Asistieron (3)
             const status = Number(inv.invitacionConfirmada);
-            if (status !== 1 && status !== 3) continue;
+            let displayName = `${grupoName} - ${inv.nombre}`;
+            // Show "(no confirmado)" only if RSVP section is enabled and guest hasn't confirmed
+            if (this.confirmacionEnabled && status !== 1 && status !== 3) {
+              displayName += ' (no confirmado)';
+            }
             this.allInvitados.push({
               id: inv.id,
               nombre: inv.nombre,
               grupoNombre: grupoName,
               mesaId: inv.mesaId || inv.MesaId || null,
-              displayName: `${grupoName} - ${inv.nombre}`
+              displayName
             });
           }
         }

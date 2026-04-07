@@ -4,5 +4,6 @@ export const environment = {
   identityApiUrl: 'http://localhost:53056',
   googleClientId: '579973959669-m41nol7osd3i1rvdb1fhhm5p4alnh71o.apps.googleusercontent.com',
   appId: 1605,
-  homeUrl: 'https://localhost:4200'
+  homeUrl: 'https://localhost:4200',
+  recaptchaSiteKey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
 };
