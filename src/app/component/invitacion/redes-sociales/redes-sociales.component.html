@@ -1,0 +1,64 @@
+<section class="redes-sociales-section">
+
+  <div class="redes-content">
+    <div class="section-header">
+      <span class="header-line"></span>
+      <h1>Redes Sociales</h1>
+      <span class="header-line"></span>
+    </div>
+    <p class="section-subtitle">¡Síguenos en nuestras redes sociales!</p>
+
+    <div class="cards-container">
+      @for (item of data?.details; track item; let i = $index) {
+        <div class="social-card"
+          [style.animation-delay]="(i * 0.1) + 's'">
+          @if (!isReadOnly && (data?.details?.length || 0) > 1) {
+            <img src="../../../../assets/BtnDelete.png" alt="" class="delete-btn" title="Click para eliminar elemento"
+              (click)="triggerElementDelete(item.id)">
+          }
+          <div class="card-icon-wrapper">
+            <div class="card-icon">
+              <img [src]="item.imagen || 'assets/RedesSociales/SocialNetwork.png'" alt="icono">
+            </div>
+            @if (!isReadOnly) {
+              <button class="icon-edit-btn" (click)="openPopup(i)" title="Cambiar icono">
+                <img src="assets/editarImagen.png" alt="editar">
+              </button>
+            }
+          </div>
+          <div class="card-content">
+            <h3 class="card-title" [attr.contenteditable]="!isReadOnly" [attr.data-id-red-social]="item.id"
+              (keydown)="onRedKeyDown($event)" (click)="!isReadOnly && onClickRed(item.id)"
+              (blur)="saveContent($event, item.id, 'red')">
+              {{item.red}}
+            </h3>
+            <div class="card-divider"></div>
+            <p class="card-url" [attr.contenteditable]="!isReadOnly" [attr.data-id-url-social]="item.id"
+              (keydown)="onUrlKeyDown($event)" (click)="!isReadOnly && onClickUrl(item.id)"
+              (blur)="saveContent($event, item.id, 'url')">
+              {{item.url}}
+            </p>
+            @if (isReadOnly && item.url) {
+              <a [href]="item.url" target="_blank" class="social-link-btn">
+                Visitar ↗
+              </a>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    @if (!isReadOnly && !loading && (data?.details?.length || 0) < maxItems) {
+      <div class="add-btn-container">
+        <button class="add-btn" (click)="nuevaRedSocial()" title="Click para agregar red social">
+          <span class="add-icon">+</span>
+          <span>Agregar red social</span>
+        </button>
+      </div>
+    }
+  </div>
+</section>
+
+<app-popup-html [visible]="showPopup" [images]="images" title="Selecciona una imagen" (closed)="onClosePopup()"
+  (imageSelected)="onImageSelected($event)">
+</app-popup-html>

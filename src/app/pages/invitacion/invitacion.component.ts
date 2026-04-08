@@ -13,6 +13,7 @@ import { HistoriaComponent } from '../../component/invitacion/historia/historia.
 import { IntinerarioComponent } from '../../component/invitacion/intinerario/intinerario.component';
 import { GaleriaComponent } from '../../component/invitacion/galeria/galeria.component';
 import { HospedajeComponent } from '../../component/invitacion/hospedaje/hospedaje.component';
+import { RedesSocialesComponent } from '../../component/invitacion/redes-sociales/redes-sociales.component';
 
 import { MusicaComponent } from '../../component/invitacion/musica/musica.component';
 import { MuroFotosComponent } from '../../component/invitacion/muro-fotos/muro-fotos.component';
@@ -33,7 +34,7 @@ import { environment } from '../../../environments/environment';
     templateUrl: './invitacion.component.html',
     styleUrl: './invitacion.component.css',
     imports: [PortadaComponent, CommonModule, FestejadosComponent, DondeCuandoComponent, IntinerarioComponent, IndicacionesComponent,
-        MesaRegalosComponent, PersonasFavoritasComponent, HistoriaComponent, GaleriaComponent, HospedajeComponent,
+        MesaRegalosComponent, PersonasFavoritasComponent, HistoriaComponent, GaleriaComponent, HospedajeComponent, RedesSocialesComponent,
         MusicaComponent, MuroFotosComponent, TemplateSelectorComponent, CostBarComponent, SectionToggleComponent, FormsModule, TourOverlayComponent]
 })
 

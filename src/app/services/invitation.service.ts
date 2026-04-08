@@ -36,6 +36,7 @@ export class InvitationService {
   private historia = 'Historia/';
   private galeria = 'Galeria/';
   private hospedaje = 'Hospedaje/';
+  private redesSociales = 'RedesSociales/';
   private photosEvento = 'PhotosEvento/';
   private musicLibrary = 'MusicLibrary/';
   private saveSong = 'SaveSong/';
@@ -251,6 +252,23 @@ export class InvitationService {
     return this.http.post(url, eventId, { headers: this.getAuthHeaders() }).pipe(
       tap(() => this.emitMutation(eventId))
     );
+  }
+
+  getSocialNetworks(eventId: string) {
+    const url = `${this.apiUrl}${this.getInvitationData}${this.redesSociales}${eventId}`;
+    return this.http.get(url, { headers: this.getAuthHeaders() });
+  }
+
+  postNewSocialNetwork(eventId: string) {
+    const url = `${this.apiUrl}${this.getInvitationData}${this.redesSociales}${eventId}`;
+    return this.http.post(url, eventId, { headers: this.getAuthHeaders() }).pipe(
+      tap(() => this.emitMutation(eventId))
+    );
+  }
+
+  deleteSocialNetwork(socialNetworkId: string) {
+    const url = `${this.apiUrl}${this.getInvitationData}${this.redesSociales}${socialNetworkId}`;
+    return this.http.delete(url, { headers: this.getAuthHeaders() });
   }
 
   uploadPhotos(eventId: string, formData: any) {

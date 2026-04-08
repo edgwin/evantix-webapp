@@ -1,40 +1,39 @@
 @if (loading) {
-  <div style="text-align: center;">
-    <img src="../../../assets/images/loading2.gif" alt="Cargando..." width="25%" />
-  </div>
+<div style="text-align: center;">
+  <img src="../../../assets/images/loading2.gif" alt="Cargando..." width="25%" />
+</div>
 }
 @if (!loading) {
-  <div>
-    <!-- Botón flotante: Regresar al Dashboard (solo en edicion/preview, NO guest) -->
-    @if (!isGuestView) {
-      <button class="floating-btn floating-back" (click)="goToDashboard()"
-        title="Regresar al Dashboard">
-        ←
-      </button>
-    }
-    <!-- Botón flotante: Scroll al inicio (solo en edicion/preview, NO guest) -->
-    @if (!isGuestView) {
-      <button class="floating-btn floating-scroll-top" (click)="scrollToTop()" title="Ir al inicio">
-        ↑
-      </button>
-    }
-    <!-- Barra de costo fixed -->
-    <app-cost-bar [isReadOnly]="isReadOnly"></app-cost-bar>
-    @if (!isReadOnly) {
-      <div style="height: 55px;"></div>
-    }
-    @if (!isReadOnly) {
-      <app-template-selector [eventId]="eventId" [eventType]="data.eventType"
-        (templateSelected)="onTemplateSelected($event)">
-      </app-template-selector>
-    }
-    <!-- Secciones base (siempre habilitadas) -->
-    <app-portada [eventId]="eventId" [data]="data.portada" [eventType]="data.eventType" [isReadOnly]="isReadOnly"
+<div>
+  <!-- Botón flotante: Regresar al Dashboard (solo en edicion/preview, NO guest) -->
+  @if (!isGuestView) {
+  <button class="floating-btn floating-back" (click)="goToDashboard()" title="Regresar al Dashboard">
+    ←
+  </button>
+  }
+  <!-- Botón flotante: Scroll al inicio (solo en edicion/preview, NO guest) -->
+  @if (!isGuestView) {
+  <button class="floating-btn floating-scroll-top" (click)="scrollToTop()" title="Ir al inicio">
+    ↑
+  </button>
+  }
+  <!-- Barra de costo fixed -->
+  <app-cost-bar [isReadOnly]="isReadOnly"></app-cost-bar>
+  @if (!isReadOnly) {
+  <div style="height: 55px;"></div>
+  }
+  @if (!isReadOnly) {
+  <app-template-selector [eventId]="eventId" [eventType]="data.eventType"
+    (templateSelected)="onTemplateSelected($event)">
+  </app-template-selector>
+  }
+  <!-- Secciones base (siempre habilitadas) -->
+  <app-portada [eventId]="eventId" [data]="data.portada" [eventType]="data.eventType" [isReadOnly]="isReadOnly"
     [maxItems]="getSectionMaxItems('Portada')" [aiEnabled]="isSectionEnabled('AISuggestions')"></app-portada>
-    <app-festejados [eventId]="eventId" [data]="data.festejados" [eventType]="data.eventType" [isReadOnly]="isReadOnly"
+  <app-festejados [eventId]="eventId" [data]="data.festejados" [eventType]="data.eventType" [isReadOnly]="isReadOnly"
     [aiEnabled]="isSectionEnabled('AISuggestions')"></app-festejados>
-    <app-indicaciones [eventId]="eventId" [data]="data.indicaciones" [eventType]="data.eventType"
-      [isReadOnly]="isReadOnly" [maxItems]="getSectionMaxItems('Indicaciones')"
+  <app-indicaciones [eventId]="eventId" [data]="data.indicaciones" [eventType]="data.eventType"
+    [isReadOnly]="isReadOnly" [maxItems]="getSectionMaxItems('Indicaciones')"
     [aiEnabled]="isSectionEnabled('AISuggestions')"></app-indicaciones>
   <div [ngStyle]="{
       'background-image': 'url(' + templateService.getMarbleBackground() + ')',
@@ -44,15 +43,14 @@
       'padding-top': '2vh',
       'padding-bottom': '2vh'
     }">
-      <app-donde-cuando [eventId]="eventId" [data]="data.dondeCuando" [isReadOnly]="isReadOnly"
+    <app-donde-cuando [eventId]="eventId" [data]="data.dondeCuando" [isReadOnly]="isReadOnly"
       [maxItems]="getSectionMaxItems('DondeCuando')"></app-donde-cuando>
-      <app-intinerario [eventId]="eventId" [dataIntinerario]="data.intinerario" [eventType]="data.eventType"
-        [isReadOnly]="isReadOnly" [maxItems]="getSectionMaxItems('Intinerario')"
+    <app-intinerario [eventId]="eventId" [dataIntinerario]="data.intinerario" [eventType]="data.eventType"
+      [isReadOnly]="isReadOnly" [maxItems]="getSectionMaxItems('Intinerario')"
       [aiEnabled]="isSectionEnabled('AISuggestions')"></app-intinerario>
-    </div>
-    <app-mesa-regalos [eventId]="eventId" [data]="data.mesaRegalos" [eventType]="data.eventType" [isReadOnly]="isReadOnly"
+  </div>
+  <app-mesa-regalos [eventId]="eventId" [data]="data.mesaRegalos" [eventType]="data.eventType" [isReadOnly]="isReadOnly"
     [maxItems]="getSectionMaxItems('MesaRegalos')" [aiEnabled]="isSectionEnabled('AISuggestions')"></app-mesa-regalos>
-    <!-- Secciones opcionales (con toggle) -->
   <div [ngStyle]="{
       'background-image': 'url(' + templateService.getMarbleBackground() + ')',
       'background-size': 'cover',
@@ -61,237 +59,245 @@
       'padding-top': '2vh',
       'padding-bottom': '2vh'
     }">
-      <!-- Personas Favoritas -->
-      <app-section-toggle sectionKey="PersonasFavoritas" [sectionName]="getSectionName('PersonasFavoritas')"
-        [isEnabled]="isSectionEnabled('PersonasFavoritas')" [enableCost]="getSectionEnableCost('PersonasFavoritas')"
-        [enabledByDefault]="false" [isReadOnly]="isReadOnly" [loading]="togglingSection === 'PersonasFavoritas'"
-        (enable)="onEnableSection($event)" (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
-        <app-personas-favoritas [eventId]="eventId" [data]="data.personasFavoritas" [eventType]="data.eventType"
-          [isReadOnly]="isReadOnly" [maxItems]="getSectionMaxItems('PersonasFavoritas')"
+    <app-redes-sociales [eventId]="eventId" [data]="data.redesSociales" [isReadOnly]="isReadOnly"
+      [maxItems]="getSectionMaxItems('RedesSociales')"></app-redes-sociales>
+  </div>
+  <!-- Secciones opcionales (con toggle) -->
+  <div [ngStyle]="{
+      'background-image': 'url(' + templateService.getMarbleBackground() + ')',
+      'background-size': 'cover',
+      'background-position': 'center',
+      'background-repeat': 'no-repeat',
+      'padding-top': '2vh',
+      'padding-bottom': '2vh'
+    }">
+    <!-- Personas Favoritas -->
+    <app-section-toggle sectionKey="PersonasFavoritas" [sectionName]="getSectionName('PersonasFavoritas')"
+      [isEnabled]="isSectionEnabled('PersonasFavoritas')" [enableCost]="getSectionEnableCost('PersonasFavoritas')"
+      [enabledByDefault]="false" [isReadOnly]="isReadOnly" [loading]="togglingSection === 'PersonasFavoritas'"
+      (enable)="onEnableSection($event)" (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
+      <app-personas-favoritas [eventId]="eventId" [data]="data.personasFavoritas" [eventType]="data.eventType"
+        [isReadOnly]="isReadOnly" [maxItems]="getSectionMaxItems('PersonasFavoritas')"
         [aiEnabled]="isSectionEnabled('AISuggestions')"></app-personas-favoritas>
-      </app-section-toggle>
-      <!-- Historia -->
-      <app-section-toggle sectionKey="Historia" [sectionName]="getSectionName('Historia')"
-        [isEnabled]="isSectionEnabled('Historia')" [enableCost]="getSectionEnableCost('Historia')"
-        [enabledByDefault]="false" [isReadOnly]="isReadOnly" [loading]="togglingSection === 'Historia'"
-        (enable)="onEnableSection($event)" (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
-        <app-historia [eventId]="eventId" [dataHistoria]="data.historia" [eventType]="data.eventType"
-          [isReadOnly]="isReadOnly" [maxItems]="getSectionMaxItems('Historia')"
+    </app-section-toggle>
+    <!-- Historia -->
+    <app-section-toggle sectionKey="Historia" [sectionName]="getSectionName('Historia')"
+      [isEnabled]="isSectionEnabled('Historia')" [enableCost]="getSectionEnableCost('Historia')"
+      [enabledByDefault]="false" [isReadOnly]="isReadOnly" [loading]="togglingSection === 'Historia'"
+      (enable)="onEnableSection($event)" (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
+      <app-historia [eventId]="eventId" [dataHistoria]="data.historia" [eventType]="data.eventType"
+        [isReadOnly]="isReadOnly" [maxItems]="getSectionMaxItems('Historia')"
         [aiEnabled]="isSectionEnabled('AISuggestions')"></app-historia>
-      </app-section-toggle>
-      <!-- Galería de Fotos -->
-      <app-section-toggle sectionKey="GaleriaFotos" [sectionName]="getSectionName('GaleriaFotos')"
-        [isEnabled]="isSectionEnabled('GaleriaFotos')" [enableCost]="getSectionEnableCost('GaleriaFotos')"
-        [enabledByDefault]="false" [isReadOnly]="isReadOnly" [loading]="togglingSection === 'GaleriaFotos'"
-        (enable)="onEnableSection($event)" (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
-        <app-galeria [eventId]="eventId" [data]="data.galeriaFotos" [isReadOnly]="isReadOnly"
+    </app-section-toggle>
+    <!-- Galería de Fotos -->
+    <app-section-toggle sectionKey="GaleriaFotos" [sectionName]="getSectionName('GaleriaFotos')"
+      [isEnabled]="isSectionEnabled('GaleriaFotos')" [enableCost]="getSectionEnableCost('GaleriaFotos')"
+      [enabledByDefault]="false" [isReadOnly]="isReadOnly" [loading]="togglingSection === 'GaleriaFotos'"
+      (enable)="onEnableSection($event)" (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
+      <app-galeria [eventId]="eventId" [data]="data.galeriaFotos" [isReadOnly]="isReadOnly"
         [maxItems]="getSectionMaxItems('GaleriaFotos')"></app-galeria>
-      </app-section-toggle>
-      <!-- Hospedaje -->
-      <app-section-toggle sectionKey="Hospedaje" [sectionName]="getSectionName('Hospedaje')"
-        [isEnabled]="isSectionEnabled('Hospedaje')" [enableCost]="getSectionEnableCost('Hospedaje')"
-        [enabledByDefault]="false" [isReadOnly]="isReadOnly" [loading]="togglingSection === 'Hospedaje'"
-        (enable)="onEnableSection($event)" (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
-        <app-hospedaje [eventId]="eventId" [data]="data.hospedaje" [isReadOnly]="isReadOnly"
+    </app-section-toggle>
+    <!-- Hospedaje -->
+    <app-section-toggle sectionKey="Hospedaje" [sectionName]="getSectionName('Hospedaje')"
+      [isEnabled]="isSectionEnabled('Hospedaje')" [enableCost]="getSectionEnableCost('Hospedaje')"
+      [enabledByDefault]="false" [isReadOnly]="isReadOnly" [loading]="togglingSection === 'Hospedaje'"
+      (enable)="onEnableSection($event)" (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
+      <app-hospedaje [eventId]="eventId" [data]="data.hospedaje" [isReadOnly]="isReadOnly"
         [maxItems]="getSectionMaxItems('Hospedaje')"></app-hospedaje>
-      </app-section-toggle>
-      <!-- Muro de Fotos (editor: toggle para habilitar/deshabilitar) -->
-      @if (!isReadOnly) {
-        <app-section-toggle sectionKey="MuroFotos" [sectionName]="getSectionName('MuroFotos')"
-          [isEnabled]="isSectionEnabled('MuroFotos')" [enableCost]="getSectionEnableCost('MuroFotos')"
-          [enabledByDefault]="false" [isReadOnly]="isReadOnly" [loading]="togglingSection === 'MuroFotos'"
-          (enable)="onEnableSection($event)" (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
-          <app-muro-fotos [eventId]="eventId" [isReadOnly]="isReadOnly" [isGuestView]="isGuestView"
-          [idInvitacion]="idInvitacion" [maxItems]="25"></app-muro-fotos>
-        </app-section-toggle>
-      }
-      <!-- Muro de Fotos (guest view only: visible solo para invitados, NO en vista previa) -->
-      @if (isGuestView && isSectionEnabled('MuroFotos')) {
-        <app-muro-fotos [eventId]="eventId" [isReadOnly]="true"
-        [isGuestView]="true" [idInvitacion]="idInvitacion" [maxItems]="25"></app-muro-fotos>
-      }
-      <!-- Confirmación de Invitados -->
-      @if (!isReadOnly) {
-        <app-section-toggle sectionKey="ConfirmacionInvitados"
-          [sectionName]="getSectionName('ConfirmacionInvitados')" [isEnabled]="isSectionEnabled('ConfirmacionInvitados')"
-          [enableCost]="getSectionEnableCost('ConfirmacionInvitados')" [enabledByDefault]="false" [isReadOnly]="isReadOnly"
-          [loading]="togglingSection === 'ConfirmacionInvitados'" (enable)="onEnableSection($event)"
-          (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
-          <div style="text-align:center; padding: 20px; color: #555;">
-            <span style="font-size: 2rem;">✉️</span>
-            <p>Permite que tus invitados confirmen su asistencia directamente desde la invitación.</p>
-            <p style="font-size: 0.85rem; color: #888;">Se enviará una invitación personalizada por grupo de invitados con
-            opción de confirmar o declinar.</p>
-          </div>
-        </app-section-toggle>
-      }
-      <!-- Música (editor: dentro del toggle, solo cuando no es readonly) -->
-      @if (!isReadOnly) {
-        <app-section-toggle sectionKey="Musica" [sectionName]="getSectionName('Musica')"
-          [isEnabled]="isSectionEnabled('Musica')" [enableCost]="getSectionEnableCost('Musica')" [enabledByDefault]="false"
-          [isReadOnly]="isReadOnly" [loading]="togglingSection === 'Musica'" (enable)="onEnableSection($event)"
-          (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
-          <app-musica [eventId]="eventId" [trackId]="currentTrackId" [isReadOnly]="isReadOnly"
-          (trackChanged)="onTrackChanged($event)"></app-musica>
-        </app-section-toggle>
-      }
-      <!-- Música (readonly: siempre visible para pausar/reanudar melodía) -->
-      @if (isReadOnly) {
-        <app-musica [eventId]="eventId" [trackId]="currentTrackId"
-        [isReadOnly]="isReadOnly"></app-musica>
-      }
-      <!-- Sugerencias con IA -->
-      @if (!isReadOnly) {
-        <app-section-toggle sectionKey="AISuggestions" [sectionName]="getSectionName('AISuggestions')"
-          [isEnabled]="isSectionEnabled('AISuggestions')" [enableCost]="getSectionEnableCost('AISuggestions')"
-          [enabledByDefault]="false" [isReadOnly]="isReadOnly" [loading]="togglingSection === 'AISuggestions'"
-          (enable)="onEnableSection($event)" (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
-          <div style="text-align:center; padding: 20px; color: #555;">
-            <span style="font-size: 2rem;">✨</span>
-            <p>Mejora los textos de tu invitación con sugerencias de Inteligencia Artificial.</p>
-            <p style="font-size: 0.85rem; color: #888;">Incluye 100 sugerencias. Sugerencias adicionales tienen un costo de
-            $5 c/u (máx. 200).</p>
-          </div>
-        </app-section-toggle>
-      }
-    </div>
-    <!-- RSVP Section - Confirmación habilitada (guest con idInvitacion) -->
-    @if (isGuestView && isReadOnly && guestGroup && data?.confirmacionInvitadosEnabled) {
-      <div class="rsvp-section"
-    [ngStyle]="{
+    </app-section-toggle>
+    <!-- Muro de Fotos (editor: toggle para habilitar/deshabilitar) -->
+    @if (!isReadOnly) {
+    <app-section-toggle sectionKey="MuroFotos" [sectionName]="getSectionName('MuroFotos')"
+      [isEnabled]="isSectionEnabled('MuroFotos')" [enableCost]="getSectionEnableCost('MuroFotos')"
+      [enabledByDefault]="false" [isReadOnly]="isReadOnly" [loading]="togglingSection === 'MuroFotos'"
+      (enable)="onEnableSection($event)" (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
+      <app-muro-fotos [eventId]="eventId" [isReadOnly]="isReadOnly" [isGuestView]="isGuestView"
+        [idInvitacion]="idInvitacion" [maxItems]="25"></app-muro-fotos>
+    </app-section-toggle>
+    }
+    <!-- Muro de Fotos (guest view only: visible solo para invitados, NO en vista previa) -->
+    @if (isGuestView && isSectionEnabled('MuroFotos')) {
+    <app-muro-fotos [eventId]="eventId" [isReadOnly]="true" [isGuestView]="true" [idInvitacion]="idInvitacion"
+      [maxItems]="25"></app-muro-fotos>
+    }
+    <!-- Confirmación de Invitados -->
+    @if (!isReadOnly) {
+    <app-section-toggle sectionKey="ConfirmacionInvitados" [sectionName]="getSectionName('ConfirmacionInvitados')"
+      [isEnabled]="isSectionEnabled('ConfirmacionInvitados')"
+      [enableCost]="getSectionEnableCost('ConfirmacionInvitados')" [enabledByDefault]="false" [isReadOnly]="isReadOnly"
+      [loading]="togglingSection === 'ConfirmacionInvitados'" (enable)="onEnableSection($event)"
+      (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
+      <div style="text-align:center; padding: 20px; color: #555;">
+        <span style="font-size: 2rem;">✉️</span>
+        <p>Permite que tus invitados confirmen su asistencia directamente desde la invitación.</p>
+        <p style="font-size: 0.85rem; color: #888;">Se enviará una invitación personalizada por grupo de invitados con
+          opción de confirmar o declinar.</p>
+      </div>
+    </app-section-toggle>
+    }
+    <!-- Música (editor: dentro del toggle, solo cuando no es readonly) -->
+    @if (!isReadOnly) {
+    <app-section-toggle sectionKey="Musica" [sectionName]="getSectionName('Musica')"
+      [isEnabled]="isSectionEnabled('Musica')" [enableCost]="getSectionEnableCost('Musica')" [enabledByDefault]="false"
+      [isReadOnly]="isReadOnly" [loading]="togglingSection === 'Musica'" (enable)="onEnableSection($event)"
+      (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
+      <app-musica [eventId]="eventId" [trackId]="currentTrackId" [isReadOnly]="isReadOnly"
+        (trackChanged)="onTrackChanged($event)"></app-musica>
+    </app-section-toggle>
+    }
+    <!-- Música (readonly: siempre visible para pausar/reanudar melodía) -->
+    @if (isReadOnly) {
+    <app-musica [eventId]="eventId" [trackId]="currentTrackId" [isReadOnly]="isReadOnly"></app-musica>
+    }
+    <!-- Sugerencias con IA -->
+    @if (!isReadOnly) {
+    <app-section-toggle sectionKey="AISuggestions" [sectionName]="getSectionName('AISuggestions')"
+      [isEnabled]="isSectionEnabled('AISuggestions')" [enableCost]="getSectionEnableCost('AISuggestions')"
+      [enabledByDefault]="false" [isReadOnly]="isReadOnly" [loading]="togglingSection === 'AISuggestions'"
+      (enable)="onEnableSection($event)" (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
+      <div style="text-align:center; padding: 20px; color: #555;">
+        <span style="font-size: 2rem;">✨</span>
+        <p>Mejora los textos de tu invitación con sugerencias de Inteligencia Artificial.</p>
+        <p style="font-size: 0.85rem; color: #888;">Incluye 100 sugerencias. Sugerencias adicionales tienen un costo de
+          $5 c/u (máx. 200).</p>
+      </div>
+    </app-section-toggle>
+    }
+  </div>
+  <!-- RSVP Section - Confirmación habilitada (guest con idInvitacion) -->
+  @if (isGuestView && isReadOnly && guestGroup && data?.confirmacionInvitadosEnabled) {
+  <div class="rsvp-section" [ngStyle]="{
       'background-image': 'url(' + templateService.getMarbleBackground() + ')',
       'background-size': 'cover',
       'background-position': 'center',
       'padding': '40px 20px'
     }">
-        @if (!rsvpSubmitted) {
-          <div class="rsvp-card">
-            <h2 class="rsvp-title" [ngStyle]="{ 'color': templateService.getCurrentTemplate()?.theme?.colors?.primary }">
-              Confirma tu Asistencia
-            </h2>
-            <p class="rsvp-subtitle">Por favor completa tu nombre y confirma tu asistencia</p>
-            @for (inv of guestGroup.invitados; track inv; let i = $index) {
-              <div class="rsvp-guest">
-                <div class="rsvp-guest-row">
-                  <div class="rsvp-name-field">
-                    <label>Invitado {{ i + 1 }}</label>
-                    <input type="text" [(ngModel)]="inv.nombre" [placeholder]="inv.nombre || 'Nombre del invitado'"
-                      class="rsvp-input" [class.rsvp-input-error]="rsvpFormSubmitted && !inv.nombre?.trim()"
-                      [ngStyle]="{ 'border-color': inv.nombre?.trim() ? templateService.getCurrentTemplate()?.theme?.colors?.primary : '' }" />
-                      @if (rsvpFormSubmitted && !inv.nombre?.trim()) {
-                        <small class="rsvp-error">
-                          El nombre es obligatorio
-                        </small>
-                      }
-                      <textarea [(ngModel)]="inv.notaEspecial"
-                        placeholder="¿Alguna alergia alimentaria o trato especial? (opcional)" class="rsvp-input rsvp-nota"
-                        rows="2"
-                      [ngStyle]="{ 'border-color': inv.notaEspecial?.trim() ? templateService.getCurrentTemplate()?.theme?.colors?.primary : '' }"></textarea>
-                    </div>
-                    <div class="rsvp-buttons">
-                      <button class="rsvp-btn rsvp-confirm" [class.active]="inv.invitacionConfirmada === 1"
+    @if (!rsvpSubmitted) {
+    <div class="rsvp-card">
+      <h2 class="rsvp-title" [ngStyle]="{ 'color': templateService.getCurrentTemplate()?.theme?.colors?.primary }">
+        Confirma tu Asistencia
+      </h2>
+      <p class="rsvp-subtitle">Por favor completa tu nombre y confirma tu asistencia</p>
+      @for (inv of guestGroup.invitados; track inv; let i = $index) {
+      <div class="rsvp-guest">
+        <div class="rsvp-guest-row">
+          <div class="rsvp-name-field">
+            <label>Invitado {{ i + 1 }}</label>
+            <input type="text" [(ngModel)]="inv.nombre" [placeholder]="inv.nombre || 'Nombre del invitado'"
+              class="rsvp-input" [class.rsvp-input-error]="rsvpFormSubmitted && !inv.nombre?.trim()"
+              [ngStyle]="{ 'border-color': inv.nombre?.trim() ? templateService.getCurrentTemplate()?.theme?.colors?.primary : '' }" />
+            @if (rsvpFormSubmitted && !inv.nombre?.trim()) {
+            <small class="rsvp-error">
+              El nombre es obligatorio
+            </small>
+            }
+            <textarea [(ngModel)]="inv.notaEspecial"
+              placeholder="¿Alguna alergia alimentaria o trato especial? (opcional)" class="rsvp-input rsvp-nota"
+              rows="2"
+              [ngStyle]="{ 'border-color': inv.notaEspecial?.trim() ? templateService.getCurrentTemplate()?.theme?.colors?.primary : '' }"></textarea>
+          </div>
+          <div class="rsvp-buttons">
+            <button class="rsvp-btn rsvp-confirm" [class.active]="inv.invitacionConfirmada === 1"
               (click)="inv.invitacionConfirmada = 1" title="Confirmar asistencia" [ngStyle]="inv.invitacionConfirmada === 1 ?
                 { 'background': templateService.getCurrentTemplate()?.theme?.colors?.primary, 'color': '#fff' } : {}">
-                        ✅ Asistiré
-                      </button>
-                      <button class="rsvp-btn rsvp-decline" [class.active]="inv.invitacionConfirmada === 2"
-                        (click)="inv.invitacionConfirmada = 2" title="Declinar asistencia">
-                        ❌ No asistiré
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              }
-              <button class="rsvp-submit" (click)="submitRsvp()" [disabled]="rsvpSubmitting"
-                [ngStyle]="{ 'background': templateService.getCurrentTemplate()?.theme?.colors?.primary }">
-                {{ rsvpSubmitting ? 'Enviando...' : 'Enviar Confirmación' }}
-              </button>
-            </div>
-          }
-          @if (rsvpSubmitted) {
-            <div class="rsvp-card rsvp-success">
-              <div class="rsvp-success-icon">🎉</div>
-              <h2 class="rsvp-title" [ngStyle]="{ 'color': templateService.getCurrentTemplate()?.theme?.colors?.primary }">
-                ¡Gracias!
-              </h2>
-              <p class="rsvp-subtitle">Tu confirmación ha sido registrada exitosamente</p>
-            </div>
-          }
+              ✅ Asistiré
+            </button>
+            <button class="rsvp-btn rsvp-decline" [class.active]="inv.invitacionConfirmada === 2"
+              (click)="inv.invitacionConfirmada = 2" title="Declinar asistencia">
+              ❌ No asistiré
+            </button>
+          </div>
         </div>
+      </div>
       }
-      <!-- RSVP Section - Contacto alternativo (guest sin confirmación habilitada) -->
-      @if (isGuestView && isReadOnly && (!data?.confirmacionInvitadosEnabled || !guestGroup)) {
-        <div class="rsvp-section"
-    [ngStyle]="{
+      <button class="rsvp-submit" (click)="submitRsvp()" [disabled]="rsvpSubmitting"
+        [ngStyle]="{ 'background': templateService.getCurrentTemplate()?.theme?.colors?.primary }">
+        {{ rsvpSubmitting ? 'Enviando...' : 'Enviar Confirmación' }}
+      </button>
+    </div>
+    }
+    @if (rsvpSubmitted) {
+    <div class="rsvp-card rsvp-success">
+      <div class="rsvp-success-icon">🎉</div>
+      <h2 class="rsvp-title" [ngStyle]="{ 'color': templateService.getCurrentTemplate()?.theme?.colors?.primary }">
+        ¡Gracias!
+      </h2>
+      <p class="rsvp-subtitle">Tu confirmación ha sido registrada exitosamente</p>
+    </div>
+    }
+  </div>
+  }
+  <!-- RSVP Section - Contacto alternativo (guest sin confirmación habilitada) -->
+  @if (isGuestView && isReadOnly && (!data?.confirmacionInvitadosEnabled || !guestGroup)) {
+  <div class="rsvp-section" [ngStyle]="{
       'background-image': 'url(' + templateService.getMarbleBackground() + ')',
       'background-size': 'cover',
       'background-position': 'center',
       'padding': '40px 20px'
     }">
-          <div class="rsvp-card">
-            <h2 class="rsvp-title" [ngStyle]="{ 'color': templateService.getCurrentTemplate()?.theme?.colors?.primary }">
-              Confirma tu Asistencia
-            </h2>
-            <p class="rsvp-subtitle">Favor de confirmar por los siguientes medios:</p>
-            <div style="text-align: center; margin-top: 15px; font-size: 1.05rem; color: #555;">
-              @if (data?.whatsApp) {
-                <p style="margin: 8px 0;">
-                  <strong>📱 WhatsApp:</strong>
-                  <a [href]="'https://wa.me/' + data.whatsApp" target="_blank"
-                    [ngStyle]="{ 'color': templateService.getCurrentTemplate()?.theme?.colors?.primary }">
-                    {{ data.whatsApp }}
-                  </a>
-                </p>
-              }
-              @if (data?.email) {
-                <p style="margin: 8px 0;">
-                  <strong>📧 Email:</strong>
-                  <a [href]="'mailto:' + data.email"
-                    [ngStyle]="{ 'color': templateService.getCurrentTemplate()?.theme?.colors?.primary }">
-                    {{ data.email }}
-                  </a>
-                </p>
-              }
-            </div>
-          </div>
-        </div>
-      }
-      <!-- Hecho en Evantix Banner (solo vista invitado) -->
-      @if (isReadOnly) {
-        <div class="evantix-banner">
-          <a [href]="homeUrl" target="_blank" class="evantix-banner-link">
-            Powered by <strong>Evantix</strong>
+    <div class="rsvp-card">
+      <h2 class="rsvp-title" [ngStyle]="{ 'color': templateService.getCurrentTemplate()?.theme?.colors?.primary }">
+        Confirma tu Asistencia
+      </h2>
+      <p class="rsvp-subtitle">Favor de confirmar por los siguientes medios:</p>
+      <div style="text-align: center; margin-top: 15px; font-size: 1.05rem; color: #555;">
+        @if (data?.whatsApp) {
+        <p style="margin: 8px 0;">
+          <strong>📱 WhatsApp:</strong>
+          <a [href]="'https://wa.me/' + data.whatsApp" target="_blank"
+            [ngStyle]="{ 'color': templateService.getCurrentTemplate()?.theme?.colors?.primary }">
+            {{ data.whatsApp }}
           </a>
-        </div>
-      }
-      <!-- Spacer para evitar contenido oculto debajo de la barra fija (solo editor) -->
-      @if (!isGuestView) {
-        <div class="bottom-spacer"></div>
-      }
-      <!-- Botón Ver Previo / Editar Invitación (oculto en Vista Invitado y en Revisado) -->
-      @if (!isGuestView && eventStatus !== 'Revisado') {
-        <div class="preview-toggle-container">
-          @if (eventStatus === 'Creado' || isAdmin) {
-            <button class="preview-toggle-btn" (click)="toggleReadOnly()"
-              [disabled]="pricingLoading">
-              {{ isReadOnly ? 'Editar Invitación' : 'Vista Previa' }}
-            </button>
-          }
-          @if (canSendToReview && !isAdmin) {
-            <button class="send-review-btn" (click)="onSendToReview()"
-              [disabled]="sendingToReview || pricingLoading">
-              {{ sendingToReview ? 'Enviando...' : 'Mandar a Revisión' }}
-            </button>
-          }
-          @if (isAdmin) {
-            <button class="send-review-btn" style="background: #28a745;" (click)="onSetToRevisado()"
-              [disabled]="sendingToReview || pricingLoading">
-              {{ sendingToReview ? 'Procesando...' : '✅ Revisado' }}
-            </button>
-          }
-        </div>
-      }
-      <!-- Product Tour Overlay -->
-      <app-tour-overlay></app-tour-overlay>
+        </p>
+        }
+        @if (data?.email) {
+        <p style="margin: 8px 0;">
+          <strong>📧 Email:</strong>
+          <a [href]="'mailto:' + data.email"
+            [ngStyle]="{ 'color': templateService.getCurrentTemplate()?.theme?.colors?.primary }">
+            {{ data.email }}
+          </a>
+        </p>
+        }
+      </div>
     </div>
+  </div>
   }
+  <!-- Hecho en Evantix Banner (solo vista invitado) -->
+  @if (isReadOnly) {
+  <div class="evantix-banner">
+    <a [href]="homeUrl" target="_blank" class="evantix-banner-link">
+      Powered by <strong>Evantix</strong>
+    </a>
+  </div>
+  }
+  <!-- Spacer para evitar contenido oculto debajo de la barra fija (solo editor) -->
+  @if (!isGuestView) {
+  <div class="bottom-spacer"></div>
+  }
+  <!-- Botón Ver Previo / Editar Invitación (oculto en Vista Invitado y en Revisado) -->
+  @if (!isGuestView && eventStatus !== 'Revisado') {
+  <div class="preview-toggle-container">
+    @if (eventStatus === 'Creado' || isAdmin) {
+    <button class="preview-toggle-btn" (click)="toggleReadOnly()" [disabled]="pricingLoading">
+      {{ isReadOnly ? 'Editar Invitación' : 'Vista Previa' }}
+    </button>
+    }
+    @if (canSendToReview && !isAdmin) {
+    <button class="send-review-btn" style="background: #28a745;" (click)="onSendToReview()"
+      [disabled]="sendingToReview || pricingLoading">
+      {{ sendingToReview ? 'Enviando...' : 'Mandar a Revisión' }}
+    </button>
+    }
+    @if (isAdmin) {
+    <button class="send-review-btn" style="background: #28a745;" (click)="onSetToRevisado()"
+      [disabled]="sendingToReview || pricingLoading">
+      {{ sendingToReview ? 'Procesando...' : '✅ Revisado' }}
+    </button>
+    }
+  </div>
+  }
+  <!-- Product Tour Overlay -->
+  <app-tour-overlay></app-tour-overlay>
+</div>
+}
