@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService, UserCreateRequest, UserLoginRequest, ForgotPassRequest } from '../../services/user.service';
 import { NotificationService } from '../../services/notification.service';
+import { AuthService } from '../../services/auth.service';
 import { ActivatedRoute } from '@angular/router';
 import { PasswordHelper } from '../../helpers/email'
 
@@ -37,7 +38,7 @@ export class LoginComponent implements AfterViewInit, OnInit {
   private captchaWidgetId: number | null = null;
 
   constructor(private fb: FormBuilder, private router: Router, private userService: UserService, private notificationService: NotificationService, 
-              private http: HttpClient, private route: ActivatedRoute, private passwordHelper: PasswordHelper){
+              private http: HttpClient, private route: ActivatedRoute, private passwordHelper: PasswordHelper, private authService: AuthService){
     this.createSignUpForm();
     this.createSignInForm();
   }
@@ -98,7 +99,8 @@ export class LoginComponent implements AfterViewInit, OnInit {
     this.isLoading = true;
     this.http.post(`${environment.identityApiUrl}/api/User/${provider==='facebook'?'facebook':'google'}`, { appId: environment.appId, role: 'User', token }).subscribe({
       next: (res: any) => {
-        localStorage.setItem('access_token', res.access_token);    
+        localStorage.setItem('access_token', res.access_token);
+        if (res.refresh_token) localStorage.setItem('refresh_token', res.refresh_token);
         localStorage.setItem('loggedUser', JSON.stringify(res.user));
         this.isLoading = false;
         this.facebookLoginInProgress = false;
@@ -175,6 +177,7 @@ export class LoginComponent implements AfterViewInit, OnInit {
       this.userService.loginUser(userData).subscribe({
         next: (res: any) => {
           localStorage.setItem('access_token', res.access_token);
+          if (res.refresh_token) localStorage.setItem('refresh_token', res.refresh_token);
           localStorage.setItem('loggedUser', JSON.stringify(res.user));
           this.failedAttempts = 0;
           this.showCaptcha = false;
