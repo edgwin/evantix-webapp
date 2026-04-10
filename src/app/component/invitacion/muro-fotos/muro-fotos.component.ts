@@ -53,7 +53,7 @@ export class MuroFotosComponent implements OnInit {
 
     deleteFoto(fotoId: string): void {
         if (!confirm('¿Eliminar esta foto?')) return;
-        this.invitationService.deleteFotoInvitado(fotoId).subscribe({
+        this.invitationService.deleteFotoInvitado(fotoId, this.idInvitacion!).subscribe({
             next: () => this.cargarFotos(),
             error: (err: any) => this.notificationService.show('error', 'Error al eliminar foto')
         });

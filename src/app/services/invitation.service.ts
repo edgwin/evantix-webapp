@@ -383,8 +383,8 @@ export class InvitationService {
     return this.http.post<any[]>(url, formData);
   }
 
-  deleteFotoInvitado(fotoId: string) {
-    const url = `${this.apiUrl}${this.getInvitationData}MuroFotos/${fotoId}`;
+  deleteFotoInvitado(fotoId: string, idInvitacion: string) {
+    const url = `${this.apiUrl}${this.getInvitationData}MuroFotos/${fotoId}?idInvitacion=${encodeURIComponent(idInvitacion)}`;
     return this.http.delete(url);
   }
 }
