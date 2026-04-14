@@ -3,15 +3,15 @@
   <div class="background-overlay"></div>
 
   @if (!isReadOnly) {
-    <div class="editImage">
-      @if (!loadingImg) {
-        <img src="../../../../assets/editarImagen.png" class="edit-imageIndicaciones-btn" alt=""
-          title="Click para editar imagen de fondo" (click)="triggerImageUpload()">
-      }
-      @if (loadingImg) {
-        <div class="loaderPortada"></div>
-      }
-    </div>
+  <div class="editImage">
+    @if (!loadingImg) {
+    <img src="../../../../assets/editarImagen.png" class="edit-imageIndicaciones-btn" alt=""
+      title="Click para editar imagen de fondo" (click)="triggerImageUpload()">
+    }
+    @if (loadingImg) {
+    <div class="loaderPortada"></div>
+    }
+  </div>
   }
 
   <div class="indicaciones-content">
@@ -24,42 +24,40 @@
 
     <div class="cards-container">
       @for (item of data.details; track item; let i = $index) {
-        <div class="indicacion-card"
-          [style.animation-delay]="(i * 0.1) + 's'">
-          @if (!isReadOnly && (data?.details?.length || 0) > 1) {
-            <img src="../../../../assets/BtnDelete.png" alt="" class="delete-btn" title="Click para eliminar elemento"
-              (click)="triggerElementDelete(item.id)">
-          }
-          <div class="card-icon-wrapper">
-            <div class="card-icon">
-              <img [src]="templateService.getIconForSection('indicaciones')" />
-            </div>
-          </div>
-          <div class="card-content">
-            <h3 class="card-title" [attr.contenteditable]="!isReadOnly" [attr.data-id-titulo-Indicaciones]="item.id"
-              (keydown)="onTituloKeyDown($event)" (click)="!isReadOnly && onClickTitulo(item.id)"
-              (blur)="saveContent($event, item.id, 'titulo')">
-              {{item.titulo}}
-            </h3>
-            <div class="card-divider"></div>
-            <p class="card-description" [innerHTML]="item.descripcion" [attr.contenteditable]="!isReadOnly"
-              [attr.data-id-descripcion-indicaciones]="item.id" (keydown)="onDescKeyDown($event)"
-              (click)="!isReadOnly && onClickDescripcion(item.id)" (blur)="saveContent($event, item.id, 'descripcion')"
-              appAiEditable [aiSection]="'Indicaciones para el evento'" [aiEventType]="eventType" [maxLength]="maxLength"
-              [aiReadOnly]="isReadOnly" [aiEnabled]="aiEnabled" [aiEventId]="eventId">
-            </p>
+      <div class="indicacion-card" [style.animation-delay]="(i * 0.1) + 's'">
+        @if (!isReadOnly && (data?.details?.length || 0) > 1) {
+        <img src="../../../../assets/BtnDelete.png" alt="" class="delete-btn" title="Click para eliminar elemento"
+          (click)="triggerElementDelete(item.id)">
+        }
+        <div class="card-icon-wrapper">
+          <div class="card-icon">
+            <img [src]="templateService.getIconForSection('indicaciones')" />
           </div>
         </div>
+        <div class="card-content">
+          <h3 class="card-title" [attr.contenteditable]="!isReadOnly" [attr.data-id-titulo-Indicaciones]="item.id"
+            (keydown)="onTituloKeyDown($event)" (click)="!isReadOnly && onClickTitulo(item.id)"
+            (blur)="saveContent($event, item.id, 'titulo')">
+            {{item.titulo}}
+          </h3>
+          <div class="card-divider"></div>
+          <p class="card-description" [innerHTML]="item.descripcion" [attr.contenteditable]="!isReadOnly"
+            [attr.data-id-descripcion-indicaciones]="item.id" (keydown)="onDescKeyDown($event)"
+            (click)="!isReadOnly && onClickDescripcion(item.id)" (blur)="saveContent($event, item.id, 'descripcion')"
+            appAiEditable [aiSection]="'Indicaciones para el evento'" [aiEventType]="eventType" [maxLength]="maxLength"
+            [aiReadOnly]="isReadOnly" [aiEnabled]="aiEnabled" [aiEventId]="eventId">
+          </p>
+        </div>
+      </div>
       }
     </div>
 
-    @if (!isReadOnly && !loading && (data?.details?.length || 0) < maxItems) {
-      <div class="add-btn-container">
-        <button class="add-btn" (click)="nuevaIndicacion()" title="Click para agregar elemento" id="tour-add-indicacion">
-          <span class="add-icon">+</span>
-          <span>Agregar indicación</span>
-        </button>
-      </div>
-    }
+    @if (!isReadOnly && !loading && (data?.details?.length || 0) < maxItems) { <div class="add-btn-container">
+      <button class="add-btn" (click)="nuevaIndicacion()" title="Click para agregar elemento" id="tour-add-indicacion">
+        <span class="add-icon">+</span>
+        <span>Agregar indicación</span>
+      </button>
+  </div>
+  }
   </div>
 </section>

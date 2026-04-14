@@ -92,7 +92,8 @@ export class AiEditableDirective {
     // Configurar el componente
     const element = this.el.nativeElement;
     const rect = element.getBoundingClientRect();
-    const currentText = element.textContent || element.value || '';
+    const tituloEl = element.closest('.card-content')?.querySelector('.card-title');
+    const currentText = tituloEl?.textContent?.trim() || element.textContent || element.value || '';
 
     this.widgetRef.instance.section = this.aiSection;
     this.widgetRef.instance.currentText = currentText;

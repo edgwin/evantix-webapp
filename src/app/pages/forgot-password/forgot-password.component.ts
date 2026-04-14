@@ -23,17 +23,24 @@ export class ForgotPasswordComponent {
 
   private createResetForm() {
       this.resetForm = this.fb.group({
-        Password:  ['', [Validators.required, Validators.email, Validators.minLength(8)]],
-        Password2: ['', [Validators.required, Validators.email, Validators.minLength(8)]], //TODO checar con el back el tamaño requerido en todos los campos de password
+        Password:  ['', [Validators.required, Validators.minLength(8)]],
+        Password2: ['', [Validators.required, Validators.minLength(8)]], //TODO checar con el back el tamaño requerido en todos los campos de password
       });
   }
 
   onReset(){
-    if (!(this.resetForm.status == 'VALID' && this.passwordHelper.passwordMatchValidator(this.resetForm))) {
-      this.notificationService.show('error','Las contraseñas no coinciden');
-      document.getElementById('Password')?.focus()
-      return
+    if (this.resetForm.invalid) {
+      this.notificationService.show('error', 'La contraseña debe tener mínimo 8 caracteres');
+      document.getElementById('Password')?.focus();
+      return;
     }
+
+    if (!this.passwordHelper.passwordMatchValidator(this.resetForm)) {
+      this.notificationService.show('error', 'Las contraseñas no coinciden');
+      document.getElementById('Password2')?.focus();
+      return;
+    }
+    
     this.isLoading = true;
     this.errorMessage = '';
 
@@ -59,7 +66,10 @@ export class ForgotPasswordComponent {
           this.router.navigateByUrl('/login');
         }, 1000);        
       },        
-      error: err => this.notificationService.show('error',err.error)
+      error: err => {
+        this.isLoading = false;
+        this.notificationService.show('error', err.error);
+      }
     });
   }
 }

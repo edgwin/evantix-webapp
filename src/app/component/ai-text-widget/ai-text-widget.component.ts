@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { InvitationService, AiTextRequest } from '../../services/invitation.service';
 import { NotificationService } from '../../services/notification.service';
+import { PricingService } from '../../services/pricing.service';
 
 @Component({
     selector: 'app-ai-text-widget',
@@ -36,7 +37,8 @@ export class AiTextWidgetComponent {
 
   constructor(
     private aiTextService: InvitationService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private pricingService: PricingService
   ) { }
 
   // NUEVO: método para toggle expandir/colapsar
@@ -67,6 +69,12 @@ export class AiTextWidgetComponent {
       next: (response) => {
         this.isLoading = false;
         this.textGenerated.emit(response.text);
+
+        // Refrescar el costo en la barra de costos
+        if (this.eventId) {
+          this.pricingService.getEventCost(this.eventId).subscribe();
+        }
+
         this.closeWidget();
       },
       error: (error) => {
