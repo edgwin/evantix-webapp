@@ -92,6 +92,21 @@ button {
   flex-direction: column;
   gap: 12px;
   align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.popup-content [contenteditable] {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  outline: none;
+  padding: 4px 10px;
 }
 
 /* carrusel */

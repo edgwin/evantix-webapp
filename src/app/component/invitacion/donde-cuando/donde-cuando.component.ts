@@ -257,13 +257,26 @@ export class DondeCuandoComponent {
   }
 
   //genericos
-  onKeyDown(event: Event | any, item: any) {
+  onKeyDown(event: Event | any, item: any, maxLen?: number) {
     const key = (event as KeyboardEvent).key;
     if (key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
       event.preventDefault();
       (event.target as HTMLElement).blur(); // dispara onActividadBlur y guarda
       return;
     }
+
+    if (maxLen) {
+      const el = event.target as HTMLElement;
+      const text = el.innerText || '';
+      const controlKeys = [
+        'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight',
+        'ArrowUp', 'ArrowDown', 'Tab'
+      ];
+      if (text.length >= maxLen && !controlKeys.includes(event.key)) {
+        event.preventDefault();
+      }
+    }
+
     (event.target as HTMLElement).click();
   }
 

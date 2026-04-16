@@ -308,8 +308,8 @@
 
 /* Botón inferior derecho - Scroll al inicio */
 .floating-scroll-top {
-  bottom: 80px;
-  right: 15px;
+  bottom: 200px;
+  right: 20px;
 }
 
 @media screen and (max-width: 768px) {
@@ -325,8 +325,8 @@
   }
 
   .floating-scroll-top {
-    bottom: 70px;
-    right: 10px;
+    bottom: 185px;
+    right: 15px;
   }
 }
 
@@ -343,8 +343,8 @@
   }
 
   .floating-scroll-top {
-    bottom: 65px;
-    right: 8px;
+    bottom: 170px;
+    right: 12px;
   }
 }
 

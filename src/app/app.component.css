@@ -1,7 +1,7 @@
 /* WhatsApp Floating Action Button */
 .whatsapp-fab {
     position: fixed;
-    bottom: 24px;
+    bottom: 65px;
     right: 24px;
     width: 56px;
     height: 56px;
@@ -43,6 +43,7 @@
         transform: scale(1);
         opacity: 0.6;
     }
+
     100% {
         transform: scale(1.6);
         opacity: 0;
@@ -54,7 +55,7 @@
     .whatsapp-fab {
         width: 48px;
         height: 48px;
-        bottom: 16px;
+        bottom: 55px;
         right: 16px;
     }
 

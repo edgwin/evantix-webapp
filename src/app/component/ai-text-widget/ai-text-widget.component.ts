@@ -6,10 +6,10 @@ import { NotificationService } from '../../services/notification.service';
 import { PricingService } from '../../services/pricing.service';
 
 @Component({
-    selector: 'app-ai-text-widget',
-    imports: [FormsModule],
-    templateUrl: './ai-text-widget.component.html',
-    styleUrl: './ai-text-widget.component.css'
+  selector: 'app-ai-text-widget',
+  imports: [FormsModule],
+  templateUrl: './ai-text-widget.component.html',
+  styleUrl: './ai-text-widget.component.css'
 })
 export class AiTextWidgetComponent {
   @Input() section: string = '';
@@ -84,7 +84,7 @@ export class AiTextWidgetComponent {
         } else if (error.status === 429) {
           this.errorMessage = 'Has alcanzado el límite de sugerencias con IA.';
         } else {
-          this.errorMessage = 'Error al generar el texto. Intenta nuevamente.';
+          this.errorMessage = 'Error al generar el texto. Sobrepaso el límite de sugerencias con IA.';
         }
         console.error('Error:', error);
       }

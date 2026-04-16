@@ -72,7 +72,7 @@ export class InvitationService {
   // Sin Authorize en el backend
   getInvitacion(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}${eventId}`;
-    return this.http.get(url);
+    return this.http.get(url, { headers: this.getAuthHeaders() });
   }
 
   checkAdmin(): Observable<any> {
@@ -83,7 +83,7 @@ export class InvitationService {
   // Obtiene la invitación final desde MongoDB (para eventos pagados)
   getInvitacionFinal(eventId: string) {
     const url = `${this.apiUrl}${this.getInvitationData}final/${eventId}`;
-    return this.http.get(url);
+    return this.http.get(url, { headers: this.getAuthHeaders() });
   }
 
   updateInvitacionPortada(eventId: string, payload: any) {

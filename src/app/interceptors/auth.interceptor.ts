@@ -15,8 +15,8 @@ export class AuthInterceptor implements HttpInterceptor {
     private authService: AuthService
   ) {}
 
-  // Public endpoints that don't use auth — 403 here means a business error, not expired session
-  private readonly publicPaths = ['/CheckIn/', '/Invitacion/'];
+  // Endpoints where 403 means a business error, not an expired session
+  private readonly publicPaths = ['/CheckIn/', '/Invitacion/', '/Ai/'];
   // Endpoints that should NOT trigger a refresh (to avoid infinite loops)
   private readonly noRefreshPaths = ['/Auth/RefreshToken', '/Auth/Authentication', '/Auth/RevokeToken'];
 

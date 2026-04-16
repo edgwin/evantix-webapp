@@ -1,4 +1,4 @@
-﻿import { Component, Input, HostListener, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { CommonModule } from '@angular/common';
@@ -164,12 +164,15 @@ export class PortadaComponent implements OnInit, OnDestroy {
     element.blur();
   }
 
+  maxLengthTitulo = 30;
+  maxLengthSubtitulo = 40;
   maxLength = 35;
-  onKeyDown(event: Event | any) {
+  onKeyDown(event: Event | any, maxLen?: number) {
+    const limit = maxLen ?? this.maxLength;
     const key = (event as KeyboardEvent).key;
     if (key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
       event.preventDefault();
-      (event.target as HTMLElement).blur(); // dispara onActividadBlur y guarda
+      (event.target as HTMLElement).blur(); // dispara blur y guarda
       return;
     }
     const el = event.target as HTMLElement;
@@ -181,7 +184,7 @@ export class PortadaComponent implements OnInit, OnDestroy {
       'ArrowUp', 'ArrowDown', 'Tab'
     ];
 
-    if (text.length >= this.maxLength && !controlKeys.includes(event.key)) {
+    if (text.length >= limit && !controlKeys.includes(event.key)) {
       event.preventDefault(); // bloquea más escritura
     }
     (event.target as HTMLElement).click();
@@ -190,7 +193,7 @@ export class PortadaComponent implements OnInit, OnDestroy {
   // --- edición de fecha ---
   enableDateEdit() {
     this.editingDate = true;
-    this.tempDate = this.data.date
+    this.tempDate = this.data.date;
     this.tempTime = this.data.date
       ? this.newDate.toISOString().substring(11, 16) // HH:mm
       : '12:00';

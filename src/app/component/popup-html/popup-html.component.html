@@ -1,82 +1,66 @@
 @if (visible) {
-  <div class="popup-backdrop">
-    <div class="popup-container" (click)="$event.stopPropagation()">
-      <div class="popup-header">
-        <div><h2>{{ title }}</h2></div>
-        @if (showCloseButton) {
-          <button class="close-btn" (click)="close()" title="Cerrar">&times;</button>
+<div class="popup-backdrop">
+  <div class="popup-container" (click)="$event.stopPropagation()">
+    <div class="popup-header">
+      <div>
+        <h2>{{ title }}</h2>
+      </div>
+      @if (showCloseButton) {
+      <button class="close-btn" (click)="close()" title="Cerrar">&times;</button>
+      }
+    </div>
+    <div class="popup-content">
+      <!-- Si tenemos imágenes, mostramos el carrusel Angular -->
+      @if (images?.length; as total) {
+      @if (total > 0) {
+      <div class="carousel">
+        <button class="nav prev" (click)="prev()">&#10094;</button>
+        <div class="slide-wrapper">
+          <img [src]="images![currentIndex]" alt="imagen {{currentIndex}}" class="slide-img"
+            (click)="selectImage(images![currentIndex])" />
+        </div>
+        <button class="nav next" (click)="next()">&#10095;</button>
+      </div>
+      }
+      <!-- indicadores -->
+      @if (total > 1) {
+      <div class="dots">
+        @for (img of images!; track img; let idx = $index) {
+        <span class="dot" [class.active]="idx === currentIndex" (click)="currentIndex = idx">
+        </span>
         }
       </div>
-      <div class="popup-content">
-        <!-- Si tenemos imágenes, mostramos el carrusel Angular -->
-        @if (images?.length; as total) {
-          @if (total > 0) {
-            <div class="carousel">
-              <button class="nav prev" (click)="prev()">&#10094;</button>
-              <div class="slide-wrapper">
-                <img
-                  [src]="images![currentIndex]"
-                  alt="imagen {{currentIndex}}"
-                  class="slide-img"
-                  (click)="selectImage(images![currentIndex])"
-                  />
-                </div>
-                <button class="nav next" (click)="next()">&#10095;</button>
-              </div>
-            }
-            <!-- indicadores -->
-            @if (total > 1) {
-              <div class="dots">
-                @for (img of images!; track img; let idx = $index) {
-                  <span
-                    class="dot"
-                    [class.active]="idx === currentIndex"
-                    (click)="currentIndex = idx">
-                  </span>
-                }
-              </div>
-            }
-            <div><button (click)="close()">Cerrar</button></div>
-          } @else {
-            @if (personasFavoritasEdit) {
-              @if (!loadingImg) {
-                <img src="../../../../assets/editarImagen.png"
-                  alt="editar imagen"
-                  class="edit-image-btn-PF"
-                  title="Click para editar icono"
-                  (click)="triggerImageUpload()"
-                  >
-              }
-              @if (loadingImg) {
-                <div class="loader"></div>
-              }
-              <div>
-                <img [src] = "imagenPF" class="img"/>
-              </div>
-              <div contenteditable="true"
-                (click)="onClickParentesco()"
-                (keydown)="onKeyDown($event, 80)"
-                (blur)="onParentescoBlur($event)"
-                >
-                {{parentescoPF}}
-              </div>
-              <div
-                contenteditable="true"
-                (click)="onClickNombres()"
-                (keydown)="onKeyDown($event, 150)"
-                (blur)="onNombresBlur($event)"
-              >{{nombresPF}}</div>
-              <div class="buttons">
-                <button (click)="close()">Cerrar</button>
-                <button (click)="deletePersonaFavorita()">Eliminar</button>
-              </div>
-            } @else {
-              <div class="raw-html" [innerHTML]="htmlContent"></div>
-            }
-          }
-          <!-- Fallback: usamos innerHTML (legacy) -->
-        </div>
+      }
+      <div><button (click)="close()">Cerrar</button></div>
+      } @else {
+      @if (personasFavoritasEdit) {
+      @if (!loadingImg) {
+      <img src="../../../../assets/editarImagen.png" alt="editar imagen" class="edit-image-btn-PF"
+        title="Click para editar icono" (click)="triggerImageUpload()">
+      }
+      @if (loadingImg) {
+      <div class="loader"></div>
+      }
+      <div>
+        <img [src]="imagenPF" class="img" />
       </div>
-      <!-- clic en backdrop cierra -->
+      <div contenteditable="true" (click)="onClickParentesco()" (keydown)="onKeyDown($event, 40)"
+        (blur)="onParentescoBlur($event)">
+        {{parentescoPF}}
+      </div>
+      <div contenteditable="true" (click)="onClickNombres()" (keydown)="onKeyDown($event, 100)"
+        (blur)="onNombresBlur($event)">{{nombresPF}}</div>
+      <div class="buttons">
+        <button (click)="close()">Cerrar</button>
+        <button (click)="deletePersonaFavorita()">Eliminar</button>
+      </div>
+      } @else {
+      <div class="raw-html" [innerHTML]="htmlContent"></div>
+      }
+      }
+      <!-- Fallback: usamos innerHTML (legacy) -->
     </div>
-  }
+  </div>
+  <!-- clic en backdrop cierra -->
+</div>
+}

@@ -13,56 +13,53 @@
       <div class="timeline-line"></div>
 
       @for (item of dataHistoria.details; track item; let i = $index) {
-        <div class="story-item"
-          [ngClass]="{'story-right': i % 2 !== 0}" [style.animation-delay]="(i * 0.2) + 's'">
-          <div class="story-image-wrapper">
-            <div class="story-image" [ngStyle]="{'background-image': 'url(' + item.imagen + ')'}" appDisableDownload>
-            </div>
-            @if (!loadingImgs[item.id] && !isReadOnly) {
-              <button class="image-edit-btn" (click)="triggerImageUpload(item.id)"
-                title="Cambiar imagen">
-                <img src="assets/editarImagen.png" alt="editar">
-              </button>
-            }
-            @if (loadingImgs[item.id]) {
-              <div class="image-loader">
-                <div class="loader"></div>
-              </div>
-            }
+      <div class="story-item" [ngClass]="{'story-right': i % 2 !== 0}" [style.animation-delay]="(i * 0.2) + 's'">
+        <div class="story-image-wrapper">
+          <div class="story-image" [ngStyle]="{'background-image': 'url(' + item.imagen + ')'}" appDisableDownload>
           </div>
-          <div class="story-card">
-            @if (!loadingImgs[item.id] && (dataHistoria?.details?.length || 0) > 1 && !isReadOnly) {
-              <button class="card-delete-btn" (click)="triggerImageDelete(item.id)"
-                title="Eliminar">
-                <img src="assets/BtnDelete.png" alt="eliminar">
-              </button>
-            }
-            <div class="card-date-badge" [attr.data-id-fecha-historia]="item.id" [attr.contenteditable]="!isReadOnly"
-              (click)="!isReadOnly && onClickFechaHistoria(item.id)" (keydown)="onKeyDown($event, 22)"
-              (blur)="onFechaHistoriaBlur($event, item)">
-              {{item.fecha}}
-            </div>
-            <p class="card-description" [attr.data-id-desc-historia]="item.id" [attr.contenteditable]="!isReadOnly"
-              (click)="!isReadOnly && onClickDescHistoria(item.id)" (keydown)="onKeyDown($event, 200)"
-              (blur)="onDescHistoriaBlur($event, item)" appAiEditable
-              [aiSection]="'Historia de vida del o los festejados, si es boda, la historia de la pareja, la respuesta debe ser en primera persona'"
-              [aiEventType]="eventType" [maxLength]="200" [aiReadOnly]="isReadOnly" [aiEnabled]="aiEnabled"
-              [aiEventId]="eventId">
-              {{item.descripcion}}
-            </p>
-            <div class="card-connector"></div>
+          @if (!loadingImgs[item.id] && !isReadOnly) {
+          <button class="image-edit-btn" (click)="triggerImageUpload(item.id)" title="Cambiar imagen">
+            <img src="assets/editarImagen.png" alt="editar">
+          </button>
+          }
+          @if (loadingImgs[item.id]) {
+          <div class="image-loader">
+            <div class="loader"></div>
           </div>
+          }
         </div>
+        <div class="story-card">
+          @if (!loadingImgs[item.id] && (dataHistoria?.details?.length || 0) > 1 && !isReadOnly) {
+          <button class="card-delete-btn" (click)="triggerImageDelete(item.id)" title="Eliminar">
+            <img src="assets/BtnDelete.png" alt="eliminar">
+          </button>
+          }
+          <div class="card-date-badge" [attr.data-id-fecha-historia]="item.id" [attr.contenteditable]="!isReadOnly"
+            (click)="!isReadOnly && onClickFechaHistoria(item.id)" (keydown)="onKeyDown($event, 30)"
+            (blur)="onFechaHistoriaBlur($event, item)">
+            {{item.fecha}}
+          </div>
+          <p class="card-description" [attr.data-id-desc-historia]="item.id" [attr.contenteditable]="!isReadOnly"
+            (click)="!isReadOnly && onClickDescHistoria(item.id)" (keydown)="onKeyDown($event, 200)"
+            (blur)="onDescHistoriaBlur($event, item)" appAiEditable
+            [aiSection]="'Historia de vida del o los festejados, si es boda, la historia de la pareja, la respuesta debe ser en primera persona'"
+            [aiEventType]="eventType" [maxLength]="200" [aiReadOnly]="isReadOnly" [aiEnabled]="aiEnabled"
+            [aiEventId]="eventId">
+            {{item.descripcion}}
+          </p>
+          <div class="card-connector"></div>
+        </div>
+      </div>
       }
     </div>
 
     @if (!loading && !isReadOnly) {
-      <div class="add-item-container">
-        <button class="add-item-btn" (click)="nuevaHistoria()">
-          <span class="add-icon">+</span>
-          <span>Agregar momento</span>
-        </button>
-      </div>
+    <div class="add-item-container">
+      <button class="add-item-btn" (click)="nuevaHistoria()">
+        <span class="add-icon">+</span>
+        <span>Agregar momento</span>
+      </button>
+    </div>
     }
   </div>
 </section>

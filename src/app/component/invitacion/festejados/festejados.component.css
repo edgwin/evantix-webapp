@@ -128,12 +128,15 @@
 .frase-container {
   position: relative;
   max-width: 700px;
+  width: 100%;
   padding: 30px 50px;
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(10px);
   border-radius: 20px;
   border: 1px solid rgba(0, 0, 0, 0.05);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .quote-icon {
@@ -164,6 +167,10 @@
   margin: 0;
   outline: none;
   cursor: text;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  max-width: 100%;
 }
 
 @media screen and (max-width: 768px) {

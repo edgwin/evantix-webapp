@@ -37,7 +37,7 @@
             }
             <div class="card-time">
               <span class="time-value" [attr.contenteditable]="!isReadOnly" [attr.data-id-hora-int]="item.id"
-                (click)="!isReadOnly && onClickHoraInt(item.id)" (keydown)="onKeyDownInt($event, 10)"
+                (click)="!isReadOnly && onClickHoraInt(item.id)" (keydown)="onKeyDownInt($event, 15)"
                 (blur)="onHoraIntBlur($event, item)">
                 {{item.hora}}
               </span>
@@ -50,7 +50,7 @@
               {{item.actividad}}
             </h3>
             <p class="card-date" [attr.data-id-fecha-int]="item.id" [attr.contenteditable]="!isReadOnly"
-              (click)="!isReadOnly && onClickFechaInt(item.id)" (keydown)="onKeyDownInt($event, 50)"
+              (click)="!isReadOnly && onClickFechaInt(item.id)" (keydown)="onKeyDownInt($event, 30)"
               (blur)="onFechaIntBlur($event, item)">
               {{item.fecha}}
             </p>

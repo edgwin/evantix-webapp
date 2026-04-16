@@ -45,9 +45,9 @@
               {{item.titulo}}
             </h3>
             <p class="card-description" [attr.contenteditable]="!isReadOnly" [attr.data-id-descripcion]="item.id"
-              (keydown)="onKeyDown($event, 200)" (blur)="saveContent($event, item.id, 'descripcion')"
+              (keydown)="onKeyDown($event, 50)" (blur)="saveContent($event, item.id, 'descripcion')"
               (click)="!isReadOnly && onClickDescripcion(item.id)" appAiEditable [aiSection]="'Mesa de Regalos'"
-              [aiEventType]="eventType" [maxLength]="200" [aiReadOnly]="isReadOnly" [aiEnabled]="aiEnabled"
+              [aiEventType]="eventType" [maxLength]="50" [aiReadOnly]="isReadOnly" [aiEnabled]="aiEnabled"
               [aiEventId]="eventId">
               {{item.descripcion}}
             </p>

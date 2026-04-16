@@ -1,6 +1,6 @@
 .template-selector-wrapper {
   position: fixed;
-  bottom: 20px;
+  bottom: 130px;
   right: 20px;
   z-index: 9999;
 }
@@ -222,6 +222,11 @@
 }
 
 @media screen and (max-width: 480px) {
+  .template-selector-wrapper {
+    bottom: 115px;
+    right: 12px;
+  }
+
   .template-selector-panel {
     width: calc(100vw - 40px);
     right: -10px;
@@ -235,5 +240,10 @@
 
   .template-preview {
     height: 80px;
+  }
+
+  .template-toggle-btn {
+    padding: 8px 14px;
+    font-size: 12px;
   }
 }

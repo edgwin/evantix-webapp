@@ -38,7 +38,7 @@
                 <h3 class="event-title" [attr.data-id-actividad]="item.id" [attr.contenteditable]="!isReadOnly"
                   (pointerdown)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()"
                   (touchstart)="$event.stopPropagation()" (click)="!isReadOnly && onClickActividad(item.id)"
-                  (keydown)="onKeyDown($event, item)" (blur)="onActividadBlur($event, item)">
+                  (keydown)="onKeyDown($event, item, 40)" (blur)="onActividadBlur($event, item)">
                   {{ item.actividad }}
                 </h3>
               </div>
@@ -52,7 +52,7 @@
                   <div class="datetime-text" [attr.data-id-hora]="item.id" [attr.contenteditable]="!isReadOnly"
                     (pointerdown)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()"
                     (touchstart)="$event.stopPropagation()" (click)="!isReadOnly && onClickHora(item.id)"
-                    (keydown)="onKeyDown($event, item)" (blur)="onHoraBlur($event, item)">
+                    (keydown)="onKeyDown($event, item, 11)" (blur)="onHoraBlur($event, item)">
                     {{item.hora}}
                   </div>
                 </div>
@@ -64,7 +64,7 @@
                   <div class="datetime-text" [attr.data-id-fecha]="item.id" [attr.contenteditable]="!isReadOnly"
                     (pointerdown)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()"
                     (touchstart)="$event.stopPropagation()" (click)="!isReadOnly && onClickFecha(item.id)"
-                    (keydown)="onKeyDown($event, item)" (blur)="onFechaBlur($event, item)">
+                    (keydown)="onKeyDown($event, item, 30)" (blur)="onFechaBlur($event, item)">
                     {{item.fecha}}
                   </div>
                 </div>
@@ -78,7 +78,7 @@
                   <span class="info-value" [attr.data-id-lugar]="item.id" [attr.contenteditable]="!isReadOnly"
                     (pointerdown)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()"
                     (touchstart)="$event.stopPropagation()" (click)="!isReadOnly && onClickLugar(item.id)"
-                    (keydown)="onKeyDown($event, item)" (blur)="onLugarBlur($event, item)">
+                    (keydown)="onKeyDown($event, item, 50)" (blur)="onLugarBlur($event, item)">
                     {{item.lugar}}
                   </span>
                 </div>
@@ -90,7 +90,7 @@
                   <span class="info-value address" [attr.data-id-direccion]="item.id" [attr.contenteditable]="!isReadOnly"
                     (pointerdown)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()"
                     (touchstart)="$event.stopPropagation()" (click)="!isReadOnly && onClickDireccion(item.id)"
-                    (keydown)="onKeyDown($event, item)" (blur)="onDireccionBlur($event, item)">
+                    (keydown)="onKeyDown($event, item, 100)" (blur)="onDireccionBlur($event, item)">
                     {{item.direccion}}
                   </span>
                 </div>
