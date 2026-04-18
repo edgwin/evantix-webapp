@@ -97,7 +97,7 @@
                 @if (!evento.imagen) {
                   <div class="evento-thumb-placeholder">📅</div>
                 }
-                <span>{{ evento.nombre }}</span>
+                <span [title]="evento.nombre">{{ evento.nombre }}</span>
               </td>
               <td>{{ evento.fecha }}</td>
               <td>

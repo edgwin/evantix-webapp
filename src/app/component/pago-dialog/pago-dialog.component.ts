@@ -25,6 +25,8 @@ export class PagoDialogComponent {
     private cuponService: CuponService
   ) {
     this.costoOriginal = this.data.evento.costo;
+    // Restaurar estado de cupón si ya fue aplicado en una apertura anterior
+    this.cuponAplicado = this.data.cuponYaAplicado ?? false;
   }
 
   confirmar(event: Event) {
@@ -56,6 +58,8 @@ export class PagoDialogComponent {
         this.cuponAplicado = true;
         this.cuponLoading = false;
         this.data.evento.costo = res.nuevoCosto;
+        // Persistir en el objeto del evento para que sobreviva al cierre del dialog
+        this.data.evento._cuponAplicado = true;
 
         if (res.tipoDescuento === 'Porcentaje') {
           this.descuentoInfo = `${res.montoDescuento}% de descuento`;
@@ -75,7 +79,6 @@ export class PagoDialogComponent {
     this.cuponService.claimFree(this.data.evento.id).subscribe({
       next: () => {
         this.claimingFree = false;
-        // Cerrar el dialog con un marcador especial para que el dashboard sepa que se obtuvo gratis
         this.dialogRef.close('__FREE_CLAIMED__');
       },
       error: (err: any) => {

@@ -15,7 +15,7 @@
           <div class="form-group">
             <label>Nombre del Evento <span class="required">*</span></label>
             <input type="text" name="nombre" [(ngModel)]="evento.nombre" required placeholder="Ej: Boda de Ana y Carlos"
-              class="form-input" />
+              class="form-input" maxlength="100" />
             </div>
 
             <!-- Fecha -->
@@ -70,7 +70,7 @@
                   <div class="form-group form-group-large">
                     <label>Número de WhatsApp <span class="required">*</span></label>
                     <input type="tel" name="numero" #numeroField="ngModel" [(ngModel)]="evento.whatsapp" required
-                      pattern="[0-9]*" maxlength="15" placeholder="Ej: 3312345678" class="form-input"
+                      pattern="[0-9]*" maxlength="15" inputmode="numeric" placeholder="Ej: 3312345678" class="form-input"
                       [class.input-error]="numeroField.invalid && numeroField.touched" />
                       @if (numeroField.hasError('pattern') && numeroField.touched) {
                         <small class="error-msg">Solo se permiten
@@ -84,7 +84,7 @@
                     <label>Email <span class="required">*</span></label>
                     <input type="email" name="email" #emailField="ngModel" [(ngModel)]="evento.email" required
                       pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" placeholder="Ej: contacto@evento.com"
-                      class="form-input" [class.input-error]="emailField.invalid && emailField.touched" />
+                      class="form-input" maxlength="100" [class.input-error]="emailField.invalid && emailField.touched" />
                       @if (emailField.hasError('pattern') && emailField.touched) {
                         <small class="error-msg">Ingresa un email
                         válido</small>
@@ -96,8 +96,12 @@
                       <label>Mensaje de Invitación <span class="required">*</span></label>
                       <textarea name="mensajeInvitacion" [(ngModel)]="evento.mensajeInvitacion" required rows="4"
                         placeholder="Escribe el mensaje que recibirán tus invitados por email o WhatsApp..."
-                      class="form-input form-textarea"></textarea>
-                      <small class="hint">Este mensaje se enviará junto con la invitación</small>
+                        class="form-input form-textarea" maxlength="255"></textarea>
+                      <small class="hint">Este mensaje se enviará junto con la invitación &nbsp;
+                        <span [class.char-warn]="evento.mensajeInvitacion.length >= 230">
+                          {{ evento.mensajeInvitacion.length }}/255
+                        </span>
+                      </small>
                     </div>
                   </div>
                 </div>

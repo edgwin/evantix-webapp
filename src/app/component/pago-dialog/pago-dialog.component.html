@@ -4,7 +4,7 @@
   <div class="container">
     <div class="payment-resume">
       <div>
-        <b>Producto: {{ data.evento.nombre }}</b>
+        <b>Producto: <span class="product-name" [title]="data.evento.nombre">{{ data.evento.nombre }}</span></b>
       </div>
       @if (data.evento.fecha) {
         <div>
@@ -65,7 +65,9 @@
             </div>
           </div>
           <!-- Stripe -->
-          <div class="payment-option" (click)="confirmar($event)" style="margin-top: 10px;">
+          <div class="payment-option" [class.payment-option-disabled]="data.evento.costo < 10"
+            (click)="data.evento.costo >= 10 && confirmar($event)" style="margin-top: 10px;"
+            [title]="data.evento.costo < 10 ? 'Stripe requiere un mínimo de $10 MXN' : ''">
             <div class="payment-left">
               <span class="method-name">Stripe</span>
             </div>
@@ -73,6 +75,9 @@
               <img src="../../../assets/tarjetasStripe.png" alt="Stripe"
                 title="Acepta Visa, Mastercard, AMEX, Apple Pay, Google Pay, Stripe Link Pay">
               </div>
+            @if (data.evento.costo < 10) {
+              <span class="stripe-min-notice">⚠️ Mínimo $10 MXN</span>
+            }
             </div>
           }
 

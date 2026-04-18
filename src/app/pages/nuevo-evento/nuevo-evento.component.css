@@ -136,6 +136,11 @@
   margin-top: 4px;
 }
 
+.char-warn {
+  color: #e74c3c;
+  font-weight: 600;
+}
+
 /* Terms */
 .terms-row {
   margin-bottom: 20px;

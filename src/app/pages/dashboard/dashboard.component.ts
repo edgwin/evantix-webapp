@@ -322,7 +322,10 @@ export class DashboardComponent {
   onPay(event: any) {
     const dialogRef = this.dialog.open(PagoDialogComponent, {
       width: '500px',
-      data: { evento: event }
+      data: {
+        evento: event,
+        cuponYaAplicado: event._cuponAplicado ?? false
+      }
     });
 
     dialogRef.afterClosed().subscribe((metodoPago: string | null) => {
