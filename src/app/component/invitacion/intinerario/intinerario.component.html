@@ -1,4 +1,4 @@
-<section class="itinerario-section">
+﻿<section class="itinerario-section">
   <div class="section-content">
     <div class="section-header">
       <span class="header-decoration-line"></span>
@@ -7,7 +7,7 @@
     </div>
 
     <p class="section-description" [attr.contenteditable]="!isReadOnly" (click)="!isReadOnly && onClickDescripcion()"
-      (keydown)="onKeyDownInt($event, 200)" (blur)="onDescripcionBlur($event)" appAiEditable
+      (keydown)="onKeyDownInt($event, 200)" (input)="onInput($event, 200)" (blur)="onDescripcionBlur($event)" appAiEditable
       [aiSection]="'Intinerario del evento'" [aiEventType]="eventType" [maxLength]="200" [aiReadOnly]="isReadOnly"
       [aiEnabled]="aiEnabled" [aiEventId]="eventId">
       {{dataIntinerario.descripcion}}
@@ -37,20 +37,20 @@
             }
             <div class="card-time">
               <span class="time-value" [attr.contenteditable]="!isReadOnly" [attr.data-id-hora-int]="item.id"
-                (click)="!isReadOnly && onClickHoraInt(item.id)" (keydown)="onKeyDownInt($event, 15)"
+                (click)="!isReadOnly && onClickHoraInt(item.id)" (keydown)="onKeyDownInt($event, 15)" (input)="onInput($event, 15)"
                 (blur)="onHoraIntBlur($event, item)">
                 {{item.hora}}
               </span>
             </div>
             <h3 class="card-title" [attr.data-id-actividad-int]="item.id" [attr.contenteditable]="!isReadOnly"
-              (click)="!isReadOnly && onClickActividadInt(item.id)" (keydown)="onKeyDownInt($event, 22)"
+              (click)="!isReadOnly && onClickActividadInt(item.id)" (keydown)="onKeyDownInt($event, 22)" (input)="onInput($event, 22)"
               (blur)="onActividadIntBlur($event, item)" appAiEditable [aiSection]="'Intinerario del evento'"
               [aiEventType]="eventType" [maxLength]="22" [aiReadOnly]="isReadOnly" [aiEnabled]="aiEnabled"
               [aiEventId]="eventId">
               {{item.actividad}}
             </h3>
             <p class="card-date" [attr.data-id-fecha-int]="item.id" [attr.contenteditable]="!isReadOnly"
-              (click)="!isReadOnly && onClickFechaInt(item.id)" (keydown)="onKeyDownInt($event, 30)"
+              (click)="!isReadOnly && onClickFechaInt(item.id)" (keydown)="onKeyDownInt($event, 30)" (input)="onInput($event, 30)"
               (blur)="onFechaIntBlur($event, item)">
               {{item.fecha}}
             </p>

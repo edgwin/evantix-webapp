@@ -1,4 +1,4 @@
-﻿import { Component, HostListener, Input, signal } from '@angular/core';
+import { Component, HostListener, Input, signal } from '@angular/core';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { CommonModule } from '@angular/common';
@@ -17,11 +17,13 @@ export class GaleriaComponent {
     private notificationService: NotificationService,
     public templateService: TemplateService
   ) { }
+
   @Input() eventId: string = '';
   @Input() data: any;
   @Input() height = '60vh';
   @Input() isReadOnly: boolean = false;
   @Input() maxItems: number = 99;
+
   images: any[] = [];
   loading: boolean = false;
   showGallery: boolean = true;
@@ -32,6 +34,7 @@ export class GaleriaComponent {
   private startX: number | null = null;
   private lastX: number | null = null;
   private pointerMoved = false;
+  private pointerDownTarget: EventTarget | null = null;
 
   // autoplay
   private autoplayIntervalId: any = null;
@@ -117,17 +120,9 @@ export class GaleriaComponent {
     this.cachedNextImg = this.images[nextIdx]?.imagen || '';
   }
 
-  prevImg(): string {
-    return this.cachedPrevImg;
-  }
-
-  nextImg(): string {
-    return this.cachedNextImg;
-  }
-
-  currentImg(): string {
-    return this.cachedCurrentImg;
-  }
+  prevImg(): string { return this.cachedPrevImg; }
+  nextImg(): string { return this.cachedNextImg; }
+  currentImg(): string { return this.cachedCurrentImg; }
 
   // ---------- navigation ----------
   private scheduleIndexUpdate(delta: number) {
@@ -150,17 +145,8 @@ export class GaleriaComponent {
     }
   }
 
-  next() {
-    this.pauseAutoplay();
-    this.scheduleIndexUpdate(1);
-    this.resumeAutoplayWithDelay();
-  }
-
-  prev() {
-    this.pauseAutoplay();
-    this.scheduleIndexUpdate(-1);
-    this.resumeAutoplayWithDelay();
-  }
+  next() { this.pauseAutoplay(); this.scheduleIndexUpdate(1); this.resumeAutoplayWithDelay(); }
+  prev() { this.pauseAutoplay(); this.scheduleIndexUpdate(-1); this.resumeAutoplayWithDelay(); }
 
   goTo(idx: number) {
     this.pauseAutoplay();
@@ -178,16 +164,13 @@ export class GaleriaComponent {
   }
 
   // ---------- pointer / swipe handlers ----------
-  // In your template you already have: (pointerdown)="onPointerDown($event)" (pointerup)="onPointerUp($event)"
   onPointerDown(ev: PointerEvent) {
-    // capture pointer to follow moves reliably
-    try {
-      (ev.target as Element)?.setPointerCapture?.(ev.pointerId);
-    } catch { }
+    try { (ev.target as Element)?.setPointerCapture?.(ev.pointerId); } catch { }
     this.pointerId = ev.pointerId;
     this.startX = ev.clientX;
     this.lastX = ev.clientX;
     this.pointerMoved = false;
+    this.pointerDownTarget = ev.target;
     this.pauseAutoplay();
   }
 
@@ -200,29 +183,22 @@ export class GaleriaComponent {
   }
 
   onPointerUp(ev: PointerEvent) {
-    try {
-      (ev.target as Element)?.releasePointerCapture?.(ev.pointerId);
-    } catch { }
-    if (this.pointerId !== ev.pointerId) {
-      this.resetPointerState();
-      return;
-    }
-
-    if (this.startX == null) {
-      this.resetPointerState();
-      return;
-    }
+    try { (ev.target as Element)?.releasePointerCapture?.(ev.pointerId); } catch { }
+    if (this.pointerId !== ev.pointerId) { this.resetPointerState(); return; }
+    if (this.startX == null) { this.resetPointerState(); return; }
 
     const diff = (this.lastX ?? ev.clientX) - this.startX;
-    const threshold = 40; // swipe threshold px
+    const threshold = 40;
     if (diff > threshold) {
-      // swipe right -> previous image
       this.scheduleIndexUpdate(-1);
     } else if (diff < -threshold) {
-      // swipe left -> next image
       this.scheduleIndexUpdate(1);
-    } else {
-      // tap/click — do nothing (or optionally treat as click on center)
+    } else if (!this.pointerMoved) {
+      // Pure tap — if on the center image, open fullscreen
+      const target = this.pointerDownTarget as HTMLElement | null;
+      if (target?.classList.contains('center-img')) {
+        this.openFullScreen();
+      }
     }
 
     this.resetPointerState();
@@ -258,6 +234,7 @@ export class GaleriaComponent {
     this.startX = null;
     this.lastX = null;
     this.pointerMoved = false;
+    this.pointerDownTarget = null;
   }
 
   // ---------- autoplay ----------
@@ -267,13 +244,11 @@ export class GaleriaComponent {
     if (n <= 1) return;
     this.stopAutoplay();
     this.autoplayIntervalId = setInterval(() => {
-      // advance one
       this.animationDirection = 'right';
       const nLocal = this.images.length || 0;
       if (nLocal === 0) return;
       this._index.update(i => (i + 1) % nLocal);
       this.updateCachedImages();
-      // clear animation after duration (matches CSS)
       setTimeout(() => this.animationDirection = '', 400);
     }, this.autoplayDelay);
   }
@@ -285,12 +260,9 @@ export class GaleriaComponent {
     }
   }
 
-  pauseAutoplay() {
-    this.stopAutoplay();
-  }
+  pauseAutoplay() { this.stopAutoplay(); }
 
   resumeAutoplayWithDelay(delay = 2000) {
-    // restart autoplay after short delay (so user sees change)
     this.stopAutoplay();
     if (!this.autoplayEnabled) return;
     this.autoplayIntervalId = setTimeout(() => this.startAutoplayIfNeeded(), delay);
@@ -300,20 +272,14 @@ export class GaleriaComponent {
     const key = (event as KeyboardEvent).key;
     if (key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
       event.preventDefault();
-      (event.target as HTMLElement).blur(); // dispara onActividadBlur y guarda
+      (event.target as HTMLElement).blur();
       return;
     }
     const el = event.target as HTMLElement;
     const text = el.innerText || '';
-
-    // permite borrar, mover cursor, etc.
-    const controlKeys = [
-      'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight',
-      'ArrowUp', 'ArrowDown', 'Tab'
-    ];
-
+    const controlKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab'];
     if (text.length >= maxLength && !controlKeys.includes(event.key)) {
-      event.preventDefault(); // bloquea más escritura
+      event.preventDefault();
     }
     (event.target as HTMLElement).click();
   }
@@ -321,16 +287,39 @@ export class GaleriaComponent {
   triggerImageDelete() {
     const fotoId = this.currentId();
     this.invitationService.deleteGaleria(fotoId).subscribe({
-      next: (res) => {
+      next: () => {
         this.cargarDatos();
         this.invitationService.notifyMutation(this.eventId);
       },
       error: (err) => {
-        this.notificationService.show(
-          'error',
-          `Error al subir imagen: ${err.message}`
-        );
+        this.notificationService.show('error', `Error al eliminar imagen: ${err.message}`);
       }
+    });
+  }
+
+  // Compress image to max 1920px / 80% quality using Canvas API
+  private compressImage(file: File, maxPx = 1920, quality = 0.8): Promise<File> {
+    return new Promise((resolve) => {
+      const img = new Image();
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        img.src = e.target!.result as string;
+        img.onload = () => {
+          let { width, height } = img;
+          if (width > maxPx || height > maxPx) {
+            if (width > height) { height = Math.round(height * maxPx / width); width = maxPx; }
+            else                { width  = Math.round(width  * maxPx / height); height = maxPx; }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width; canvas.height = height;
+          canvas.getContext('2d')!.drawImage(img, 0, 0, width, height);
+          canvas.toBlob(
+            (blob) => resolve(new File([blob!], file.name, { type: 'image/jpeg' })),
+            'image/jpeg', quality
+          );
+        };
+      };
+      reader.readAsDataURL(file);
     });
   }
 
@@ -343,7 +332,6 @@ export class GaleriaComponent {
       return;
     }
 
-    // Limitar al número de slots disponibles según maxItems
     const currentCount = this.data?.length || 0;
     const availableSlots = this.maxItems - currentCount;
 
@@ -354,45 +342,33 @@ export class GaleriaComponent {
     }
 
     const originalCount = selectedFiles.length;
-
     if (selectedFiles.length > availableSlots) {
       selectedFiles = selectedFiles.slice(0, availableSlots);
     }
 
+    event.target.value = '';
     this.loading = true;
 
-    if (originalCount > availableSlots) {
-      this.notificationService.show(
-        'warning',
-        `⚠️ Solo se subirán ${availableSlots} de las ${originalCount} fotos seleccionadas (máximo ${this.maxItems}).`,
-        true
-      );
-    } else {
-      this.notificationService.show(
-        'info',
-        `Subiendo ${selectedFiles.length} imagen(es)... Este proceso puede tardar varios minutos.`,
-        true
-      );
-    }
+    const warningMsg = originalCount > availableSlots
+      ? `⚠️ Solo se subirán ${availableSlots} de las ${originalCount} fotos seleccionadas (máximo ${this.maxItems}).`
+      : `Comprimiendo y subiendo ${selectedFiles.length} imagen(es)... Este proceso puede tardar varios minutos.`;
+    this.notificationService.show('info', warningMsg, true);
 
-    event.target.value = '';
-
-    this.invitationService.uploadGaleria(this.eventId, selectedFiles).subscribe({
-      next: (res) => {
-        this.notificationService.clear();
-        this.data = res;
-        this.cargarDatos();
-        this.invitationService.notifyMutation(this.eventId);
-        this.notificationService.show('success', 'Imágenes subidas correctamente');
-      },
-      error: (err) => {
-        this.notificationService.clear();
-        this.notificationService.show(
-          'error',
-          `Hubo un error favor intentar más tarde ${err.message}`
-        );
-        this.loading = false;
-      }
+    Promise.all(selectedFiles.map(f => this.compressImage(f))).then(compressed => {
+      this.invitationService.uploadGaleria(this.eventId, compressed).subscribe({
+        next: (res) => {
+          this.notificationService.clear();
+          this.data = res;
+          this.cargarDatos();
+          this.invitationService.notifyMutation(this.eventId);
+          this.notificationService.show('success', 'Imágenes subidas correctamente');
+        },
+        error: (err) => {
+          this.notificationService.clear();
+          this.notificationService.show('error', `Hubo un error favor intentar más tarde ${err.message}`);
+          this.loading = false;
+        }
+      });
     });
   }
 
@@ -400,16 +376,18 @@ export class GaleriaComponent {
 
   openFullScreen() {
     const imgUrl: string = this.currentImg();
+    if (!imgUrl) return;
     this.selectedImage = imgUrl;
-    document.body.style.overflow = 'hidden'; // bloquea scroll del fondo
+    document.body.style.overflow = 'hidden';
   }
 
   closeFullScreen() {
     this.selectedImage = null;
-    document.body.style.overflow = 'auto'; // restablece scroll
+    document.body.style.overflow = 'auto';
   }
 
   @HostListener('document:keydown.escape')
   onEscape() {
+    if (this.selectedImage) this.closeFullScreen();
   }
 }

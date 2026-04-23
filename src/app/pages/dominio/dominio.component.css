@@ -503,3 +503,82 @@
   color: #27ae60;
   font-weight: 600;
 }
+/* -- Vanity URL / Subdomain: stacked layout on narrow screens -- */
+
+/* domain-input-stacked: prefix wraps on top, input takes full width */
+.domain-input-stacked {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.domain-input-stacked .domain-prefix-block {
+  width: 100%;
+  border-bottom: 1px solid #e0e4ea;
+  border-radius: 0;
+  background: #f0f2f4;
+  padding: 8px 12px;
+  font-size: 13px;
+  white-space: normal;
+  word-break: break-all;
+}
+
+/* On wider screens restore inline layout for option 3 */
+@media (min-width: 480px) {
+  .domain-input-stacked {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .domain-input-stacked .domain-prefix-block {
+    width: auto;
+    border-bottom: none;
+    border-right: 1px solid #e0e4ea;
+    border-radius: 0;
+    white-space: nowrap;
+    word-break: normal;
+    max-width: 55%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* Subdominio (option 1): suffix can be wide too — truncate it */
+.domain-suffix {
+  max-width: 55%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* On very narrow screens, stack subdominio suffix below input too */
+@media (max-width: 479px) {
+  .domain-input-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .domain-prefix,
+  .domain-suffix {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #e0e4ea;
+    max-width: 100%;
+    white-space: normal;
+    word-break: break-all;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  /* suffix goes below input */
+  .domain-suffix {
+    border-top: 1px solid #e0e4ea;
+    border-bottom: none;
+    order: 1;
+  }
+
+  .domain-input {
+    order: 0;
+    width: 100%;
+    text-align: center;
+  }
+}

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
@@ -21,6 +21,12 @@ export class MuroFotosComponent implements OnInit {
     fotos: any[] = [];
     loading: boolean = false;
     uploading: boolean = false;
+
+    // Lightbox
+    selectedImage: string | null = null;
+
+    // Detecta si el dispositivo es touch (para mostrar botón eliminar siempre visible)
+    isTouchDevice: boolean = window.matchMedia('(hover: none)').matches || ('ontouchstart' in window);
 
     constructor(
         private invitationService: InvitationService,
@@ -51,12 +57,36 @@ export class MuroFotosComponent implements OnInit {
         return this.isGuestView;
     }
 
-    deleteFoto(fotoId: string): void {
+    deleteFoto(fotoId: string, event: MouseEvent): void {
+        event.stopPropagation(); // evita abrir el lightbox al eliminar
         if (!confirm('¿Eliminar esta foto?')) return;
         this.invitationService.deleteFotoInvitado(fotoId, this.idInvitacion!).subscribe({
             next: () => this.cargarFotos(),
             error: (err: any) => this.notificationService.show('error', 'Error al eliminar foto')
         });
+    }
+
+    // ---------- Lightbox ----------
+    openFullScreen(imgUrl: string): void {
+        if (!imgUrl) return;
+        this.selectedImage = imgUrl;
+        document.body.style.overflow = 'hidden';
+    }
+
+    closeFullScreen(): void {
+        this.selectedImage = null;
+        document.body.style.overflow = 'auto';
+    }
+
+    onLightboxBackdropClick(event: MouseEvent): void {
+        if ((event.target as HTMLElement).classList.contains('lightbox-overlay')) {
+            this.closeFullScreen();
+        }
+    }
+
+    @HostListener('document:keydown.escape')
+    onEscape(): void {
+        if (this.selectedImage) this.closeFullScreen();
     }
 
     triggerUpload(): void {

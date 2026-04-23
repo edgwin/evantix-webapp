@@ -1,5 +1,6 @@
 .evento-container {
   padding: 24px;
+  padding-bottom: 40px;
   max-width: 700px;
   margin: 0 auto;
 }
@@ -213,6 +214,8 @@
   display: flex;
   justify-content: flex-end;
   gap: 12px;
+  margin-top: 8px;
+  padding-bottom: 8px;
 }
 
 .btn {
@@ -268,14 +271,18 @@
     gap: 6px;
   }
 
+  /* Mobile: botones apilados con botón primario al inicio */
   .form-actions {
-    flex-direction: column;
+    flex-direction: column-reverse;
+    gap: 10px;
   }
 
   .form-actions .btn {
     width: 100%;
     justify-content: center;
     text-align: center;
+    padding: 14px 24px;
+    font-size: 15px;
   }
 }
 
@@ -293,3 +300,12 @@
     font-size: 13px;
   }
 }
+
+/* Safe area support for notch/home-indicator phones (iPhone X+, modern Android) */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  @media (max-width: 768px) {
+    .evento-container {
+      padding-bottom: calc(60px + env(safe-area-inset-bottom));
+    }
+  }
+}

@@ -137,6 +137,7 @@ export class HistoriaComponent {
   }
 
   nuevaHistoria() {
+    if ((this.dataHistoria?.details?.length || 0) >= this.maxItems) return;
     this.invitationService.postNewHistoria(this.eventId).subscribe({
       next: (res) => {
         this.cargarDatosHistoria();
@@ -263,6 +264,24 @@ export class HistoriaComponent {
       const element = document.querySelector(`[contenteditable][data-id-desc-historia="${this.editingDescHistoriaId}"]`) as HTMLElement;
       if (item && element) {
         this.restoreDescHistoria(item, element);
+      }
+    }
+  }
+  // Mobile: enforces char limit for autocorrect/paste/predictive text
+  onInput(event: Event, maxLen: number): void {
+    const el = event.target as HTMLElement;
+    const text = el.innerText || '';
+    if (text.length > maxLen) {
+      const selection = window.getSelection();
+      const range = selection?.getRangeAt(0);
+      const offset = range ? Math.min(range.startOffset, maxLen) : maxLen;
+      el.innerText = text.substring(0, maxLen);
+      if (selection && el.firstChild) {
+        const newRange = document.createRange();
+        newRange.setStart(el.firstChild, Math.min(offset, maxLen));
+        newRange.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(newRange);
       }
     }
   }

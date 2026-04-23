@@ -81,7 +81,7 @@
       </div>
       <!-- Configuration Form -->
       @if (selectedOption > 0) {
-        <div class="config-form">
+        <div class="config-form" id="config-form-section">
           <h3>Configura tu {{ getOptionLabel(selectedOption) }}</h3>
           <div class="input-row">
             <!-- Option 1 -->
@@ -102,8 +102,8 @@
             }
             <!-- Option 3 -->
             @if (selectedOption === 3) {
-              <div class="domain-input-wrapper">
-                <span class="domain-prefix">{{ baseDomain }}/i/</span>
+              <div class="domain-input-wrapper domain-input-stacked">
+                <span class="domain-prefix domain-prefix-block">{{ baseDomain }}/i/</span>
                 <input type="text" [(ngModel)]="domainValue" placeholder="mi-evento" class="domain-input"
                   (input)="onDomainInput()" (keyup.enter)="checkAvailability()" />
               </div>

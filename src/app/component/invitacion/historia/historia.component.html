@@ -1,9 +1,9 @@
-<section class="historia-section">
+﻿<section class="historia-section">
   <div class="section-content">
     <div class="section-header">
       <span class="header-decoration-line"></span>
       <h1 id="TituloHistoria" [attr.contenteditable]="!isReadOnly" (click)="!isReadOnly && onClickTituloHistoria()"
-        (keydown)="onKeyDown($event, 50)" (blur)="onTituloHistoriaBlur($event)">
+        (keydown)="onKeyDown($event, 50)" (input)="onInput($event, 50)" (blur)="onTituloHistoriaBlur($event)">
         {{dataHistoria.titulo}}
       </h1>
       <span class="header-decoration-line"></span>
@@ -35,12 +35,12 @@
           </button>
           }
           <div class="card-date-badge" [attr.data-id-fecha-historia]="item.id" [attr.contenteditable]="!isReadOnly"
-            (click)="!isReadOnly && onClickFechaHistoria(item.id)" (keydown)="onKeyDown($event, 30)"
+            (click)="!isReadOnly && onClickFechaHistoria(item.id)" (keydown)="onKeyDown($event, 30)" (input)="onInput($event, 30)"
             (blur)="onFechaHistoriaBlur($event, item)">
             {{item.fecha}}
           </div>
           <p class="card-description" [attr.data-id-desc-historia]="item.id" [attr.contenteditable]="!isReadOnly"
-            (click)="!isReadOnly && onClickDescHistoria(item.id)" (keydown)="onKeyDown($event, 200)"
+            (click)="!isReadOnly && onClickDescHistoria(item.id)" (keydown)="onKeyDown($event, 200)" (input)="onInput($event, 200)"
             (blur)="onDescHistoriaBlur($event, item)" appAiEditable
             [aiSection]="'Historia de vida del o los festejados, si es boda, la historia de la pareja, la respuesta debe ser en primera persona'"
             [aiEventType]="eventType" [maxLength]="200" [aiReadOnly]="isReadOnly" [aiEnabled]="aiEnabled"
@@ -53,7 +53,7 @@
       }
     </div>
 
-    @if (!loading && !isReadOnly) {
+    @if (!isReadOnly && showAddHistoriaBtn()) {
     <div class="add-item-container">
       <button class="add-item-btn" (click)="nuevaHistoria()">
         <span class="add-icon">+</span>

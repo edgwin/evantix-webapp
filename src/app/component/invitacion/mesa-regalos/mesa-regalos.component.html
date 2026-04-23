@@ -1,4 +1,4 @@
-<section class="mesa-regalos-section"
+﻿<section class="mesa-regalos-section"
   [style.background-image]="'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(' + data.imagen + ')'">
 
   @if (!isReadOnly && !loadingImg) {
@@ -40,12 +40,12 @@
           </div>
           <div class="card-content">
             <h3 class="card-title" [attr.contenteditable]="!isReadOnly" [attr.data-id-titulo]="item.id"
-              (keydown)="onKeyDown($event, 22)" (blur)="saveContent($event, item.id, 'titulo')"
+              (keydown)="onKeyDown($event, 22)" (input)="onInput($event, 22)" (blur)="saveContent($event, item.id, 'titulo')"
               (click)="!isReadOnly && onClickTitulo(item.id)">
               {{item.titulo}}
             </h3>
             <p class="card-description" [attr.contenteditable]="!isReadOnly" [attr.data-id-descripcion]="item.id"
-              (keydown)="onKeyDown($event, 50)" (blur)="saveContent($event, item.id, 'descripcion')"
+              (keydown)="onKeyDown($event, 50)" (input)="onInput($event, 50)" (blur)="saveContent($event, item.id, 'descripcion')"
               (click)="!isReadOnly && onClickDescripcion(item.id)" appAiEditable [aiSection]="'Mesa de Regalos'"
               [aiEventType]="eventType" [maxLength]="50" [aiReadOnly]="isReadOnly" [aiEnabled]="aiEnabled"
               [aiEventId]="eventId">

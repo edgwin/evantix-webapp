@@ -1,4 +1,4 @@
-<section class="indicaciones-section">
+﻿<section class="indicaciones-section">
   <div class="background-image" [style.background-image]="'url(' + data.imagen + ')'"></div>
   <div class="background-overlay"></div>
 
@@ -42,7 +42,7 @@
           </h3>
           <div class="card-divider"></div>
           <p class="card-description" [innerHTML]="item.descripcion" [attr.contenteditable]="!isReadOnly"
-            [attr.data-id-descripcion-indicaciones]="item.id" (keydown)="onDescKeyDown($event)"
+            [attr.data-id-descripcion-indicaciones]="item.id" (keydown)="onDescKeyDown($event)" (input)="onInput($event, 150)"
             (click)="!isReadOnly && onClickDescripcion(item.id)" (blur)="saveContent($event, item.id, 'descripcion')"
             appAiEditable [aiSection]="'Indicaciones para el evento'" [aiEventType]="eventType" [maxLength]="maxLength"
             [aiReadOnly]="isReadOnly" [aiEnabled]="aiEnabled" [aiEventId]="eventId">

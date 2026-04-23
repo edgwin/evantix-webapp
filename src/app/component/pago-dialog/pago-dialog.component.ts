@@ -29,9 +29,7 @@ export class PagoDialogComponent {
     this.cuponAplicado = this.data.cuponYaAplicado ?? false;
   }
 
-  confirmar(event: Event) {
-    const target = event.target as HTMLElement | null;
-    const metodo = target?.innerText?.trim() || '';
+  confirmar(metodo: string) {
     this.dialogRef.close(metodo);
   }
 

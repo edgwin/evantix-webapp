@@ -181,6 +181,27 @@
   display: block;
 }
 
+.rsvp-selection-error {
+  background: rgba(231, 76, 60, 0.08);
+  border: 1px solid rgba(231, 76, 60, 0.35);
+  border-radius: 10px;
+  color: #c0392b;
+  font-size: 0.88rem;
+  font-family: var(--body-font, 'Work Sans', sans-serif);
+  padding: 10px 14px;
+  margin: 4px 0 12px 0;
+  animation: shakeError 0.4s ease;
+  text-align: left;
+}
+
+@keyframes shakeError {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-6px); }
+  40%       { transform: translateX(6px); }
+  60%       { transform: translateX(-4px); }
+  80%       { transform: translateX(4px); }
+}
+
 .rsvp-buttons {
   display: flex;
   gap: 10px;

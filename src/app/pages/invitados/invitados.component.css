@@ -1031,4 +1031,52 @@
         font-size: 12px;
         min-width: 32px;
     }
-}
+}
+/* --- Mobile: Alta de Invitados form panel --- */
+@media (max-width: 600px) {
+
+  /* Labels de País y WhatsApp — display block para que queden a la izquierda */
+  .form-group-small label,
+  .form-group-large label {
+    display: block;
+    text-align: left;
+  }
+
+  /* form-group-small y form-group-large ocupan ancho completo en mobile */
+  .form-group-small,
+  .form-group-large {
+    width: 100%;
+    flex: unset;
+  }
+
+  /* mat-select país — ancho 100% */
+  .mat-field-modern {
+    width: 100%;
+    display: block;
+  }
+
+  /* Botones de acciones en column, full-width */
+  .form-actions {
+    flex-direction: column;
+    padding-right: 0;
+    gap: 8px;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* invitados-list sin padding lateral extra */
+  .invitados-list {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  /* form-panel no se sale del viewport */
+  .form-panel {
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 8px;
+  }
+}

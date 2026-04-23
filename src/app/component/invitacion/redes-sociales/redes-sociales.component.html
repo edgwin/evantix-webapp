@@ -28,18 +28,18 @@
           </div>
           <div class="card-content">
             <h3 class="card-title" [attr.contenteditable]="!isReadOnly" [attr.data-id-red-social]="item.id"
-              (keydown)="onRedKeyDown($event)" (click)="!isReadOnly && onClickRed(item.id)"
+              (keydown)="onRedKeyDown($event)" (input)="onInput($event, 30)" (click)="!isReadOnly && onClickRed(item.id)"
               (blur)="saveContent($event, item.id, 'red')">
               {{item.red}}
             </h3>
             <div class="card-divider"></div>
             <p class="card-url" [attr.contenteditable]="!isReadOnly" [attr.data-id-url-social]="item.id"
-              (keydown)="onUrlKeyDown($event)" (click)="!isReadOnly && onClickUrl(item.id)"
+              (keydown)="onUrlKeyDown($event)" (input)="onInput($event, 200)" (click)="!isReadOnly && onClickUrl(item.id)"
               (blur)="saveContent($event, item.id, 'url')">
               {{item.url}}
             </p>
             @if (isReadOnly && item.url) {
-              <a [href]="item.url" target="_blank" class="social-link-btn">
+              <a [href]="safeUrl(item.url)" target="_blank" class="social-link-btn">
                 Visitar ↗
               </a>
             }
@@ -48,7 +48,7 @@
       }
     </div>
 
-    @if (!isReadOnly && !loading && (data?.details?.length || 0) < maxItems) {
+    @if (!isReadOnly && !loading && (data?.details?.length || 0) < MAX_REDES) {
       <div class="add-btn-container">
         <button class="add-btn" (click)="nuevaRedSocial()" title="Click para agregar red social">
           <span class="add-icon">+</span>

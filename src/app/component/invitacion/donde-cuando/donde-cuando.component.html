@@ -1,4 +1,4 @@
-@if (!loading) {
+﻿@if (!loading) {
   <section class="donde-cuando-section">
     <div class="section-background"></div>
     <div class="section-content">
@@ -8,10 +8,9 @@
         <span class="header-decoration">✦</span>
       </div>
       <p class="section-subtitle">Te esperamos en estos lugares especiales</p>
-      <div class="events-container" cdkDropList (cdkDropListDropped)="drop($event)">
+      <div class="events-container">
         @for (item of data.details; track trackById(i, item); let i = $index) {
-          <div class="event-card" cdkDrag
-            [cdkDragDisabled]="editingActividadId === item.id" [style.animation-delay]="(i * 0.15) + 's'">
+          <div class="event-card" [style.animation-delay]="(i * 0.15) + 's'">
             <div class="card-image-section">
               <div class="card-image" [ngStyle]="{'background-image': 'url(' + item.imagen + ')'}"></div>
               <div class="card-image-overlay"></div>
@@ -36,9 +35,8 @@
               }
               <div class="card-title-overlay">
                 <h3 class="event-title" [attr.data-id-actividad]="item.id" [attr.contenteditable]="!isReadOnly"
-                  (pointerdown)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()"
-                  (touchstart)="$event.stopPropagation()" (click)="!isReadOnly && onClickActividad(item.id)"
-                  (keydown)="onKeyDown($event, item, 40)" (blur)="onActividadBlur($event, item)">
+                  (click)="!isReadOnly && onClickActividad(item.id)"
+                  (keydown)="onKeyDown($event, item, 40)" (input)="onInput($event, 40)" (blur)="onActividadBlur($event, item)">
                   {{ item.actividad }}
                 </h3>
               </div>
@@ -50,9 +48,8 @@
                     <i class="icon-clock"></i>
                   </div>
                   <div class="datetime-text" [attr.data-id-hora]="item.id" [attr.contenteditable]="!isReadOnly"
-                    (pointerdown)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()"
-                    (touchstart)="$event.stopPropagation()" (click)="!isReadOnly && onClickHora(item.id)"
-                    (keydown)="onKeyDown($event, item, 11)" (blur)="onHoraBlur($event, item)">
+                    (click)="!isReadOnly && onClickHora(item.id)"
+                    (keydown)="onKeyDown($event, item, 11)" (input)="onInput($event, 11)" (blur)="onHoraBlur($event, item)">
                     {{item.hora}}
                   </div>
                 </div>
@@ -62,9 +59,8 @@
                     <i class="icon-calendar"></i>
                   </div>
                   <div class="datetime-text" [attr.data-id-fecha]="item.id" [attr.contenteditable]="!isReadOnly"
-                    (pointerdown)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()"
-                    (touchstart)="$event.stopPropagation()" (click)="!isReadOnly && onClickFecha(item.id)"
-                    (keydown)="onKeyDown($event, item, 30)" (blur)="onFechaBlur($event, item)">
+                    (click)="!isReadOnly && onClickFecha(item.id)"
+                    (keydown)="onKeyDown($event, item, 30)" (input)="onInput($event, 30)" (blur)="onFechaBlur($event, item)">
                     {{item.fecha}}
                   </div>
                 </div>
@@ -76,9 +72,8 @@
                     Lugar
                   </span>
                   <span class="info-value" [attr.data-id-lugar]="item.id" [attr.contenteditable]="!isReadOnly"
-                    (pointerdown)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()"
-                    (touchstart)="$event.stopPropagation()" (click)="!isReadOnly && onClickLugar(item.id)"
-                    (keydown)="onKeyDown($event, item, 50)" (blur)="onLugarBlur($event, item)">
+                    (click)="!isReadOnly && onClickLugar(item.id)"
+                    (keydown)="onKeyDown($event, item, 50)" (input)="onInput($event, 50)" (blur)="onLugarBlur($event, item)">
                     {{item.lugar}}
                   </span>
                 </div>
@@ -88,9 +83,8 @@
                     Dirección
                   </span>
                   <span class="info-value address" [attr.data-id-direccion]="item.id" [attr.contenteditable]="!isReadOnly"
-                    (pointerdown)="$event.stopPropagation()" (mousedown)="$event.stopPropagation()"
-                    (touchstart)="$event.stopPropagation()" (click)="!isReadOnly && onClickDireccion(item.id)"
-                    (keydown)="onKeyDown($event, item, 100)" (blur)="onDireccionBlur($event, item)">
+                    (click)="!isReadOnly && onClickDireccion(item.id)"
+                    (keydown)="onKeyDown($event, item, 100)" (input)="onInput($event, 100)" (blur)="onDireccionBlur($event, item)">
                     {{item.direccion}}
                   </span>
                 </div>

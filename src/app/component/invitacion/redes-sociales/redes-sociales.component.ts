@@ -24,7 +24,7 @@ export class RedesSocialesComponent {
   @Input() eventId: string = '';
   @Input() data: any;
   @Input() isReadOnly: boolean = false;
-  @Input() maxItems: number = 8;
+  @Input() maxItems: number = 5;
 
   // Popup para seleccionar icono
   images: string[] = [];
@@ -143,7 +143,10 @@ export class RedesSocialesComponent {
     }
   }
 
+  readonly MAX_REDES = 5;
+
   nuevaRedSocial() {
+    if ((this.data?.details?.length || 0) >= this.MAX_REDES) return;
     this.invitationService.postNewSocialNetwork(this.eventId).subscribe({
       next: () => {
         this.cargarDatos();
@@ -216,5 +219,34 @@ export class RedesSocialesComponent {
         this.restoreUrl(item, element);
       }
     }
+  }
+  // Mobile: enforces char limit for autocorrect/paste/predictive text
+  onInput(event: Event, maxLen: number): void {
+    const el = event.target as HTMLElement;
+    const text = el.innerText || '';
+    if (text.length > maxLen) {
+      const selection = window.getSelection();
+      const range = selection?.getRangeAt(0);
+      const offset = range ? Math.min(range.startOffset, maxLen) : maxLen;
+      el.innerText = text.substring(0, maxLen);
+      if (selection && el.firstChild) {
+        const newRange = document.createRange();
+        newRange.setStart(el.firstChild, Math.min(offset, maxLen));
+        newRange.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(newRange);
+      }
+    }
+  }
+
+  // Ensures the URL always has a protocol prefix so it opens as an external link.
+  // Without this, "facebook.com/edgwin" is treated as a relative path.
+  safeUrl(url: string): string {
+    if (!url) return '';
+    const trimmed = url.trim();
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+      return trimmed;
+    }
+    return 'https://' + trimmed;
   }
 }

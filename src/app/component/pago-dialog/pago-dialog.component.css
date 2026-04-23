@@ -265,3 +265,78 @@ header {
   opacity: 0.6;
   cursor: not-allowed;
 }
+/* -- Mobile responsive fixes -- */
+@media (max-width: 520px) {
+  .container {
+    margin: 12px auto;
+  }
+
+  .payment-option {
+    padding: 12px 10px;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  /* Stack label + logos vertically on narrow screens */
+  .payment-left {
+    min-width: 80px;
+    flex-shrink: 0;
+  }
+
+  .logos {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    overflow: hidden;
+  }
+
+  .logos img {
+    height: 24px;
+    margin-left: 4px;
+    max-width: 100%;
+    object-fit: contain;
+  }
+
+  .stripe-min-notice {
+    width: 100%;
+    margin-top: 4px;
+    white-space: normal;
+  }
+
+  .cupon-input-row {
+    flex-direction: column;
+  }
+
+  .btn-aplicar {
+    width: 100%;
+  }
+}
+
+/* -- Payment option interactive feedback -- */
+.payment-option {
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.payment-option:not(.payment-option-disabled):hover {
+  background-color: #f0f6f8;
+  border-color: #338da2;
+  box-shadow: 0 2px 12px rgba(51, 141, 162, 0.12);
+  transform: translateY(-1px);
+  transition: all 0.18s ease;
+}
+
+.payment-option:not(.payment-option-disabled):active {
+  transform: scale(0.98);
+  box-shadow: none;
+}
+
+/* Ensure child elements don't block pointer events */
+.payment-option .payment-left,
+.payment-option .logos,
+.payment-option .method-name,
+.payment-option img {
+  pointer-events: none;
+}

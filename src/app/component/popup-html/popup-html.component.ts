@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 
 import { SafeHtml } from '@angular/platform-browser';
 import { InvitationService } from '../../services/invitation.service';
@@ -13,29 +13,48 @@ import { NotificationService } from '../../services/notification.service';
 export class PopupHtmlComponent {
   constructor(
       private invitationService: InvitationService, private notificationService: NotificationService
-  )
-  {}
+  ) {}
 
   @Input() visible: boolean = false;
   @Input() title: string = 'Galería';
-  // soporte para html en string / SafeHtml (legacy)
   @Input() htmlContent: SafeHtml | string = '';
-  // nueva forma: pasar array de imágenes
   @Input() images: string[] | null = null;
   @Input() personasFavoritasEdit: boolean = false;
   @Input() showCloseButton: boolean = false;
   @Input() imagenPF: any;
   @Input() parentescoPF: string | null = null;
   @Input() nombresPF: string | null = null;
-  @Input() personaFavoritaId: string = "";
+  @Input() personaFavoritaId: string = '';
   @Output() closed = new EventEmitter<void>();
   @Output() imageSelected = new EventEmitter<string>();
 
-  // índice del carrusel (solo se usa si images está presente)
+  // Direct DOM references — most reliable on mobile
+  @ViewChild('parentescoEl') parentescoRef!: ElementRef<HTMLElement>;
+  @ViewChild('nombresEl')    nombresRef!: ElementRef<HTMLElement>;
+
   currentIndex = 0;
-  tempParentesco: string | null = null;
-  tempNombres: string | null = null;
-  loadingImg:boolean = false;
+  loadingImg: boolean = false;
+
+  /**
+   * Called via (pointerdown) on the "Cerrar" button — fires BEFORE blur and BEFORE
+   * the virtual keyboard dismisses, so innerText is still intact on iOS/Android.
+   */
+  captureAndSave() {
+    if (this.parentescoRef) {
+      const val = this.parentescoRef.nativeElement.innerText.trim();
+      if (val && val !== this.parentescoPF) {
+        this.parentescoPF = val;
+        this.updateBackend('PersonasFavoritasDetail', 'Id', this.personaFavoritaId, 'Parentesco', val);
+      }
+    }
+    if (this.nombresRef) {
+      const val = this.nombresRef.nativeElement.innerText.trim();
+      if (val && val !== this.nombresPF) {
+        this.nombresPF = val;
+        this.updateBackend('PersonasFavoritasDetail', 'Id', this.personaFavoritaId, 'Nombres', val);
+      }
+    }
+  }
 
   close() {
     this.visible = false;
@@ -58,7 +77,7 @@ export class PopupHtmlComponent {
     this.currentIndex = (this.currentIndex + 1) % this.images.length;
   }
 
-  onKeyDown(event: KeyboardEvent | any, maxLength:number) {
+  onKeyDown(event: KeyboardEvent | any, maxLength: number) {
     const key = (event as KeyboardEvent).key;
     if (key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
       event.preventDefault();
@@ -67,48 +86,36 @@ export class PopupHtmlComponent {
     }
     const el = event.target as HTMLElement;
     const text = el.innerText || '';
-
-    // permite borrar, mover cursor, etc.
     const controlKeys = [
       'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight',
       'ArrowUp', 'ArrowDown', 'Tab'
     ];
-
     if (text.length >= maxLength && !controlKeys.includes(event.key)) {
-      event.preventDefault(); // bloquea más escritura
+      event.preventDefault();
     }
-    (event.target as HTMLElement).click();
   }
+
+  // ── Parentesco blur (desktop fallback) ───────────────────────────────────
 
   onParentescoBlur(event: Event) {
-    const el = event.target as HTMLElement;
-    const nuevoTexto = el.innerText.trim();
-
-    // si cambió, guardamos y llamamos backend
-    if (nuevoTexto !== this.parentescoPF) {
-      this.parentescoPF = nuevoTexto;      
-      this.updateBackend('PersonasFavoritasDetail','Id',this.personaFavoritaId, 'Parentesco', this.parentescoPF);
+    const val = (event.target as HTMLElement).innerText.trim();
+    if (val && val !== this.parentescoPF) {
+      this.parentescoPF = val;
+      this.updateBackend('PersonasFavoritasDetail', 'Id', this.personaFavoritaId, 'Parentesco', val);
     }
   }
 
-  onClickParentesco(){
-    this.tempParentesco = this.parentescoPF; // 🔹 Guardamos el valor original
-  }
+  // ── Nombres blur (desktop fallback) ──────────────────────────────────────
 
   onNombresBlur(event: Event) {
-    const el = event.target as HTMLElement;
-    const nuevoTexto = el.innerText.trim();
-
-    // si cambió, guardamos y llamamos backend
-    if (nuevoTexto !== this.nombresPF) {
-      this.nombresPF = nuevoTexto;          
-      this.updateBackend('PersonasFavoritasDetail','Id',this.personaFavoritaId, 'Nombres', this.nombresPF);
+    const val = (event.target as HTMLElement).innerText.trim();
+    if (val && val !== this.nombresPF) {
+      this.nombresPF = val;
+      this.updateBackend('PersonasFavoritasDetail', 'Id', this.personaFavoritaId, 'Nombres', val);
     }
   }
 
-  onClickNombres(){
-    this.tempNombres = this.nombresPF; // 🔹 Guardamos el valor original
-  }
+  // ── Image upload ──────────────────────────────────────────────────────────
 
   triggerImageUpload() {
     const input = document.createElement('input');
@@ -124,47 +131,34 @@ export class PopupHtmlComponent {
     input.click();
   }
 
-  uploadImage(tableName:string, searchField:string, Id:string, field: string, file: File) 
-  {
-      this.invitationService.updateTableFieldImagen(tableName, searchField, Id, field, file).subscribe({
-        next: (res) => {
-          this.imagenPF = res;
-          this.loadingImg = false;
-        },
-        error: (err) => {
-          this.loadingImg = false;
-          this.notificationService.show(
-            'error',
-            `Error al subir imagen: ${err.message}`
-          );
-        }
-      });
-  }
-
-  updateBackend(tableName:string, searchField: string, eventId:string, field:string, value: string) {    
-    this.invitationService.updateTableField(tableName, searchField, eventId, field, value).subscribe({
-      next: () => {         
+  uploadImage(tableName: string, searchField: string, Id: string, field: string, file: File) {
+    this.invitationService.updateTableFieldImagen(tableName, searchField, Id, field, file).subscribe({
+      next: (res) => {
+        this.imagenPF = res;
+        this.loadingImg = false;
       },
       error: (err) => {
-        this.notificationService.show(
-          'error',
-          `Error al actualizar ${field}: ${err.message}`
-        );
+        this.loadingImg = false;
+        this.notificationService.show('error', `Error al subir imagen: ${err.message}`);
       }
     });
   }
-  
-  deletePersonaFavorita(){    
+
+  updateBackend(tableName: string, searchField: string, eventId: string, field: string, value: string) {
+    this.invitationService.updateTableField(tableName, searchField, eventId, field, value).subscribe({
+      next: () => {},
+      error: (err) => {
+        this.notificationService.show('error', `Error al actualizar ${field}: ${err.message}`);
+      }
+    });
+  }
+
+  deletePersonaFavorita() {
     this.invitationService.deletePersonas(this.personaFavoritaId).subscribe({
-        next: () => {
-          this.close();
-        },
-        error: (err) => {
-          this.notificationService.show(
-            'error',
-            `Error al subir imagen: ${err.message}`
-          );
-        }
-    });  
-  }  
+      next: () => { this.close(); },
+      error: (err) => {
+        this.notificationService.show('error', `Error al eliminar: ${err.message}`);
+      }
+    });
+  }
 }

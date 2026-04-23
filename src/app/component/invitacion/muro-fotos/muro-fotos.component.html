@@ -20,11 +20,14 @@
       <div class="photos-grid">
         @for (foto of fotos; track foto; let i = $index) {
           <div class="photo-card"
-            [style.animation-delay]="(i * 0.05) + 's'">
+            [style.animation-delay]="(i * 0.05) + 's'"
+            (click)="openFullScreen(foto.imagen)">
             <img [src]="foto.imagen" alt="Foto de invitado" appDisableDownload loading="lazy">
             @if (canUpload) {
-              <button class="delete-foto-btn" (click)="deleteFoto(foto.id)"
-              title="Eliminar foto">✕</button>
+              <button class="delete-foto-btn"
+                [style.opacity]="isTouchDevice ? '1' : null"
+                (click)="deleteFoto(foto.id, $event)"
+                title="Eliminar foto">✕</button>
             }
           </div>
         }
@@ -61,4 +64,12 @@
       </div>
     }
   </div>
+
+  <!-- Lightbox fullscreen -->
+  @if (selectedImage) {
+    <div class="lightbox-overlay" (click)="onLightboxBackdropClick($event)">
+      <button class="lightbox-close" (click)="closeFullScreen()" aria-label="Cerrar">✕</button>
+      <img class="lightbox-img" [src]="selectedImage" alt="Foto ampliada" appDisableDownload>
+    </div>
+  }
 </section>

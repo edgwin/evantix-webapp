@@ -499,3 +499,44 @@
   display: flex;
   justify-content: center;
 }
+/* -- Show/Hide password toggle ------------------------------ */
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.password-wrapper input {
+  flex: 1;
+  width: 100%;
+  box-sizing: border-box;
+  padding-right: 44px !important;
+}
+
+.pwd-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: color 0.2s ease;
+  line-height: 0;
+  z-index: 1;
+}
+
+.pwd-toggle:hover {
+  color: #374151;
+}
+
+.pwd-toggle:focus {
+  outline: none;
+}

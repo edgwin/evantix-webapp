@@ -80,6 +80,11 @@ export class DominioComponent implements OnInit {
     this.domainValue = '';
     this.domainError = '';
     this.availabilityResult = null;
+    // Scroll to config form so the user sees the input immediately
+    setTimeout(() => {
+      const el = document.getElementById('config-form-section');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 60);
   }
 
   /** Sanitize input: strip invalid chars in real-time */
@@ -192,6 +197,7 @@ export class DominioComponent implements OnInit {
 
     const dialogRef = this.dialog.open(PagoDialogComponent, {
       width: '500px',
+      maxWidth: '95vw',
       data: {
         evento: {
           id: this.eventId,

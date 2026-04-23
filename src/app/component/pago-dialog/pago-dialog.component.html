@@ -54,41 +54,43 @@
         <div>
           <b>Elige tu opcion de pago favorito:</b>
         </div>
+
         <!-- Mercado Pago -->
-        <div class="payment-option" name="Mercadolibre" (click)="confirmar($event)">
+        <div class="payment-option" (click)="confirmar('Mercado Pago')">
           <div class="payment-left">
             <span class="method-name">Mercado Pago</span>
           </div>
           <div class="logos">
             <img src="../../../assets/tarjetas.png" alt="MercadoPago"
               title="Acepta Visa, Mastercard, AMEX, MercadoPago y Pago en efectivo">
-            </div>
           </div>
-          <!-- Stripe -->
-          <div class="payment-option" [class.payment-option-disabled]="data.evento.costo < 10"
-            (click)="data.evento.costo >= 10 && confirmar($event)" style="margin-top: 10px;"
-            [title]="data.evento.costo < 10 ? 'Stripe requiere un mínimo de $10 MXN' : ''">
-            <div class="payment-left">
-              <span class="method-name">Stripe</span>
-            </div>
-            <div class="logos">
-              <img src="../../../assets/tarjetasStripe.png" alt="Stripe"
-                title="Acepta Visa, Mastercard, AMEX, Apple Pay, Google Pay, Stripe Link Pay">
-              </div>
-            @if (data.evento.costo < 10) {
-              <span class="stripe-min-notice">⚠️ Mínimo $10 MXN</span>
-            }
-            </div>
-          }
+        </div>
 
-          <!-- Botón Obtener (cuando el costo es $0) -->
-          @if (cuponAplicado && data.evento.costo <= 0) {
-            <div class="free-claim-section">
-              <p class="free-msg">🎉 ¡Tu evento es completamente gratuito con este cupón!</p>
-              <button class="btn-obtener" (click)="claimFree()" [disabled]="claimingFree">
-                {{ claimingFree ? 'Procesando...' : 'Obtener' }}
-              </button>
-            </div>
+        <!-- Stripe -->
+        <div class="payment-option" [class.payment-option-disabled]="data.evento.costo < 10"
+          (click)="data.evento.costo >= 10 && confirmar('Stripe')" style="margin-top: 10px;"
+          [title]="data.evento.costo < 10 ? 'Stripe requiere un mínimo de $10 MXN' : ''">
+          <div class="payment-left">
+            <span class="method-name">Stripe</span>
+          </div>
+          <div class="logos">
+            <img src="../../../assets/tarjetasStripe.png" alt="Stripe"
+              title="Acepta Visa, Mastercard, AMEX, Apple Pay, Google Pay, Stripe Link Pay">
+          </div>
+          @if (data.evento.costo < 10) {
+            <span class="stripe-min-notice">⚠️ Mínimo $10 MXN</span>
           }
         </div>
-      </body>
+
+        <!-- Botón Obtener (cuando el costo es $0) -->
+        @if (cuponAplicado && data.evento.costo <= 0) {
+          <div class="free-claim-section">
+            <p class="free-msg">🎉 ¡Tu evento es completamente gratuito con este cupón!</p>
+            <button class="btn-obtener" (click)="claimFree()" [disabled]="claimingFree">
+              {{ claimingFree ? 'Procesando...' : 'Obtener' }}
+            </button>
+          </div>
+        }
+      }
+  </div>
+</body>

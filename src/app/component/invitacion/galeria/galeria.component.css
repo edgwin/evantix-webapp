@@ -255,7 +255,7 @@
 .close-button {
   position: fixed;
   top: 20px;
-  right: 30px;
+  left: 30px;
   background: rgba(255, 255, 255, 0.15);
   color: white;
   border: none;

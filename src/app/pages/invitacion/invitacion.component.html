@@ -165,7 +165,7 @@
     }
   </div>
   <!-- RSVP Section - Confirmación habilitada (guest con idInvitacion) -->
-  @if (isGuestView && isReadOnly && guestGroup && data?.confirmacionInvitadosEnabled) {
+  @if (isGuestView && !isOwnerPreview && isReadOnly && guestGroup && data?.confirmacionInvitadosEnabled) {
   <div class="rsvp-section" [ngStyle]="{
       'background-image': 'url(' + templateService.getMarbleBackground() + ')',
       'background-size': 'cover',
@@ -183,7 +183,7 @@
         <div class="rsvp-guest-row">
           <div class="rsvp-name-field">
             <label>Invitado {{ i + 1 }}</label>
-            <input type="text" [(ngModel)]="inv.nombre" [placeholder]="inv.nombre || 'Nombre del invitado'"
+            <input type="text" [(ngModel)]="inv.nombre" placeholder="Nombre del invitado"
               class="rsvp-input" [class.rsvp-input-error]="rsvpFormSubmitted && !inv.nombre?.trim()"
               [ngStyle]="{ 'border-color': inv.nombre?.trim() ? templateService.getCurrentTemplate()?.theme?.colors?.primary : '' }" />
             @if (rsvpFormSubmitted && !inv.nombre?.trim()) {
@@ -210,6 +210,9 @@
         </div>
       </div>
       }
+      @if (rsvpFormSubmitted && guestGroup.invitados?.some(inv => inv.invitacionConfirmada === null || inv.invitacionConfirmada === 0)) {
+        <p class="rsvp-selection-error">⚠️ Por favor selecciona <strong>Asistiré</strong> o <strong>No asistiré</strong> para cada invitado</p>
+      }
       <button class="rsvp-submit" (click)="submitRsvp()" [disabled]="rsvpSubmitting"
         [ngStyle]="{ 'background': templateService.getCurrentTemplate()?.theme?.colors?.primary }">
         {{ rsvpSubmitting ? 'Enviando...' : 'Enviar Confirmación' }}
@@ -228,7 +231,7 @@
   </div>
   }
   <!-- RSVP Section - Contacto alternativo (guest sin confirmación habilitada) -->
-  @if (isGuestView && isReadOnly && (!data?.confirmacionInvitadosEnabled || !guestGroup)) {
+  @if (isGuestView && !isOwnerPreview && isReadOnly && (!data?.confirmacionInvitadosEnabled || !guestGroup)) {
   <div class="rsvp-section" [ngStyle]="{
       'background-image': 'url(' + templateService.getMarbleBackground() + ')',
       'background-size': 'cover',

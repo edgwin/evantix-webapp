@@ -229,10 +229,16 @@ export class InvitationService {
   uploadGaleria(eventId: string, files: File[]) {
     const formData = new FormData();
     files.forEach(file => {
-      formData.append('images', file);
+      // Pass filename explicitly — required on mobile where browser may not include it
+      formData.append('images', file, file.name);
     });
     const url = `${this.apiUrl}${this.getInvitationData}${this.galeria}${eventId}`;
-    return this.http.post(url, formData, { headers: this.getAuthHeaders() }).pipe(
+    const token = localStorage.getItem('access_token');
+    // Use a plain object for headers so Angular does NOT set Content-Type,
+    // letting the browser set multipart/form-data with the correct boundary
+    return this.http.post(url, formData, {
+      headers: { Authorization: `Bearer ${token}` }
+    }).pipe(
       tap(() => this.emitMutation(eventId))
     );
   }
@@ -307,12 +313,12 @@ export class InvitationService {
 
   generateText(payload: AiTextRequest) {
     const url = `${this.apiUrl}${this.getAIController}${this.getText}`;
-    return this.http.post<{ text: string }>(url, payload);
+    return this.http.post<{ text: string }>(url, payload, { headers: this.getAuthHeaders() });
   }
 
   getAiUsageCount(eventId: string): Observable<{ usedCount: number }> {
     const url = `${this.apiUrl}${this.getAIController}UsageCount/${eventId}`;
-    return this.http.get<{ usedCount: number }>(url);
+    return this.http.get<{ usedCount: number }>(url, { headers: this.getAuthHeaders() });
   }
 
   getAssetImages(folder: string) {

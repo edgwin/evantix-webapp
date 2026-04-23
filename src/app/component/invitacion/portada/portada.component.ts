@@ -167,6 +167,13 @@ export class PortadaComponent implements OnInit, OnDestroy {
   maxLengthTitulo = 30;
   maxLengthSubtitulo = 40;
   maxLength = 35;
+
+  // Evita que el browser inserte <div>/<p> al escribir en el subtítulo
+  // (que causaría cambio de font-size por estilos por defecto del navegador)
+  onSubtituloFocus(): void {
+    document.execCommand('defaultParagraphSeparator', false, 'span');
+  }
+
   onKeyDown(event: Event | any, maxLen?: number) {
     const limit = maxLen ?? this.maxLength;
     const key = (event as KeyboardEvent).key;
@@ -188,6 +195,32 @@ export class PortadaComponent implements OnInit, OnDestroy {
       event.preventDefault(); // bloquea más escritura
     }
     (event.target as HTMLElement).click();
+  }
+
+  // Maneja input en móvil: autocorrect, paste, predictive text
+  onInput(event: Event, maxLen?: number): void {
+    const limit = maxLen ?? this.maxLength;
+    const el = event.target as HTMLElement;
+    const text = el.innerText || '';
+
+    if (text.length > limit) {
+      // Guardar posición del cursor antes de truncar
+      const selection = window.getSelection();
+      const range = selection?.getRangeAt(0);
+      const offset = range ? Math.min(range.startOffset, limit) : limit;
+
+      // Truncar al límite
+      el.innerText = text.substring(0, limit);
+
+      // Restaurar cursor al final del texto truncado
+      if (selection && el.firstChild) {
+        const newRange = document.createRange();
+        newRange.setStart(el.firstChild, Math.min(offset, limit));
+        newRange.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(newRange);
+      }
+    }
   }
 
   // --- edición de fecha ---

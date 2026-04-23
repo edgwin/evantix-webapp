@@ -322,6 +322,7 @@ export class DashboardComponent {
   onPay(event: any) {
     const dialogRef = this.dialog.open(PagoDialogComponent, {
       width: '500px',
+      maxWidth: '95vw',
       data: {
         evento: event,
         cuponYaAplicado: event._cuponAplicado ?? false

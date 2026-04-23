@@ -1,7 +1,7 @@
 .template-selector-wrapper {
   position: fixed;
   bottom: 130px;
-  right: 20px;
+  left: 20px;
   z-index: 9999;
 }
 
@@ -33,7 +33,7 @@
 .template-selector-panel {
   position: absolute;
   bottom: 60px;
-  right: 0;
+  left: 0;
   width: auto;
   max-height: 500px;
   background: white;

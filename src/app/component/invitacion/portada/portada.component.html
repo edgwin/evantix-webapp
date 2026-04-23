@@ -40,12 +40,17 @@
       <div class="display-tc">
         <!-- Título -->
         <div class="text-center fh5co-heading editablePortadaTitulo" [attr.contenteditable]="!isReadOnly"
-          (blur)="onTituloBlur($event)" (click)="!isReadOnly && onClickTitulo()" (keydown)="onKeyDown($event, maxLengthTitulo)"
+          (blur)="onTituloBlur($event)" (click)="!isReadOnly && onClickTitulo()"
+          (keydown)="onKeyDown($event, maxLengthTitulo)"
+          (input)="onInput($event, maxLengthTitulo)"
           style="margin-top:100px">
           {{ data?.titulo }}
         </div>
         <!-- Subtítulo -->
-        <div class="editablePortadaSubtitulo" [attr.contenteditable]="!isReadOnly" (keydown)="onKeyDown($event, maxLengthSubtitulo)"
+        <div class="editablePortadaSubtitulo" [attr.contenteditable]="!isReadOnly"
+          (keydown)="onKeyDown($event, maxLengthSubtitulo)"
+          (input)="onInput($event, maxLengthSubtitulo)"
+          (focus)="onSubtituloFocus()"
           (click)="!isReadOnly && onClickSubtitulo()" (blur)="onSubtitleBlur($event)" appAiEditable
           [aiSection]="'Portada Subtitulo'" [aiEventType]="eventType" [maxLength]="maxLength" [aiReadOnly]="isReadOnly"
           [aiEnabled]="aiEnabled" [aiEventId]="eventId">

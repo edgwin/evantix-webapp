@@ -86,9 +86,15 @@ export class DomainResolverComponent implements OnInit {
     const baseDomain = homeUrl.hostname;
 
     // Check if we're on the normal domain — if so, nothing to resolve
-    if (hostname === baseDomain || hostname === 'localhost') {
-      this.loading = false;
-      this.error = 'No se encontró una invitación en este dominio.';
+    const isKnownTunnel =
+      hostname.endsWith('.loca.lt') ||
+      hostname.endsWith('.ngrok-free.app') ||
+      hostname.endsWith('.ngrok.io') ||
+      hostname.endsWith('.ngrok.app') ||
+      hostname.endsWith('.trycloudflare.com');
+
+    if (hostname === baseDomain || hostname === 'localhost' || isKnownTunnel) {
+      this.router.navigate(['/']);
       return;
     }
 

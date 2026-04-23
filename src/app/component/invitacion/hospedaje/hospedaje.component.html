@@ -1,4 +1,4 @@
-<section class="hospedaje-section"
+﻿<section class="hospedaje-section"
   [style.background-image]="'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(' + data.imagen + ')'">
 
   @if (!isReadOnly && !loadingImg) {
@@ -34,11 +34,11 @@
             </div>
           </div>
           <div class="card-content">
-            <h3 class="card-title" [attr.contenteditable]="!isReadOnly" (keydown)="onKeyDown($event, 40)"
+            <h3 class="card-title" [attr.contenteditable]="!isReadOnly" (keydown)="onKeyDown($event, 40)" (input)="onInput($event, 40)"
               (blur)="saveContent($event, item.id, 'nombre')" (click)="!isReadOnly && onClickTitulo(item.id)">
               {{item.nombre}}
             </h3>
-            <p class="card-address" [attr.contenteditable]="!isReadOnly" (keydown)="onKeyDown($event, 60)"
+            <p class="card-address" [attr.contenteditable]="!isReadOnly" (keydown)="onKeyDown($event, 60)" (input)="onInput($event, 60)"
               (blur)="saveContent($event, item.id, 'direccion')" (click)="!isReadOnly && onClickTitulo(item.id)">
               <i class="fa fa-map-marker"></i>
               {{item.direccion}}

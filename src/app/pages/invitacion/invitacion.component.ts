@@ -14,7 +14,6 @@ import { IntinerarioComponent } from '../../component/invitacion/intinerario/int
 import { GaleriaComponent } from '../../component/invitacion/galeria/galeria.component';
 import { HospedajeComponent } from '../../component/invitacion/hospedaje/hospedaje.component';
 import { RedesSocialesComponent } from '../../component/invitacion/redes-sociales/redes-sociales.component';
-
 import { MusicaComponent } from '../../component/invitacion/musica/musica.component';
 import { MuroFotosComponent } from '../../component/invitacion/muro-fotos/muro-fotos.component';
 import { TemplateService, Template } from '../../services/template.service';
@@ -48,6 +47,7 @@ export class InvitacionComponent implements OnDestroy {
   data: any;
   isReadOnly: boolean = false;
   isGuestView: boolean = false;
+  isOwnerPreview: boolean = false;
   isAdmin: boolean = false;
   eventStatus: string = '';
   homeUrl: string = environment.homeUrl;
@@ -68,19 +68,16 @@ export class InvitacionComponent implements OnDestroy {
   // Secciones opcionales habilitadas/deshabilitadas
   sections: { [key: string]: { isEnabled: boolean, enableCost: number, sectionName: string, maxItems: number } } = {};
 
-  // Track ID actual (se actualiza al seleccionar melodía sin necesidad de refrescar)
+  // Track ID actual
   currentTrackId: string = '';
 
   toggleReadOnly(): void {
     if (this.eventStatus === 'Creado' || this.isAdmin) {
       this.isReadOnly = !this.isReadOnly;
-      // Refrescar costo al volver a modo edición o al ver previo
       if (!this.isReadOnly) {
         this.loadPricing();
-        // Start tour after DOM updates with edit-mode elements
         setTimeout(() => this.tourService.startIfNeeded(), 800);
       } else {
-        // Scroll al inicio al entrar a vista previa
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
@@ -94,7 +91,6 @@ export class InvitacionComponent implements OnDestroy {
     this.loading = true;
     if (!this.eventId) return;
 
-    // If guest view, set flags and load guest group
     if (this.idInvitacion) {
       this.isGuestView = true;
       this.isReadOnly = true;
@@ -106,10 +102,8 @@ export class InvitacionComponent implements OnDestroy {
         this.data = res;
         this.eventStatus = res.eventStatus || 'Creado';
 
-
         const isPaid = ['Pagado', 'Pago Creado'].includes(this.eventStatus);
 
-        // Detect admin from localStorage (no query param needed)
         const localUser = localStorage.getItem('loggedUser');
         if (localUser) {
           const parsed = JSON.parse(localUser);
@@ -120,22 +114,17 @@ export class InvitacionComponent implements OnDestroy {
         this.finishInit(res);
       },
       error: (err) => {
-        this.notificationService.show(
-          'error',
-          `Hubo un error favor intentar más tarde ${err.message}`
-        );
+        this.notificationService.show('error', `Hubo un error favor intentar más tarde ${err.message}`);
         this.loading = false;
       }
     });
 
-    // Suscribirse a mutaciones de los componentes hijos para refrescar costo
     this.mutationSub = this.invitationService.mutationOccurred$.subscribe(eventId => {
       if (eventId === this.eventId) {
         this.loadPricing();
       }
     });
 
-    // Suscribirse al estado de carga de precios
     this.pricingLoadingSub = this.pricingService.loading$.subscribe(loading => {
       this.pricingLoading = loading;
     });
@@ -156,25 +145,19 @@ export class InvitacionComponent implements OnDestroy {
 
   private applyViewMode(isPaid: boolean): void {
     if (this.isGuestView) {
-      // Modo invitado: siempre preview, sin botones
       this.isReadOnly = true;
       this.canSendToReview = false;
     } else if (this.eventStatus === 'Revisado') {
-      // Revisado: siempre read-only, sin botones (para TODOS los usuarios)
       this.isReadOnly = true;
       this.canSendToReview = false;
     } else if (isPaid) {
       this.isReadOnly = true;
       this.canSendToReview = false;
-      if (!this.idInvitacion) {
-        this.isGuestView = true;
-      }
+      this.isOwnerPreview = true;
     } else if (this.isAdmin && this.eventStatus === 'Creado') {
-      // Admin con evento en Creado: modo edición
       this.isReadOnly = false;
       this.canSendToReview = false;
     } else if (this.eventStatus === 'Creado') {
-      // Usuario normal: vista previa con opción de editar
       this.isReadOnly = true;
       this.canSendToReview = true;
     } else {
@@ -188,10 +171,8 @@ export class InvitacionComponent implements OnDestroy {
       this.templateService.applyTemplateFromData(res.template);
     }
 
-    // Initialize current track ID from API response
     this.currentTrackId = res.portada?.trackId || '';
 
-    // Populate sections from invitation response (works for all views including guest)
     if (res.enabledSections) {
       for (const [key, isEnabled] of Object.entries(res.enabledSections)) {
         this.sections[key] = {
@@ -204,14 +185,12 @@ export class InvitacionComponent implements OnDestroy {
       }
     }
 
-    // Cargar precios y secciones habilitadas con detalle (solo para usuarios autenticados)
     if (!this.isGuestView) {
       this.loadPricing();
     }
 
     this.loading = false;
 
-    // Start Product Tour after DOM renders (only in edit mode, first time)
     if (!this.isReadOnly && !this.isGuestView) {
       setTimeout(() => this.tourService.startIfNeeded(), 1200);
     }
@@ -246,11 +225,9 @@ export class InvitacionComponent implements OnDestroy {
 
   isSectionEnabled(sectionKey: string): boolean {
     const section = this.sections[sectionKey];
-    // If sections data is loaded, always use the actual value
     if (section !== undefined) {
       return section.isEnabled;
     }
-    // Sections data not loaded yet: hide until we know the actual state
     return false;
   }
 
@@ -263,7 +240,10 @@ export class InvitacionComponent implements OnDestroy {
   }
 
   getSectionMaxItems(sectionKey: string): number {
-    return this.sections[sectionKey]?.maxItems ?? 99;
+    const defaults: { [key: string]: number } = {
+      'RedesSociales': 5
+    };
+    return this.sections[sectionKey]?.maxItems ?? defaults[sectionKey] ?? 99;
   }
 
   onEnableSection(sectionKey: string): void {
@@ -285,7 +265,6 @@ export class InvitacionComponent implements OnDestroy {
   }
 
   onRemoveSection(sectionKey: string): void {
-    // Verificar si AISuggestions ya fue utilizada
     if (sectionKey === 'AISuggestions') {
       this.togglingSection = sectionKey;
       this.invitationService.getAiUsageCount(this.eventId).subscribe({
@@ -301,7 +280,6 @@ export class InvitacionComponent implements OnDestroy {
           this.doRemoveSection(sectionKey);
         },
         error: () => {
-          // Si falla la verificación, permitir igualmente
           this.doRemoveSection(sectionKey);
         }
       });
@@ -322,7 +300,6 @@ export class InvitacionComponent implements OnDestroy {
         this.togglingSection = '';
         this.notificationService.show('success', `${this.getSectionName(sectionKey)} deshabilitada`);
 
-        // AC2.2: Si se quita Musica, restaurar TrackId al default
         if (sectionKey === 'Musica') {
           const defaultTrackId = '1271187';
           this.invitationService.addTrack(this.eventId, defaultTrackId).subscribe();
@@ -384,10 +361,17 @@ export class InvitacionComponent implements OnDestroy {
     if (!this.eventId || !this.idInvitacion) return;
     this.invitadoService.getGrupoByInvitacion(this.eventId, this.idInvitacion).subscribe({
       next: (group: any) => {
-        // Set invitacionConfirmada to null for pending guests (state 0)
-        group.invitados?.forEach((inv: any) => {
+        group.invitados?.forEach((inv: any, index: number) => {
+          // Estado 0 → null para que los botones no queden marcados
           if (inv.invitacionConfirmada === 0) {
             inv.invitacionConfirmada = null;
+          }
+          // Limpiar si el nombre está vacío, solo espacios,
+          // o es el placeholder autogenerado "Nombre de Invitado N"
+          const nombreTrimmed = inv.nombre?.trim() ?? '';
+          const isAutoGenerated = /^Nombre de Invitado \d+$/i.test(nombreTrimmed);
+          if (!nombreTrimmed || isAutoGenerated) {
+            inv.nombre = '';
           }
         });
         this.guestGroup = group;
@@ -401,7 +385,6 @@ export class InvitacionComponent implements OnDestroy {
 
   submitRsvp(): void {
     this.rsvpFormSubmitted = true;
-    // Validate all names filled and all have a selection
     const hasEmpty = this.guestGroup.invitados.some((inv: any) => !inv.nombre?.trim());
     const hasNoSelection = this.guestGroup.invitados.some((inv: any) => inv.invitacionConfirmada === null || inv.invitacionConfirmada === 0);
     if (hasEmpty || hasNoSelection) return;

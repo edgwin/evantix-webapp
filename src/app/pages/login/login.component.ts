@@ -38,6 +38,11 @@ export class LoginComponent implements AfterViewInit, OnInit {
   captchaToken: string | null = null;
   private captchaWidgetId: number | null = null;
 
+  // Password visibility toggles
+  showSignInPassword = false;
+  showSignUpPassword = false;
+  showSignUpPassword2 = false;
+
   constructor(private fb: FormBuilder, private router: Router, private userService: UserService, private notificationService: NotificationService,
     private http: HttpClient, private route: ActivatedRoute, private passwordHelper: PasswordHelper, private authService: AuthService) {
     this.createSignUpForm();

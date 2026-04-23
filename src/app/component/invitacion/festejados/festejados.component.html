@@ -1,4 +1,4 @@
-@if (!loading) {
+﻿@if (!loading) {
 <section class="festejados-section" [ngStyle]="{
     'background-image': 'url(' + templateService.getMarbleBackground() + ')',
     'background-size': 'cover',
@@ -29,7 +29,7 @@
       <div class="frase-container">
         <span class="quote-icon left">"</span>
         <p class="frase-text" [attr.contenteditable]="!isReadOnly" id="FraseFestejados" (blur)="onFraseBlur($event)"
-          (click)="!isReadOnly && onClickFrase()" (keydown)="onKeyDown($event, 250)" appAiEditable
+          (click)="!isReadOnly && onClickFrase()" (keydown)="onKeyDown($event, 250)" (input)="onInput($event, 250)" appAiEditable
           [aiSection]="'Frase emotiva del o los festejados'" [aiEventType]="eventType" [maxLength]="250"
           [aiReadOnly]="isReadOnly" [aiEnabled]="aiEnabled" [aiEventId]="eventId">
           {{data.frase}}

@@ -2,6 +2,17 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+/* Prevent horizontal scroll/swipe revealing white stripe on mobile */
+html {
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+}
+body {
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+}
+
+
 /* =====================================================
    Editable Element Indicator — Invitation Edit Mode
    Shows a pencil icon on all contenteditable fields

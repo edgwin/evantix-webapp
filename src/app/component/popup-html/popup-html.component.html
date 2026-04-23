@@ -44,14 +44,14 @@
       <div>
         <img [src]="imagenPF" class="img" />
       </div>
-      <div contenteditable="true" (click)="onClickParentesco()" (keydown)="onKeyDown($event, 40)"
+      <div #parentescoEl contenteditable="true" (keydown)="onKeyDown($event, 30)"
         (blur)="onParentescoBlur($event)">
         {{parentescoPF}}
       </div>
-      <div contenteditable="true" (click)="onClickNombres()" (keydown)="onKeyDown($event, 100)"
+      <div #nombresEl contenteditable="true" (keydown)="onKeyDown($event, 100)"
         (blur)="onNombresBlur($event)">{{nombresPF}}</div>
       <div class="buttons">
-        <button (click)="close()">Cerrar</button>
+        <button (pointerdown)="captureAndSave()" (click)="close()">Cerrar</button>
         <button (click)="deletePersonaFavorita()">Eliminar</button>
       </div>
       } @else {

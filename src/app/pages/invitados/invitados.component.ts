@@ -474,6 +474,14 @@ export class InvitadosComponent implements OnInit {
       this.codigoPaisInvitado = '+52';
       this.whatsApp = fullNumber;
     }
+
+    // En mobile: scroll hacia el formulario una vez que Angular lo renderiza
+    if (window.innerWidth <= 768) {
+      setTimeout(() => {
+        const formEl = document.getElementById('invitados-form-panel');
+        formEl?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
   }
 
   deleteGrupo(grupo: any) {
@@ -532,7 +540,7 @@ export class InvitadosComponent implements OnInit {
   private buildInvitationMessage(grupo: any): string {
     const eventName = this.selectedEventName;
     const displayName = this.getDisplayName(grupo);
-    const guestName = grupo.tipoInvitacion === 'Familiar' ? `Familia ${displayName}` : displayName;
+    const guestName = displayName;
     const mensaje = this.selectedEventMensaje;
     const url = this.getInvitationUrl(grupo);
     const home = environment.homeUrl;
@@ -616,6 +624,8 @@ export class InvitadosComponent implements OnInit {
   openBuyPackage() {
     const dialogRef = this.dialog.open(WhatsAppPaqueteDialogComponent, {
       width: '560px',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
       data: { eventId: this.selectedEventId }
     });
 
@@ -625,6 +635,7 @@ export class InvitadosComponent implements OnInit {
       const ev = this.paidEvents.find((e: any) => e.id === this.selectedEventId);
       const pagoRef = this.dialog.open(PagoDialogComponent, {
         width: '500px',
+        maxWidth: '95vw',
         data: {
           evento: {
             id: this.selectedEventId,
