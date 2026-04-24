@@ -11,7 +11,17 @@
       <div class="submenu">
         <a mat-list-item routerLink="/dashboard" [ngClass]="{ 'selected': selectedRoute === '/dashboard' }"
           (click)="selectRoute('/dashboard')">
-          <span>Mis Eventos</span>
+          <span>🗓️ Mis Eventos</span>
+        </a>
+        <a mat-list-item routerLink="/dominio-personalizado"
+          [ngClass]="{ 'selected': selectedRoute === '/dominio-personalizado' }"
+          (click)="selectRoute('/dominio-personalizado')">
+          <span>🌐 Dominio Personalizado</span>
+        </a>
+        <a mat-list-item routerLink="/fotos-invitados"
+          [ngClass]="{ 'selected': selectedRoute === '/fotos-invitados' }"
+          (click)="selectRoute('/fotos-invitados')">
+          <span>📷 Fotos de Invitados</span>
         </a>
         <!-- <a mat-list-item
         *ngIf="showInvitaciones; else invitacionesDisabled"
@@ -27,22 +37,22 @@
     </ng-template> -->
     @if (showInvitados) {
       <a mat-list-item routerLink="/invitados"
-        [ngClass]="{ 'selected': selectedRoute === '/invitados' }" (click)="selectRoute('/invitados')"><span>Mis
+        [ngClass]="{ 'selected': selectedRoute === '/invitados' }" (click)="selectRoute('/invitados')"><span>👥 Mis
       Invitados</span></a>
     } @else {
       <a mat-list-item class="disabled-link" style="pointer-events: none; opacity: 0.5;"
         title="Funcionalidad disponible una vez que una de sus invitaciones este publicada">
-        <span>Mis Invitados</span>
+        <span>👥 Mis Invitados</span>
       </a>
     }
     @if (showInvitados) {
       <a mat-list-item routerLink="/mesas"
-        [ngClass]="{ 'selected': selectedRoute === '/mesas' }" (click)="selectRoute('/mesas')"><span>Asignación de
+        [ngClass]="{ 'selected': selectedRoute === '/mesas' }" (click)="selectRoute('/mesas')"><span>🪑 Asignación de
       Mesas</span></a>
     } @else {
       <a mat-list-item class="disabled-link" style="pointer-events: none; opacity: 0.5;"
         title="Funcionalidad disponible una vez que tengas invitados dados de alta">
-        <span>Asignación de Mesas</span>
+        <span>🪑 Asignación de Mesas</span>
       </a>
     }
   </div>

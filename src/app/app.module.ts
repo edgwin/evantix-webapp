@@ -51,6 +51,9 @@ import { WhatsAppPaqueteDialogComponent } from './component/whatsapp-paquete-dia
 import { CheckinComponent } from './pages/checkin/checkin.component';
 import { LandingComponent } from './pages/landing/landing.component';
 import { DominioComponent } from './pages/dominio/dominio.component';
+import { DominioPersonalizadoComponent } from './pages/dominio-personalizado/dominio-personalizado.component';
+import { FotosInvitadosComponent } from './pages/fotos-invitados/fotos-invitados.component';
+
 import { TemplateEditorComponent } from './pages/template-editor/template-editor.component';
 import { TourOverlayComponent } from './component/tour-overlay/tour-overlay.component';
 
@@ -78,6 +81,8 @@ import { TourOverlayComponent } from './component/tour-overlay/tour-overlay.comp
         CheckinComponent,
         LandingComponent,
         DominioComponent,
+        DominioPersonalizadoComponent,
+        FotosInvitadosComponent,
         TemplateEditorComponent
     ],
     exports: [UploadImagesComponent],

@@ -657,6 +657,8 @@ export class InvitadosComponent implements OnInit {
         const pagoEvento = {
           id: this.selectedEventId,
           nombre: `Paquete WhatsApp – ${paquete.mensajes} mensajes`,
+          description: `Paquete WhatsApp – ${paquete.mensajes} mensajes`,
+          externalRef: `wa_${this.selectedEventId}`,
           costo: paquete.precio,
           callbackUrl: callbackUrl,
           externalReference: "Paquete WhatsApp"

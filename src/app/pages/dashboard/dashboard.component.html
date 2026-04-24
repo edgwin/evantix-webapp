@@ -113,7 +113,7 @@
                 </span>
               </td>
               <td class="pin-cell">
-                @if (evento.checkInPin) {
+                @if (evento.showCheckIn) {
                   <div class="pin-container">
                     <code class="pin-code">{{ evento.checkInPin }}</code>
                     <button class="pin-copy-btn" (click)="copyPin(evento.checkInPin)" title="Copiar PIN">
@@ -131,9 +131,9 @@
                   <button class="action-btn" (click)="onActionHandler({type: 'verInvitacion', row: evento})"
                   title="Ver Invitación">👁️</button>
                 }
-                @if (evento.showInvitation && (evento.estatus === 'Pagado' || evento.estatus === 'Pago Creado')) {
-                  <button class="action-btn domain" (click)="onActionHandler({type: 'dominio', row: evento})"
-                  title="Dominio Personalizado">🌐</button>
+                @if (evento.showCheckIn) {
+                  <button class="action-btn checkin-wa" (click)="onEnviarCheckIn(evento)"
+                  title="Enviar URL de Check-In por WhatsApp">📲</button>
                 }
                 @if (evento.showPayment !== false) {
                   <button class="action-btn pay" (click)="onActionHandler({type: 'pay', row: evento})"
@@ -184,3 +184,52 @@
 
 <!-- Product Tour Overlay -->
 <app-tour-overlay></app-tour-overlay>
+
+<!-- Check-In WhatsApp Popup -->
+@if (showCheckInPopup) {
+  <div class="checkin-popup-overlay" (click)="cerrarCheckInPopup()">
+    <div class="checkin-popup" (click)="$event.stopPropagation()">
+      <div class="checkin-popup-header">
+        <h3>📲 Enviar Check-In por WhatsApp</h3>
+        <button class="checkin-popup-close" (click)="cerrarCheckInPopup()">✕</button>
+      </div>
+      <div class="checkin-popup-body">
+        <p class="checkin-info">
+          Se enviará la URL de check-in y el PIN <strong>{{ checkInEvento?.checkInPin }}</strong>
+          del evento <strong>{{ checkInEvento?.nombre }}</strong>.
+        </p>
+        <div class="checkin-numbers">
+          @for (i of [0, 1, 2]; track i) {
+            <div class="checkin-number-field">
+              <label>WhatsApp {{ i + 1 }} {{ i === 0 ? '(requerido)' : '(opcional)' }}</label>
+              <div class="checkin-input-wrap">
+                <select class="checkin-country-select" [(ngModel)]="checkInPaises[i]">
+                  @for (p of countryCodes; track p.dialCode) {
+                    <option [value]="p.dialCode">{{ p.flag }} {{ p.dialCode }}</option>
+                  }
+                </select>
+                <input
+                  type="tel"
+                  [(ngModel)]="checkInNumeros[i]"
+                  placeholder="Número"
+                  maxlength="12"
+                  class="checkin-input"
+                  [class.error]="checkInEnviado && i === 0 && !checkInNumeros[0]"
+                />
+              </div>
+            </div>
+          }
+        </div>
+        @if (checkInError) {
+          <p class="checkin-error">{{ checkInError }}</p>
+        }
+      </div>
+      <div class="checkin-popup-footer">
+        <button class="btn btn-secondary" (click)="cerrarCheckInPopup()" [disabled]="checkInSending">Cancelar</button>
+        <button class="btn btn-primary" (click)="enviarCheckInWA()" [disabled]="checkInSending">
+          @if (checkInSending) { ⏳ Enviando... } @else { Enviar 📲 }
+        </button>
+      </div>
+    </div>
+  </div>
+}

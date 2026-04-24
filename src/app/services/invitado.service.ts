@@ -14,12 +14,16 @@ export class InvitadoService {
         return new HttpHeaders({ Authorization: `Bearer ${token}` });
     }
 
-    getPaidEvents(userId: string): Observable<any[]> {
-        return this.http.get<any[]>(`${this.apiUrl}PaidEvents/${userId}`, { headers: this.getHeaders() });
+    getPaidEvents(userId: string, sectionKey?: string): Observable<any[]> {
+        let url = `${this.apiUrl}PaidEvents/${userId}`;
+        if (sectionKey) url += `?sectionKey=${encodeURIComponent(sectionKey)}`;
+        return this.http.get<any[]>(url, { headers: this.getHeaders() });
     }
 
-    getAllPaidEvents(): Observable<any[]> {
-        return this.http.get<any[]>(`${this.apiUrl}AllPaidEvents`, { headers: this.getHeaders() });
+    getAllPaidEvents(sectionKey?: string): Observable<any[]> {
+        let url = `${this.apiUrl}AllPaidEvents`;
+        if (sectionKey) url += `?sectionKey=${encodeURIComponent(sectionKey)}`;
+        return this.http.get<any[]>(url, { headers: this.getHeaders() });
     }
 
     getGruposByEvent(eventId: string): Observable<any[]> {

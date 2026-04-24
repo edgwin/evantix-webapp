@@ -393,4 +393,23 @@ export class InvitationService {
     const url = `${this.apiUrl}${this.getInvitationData}MuroFotos/${fotoId}?idInvitacion=${encodeURIComponent(idInvitacion)}`;
     return this.http.delete(url);
   }
+
+  // Admin methods (authenticated)
+  getAllFotosInvitadosAdmin(eventId: string) {
+    const url = `${this.apiUrl}${this.getInvitationData}MuroFotos/Admin/${eventId}`;
+    return this.http.get<any[]>(url, { headers: this.getAuthHeaders() });
+  }
+
+  deleteFotoInvitadoAdmin(fotoId: string) {
+    const url = `${this.apiUrl}${this.getInvitationData}MuroFotos/Admin/${fotoId}`;
+    return this.http.delete(url, { headers: this.getAuthHeaders() });
+  }
+
+  downloadFotosZip(eventId: string, ids?: string[]) {
+    const url = `${this.apiUrl}${this.getInvitationData}MuroFotos/Admin/Download/${eventId}`;
+    return this.http.post(url, ids ?? [], {
+      headers: this.getAuthHeaders(),
+      responseType: 'blob'
+    });
+  }
 }

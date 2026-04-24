@@ -1,0 +1,200 @@
+<div class="dp-container">
+
+  <!-- Header -->
+  <div class="dp-header">
+    <h2>🌐 Dominio Personalizado</h2>
+    <p class="dp-subtitle">Elige tu evento y configura una URL única para tu invitación</p>
+  </div>
+
+  <!-- Event Selector -->
+  <div class="dp-event-selector">
+    <label class="dp-label">Selecciona tu evento</label>
+    @if (loadingEvents) {
+      <div class="dp-loading-row">
+        <div class="dp-spinner"></div>
+        <span>Cargando eventos...</span>
+      </div>
+    }
+    @if (!loadingEvents && paidEvents.length === 0) {
+      <div class="dp-empty-state">
+        <p>No tienes eventos pagados aún. Realiza el pago de tu invitación para acceder a esta función.</p>
+      </div>
+    }
+    @if (!loadingEvents && paidEvents.length > 0) {
+      <select class="dp-select" [(ngModel)]="selectedEventId" (change)="onEventChange()">
+        <option value="">— Elige un evento —</option>
+        @for (evt of paidEvents; track evt.id) {
+          <option [value]="evt.id">{{ evt.nombre }} ({{ evt.fecha }})</option>
+        }
+      </select>
+    }
+  </div>
+
+  <!-- Domain Content (shows when event is selected) -->
+  @if (selectedEventId) {
+    <div class="dp-domain-section">
+
+      <!-- Loading existing -->
+      @if (loadingExisting) {
+        <div class="dp-loading-row">
+          <div class="dp-spinner"></div>
+          <span>Cargando configuración...</span>
+        </div>
+      }
+
+      <!-- Existing Domain -->
+      @if (!loadingExisting && existingDomain) {
+        <div class="existing-card">
+          <div class="existing-badge">{{ getOptionLabel(existingDomain.tipoOpcion) }}</div>
+          <h3>Tu dominio actual</h3>
+          <a class="existing-url" [href]="getExistingUrl()" target="_blank">{{ getExistingUrl() }}</a>
+          <div class="existing-status">
+            <span class="status-dot" [ngClass]="{
+              'dot-active': existingDomain.estatus === 'Activo',
+              'dot-pending': existingDomain.estatus === 'ConfigurandoSitio',
+              'dot-error': existingDomain.estatus === 'Error'
+            }"></span>
+            <span>{{ existingDomain.estatus === 'ConfigurandoSitio' ? 'Configurando sitio...' : existingDomain.estatus }}</span>
+          </div>
+          @if (existingDomain.estatus === 'ConfigurandoSitio') {
+            <p class="existing-hint">
+              La creación del sitio con tu invitación está en proceso. Te notificaremos cuando esté listo.
+            </p>
+          }
+        </div>
+      }
+
+      <!-- Option Selector -->
+      @if (!loadingExisting && !existingDomain) {
+        <div>
+          <div class="options-grid">
+            <!-- Option 3: Vanity URL -->
+            <div class="option-card" [class.selected]="selectedOption === 3" (click)="selectOption(3)">
+              <div class="option-icon">🔗</div>
+              <h3>Vanity URL</h3>
+              <p class="option-example">{{ baseDomain }}/i/<strong>tu-evento</strong></p>
+              <span class="option-price free">Gratis</span>
+              <ul class="option-features">
+                <li>✅ Activación inmediata</li>
+                <li>✅ URL corta y memorable</li>
+                <li>✅ Sin configuración</li>
+              </ul>
+            </div>
+            <!-- Option 1: Subdomain -->
+            <div class="option-card" [class.selected]="selectedOption === 1" (click)="selectOption(1)">
+              <div class="option-icon">🏠</div>
+              <h3>Subdominio</h3>
+              <p class="option-example"><strong>tu-evento</strong>.{{ baseDomain }}</p>
+              <span class="option-price free">Gratis</span>
+              <ul class="option-features">
+                <li>✅ Tu propio subdominio</li>
+                <li>✅ SSL incluido</li>
+                <li>⏳ Configuración: 24-48 hrs</li>
+              </ul>
+            </div>
+            <!-- Option 2: Custom Domain -->
+            <div class="option-card premium" [class.selected]="selectedOption === 2" (click)="selectOption(2)">
+              <div class="premium-badge">Premium</div>
+              <div class="option-icon">🌍</div>
+              <h3>Dominio Propio</h3>
+              <p class="option-example">www.<strong>tu-dominio.com</strong></p>
+              <span class="option-price paid">Costo del dominio + 20%</span>
+              <ul class="option-features">
+                <li>✅ Dominio 100% personalizado</li>
+                <li>✅ SSL incluido</li>
+                <li>✅ Máxima profesionalidad</li>
+                <li>⏳ Configuración: 1-3 días</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Configuration Form -->
+          @if (selectedOption > 0) {
+            <div class="config-form" id="dp-config-form">
+              <h3>Configura tu {{ getOptionLabel(selectedOption) }}</h3>
+              <div class="input-row">
+                @if (selectedOption === 1) {
+                  <div class="domain-input-wrapper">
+                    <input type="text" [(ngModel)]="domainValue" placeholder="mi-evento" class="domain-input"
+                      (input)="onDomainInput()" (keyup.enter)="checkAvailability()" />
+                    <span class="domain-suffix">.{{ baseDomain }}</span>
+                  </div>
+                }
+                @if (selectedOption === 2) {
+                  <div class="domain-input-wrapper">
+                    <span class="domain-prefix">www.</span>
+                    <input type="text" [(ngModel)]="domainValue" placeholder="mi-evento.com" class="domain-input"
+                      (input)="onDomainInput()" (keyup.enter)="checkAvailability()" />
+                  </div>
+                }
+                @if (selectedOption === 3) {
+                  <div class="domain-input-wrapper domain-input-stacked">
+                    <span class="domain-prefix domain-prefix-block">{{ baseDomain }}/i/</span>
+                    <input type="text" [(ngModel)]="domainValue" placeholder="mi-evento" class="domain-input"
+                      (input)="onDomainInput()" (keyup.enter)="checkAvailability()" />
+                  </div>
+                }
+                <button class="verify-btn" (click)="checkAvailability()" [disabled]="checking || !domainValue.trim()">
+                  @if (!checking) { <span>Verificar Disponibilidad</span> }
+                  @if (checking) { <span>Verificando...</span> }
+                </button>
+              </div>
+              @if (domainError) {
+                <div class="domain-error">⚠️ {{ domainError }}</div>
+              }
+              @if (domainValue.trim()) {
+                <div class="url-preview">
+                  <span class="preview-label">Vista previa:</span>
+                  <span class="preview-url">{{ getPreviewUrl() }}</span>
+                </div>
+              }
+              @if (availabilityResult) {
+                <div class="availability-result" [ngClass]="{
+                  'result-available': availabilityResult.available,
+                  'result-unavailable': !availabilityResult.available
+                }">
+                  <span class="result-icon">{{ availabilityResult.available ? '✅' : '❌' }}</span>
+                  <span>{{ availabilityResult.message }}</span>
+                </div>
+              }
+              @if (availabilityResult?.available && selectedOption === 2 && availabilityResult.finalPrice) {
+                <div class="pricing-card">
+                  <div class="pricing-header">💰 Precio por 1 año</div>
+                  <div class="pricing-details">
+                    <div class="pricing-row">
+                      <span>Dominio {{ availabilityResult.tld }}</span>
+                      <span>${{ availabilityResult.basePrice | number:'1.0-0' }} MXN</span>
+                    </div>
+                    <div class="pricing-row">
+                      <span>Servicio de configuración</span>
+                      <span>${{ availabilityResult.finalPrice - availabilityResult.basePrice | number:'1.0-0' }} MXN</span>
+                    </div>
+                    <div class="pricing-row">
+                      <span>SSL + Hosting (1 año)</span>
+                      <span class="included-label">Incluido</span>
+                    </div>
+                    <div class="pricing-divider"></div>
+                    <div class="pricing-row total">
+                      <span>Total</span>
+                      <span class="pricing-total">${{ availabilityResult.finalPrice | number:'1.0-0' }} MXN</span>
+                    </div>
+                  </div>
+                </div>
+              }
+              @if (availabilityResult?.available) {
+                <div class="action-row">
+                  <button class="btn-primary" (click)="onConfirm()" [disabled]="creating">
+                    @if (selectedOption === 2 && !creating) { <span>💳 Pagar y Configurar</span> }
+                    @if (selectedOption !== 2 && !creating) { <span>🚀 Activar {{ getOptionLabel(selectedOption) }}</span> }
+                    @if (creating) { <span>Procesando...</span> }
+                  </button>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+
+</div>

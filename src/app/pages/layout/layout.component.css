@@ -1,28 +1,112 @@
 :host {
-  display: block;
-  height: 100vh;
-  overflow: hidden;
+    display: block;
+    height: 100vh;
+    overflow: hidden;
 }
 
 .sidenav-container {
-  height: 100%;
-  overflow: hidden;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Elimina el espacio blanco entre el sidebar y el topbar */
+:host ::ng-deep .mat-drawer {
+    background-color: #0f1d29;
 }
 
 :host ::ng-deep .mat-drawer-content {
-  height: auto !important;
+    height: auto !important;
 }
 
 .main-content {
-  padding-top: 10px;
-  padding-left: 70px;
-  overflow-y: auto;
-  height: calc(100vh - 64px);
+    padding-top: 10px;
+    padding-left: 70px;
+    overflow-y: auto;
+    height: calc(100vh - 60px);
 }
 
 @media (max-width: 768px) {
-  .main-content {
-    padding-left: 10px;
-    padding-right: 10px;
-  }
+    .main-content {
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 12px;
+        height: calc(100vh - 56px);
+    }
+}
+
+/* ─── Mobile recommendation banner ──────────────────────────────────────── */
+.mobile-banner-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(10, 20, 35, 0.88);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    animation: banner-fade-in 0.35s ease;
+}
+
+@keyframes banner-fade-in {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.mobile-banner-card {
+    background: linear-gradient(160deg, #0f2942 0%, #1a4a6e 100%);
+    border: 1px solid rgba(125, 211, 232, 0.2);
+    border-radius: 20px;
+    padding: 36px 28px;
+    max-width: 360px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(125, 211, 232, 0.08);
+}
+
+.mobile-banner-icon {
+    font-size: 56px;
+    margin-bottom: 16px;
+    line-height: 1;
+    filter: drop-shadow(0 4px 12px rgba(125, 211, 232, 0.4));
+}
+
+.mobile-banner-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 12px;
+    letter-spacing: 0.01em;
+}
+
+.mobile-banner-msg {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.6;
+    margin: 0 0 28px;
+}
+
+.mobile-banner-msg strong {
+    color: #7dd3e8;
+}
+
+.mobile-banner-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #338da2, #2a7a8d);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 13px 28px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s ease;
+    letter-spacing: 0.02em;
+}
+
+.mobile-banner-btn:hover {
+    background: linear-gradient(135deg, #3da0b8, #338da2);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(51, 141, 162, 0.4);
 }

@@ -396,22 +396,120 @@
     color: #27ae60;
 }
 
-/* Responsive */
-@media screen and (max-width: 600px) {
-    .mesas-container {
-        padding: 16px;
-    }
-
+/* ─── Responsive: Tablet ─────────────────────────────────────────────────── */
+@media screen and (max-width: 768px) {
     .mesas-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 16px;
+    }
+}
+
+/* ─── Responsive: Mobile ─────────────────────────────────────────────────── */
+@media screen and (max-width: 600px) {
+
+    /* Container */
+    .mesas-container {
+        padding: 12px;
     }
 
-    .form-row {
-        flex-direction: column;
+    /* Header */
+    .section-header {
+        margin-bottom: 16px;
     }
 
+    .section-header h2 {
+        font-size: 1.25rem;
+    }
+
+    /* Event Selector */
     .event-selector {
         flex-direction: column;
         align-items: stretch;
+        gap: 10px;
+        margin-bottom: 16px;
     }
-}
+
+    .event-selector label {
+        margin-bottom: 0;
+    }
+
+    .event-dropdown {
+        width: 100%;
+        min-width: unset;
+        font-size: 15px;
+        padding: 11px 14px;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 12px 20px;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    /* Mesas Grid — single column on mobile */
+    .mesas-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    /* Mesa Card */
+    .mesa-name {
+        font-size: 15px;
+    }
+
+    /* Bigger touch targets for edit/delete */
+    .icon-btn {
+        font-size: 18px;
+        padding: 6px 10px;
+        min-width: 36px;
+        min-height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Assigned items */
+    .assigned-item {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+
+    .remove-btn {
+        font-size: 16px;
+        padding: 4px 8px;
+        min-width: 32px;
+        min-height: 32px;
+    }
+
+    /* Add invitado dropdown */
+    .invitado-dropdown {
+        font-size: 15px;
+        padding: 10px 12px;
+    }
+
+    /* Form */
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .form-group {
+        min-width: unset;
+        width: 100%;
+    }
+
+    .form-input {
+        font-size: 16px; /* prevents iOS zoom on focus */
+        padding: 12px 14px;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+        gap: 10px;
+    }
+
+    .form-actions .btn {
+        width: 100%;
+    }
+}

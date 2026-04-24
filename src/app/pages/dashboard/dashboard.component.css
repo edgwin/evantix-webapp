@@ -591,3 +591,175 @@
     color: #bbb;
     font-size: 16px;
 }
+
+/* ─── Check-In WA button ─────────────────────────────────────────────────── */
+.action-btn.checkin-wa:hover {
+    background: #e8f5fb;
+    border-color: #25d366;
+}
+
+/* ─── Check-In WhatsApp Popup ────────────────────────────────────────────── */
+.checkin-popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 16px;
+}
+
+.checkin-popup {
+    background: #fff;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+    animation: checkinSlideIn 0.25s ease;
+    overflow: hidden;
+}
+
+@keyframes checkinSlideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to   { transform: translateY(0);     opacity: 1; }
+}
+
+.checkin-popup-header {
+    background: linear-gradient(135deg, #25d366, #128c7e);
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.checkin-popup-header h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.checkin-popup-close {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: #fff;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+}
+
+.checkin-popup-close:hover { background: rgba(255,255,255,0.35); }
+
+.checkin-popup-body {
+    padding: 20px;
+}
+
+.checkin-info {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.5;
+    margin: 0 0 16px;
+    padding: 10px 14px;
+    background: #f0fdf4;
+    border-radius: 8px;
+    border-left: 3px solid #25d366;
+}
+
+.checkin-numbers {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.checkin-number-field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+}
+
+.checkin-input-wrap {
+    display: flex;
+    align-items: center;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.checkin-input-wrap:focus-within {
+    border-color: #25d366;
+    box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.12);
+}
+
+.checkin-country-select {
+    padding: 9px 6px;
+    background: #f5f5f5;
+    font-size: 13px;
+    color: #555;
+    border: none;
+    border-right: 1px solid #e0e0e0;
+    outline: none;
+    cursor: pointer;
+    min-width: 90px;
+    max-width: 110px;
+    appearance: none;
+    -webkit-appearance: none;
+    text-align: center;
+}
+
+.checkin-country-select:focus {
+    background: #eef7ff;
+}
+
+.checkin-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 9px 12px;
+    font-size: 14px;
+    color: #333;
+    background: transparent;
+}
+
+.checkin-input.error {
+    background: #fff5f5;
+}
+
+.checkin-error {
+    margin: 12px 0 0;
+    padding: 8px 12px;
+    background: #ffebee;
+    color: #c62828;
+    border-radius: 8px;
+    font-size: 12px;
+}
+
+.checkin-popup-footer {
+    padding: 14px 20px 18px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    border-top: 1px solid #f0f0f0;
+}
+
+@media (max-width: 480px) {
+    .checkin-popup-footer {
+        flex-direction: column-reverse;
+    }
+    .checkin-popup-footer .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

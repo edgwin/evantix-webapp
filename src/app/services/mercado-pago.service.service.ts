@@ -20,10 +20,10 @@ export class MercadoPagoService {
 
     return this.http.post<{ id: string }>(`${this.apiUrl}${this.createReferenceEndpoint}`, {
       title: event.nombre,
-      description: `Pago del Evento ${event.nombre}`,
+      description: event.description || `Pago del Evento ${event.nombre}`,
       quantity: 1,
       unitPrice: event.costo,
-      externalReference: eventPayment ? event.id : `wa_${event.id}`,
+      externalReference: event.externalRef || (eventPayment ? event.id : `wa_${event.id}`),
       callbackUrl: event.callbackUrl || null
     }, { headers });
   }

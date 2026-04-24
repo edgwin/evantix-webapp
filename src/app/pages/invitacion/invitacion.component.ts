@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { PortadaComponent } from '../../component/invitacion/portada/portada.component'
 import { FestejadosComponent } from '../../component/invitacion/festejados/festejados.component'
 import { IndicacionesComponent } from '../../component/invitacion/indicaciones/indicaciones.component'
@@ -27,6 +27,7 @@ import { TourOverlayComponent } from '../../component/tour-overlay/tour-overlay.
 import { InvitadoService } from '../../services/invitado.service';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../../environments/environment';
+import { EditLockService } from '../../services/edit-lock.service';
 
 @Component({
     selector: 'app-invitacion',
@@ -41,7 +42,7 @@ export class InvitacionComponent implements OnDestroy {
   constructor(private route: ActivatedRoute, private invitationService: InvitationService,
     private notificationService: NotificationService, public templateService: TemplateService,
     private router: Router, private pricingService: PricingService, private invitadoService: InvitadoService,
-    private tourService: TourService) { }
+    private tourService: TourService, private editLockService: EditLockService) { }
   eventId: any;
   loading: boolean = true;
   data: any;
@@ -53,6 +54,8 @@ export class InvitacionComponent implements OnDestroy {
   homeUrl: string = environment.homeUrl;
   canSendToReview: boolean = false;
   sendingToReview: boolean = false;
+  // Edit-lock banner
+  editLockedBy: string | null = null;  // non-null = blocked by this email
   togglingSection: string = '';
   pricingLoading: boolean = true;
   private mutationSub: Subscription | null = null;
@@ -71,19 +74,42 @@ export class InvitacionComponent implements OnDestroy {
   // Track ID actual
   currentTrackId: string = '';
 
+  @ViewChild('invScroll') invScrollRef!: ElementRef<HTMLElement>;
+
   toggleReadOnly(): void {
     if (this.eventStatus === 'Creado' || this.isAdmin) {
-      this.isReadOnly = !this.isReadOnly;
-      if (!this.isReadOnly) {
-        this.loadPricing();
-        setTimeout(() => this.tourService.startIfNeeded(), 800);
+      if (this.isReadOnly) {
+        // Entering edit mode → try to acquire lock
+        this.editLockService.acquire(this.eventId).subscribe(res => {
+          if (res.acquired) {
+            this.isReadOnly = false;
+            this.editLockedBy = null;
+            this.editLockService.startHeartbeat(this.eventId);
+            this.loadPricing();
+            setTimeout(() => this.tourService.startIfNeeded(), 800);
+          } else {
+            this.editLockedBy = res.holderEmail || 'otra sesión';
+            this.notificationService.show('error',
+              `La invitación está siendo editada por ${this.editLockedBy}. Intenta en unos minutos.`);
+          }
+        });
       } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Exiting edit mode → release lock
+        this.editLockService.stopAndRelease();
+        this.editLockedBy = null;
+        this.isReadOnly = true;
+        const el = this.invScrollRef?.nativeElement;
+        if (el) el.scrollTo({ top: 0, behavior: 'smooth' });
+        else window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
   }
 
   ngOnInit(): void {
+    // Asegura que el body sea scrollable (el Layout lo pone en 'hidden')
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+
     this.eventId = this.route.snapshot.paramMap.get('idEvent');
     this.idInvitacion = this.route.snapshot.paramMap.get('idInvitado');
     if (this.eventId === null || this.eventId === undefined) return;
@@ -133,6 +159,10 @@ export class InvitacionComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.mutationSub?.unsubscribe();
     this.pricingLoadingSub?.unsubscribe();
+    // Liberar el lock si el usuario navega fuera sin salir del modo edición
+    if (!this.isReadOnly) {
+      this.editLockService.stopAndRelease();
+    }
   }
 
   goToDashboard(): void {
@@ -140,7 +170,19 @@ export class InvitacionComponent implements OnDestroy {
   }
 
   scrollToTop(): void {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // El contenedor real del scroll en la invitación (evita el problema de html/body height:100%)
+    const el = this.invScrollRef?.nativeElement;
+    if (el) {
+      el.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    // Fallback para cualquier caso borde
+    const scrollEl = document.scrollingElement || document.documentElement || document.body;
+    try {
+      scrollEl.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch {
+      scrollEl.scrollTop = 0;
+    }
   }
 
   private applyViewMode(isPaid: boolean): void {

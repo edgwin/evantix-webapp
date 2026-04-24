@@ -7,3 +7,20 @@
     <router-outlet></router-outlet>
   </div>
 </mat-sidenav-container>
+
+<!-- Mobile recommendation banner -->
+@if (showMobileBanner) {
+<div class="mobile-banner-overlay">
+  <div class="mobile-banner-card">
+    <div class="mobile-banner-icon">🖥️</div>
+    <h2 class="mobile-banner-title">Mejor experiencia en Desktop</h2>
+    <p class="mobile-banner-msg">
+      El panel de administración de <strong>Evantix</strong> está optimizado para pantallas grandes.
+      Para una experiencia completa, te recomendamos acceder desde tu computadora.
+    </p>
+    <button class="mobile-banner-btn" (click)="dismissMobileBanner()">
+      Continuar de todas formas →
+    </button>
+  </div>
+</div>
+}

@@ -9,15 +9,14 @@ import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
 export class LayoutComponent implements OnInit, OnDestroy {
   sidenavOpen = true;
   isMobile = false;
+  showMobileBanner = false;
 
   ngOnInit(): void {
     this.checkScreenSize();
-    // Prevent body from scrolling — only .main-content should scroll
     document.body.style.overflow = 'hidden';
   }
 
   ngOnDestroy(): void {
-    // Restore body scroll for pages outside the layout (login, landing, etc.)
     document.body.style.overflow = '';
   }
 
@@ -30,9 +29,18 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.isMobile = window.innerWidth <= 768;
     if (this.isMobile) {
       this.sidenavOpen = false;
+      // Mostrar banner a menos que el usuario ya lo descartó esta sesión
+      const dismissed = sessionStorage.getItem('mobileBannerDismissed');
+      this.showMobileBanner = !dismissed;
     } else {
       this.sidenavOpen = true;
+      this.showMobileBanner = false;
     }
+  }
+
+  dismissMobileBanner() {
+    sessionStorage.setItem('mobileBannerDismissed', '1');
+    this.showMobileBanner = false;
   }
 
   onMenuItemClicked() {

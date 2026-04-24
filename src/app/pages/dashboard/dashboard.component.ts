@@ -10,6 +10,7 @@ import { PagoDialogComponent } from '../../component/pago-dialog/pago-dialog.com
 import { TourService } from '../../services/tour.service';
 import { TourOverlayComponent } from '../../component/tour-overlay/tour-overlay.component';
 import { environment } from '../../../environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 interface Evento {
   nombre: string;
@@ -66,8 +67,50 @@ export class DashboardComponent {
   private callbackEventId: string | null = null;
   private callbackStatus: string | null = null;
 
+  // ─── Check-In WhatsApp ───────────────────────────────────────────────────
+  showCheckInPopup = false;
+  checkInEvento: any = null;
+  checkInNumeros: string[] = ['', '', ''];
+  checkInPaises: string[] = ['+52', '+52', '+52'];
+  checkInError = '';
+  checkInSending = false;
+  checkInEnviado = false;
+
+  readonly countryCodes = [
+    { flag: '🇲🇽', name: 'México',               dialCode: '+52'  },
+    { flag: '🇺🇸', name: 'Estados Unidos',      dialCode: '+1'   },
+    { flag: '🇨🇦', name: 'Canadá',              dialCode: '+1'   },
+    { flag: '🇬🇹', name: 'Guatemala',           dialCode: '+502' },
+    { flag: '🇧🇿', name: 'Belice',              dialCode: '+501' },
+    { flag: '🇭🇳', name: 'Honduras',            dialCode: '+504' },
+    { flag: '🇸🇻', name: 'El Salvador',         dialCode: '+503' },
+    { flag: '🇳🇮', name: 'Nicaragua',           dialCode: '+505' },
+    { flag: '🇨🇷', name: 'Costa Rica',          dialCode: '+506' },
+    { flag: '🇵🇦', name: 'Panamá',              dialCode: '+507' },
+    { flag: '🇨🇴', name: 'Colombia',            dialCode: '+57'  },
+    { flag: '🇻🇪', name: 'Venezuela',           dialCode: '+58'  },
+    { flag: '🇪🇨', name: 'Ecuador',             dialCode: '+593' },
+    { flag: '🇵🇪', name: 'Perú',               dialCode: '+51'  },
+    { flag: '🇧🇴', name: 'Bolivia',             dialCode: '+591' },
+    { flag: '🇧🇷', name: 'Brasil',              dialCode: '+55'  },
+    { flag: '🇨🇱', name: 'Chile',               dialCode: '+56'  },
+    { flag: '🇦🇷', name: 'Argentina',           dialCode: '+54'  },
+    { flag: '🇺🇾', name: 'Uruguay',             dialCode: '+598' },
+    { flag: '🇵🇾', name: 'Paraguay',            dialCode: '+595' },
+    { flag: '🇨🇺', name: 'Cuba',                dialCode: '+53'  },
+    { flag: '🇩🇴', name: 'República Dominicana', dialCode: '+1-809'},
+    { flag: '🇵🇷', name: 'Puerto Rico',         dialCode: '+1-787'},
+    { flag: '🇭🇹', name: 'Haití',               dialCode: '+509' },
+    { flag: '🇯🇲', name: 'Jamaica',             dialCode: '+1-876'},
+    { flag: '🇹🇹', name: 'Trinidad y Tobago',   dialCode: '+1-868'},
+    { flag: '🇬🇾', name: 'Guyana',              dialCode: '+592' },
+    { flag: '🇸🇷', name: 'Surinam',             dialCode: '+597' },
+    { flag: '🇪🇸', name: 'España',               dialCode: '+34'  },
+  ];
+
   constructor(private eventService: EventService, private notificationService: NotificationService, private mercadoPago: MercadoPagoService,
-    private stripeService: StripeService, private route: ActivatedRoute, private localStorageService: LocalStorageService, private router: Router, private dialog: MatDialog, private tourService: TourService) {
+    private stripeService: StripeService, private route: ActivatedRoute, private localStorageService: LocalStorageService,
+    private router: Router, private dialog: MatDialog, private tourService: TourService, private http: HttpClient) {
     const localUser = localStorage.getItem('loggedUser');
     if (localUser != null) {
       this.loggedUser = JSON.parse(localUser);
@@ -349,6 +392,69 @@ export class DashboardComponent {
           },
           error: err => console.error('Error creando sesión de Stripe', err)
         });
+      }
+    });
+  }
+
+  // ─── Check-In WhatsApp ───────────────────────────────────────────────────
+  onEnviarCheckIn(evento: any) {
+    this.checkInEvento = evento;
+    this.checkInNumeros = ['', '', ''];
+    this.checkInPaises = ['+52', '+52', '+52'];
+    this.checkInError = '';
+    this.checkInEnviado = false;
+    this.showCheckInPopup = true;
+  }
+
+  cerrarCheckInPopup() {
+    if (this.checkInSending) return;
+    this.showCheckInPopup = false;
+    this.checkInEvento = null;
+  }
+
+  enviarCheckInWA() {
+    this.checkInEnviado = true;
+    const numero1 = this.checkInNumeros[0]?.trim();
+    if (!numero1 || numero1.length < 10) {
+      this.checkInError = 'Ingresa al menos un número de WhatsApp válido (10 dígitos).';
+      return;
+    }
+
+    const numeros = this.checkInNumeros
+      .map((n, idx) => ({ n: n?.trim(), pais: this.checkInPaises[idx] }))
+      .filter(({ n }) => n && n.length >= 6)
+      .map(({ n, pais }) => {
+        const code = pais.replace(/[^\d]/g, '');
+        return `${code}${n.replace(/[^\d]/g, '')}`;
+      });
+
+    const evento = this.checkInEvento;
+    const webAppUrl = environment.homeUrl || window.location.origin;
+    const checkInUrl = `${webAppUrl}/checkin/${evento.grupoIdResponsable ?? evento.id}`;
+    const nombreEvento = evento.nombre ?? '';
+    const numeroEvento = evento.checkInPin ?? '';   // Número identificador del evento → {{3}}
+
+    const waApiUrl = `${environment.coreApiUrl.replace('/api', '')}/api/WhatsAppMasivo/SendCheckin`;
+
+    this.checkInSending = true;
+    this.checkInError = '';
+
+    this.http.post(waApiUrl, {
+      numeros,
+      nombreEvento,
+      checkinUrl: checkInUrl,
+      numeroEvento
+    }, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
+    }).subscribe({
+      next: () => {
+        this.checkInSending = false;
+        this.showCheckInPopup = false;
+        this.notificationService.show('success', `✅ Check-In enviado a ${numeros.length} número(s)`);
+      },
+      error: () => {
+        this.checkInSending = false;
+        this.checkInError = 'Error al enviar. Verifica que el servicio de WhatsApp esté activo.';
       }
     });
   }

@@ -1,0 +1,144 @@
+<div class="fi-container">
+
+  <!-- Header -->
+  <div class="fi-header">
+    <div class="fi-header-left">
+      <h2>📷 Fotos de Invitados</h2>
+      <p class="fi-subtitle">Visualiza, descarga y gestiona las fotos subidas por tus invitados</p>
+    </div>
+  </div>
+
+  <!-- Event Selector -->
+  <div class="fi-event-card">
+    <label class="fi-label">Selecciona tu evento</label>
+    @if (loadingEvents) {
+      <div class="fi-loading-row"><div class="fi-spinner"></div><span>Cargando eventos...</span></div>
+    }
+    @if (!loadingEvents && paidEvents.length === 0) {
+      <div class="fi-empty-state">
+        <p>No tienes eventos pagados. Realiza el pago de tu invitación para acceder a esta función.</p>
+      </div>
+    }
+    @if (!loadingEvents && paidEvents.length > 0) {
+      <select class="fi-select" [(ngModel)]="selectedEventId" (change)="onEventChange()">
+        <option value="">— Elige un evento —</option>
+        @for (evt of paidEvents; track evt.id) {
+          <option [value]="evt.id">{{ evt.nombre }}</option>
+        }
+      </select>
+    }
+  </div>
+
+  <!-- Gallery Section -->
+  @if (selectedEventId) {
+
+    <!-- Toolbar -->
+    @if (!loadingFotos && fotos.length > 0) {
+      <div class="fi-toolbar">
+        <div class="fi-toolbar-left">
+          <span class="fi-count">{{ fotos.length }} foto{{ fotos.length !== 1 ? 's' : '' }}</span>
+          @if (selectionMode && selectedCount > 0) {
+            <span class="fi-selected-badge">{{ selectedCount }} seleccionada{{ selectedCount !== 1 ? 's' : '' }}</span>
+          }
+        </div>
+        <div class="fi-toolbar-right">
+          @if (!selectionMode) {
+            <button class="fi-btn fi-btn-ghost" (click)="toggleSelectionMode()" title="Seleccionar fotos">
+              ☑️ Seleccionar
+            </button>
+            <button class="fi-btn fi-btn-primary" (click)="downloadZip()" [disabled]="downloading" title="Descargar todas en ZIP">
+              @if (!downloading) { <span>⬇️ Descargar Todo</span> }
+              @if (downloading) { <span>{{ downloadProgress }}%...</span> }
+            </button>
+          }
+          @if (selectionMode) {
+            <button class="fi-btn fi-btn-ghost" (click)="selectAll()">Seleccionar todo</button>
+            <button class="fi-btn fi-btn-ghost" (click)="clearSelection()">Limpiar</button>
+            @if (selectedCount > 0) {
+              <button class="fi-btn fi-btn-primary" (click)="downloadZip()" [disabled]="downloading">
+                @if (!downloading) { <span>⬇️ Descargar ({{ selectedCount }})</span> }
+                @if (downloading) { <span>{{ downloadProgress }}%...</span> }
+              </button>
+              <button class="fi-btn fi-btn-danger" (click)="deleteSelected()">
+                🗑️ Eliminar ({{ selectedCount }})
+              </button>
+            }
+            <button class="fi-btn fi-btn-ghost" (click)="toggleSelectionMode()">✕ Cancelar</button>
+          }
+        </div>
+      </div>
+
+      <!-- Download progress bar -->
+      @if (downloading) {
+        <div class="fi-progress-bar">
+          <div class="fi-progress-fill" [style.width.%]="downloadProgress"></div>
+        </div>
+      }
+    }
+
+    <!-- Loading -->
+    @if (loadingFotos) {
+      <div class="fi-loading-center">
+        <div class="fi-spinner-lg"></div>
+        <p>Cargando fotos...</p>
+      </div>
+    }
+
+    <!-- Empty -->
+    @if (!loadingFotos && fotos.length === 0) {
+      <div class="fi-empty-gallery">
+        <span class="fi-empty-icon">🖼️</span>
+        <p>Aún no hay fotos subidas por los invitados.</p>
+      </div>
+    }
+
+    <!-- Photo Grid -->
+    @if (!loadingFotos && fotos.length > 0) {
+      <div class="fi-grid">
+        @for (foto of fotos; track foto.id; let i = $index) {
+          <div class="fi-photo-card"
+            [class.fi-selected]="isSelected(foto.id)"
+            [class.fi-selection-mode]="selectionMode"
+            (click)="selectionMode ? toggleSelect(foto.id, $event) : openLightbox(i)">
+
+            <img [src]="foto.imagen" alt="Foto de invitado" loading="lazy" class="fi-img" />
+
+            <!-- Selection checkbox overlay -->
+            @if (selectionMode) {
+              <div class="fi-check-overlay" (click)="toggleSelect(foto.id, $event)">
+                <div class="fi-checkbox" [class.fi-checked]="isSelected(foto.id)">
+                  @if (isSelected(foto.id)) { <span>✓</span> }
+                </div>
+              </div>
+            }
+
+            <!-- Action buttons (shown on hover / always on touch) -->
+            @if (!selectionMode) {
+              <div class="fi-card-actions">
+                <button class="fi-action-btn fi-delete-btn" (click)="deleteFoto(foto.id, $event)" title="Eliminar foto">
+                  🗑️
+                </button>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  }
+
+  <!-- Lightbox -->
+  @if (lightboxImage) {
+    <div class="fi-lightbox" (click)="onLightboxBackdrop($event)">
+      <button class="fi-lb-close" (click)="closeLightbox()">✕</button>
+      @if (lightboxIndex > 0) {
+        <button class="fi-lb-nav fi-lb-prev" (click)="prevImage()">‹</button>
+      }
+      <img class="fi-lb-img" [src]="lightboxImage" alt="Foto ampliada" />
+      @if (lightboxIndex < fotos.length - 1) {
+        <button class="fi-lb-nav fi-lb-next" (click)="nextImage()">›</button>
+      }
+      <div class="fi-lb-counter">{{ lightboxIndex + 1 }} / {{ fotos.length }}</div>
+    </div>
+  }
+
+</div>

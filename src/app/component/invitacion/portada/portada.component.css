@@ -1,4 +1,4 @@
-ï»¿.carousel-container {
+.carousel-container {
   position: absolute;
   top: 0;
   left: 0;
@@ -60,7 +60,7 @@
   z-index: 3;
 }
 
-/* En mÃ³vil usar cover ya que las proporciones suelen coincidir mejor */
+/* En móvil usar cover ya que las proporciones suelen coincidir mejor */
 @media screen and (max-width: 768px) {
   .carousel-slide {
     background-size: cover;
@@ -240,7 +240,7 @@
 
 .edit-imagePortada-btn {
   width: 40px;
-  /* opcional: tamaÃ±o fijo */
+  /* opcional: tamaño fijo */
   height: 40px;
   /* opcional */
 }
@@ -330,7 +330,7 @@
 
 .edit-imagePortada-btn {
   width: 40px;
-  /* opcional: tamaÃ±o fijo */
+  /* opcional: tamaño fijo */
   height: 40px;
   /* opcional */
 }

@@ -14,7 +14,10 @@ import { DescuentosComponent } from './pages/descuentos/descuentos.component';
 import { CheckinComponent } from './pages/checkin/checkin.component';
 import { LandingComponent } from './pages/landing/landing.component';
 import { DominioComponent } from './pages/dominio/dominio.component';
+import { DominioPersonalizadoComponent } from './pages/dominio-personalizado/dominio-personalizado.component';
+import { FotosInvitadosComponent } from './pages/fotos-invitados/fotos-invitados.component';
 import { TemplateEditorComponent } from './pages/template-editor/template-editor.component';
+
 import { DomainResolverComponent } from './pages/domain-resolver/domain-resolver.component';
 
 const routes: Routes = [
@@ -50,6 +53,8 @@ const routes: Routes = [
       { path: 'nuevoEvento', component: NuevoEventoComponent },
       { path: 'descuentos', component: DescuentosComponent },
       { path: 'dominio', component: DominioComponent },
+      { path: 'dominio-personalizado', component: DominioPersonalizadoComponent },
+      { path: 'fotos-invitados', component: FotosInvitadosComponent },
       { path: 'editor-templates', component: TemplateEditorComponent }
     ]
   }

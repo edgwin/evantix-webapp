@@ -4,7 +4,7 @@
 </div>
 }
 @if (!loading) {
-<div>
+<div #invScroll class="inv-scroll-container">
   <!-- Botón flotante: Regresar al Dashboard (solo en edicion/preview, NO guest) -->
   @if (!isGuestView) {
   <button class="floating-btn floating-back" (click)="goToDashboard()" title="Regresar al Dashboard">
@@ -16,6 +16,12 @@
   <button class="floating-btn floating-scroll-top" (click)="scrollToTop()" title="Ir al inicio">
     ↑
   </button>
+  }
+  <!-- Banner: Invitación bloqueada por otra sesión -->
+  @if (editLockedBy && !isGuestView) {
+  <div class="edit-lock-banner">
+    🔒 <strong>Edición bloqueada</strong> &mdash; {{ editLockedBy }} está editando esta invitación en este momento. Podrás editarla en unos minutos.
+  </div>
   }
   <!-- Barra de costo fixed -->
   <app-cost-bar [isReadOnly]="isReadOnly"></app-cost-bar>
@@ -230,8 +236,8 @@
     }
   </div>
   }
-  <!-- RSVP Section - Contacto alternativo (guest sin confirmación habilitada) -->
-  @if (isGuestView && !isOwnerPreview && isReadOnly && (!data?.confirmacionInvitadosEnabled || !guestGroup)) {
+  <!-- RSVP Section - Contacto alternativo (guest sin confirmación habilitada, o owner preview sin RSVP) -->
+  @if (isReadOnly && !data?.confirmacionInvitadosEnabled && (isGuestView || isOwnerPreview)) {
   <div class="rsvp-section" [ngStyle]="{
       'background-image': 'url(' + templateService.getMarbleBackground() + ')',
       'background-size': 'cover',

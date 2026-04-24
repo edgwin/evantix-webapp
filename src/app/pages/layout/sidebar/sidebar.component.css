@@ -24,12 +24,13 @@ span{
 }
 
 .sideBar {
-  width: 280px;
-  padding-left: 5px; 
-  padding-right: 10px; 
-  background-color: #0f1d29; 
-  height: 100%;
+    width: 280px;
+    padding-left: 5px;
+    padding-right: 10px;
+    background-color: #0f1d29;
+    height: 100%;
 }
+
 
 .submenu {
   padding-left: 32px;

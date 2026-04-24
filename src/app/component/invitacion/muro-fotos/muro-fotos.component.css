@@ -191,12 +191,12 @@
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 3px 10px rgba(201, 169, 110, 0.4);
+    box-shadow: 0 3px 10px var(--shadow-color);
 }
 
 .upload-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(201, 169, 110, 0.5);
+    box-shadow: 0 5px 15px var(--shadow-color);
 }
 
 .upload-icon {

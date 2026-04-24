@@ -168,7 +168,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 25px rgba(var(--shadow-color), 0.4);
+  box-shadow: 0 8px 25px var(--shadow-color);
 }
 
 .card-icon img {
@@ -236,7 +236,7 @@
 
 .action-btn.primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(233, 30, 99, 0.4);
+  box-shadow: 0 8px 25px var(--shadow-color);
 }
 
 .action-btn.secondary {

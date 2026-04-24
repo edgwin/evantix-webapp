@@ -313,7 +313,7 @@
 
 .location-btn.primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(var(--shadow-color), 0.4);
+  box-shadow: 0 8px 25px var(--shadow-color);
 }
 
 .location-btn.secondary {
@@ -348,7 +348,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(var(--shadow-color), 0.2);
+  box-shadow: 0 4px 15px var(--shadow-color);
 }
 
 .add-event-btn:hover {
@@ -356,7 +356,7 @@
   color: #fff;
   border-style: solid;
   transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(var(--shadow-color), 0.3);
+  box-shadow: 0 10px 30px var(--shadow-color);
 }
 
 .add-icon {

@@ -114,14 +114,14 @@
   background-position: center;
   background-color: #fff;
   border: 4px solid var(--primary-color, #e91e63);
-  box-shadow: 0 5px 20px rgba(var(--shadow-color), 0.3);
+  box-shadow: 0 5px 20px var(--shadow-color);
   position: relative;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .timeline-icon:hover {
   transform: scale(1.1);
-  box-shadow: 0 8px 30px rgba(var(--shadow-color), 0.4);
+  box-shadow: 0 8px 30px var(--shadow-color);
 }
 
 .icon-edit-btn {
