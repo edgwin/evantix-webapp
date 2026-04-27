@@ -429,10 +429,8 @@ export class DashboardComponent {
       });
 
     const evento = this.checkInEvento;
-    const webAppUrl = environment.homeUrl || window.location.origin;
-    const checkInUrl = `${webAppUrl}/checkin/${evento.grupoIdResponsable ?? evento.id}`;
     const nombreEvento = evento.nombre ?? '';
-    const numeroEvento = evento.checkInPin ?? '';   // Número identificador del evento → {{3}}
+    const numeroEvento = evento.checkInPin ?? '';   // PIN del evento → {{2}}
 
     const waApiUrl = `${environment.coreApiUrl.replace('/api', '')}/api/WhatsAppMasivo/SendCheckin`;
 
@@ -442,7 +440,6 @@ export class DashboardComponent {
     this.http.post(waApiUrl, {
       numeros,
       nombreEvento,
-      checkinUrl: checkInUrl,
       numeroEvento
     }, {
       headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }

@@ -31,10 +31,12 @@
 
               <!-- Tipo de Evento -->
               <div class="form-group">
-                <label>Tipo de Evento <span class="required">*</span></label>
+                <label>Tipo de Evento <span class="required">*</span>
+                  @if (isEditMode) { <span class="field-locked-hint">🔒 No editable</span> }
+                </label>
                 <mat-form-field appearance="outline" class="mat-field-modern">
                   <mat-select name="tipoEvento" [(value)]="evento.tipoEvento" (selectionChange)="tipoEventoChange($event)"
-                    required placeholder="Selecciona un tipo">
+                    required placeholder="Selecciona un tipo" [disabled]="isEditMode">
                     @for (tipo of tipoEvento; track tipo) {
                       <mat-option [value]="tipo.name">
                         {{ tipo.name }}
@@ -47,9 +49,12 @@
               <!-- Otro tipo de Evento -->
               @if (!tipoEventoTxtHidden) {
                 <div class="form-group">
-                  <label>Especifica el tipo de Evento <span class="required">*</span></label>
+                  <label>Especifica el tipo de Evento <span class="required">*</span>
+                    @if (isEditMode) { <span class="field-locked-hint">🔒 No editable</span> }
+                  </label>
                   <input type="text" name="tipoEventoTxt" [(ngModel)]="evento.tipoEvento" required
-                    placeholder="Escribe el tipo de evento" class="form-input" />
+                    placeholder="Escribe el tipo de evento" class="form-input"
+                    [disabled]="isEditMode" />
                   </div>
                 }
 
@@ -94,12 +99,12 @@
                     <!-- Mensaje de Invitación -->
                     <div class="form-group">
                       <label>Mensaje de Invitación <span class="required">*</span></label>
-                      <textarea name="mensajeInvitacion" [(ngModel)]="evento.mensajeInvitacion" required rows="4"
+                      <textarea name="mensajeInvitacion" [(ngModel)]="evento.mensajeInvitacion" required rows="3"
                         placeholder="Escribe el mensaje que recibirán tus invitados por email o WhatsApp..."
-                        class="form-input form-textarea" maxlength="255"></textarea>
+                        class="form-input form-textarea" maxlength="50"></textarea>
                       <small class="hint">Este mensaje se enviará junto con la invitación &nbsp;
-                        <span [class.char-warn]="evento.mensajeInvitacion.length >= 230">
-                          {{ evento.mensajeInvitacion.length }}/255
+                        <span [class.char-warn]="evento.mensajeInvitacion.length >= 40">
+                          {{ evento.mensajeInvitacion.length }}/50
                         </span>
                       </small>
                     </div>
