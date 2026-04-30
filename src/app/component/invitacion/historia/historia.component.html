@@ -1,4 +1,4 @@
-﻿<section class="historia-section">
+<section class="historia-section">
   <div class="section-content">
     <div class="section-header">
       <span class="header-decoration-line"></span>
@@ -14,10 +14,24 @@
 
       @for (item of dataHistoria.details; track item; let i = $index) {
       <div class="story-item" [ngClass]="{'story-right': i % 2 !== 0}" [style.animation-delay]="(i * 0.2) + 's'">
-        <div class="story-image-wrapper">
-          <div class="story-image" [ngStyle]="{'background-image': 'url(' + item.imagen + ')'}" appDisableDownload>
+        <div class="story-image-wrapper" [class.adjusting-mode]="adjustingPositionId === item.id">
+          <div class="story-image"
+            [ngStyle]="{'background-image': 'url(' + item.imagen + ')', 'background-position': getImagenPosicion(item.id)}"
+            (click)="onImagePositionClick($event, item.id)"
+            appDisableDownload>
+
+            <!-- Crosshair for this item -->
+            @if (adjustingPositionId === item.id) {
+              <div class="focal-crosshair" [ngStyle]="{
+                'left': getImagenPosicion(item.id).split(' ')[0],
+                'top': getImagenPosicion(item.id).split(' ')[1]
+              }">
+                <div class="crosshair-ring"></div>
+                <div class="crosshair-dot"></div>
+              </div>
+            }
           </div>
-          @if (!loadingImgs[item.id] && !isReadOnly) {
+          @if (!loadingImgs[item.id] && !isReadOnly && adjustingPositionId !== item.id) {
           <button class="image-edit-btn" (click)="triggerImageUpload(item.id)" title="Cambiar imagen">
             <img src="assets/editarImagen.png" alt="editar">
           </button>
@@ -27,8 +41,25 @@
             <div class="loader"></div>
           </div>
           }
+
+          <!-- Per-item focal point controls -->
+          @if (!isReadOnly && !loadingImgs[item.id] && item.imagen) {
+            <div class="position-controls-item">
+              @if (adjustingPositionId !== item.id) {
+                <button class="position-adjust-btn-bg position-adjust-btn-sm" (click)="togglePositionAdjust(item.id)" title="Centrar imagen">
+                  <span class="position-icon">⊕</span>
+                </button>
+              } @else {
+                <div class="adjust-actions-compact">
+                  <button class="adjust-save-btn" (click)="savePosition(item.id)">✓</button>
+                  <button class="adjust-cancel-btn" (click)="cancelPositionAdjust(item.id)">✕</button>
+                </div>
+              }
+            </div>
+          }
         </div>
-        <div class="story-card">
+        <div class="story-card" [style.pointer-events]="adjustingPositionId === item.id ? 'none' : 'auto'"
+          [style.opacity]="adjustingPositionId === item.id ? '0.3' : '1'">
           @if (!loadingImgs[item.id] && (dataHistoria?.details?.length || 0) > 1 && !isReadOnly) {
           <button class="card-delete-btn" (click)="triggerImageDelete(item.id)" title="Eliminar">
             <img src="assets/BtnDelete.png" alt="eliminar">

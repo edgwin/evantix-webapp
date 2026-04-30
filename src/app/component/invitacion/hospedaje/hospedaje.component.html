@@ -1,7 +1,8 @@
-﻿<section class="hospedaje-section"
-  [style.background-image]="'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(' + data.imagen + ')'">
+<section class="hospedaje-section" (click)="onImagePositionClick($event)"
+  [class.adjusting-mode]="adjustingPosition"
+  [ngStyle]="{'background-image': 'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(' + data.imagen + ')', 'background-position': imagenPosicion}">
 
-  @if (!isReadOnly && !loadingImg) {
+  @if (!isReadOnly && !loadingImg && !adjustingPosition) {
     <button class="bg-edit-btn" (click)="triggerImageUpload()" title="Cambiar fondo">
       <img src="assets/editarImagen.png" alt="editar">
     </button>
@@ -12,7 +13,35 @@
     </div>
   }
 
-  <div class="section-content">
+  @if (!isReadOnly && !loadingImg && data?.imagen) {
+    <div class="position-controls-bg">
+      @if (!adjustingPosition) {
+        <button class="position-adjust-btn-bg" (click)="togglePositionAdjust()" title="Centrar imagen">
+          <span class="position-icon">⊕</span>
+          <span class="position-label">Centrar</span>
+        </button>
+      } @else {
+        <div class="adjust-hint">Toca donde quieres el punto focal</div>
+        <div class="adjust-actions">
+          <button class="adjust-save-btn" (click)="savePosition()">✓ Guardar</button>
+          <button class="adjust-cancel-btn" (click)="cancelPositionAdjust()">✕ Cancelar</button>
+        </div>
+      }
+    </div>
+  }
+
+  @if (adjustingPosition) {
+    <div class="focal-crosshair" [ngStyle]="{
+      'left': imagenPosicion.split(' ')[0],
+      'top': imagenPosicion.split(' ')[1]
+    }">
+      <div class="crosshair-ring"></div>
+      <div class="crosshair-dot"></div>
+    </div>
+  }
+
+  <div class="section-content" [style.pointer-events]="adjustingPosition ? 'none' : 'auto'"
+    [style.opacity]="adjustingPosition ? '0.3' : '1'">
     <div class="section-header">
       <span class="header-icon">🏨</span>
       <h1>Hospedaje Recomendado</h1>

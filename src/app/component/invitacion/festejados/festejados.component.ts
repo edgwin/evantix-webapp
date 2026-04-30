@@ -1,5 +1,5 @@
-﻿import { CommonModule } from '@angular/common';
-import { Component, HostListener, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -22,7 +22,7 @@ import { TemplateService } from '../../../services/template.service';
         ])
     ]
 })
-export class FestejadosComponent {
+export class FestejadosComponent implements OnInit {
   constructor(
     private invitationService: InvitationService,
     private notificationService: NotificationService,
@@ -41,6 +41,14 @@ export class FestejadosComponent {
   tempFrase: string = '';
   tempMap: { [id: string]: string } = {};
   loadingImg: boolean = false;
+  imagenPosicion: string = '50% 50%';
+  adjustingPosition: boolean = false;
+
+  ngOnInit() {
+    if (this.data?.imagenPosicion) {
+      this.imagenPosicion = this.data.imagenPosicion;
+    }
+  }
 
   //Titulo
   onTituloBlur(event: Event) {
@@ -143,6 +151,37 @@ export class FestejadosComponent {
         );
       }
     });
+  }
+
+  // --- Ajuste de posición focal ---
+  togglePositionAdjust() {
+    this.adjustingPosition = !this.adjustingPosition;
+  }
+
+  onImagePositionClick(event: MouseEvent) {
+    if (!this.adjustingPosition) return;
+    event.stopPropagation();
+    const target = event.currentTarget as HTMLElement;
+    const rect = target.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 100;
+    const y = ((event.clientY - rect.top) / rect.height) * 100;
+    this.imagenPosicion = `${Math.round(x)}% ${Math.round(y)}%`;
+    this.data.imagenPosicion = this.imagenPosicion;
+  }
+
+  savePosition() {
+    this.adjustingPosition = false;
+    this.updateBackend('Festejados', 'IdEvento', this.eventId, 'ImagenPosicion', this.imagenPosicion);
+    this.notificationService.show('success', 'Posición de imagen guardada');
+  }
+
+  cancelPositionAdjust() {
+    this.adjustingPosition = false;
+    if (this.data?.imagenPosicion) {
+      this.imagenPosicion = this.data.imagenPosicion;
+    } else {
+      this.imagenPosicion = '50% 50%';
+    }
   }
 
   // --- Guardar en backend ---

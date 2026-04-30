@@ -1,5 +1,5 @@
 <header id="fh5co-header" class="fh5co-cover" role="banner" data-stellar-background-ratio="0.5">
-  <div class="carousel-container">
+  <div class="carousel-container" (click)="onImagePositionClick($event)">
     @for (img of imagenes; track img; let i = $index) {
       <!-- Fondo blur -->
       <div class="carousel-slide-blur" [ngClass]="{ 'active': i === currentImageIndex }" [ngStyle]="{
@@ -9,23 +9,42 @@
       <!-- Imagen principal -->
       <div class="carousel-slide" [ngClass]="{ 'active': i === currentImageIndex }" [ngStyle]="{
           'background-image': 'url(' + img + ')',
+          'background-position': imagenPosicion,
           'z-index': i === currentImageIndex ? 2 : 1
         }"></div>
     }
     <!-- Overlay oscuro -->
-    <div class="carousel-overlay"></div>
+    <div class="carousel-overlay" [class.adjusting-overlay]="adjustingPosition"
+      [style.pointer-events]="adjustingPosition ? 'none' : 'auto'"></div>
 
     <!-- Fallback cuando no hay imagenes -->
     @if (imagenes.length === 0) {
       <div class="carousel-slide-blur active" [ngStyle]="{ 'background-image': 'url(' + (data?.imagen || '') + ')' }">
       </div>
-      <div class="carousel-slide active" [ngStyle]="{ 'background-image': 'url(' + (data?.imagen || '') + ')' }"></div>
-      <div class="carousel-overlay"></div>
+      <div class="carousel-slide active" [ngStyle]="{
+        'background-image': 'url(' + (data?.imagen || '') + ')',
+        'background-position': imagenPosicion
+      }"></div>
+      <div class="carousel-overlay" [class.adjusting-overlay]="adjustingPosition"
+        [style.pointer-events]="adjustingPosition ? 'none' : 'auto'"></div>
+    }
+
+    <!-- Crosshair para ajuste de posición -->
+    @if (adjustingPosition) {
+      <div class="focal-crosshair" [ngStyle]="{
+        'left': imagenPosicion.split(' ')[0],
+        'top': imagenPosicion.split(' ')[1]
+      }">
+        <div class="crosshair-ring"></div>
+        <div class="crosshair-dot"></div>
+      </div>
     }
   </div>
+
+  <!-- Botones de edición de imagen -->
   @if (!isReadOnly) {
-    <div class="editImage">
-      @if (!loadingImg) {
+    <div class="editImage" [class.hidden-for-adjust]="adjustingPosition">
+      @if (!loadingImg && !adjustingPosition) {
         <img src="../../../../assets/editarImagen2.png" class="edit-imagePortada-btn" alt=""
           title="Click para editar imagen de fondo" (click)="triggerImageUpload()">
       }
@@ -33,9 +52,28 @@
         <div class="loaderPortada"></div>
       }
     </div>
+    <!-- Botón de ajustar posición -->
+    @if (!loadingImg && (imagenes.length > 0 || data?.imagen)) {
+      <div class="position-controls">
+        @if (!adjustingPosition) {
+          <button class="position-adjust-btn" (click)="togglePositionAdjust()" title="Centrar imagen">
+            <span class="position-icon">⊕</span>
+            <span class="position-label">Centrar</span>
+          </button>
+        } @else {
+          <div class="position-adjust-panel">
+            <p class="adjust-hint">Toca donde quieres el punto focal de tu imagen</p>
+            <div class="adjust-actions">
+              <button class="adjust-save-btn" (click)="savePosition()">✓ Guardar</button>
+              <button class="adjust-cancel-btn" (click)="cancelPositionAdjust()">✕ Cancelar</button>
+            </div>
+          </div>
+        }
+      </div>
+    }
   }
 
-  <div class="text-center">
+  <div class="text-center" [class.hidden-for-adjust]="adjustingPosition">
     <div class="display-t">
       <div class="display-tc">
         <!-- Título -->

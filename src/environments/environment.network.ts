@@ -7,7 +7,7 @@ export const environment = {
   identityApiUrl: 'http://192.168.1.20:53056',   // Identity      → --launch-profile network
   googleClientId: '579973959669-m41nol7osd3i1rvdb1fhhm5p4alnh71o.apps.googleusercontent.com',
   appId: 1605,
-  homeUrl: 'https://gas-dating-compressed-communities.trycloudflare.com',   // Cloudflare Tunnel
+  homeUrl: 'https://changes-baking-encouraging-lodge.trycloudflare.com',   // Cloudflare Tunnel
   recaptchaSiteKey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
   pageSize: 10
 };

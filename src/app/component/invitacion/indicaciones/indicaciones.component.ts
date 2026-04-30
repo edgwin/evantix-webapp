@@ -1,5 +1,5 @@
-﻿import { Component, Input, HostListener } from '@angular/core';
-
+import { Component, Input, HostListener } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { AiEditableDirective } from '../../../directives/ai-editable.directive';
@@ -7,9 +7,9 @@ import { TemplateService } from '../../../services/template.service';
 
 @Component({
     selector: 'app-indicaciones',
-    imports: [AiEditableDirective],
+    imports: [CommonModule, AiEditableDirective],
     templateUrl: './indicaciones.component.html',
-    styleUrl: './indicaciones.component.css'
+    styleUrls: ['./indicaciones.component.css', './../focal-point.css']
 })
 export class IndicacionesComponent {
   constructor(private invitationService: InvitationService, private notificationService: NotificationService,
@@ -22,6 +22,8 @@ export class IndicacionesComponent {
   tempDescripcionMap: { [id: string]: string } = {};
   editingDescription: boolean = false;
   tempTitle: string = '';
+  imagenPosicion: string = '50% 50%';
+  adjustingPosition: boolean = false;
   @Input() eventId: string = '';
   @Input() data: any;
   @Input() eventType: string = '';
@@ -46,6 +48,7 @@ export class IndicacionesComponent {
     this.invitationService.getInvitacionIndicaciones(this.eventId).subscribe({
       next: (res) => {
         this.data = res;
+        this.imagenPosicion = this.data?.imagenPosicion || '50% 50%';
         this.loading = false;
       },
       error: (err) => {
@@ -56,6 +59,35 @@ export class IndicacionesComponent {
         this.loading = false;
       }
     });
+  }
+
+  ngOnInit() {
+    this.imagenPosicion = this.data?.imagenPosicion || '50% 50%';
+  }
+
+  // --- Focal point adjustment ---
+  togglePositionAdjust() {
+    this.adjustingPosition = !this.adjustingPosition;
+  }
+
+  onImagePositionClick(event: MouseEvent) {
+    if (!this.adjustingPosition) return;
+    const target = event.currentTarget as HTMLElement;
+    const rect = target.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 100;
+    const y = ((event.clientY - rect.top) / rect.height) * 100;
+    this.imagenPosicion = `${Math.round(x)}% ${Math.round(y)}%`;
+  }
+
+  savePosition() {
+    this.adjustingPosition = false;
+    this.updateBackend('IndicacionesMaster', 'IdEvento', this.eventId, 'ImagenPosicion', this.imagenPosicion);
+    this.notificationService.show('success', 'Posición de imagen guardada');
+  }
+
+  cancelPositionAdjust() {
+    this.adjustingPosition = false;
+    this.imagenPosicion = this.data?.imagenPosicion || '50% 50%';
   }
 
   onClickTitulo(id: string) {

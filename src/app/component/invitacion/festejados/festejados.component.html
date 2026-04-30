@@ -1,4 +1,4 @@
-﻿@if (!loading) {
+@if (!loading) {
 <section class="festejados-section" [ngStyle]="{
     'background-image': 'url(' + templateService.getMarbleBackground() + ')',
     'background-size': 'cover',
@@ -12,11 +12,33 @@
           <div class="frame-decoration top-right"></div>
           <div class="frame-decoration bottom-left"></div>
           <div class="frame-decoration bottom-right"></div>
-          <img [src]="data.imagen" alt="Festejados" appDisableDownload class="festejados-image">
-          @if (!loadingImg && !isReadOnly) {
+          <div class="festejados-image-container" (click)="onImagePositionClick($event)"
+            [class.adjusting]="adjustingPosition">
+            <img [src]="data.imagen" alt="Festejados" appDisableDownload class="festejados-image"
+              [ngStyle]="{ 'object-position': imagenPosicion, 'pointer-events': adjustingPosition ? 'none' : 'auto' }">
+            <!-- Crosshair para ajuste de posición -->
+            @if (adjustingPosition) {
+              <div class="focal-crosshair-festejados" [ngStyle]="{
+                'left': imagenPosicion.split(' ')[0],
+                'top': imagenPosicion.split(' ')[1]
+              }">
+                <div class="crosshair-ring"></div>
+                <div class="crosshair-dot"></div>
+              </div>
+            }
+          </div>
+          @if (!loadingImg && !isReadOnly && !adjustingPosition) {
             <button class="edit-image-btn" (click)="triggerImageUpload()" title="Cambiar imagen"
               >
               <img src="assets/editarImagen.png" alt="editar">
+            </button>
+          }
+          @if (!loadingImg && !isReadOnly && data.imagen) {
+            <button class="position-adjust-btn-festejados"
+              [class.active]="adjustingPosition"
+              (click)="adjustingPosition ? undefined : togglePositionAdjust()"
+              title="Centrar imagen">
+              <span class="position-icon-small">⊕</span>
             </button>
           }
           @if (loadingImg) {
@@ -25,6 +47,16 @@
             </div>
           }
         </div>
+        <!-- Panel de ajuste de posición -->
+        @if (adjustingPosition) {
+          <div class="position-adjust-panel-festejados">
+            <p class="adjust-hint">Toca la imagen donde deseas el punto focal</p>
+            <div class="adjust-actions">
+              <button class="adjust-save-btn" (click)="savePosition()">✓ Guardar</button>
+              <button class="adjust-cancel-btn" (click)="cancelPositionAdjust()">✕ Cancelar</button>
+            </div>
+          </div>
+        }
       </div>
       <div class="frase-container">
         <span class="quote-icon left">"</span>

@@ -476,3 +476,201 @@
     font-size: 13px;
   }
 }
+/* ============================================
+   Focal Point Position Adjuster
+   ============================================ */
+.position-controls {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 20;
+}
+
+.position-adjust-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-family: var(--body-font, 'Work Sans', Arial, sans-serif);
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  border-radius: 24px;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.position-adjust-btn:hover {
+  background: rgba(0, 0, 0, 0.75);
+  border-color: rgba(255, 255, 255, 0.7);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.position-icon {
+  font-size: 16px;
+}
+
+.position-label {
+  font-size: 12px;
+}
+
+.position-adjust-panel {
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  padding: 16px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  min-width: 260px;
+  animation: panelSlideIn 0.3s ease-out;
+}
+
+@keyframes panelSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.adjust-hint {
+  margin: 0 0 14px 0;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.4;
+  font-family: var(--body-font, 'Work Sans', Arial, sans-serif);
+}
+
+.adjust-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.adjust-save-btn,
+.adjust-cancel-btn {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--body-font, 'Work Sans', Arial, sans-serif);
+}
+
+.adjust-save-btn {
+  background: #4CAF50;
+  color: #fff;
+}
+
+.adjust-save-btn:hover {
+  background: #45a049;
+  transform: translateY(-1px);
+}
+
+.adjust-cancel-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.adjust-cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Crosshair indicator */
+.focal-crosshair {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 15;
+  pointer-events: none;
+}
+
+.crosshair-ring {
+  width: 48px;
+  height: 48px;
+  border: 2.5px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3),
+              inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+  animation: crosshairPulse 2s ease-in-out infinite;
+}
+
+@keyframes crosshairPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
+}
+
+.crosshair-dot {
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+}
+
+/* Adjusting overlay - reduce darkness to see image better */
+.adjusting-overlay {
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.15) 0%,
+      rgba(0, 0, 0, 0.1) 50%,
+      rgba(0, 0, 0, 0.15) 100%) !important;
+  cursor: crosshair !important;
+}
+
+/* When adjusting, the carousel container should show crosshair cursor */
+.carousel-container:has(.adjusting-overlay) {
+  cursor: crosshair;
+}
+
+@media screen and (max-width: 480px) {
+  .position-adjust-panel {
+    min-width: 220px;
+    padding: 14px 16px;
+  }
+
+  .adjust-hint {
+    font-size: 13px;
+  }
+
+  .position-controls {
+    left: 5px;
+    top: 5px;
+  }
+}
+
+/* ============================================
+   Adjusting Mode - pointer events fix
+   ============================================ */
+/* Hide text content overlay when adjusting focal point */
+.hidden-for-adjust {
+  pointer-events: none !important;
+  opacity: 0.15 !important;
+  transition: opacity 0.3s ease;
+}
+
+/* Make carousel slides transparent to clicks during adjustment */
+.carousel-container .carousel-slide,
+.carousel-container .carousel-slide-blur {
+  pointer-events: none;
+}

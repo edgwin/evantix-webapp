@@ -1,10 +1,11 @@
-﻿<section class="indicaciones-section">
-  <div class="background-image" [style.background-image]="'url(' + data.imagen + ')'"></div>
-  <div class="background-overlay"></div>
+<section class="indicaciones-section" (click)="onImagePositionClick($event)"
+  [class.adjusting-mode]="adjustingPosition">
+  <div class="background-image" [ngStyle]="{'background-image': 'url(' + data.imagen + ')', 'background-position': imagenPosicion}"></div>
+  <div class="background-overlay" [style.pointer-events]="adjustingPosition ? 'none' : 'auto'"></div>
 
   @if (!isReadOnly) {
-  <div class="editImage">
-    @if (!loadingImg) {
+  <div class="editImage" [class.hidden-for-adjust]="adjustingPosition">
+    @if (!loadingImg && !adjustingPosition) {
     <img src="../../../../assets/editarImagen.png" class="edit-imageIndicaciones-btn" alt=""
       title="Click para editar imagen de fondo" (click)="triggerImageUpload()">
     }
@@ -12,6 +13,35 @@
     <div class="loaderPortada"></div>
     }
   </div>
+
+  <!-- Botón de ajustar posición -->
+  @if (!loadingImg && data?.imagen) {
+    <div class="position-controls-bg">
+      @if (!adjustingPosition) {
+        <button class="position-adjust-btn-bg" (click)="togglePositionAdjust()" title="Centrar imagen">
+          <span class="position-icon">⊕</span>
+          <span class="position-label">Centrar</span>
+        </button>
+      } @else {
+        <div class="adjust-hint">Toca donde quieres el punto focal</div>
+        <div class="adjust-actions">
+          <button class="adjust-save-btn" (click)="savePosition()">✓ Guardar</button>
+          <button class="adjust-cancel-btn" (click)="cancelPositionAdjust()">✕ Cancelar</button>
+        </div>
+      }
+    </div>
+  }
+  }
+
+  <!-- Crosshair para ajuste -->
+  @if (adjustingPosition) {
+    <div class="focal-crosshair" [ngStyle]="{
+      'left': imagenPosicion.split(' ')[0],
+      'top': imagenPosicion.split(' ')[1]
+    }">
+      <div class="crosshair-ring"></div>
+      <div class="crosshair-dot"></div>
+    </div>
   }
 
   <div class="indicaciones-content">

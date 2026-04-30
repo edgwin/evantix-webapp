@@ -1,5 +1,5 @@
-﻿import { Component, HostListener, Input } from '@angular/core';
-
+import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { FormsModule } from '@angular/forms';
@@ -8,12 +8,12 @@ import { AiEditableDirective } from '../../../directives/ai-editable.directive';
 
 @Component({
     selector: 'app-mesa-regalos',
-    imports: [FormsModule, PopupHtmlComponent, AiEditableDirective],
+    imports: [CommonModule, FormsModule, PopupHtmlComponent, AiEditableDirective],
     templateUrl: './mesa-regalos.component.html',
-    styleUrls: ['./mesa-regalos.component.css', './../invitacion.component.css']
+    styleUrls: ['./mesa-regalos.component.css', './../invitacion.component.css', './../focal-point.css']
 })
 
-export class MesaRegalosComponent {
+export class MesaRegalosComponent implements OnInit {
   constructor(private invitationService: InvitationService, private notificationService: NotificationService) { }
 
   @Input() eventId: string = '';
@@ -29,9 +29,12 @@ export class MesaRegalosComponent {
   showPopup = false;
   loading = false;
   loadingImg: boolean = false;
+  imagenPosicion: string = '50% 50%';
+  adjustingPosition: boolean = false;
 
   ngOnInit(): void {
     this.loadImages();
+    this.imagenPosicion = this.data?.imagenPosicion || '50% 50%';
   }
 
   gotoUrl(url: string) {
@@ -45,6 +48,7 @@ export class MesaRegalosComponent {
     this.invitationService.getMesaRegalos(this.eventId).subscribe({
       next: (res) => {
         this.data = res;
+        this.imagenPosicion = this.data?.imagenPosicion || '50% 50%';
         this.loading = false;
       },
       error: (err) => {
@@ -88,6 +92,31 @@ export class MesaRegalosComponent {
     });
   }
 
+  // --- Focal point adjustment ---
+  togglePositionAdjust() {
+    this.adjustingPosition = !this.adjustingPosition;
+  }
+
+  onImagePositionClick(event: MouseEvent) {
+    if (!this.adjustingPosition) return;
+    const target = event.currentTarget as HTMLElement;
+    const rect = target.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 100;
+    const y = ((event.clientY - rect.top) / rect.height) * 100;
+    this.imagenPosicion = `${Math.round(x)}% ${Math.round(y)}%`;
+  }
+
+  savePosition() {
+    this.adjustingPosition = false;
+    this.updateBackend('MesaRegalosMaster', 'IdEvento', this.eventId, 'ImagenPosicion', this.imagenPosicion);
+    this.notificationService.show('success', 'Posición de imagen guardada');
+  }
+
+  cancelPositionAdjust() {
+    this.adjustingPosition = false;
+    this.imagenPosicion = this.data?.imagenPosicion || '50% 50%';
+  }
+
   onKeyDown(event: Event | any, maxLength: number) {
     const el = event.target as HTMLElement;
     const text = el.innerText || '';
@@ -107,19 +136,16 @@ export class MesaRegalosComponent {
     const target = event.target as HTMLElement | HTMLInputElement;
     let newText: string;
 
-    // Detectamos si el elemento es un input o un elemento editable
     if (target instanceof HTMLInputElement) {
       newText = target.value.trim();
     } else {
       newText = target.innerText.replace(/\n/g, '<br>').trim();
     }
 
-    // Si el campo no ha cambiado, salimos
     if (newText === this.tempTituloMap[eventId]) {
       return;
     }
 
-    // Definimos qué campo se va a modificar
     let modifyField = '';
     switch (field) {
       case 'titulo':
@@ -136,7 +162,6 @@ export class MesaRegalosComponent {
         return;
     }
 
-    // Llamamos al backend
     this.updateBackend('MesaRegalosDetail', 'Id', eventId, modifyField, newText);
   }
 
@@ -160,14 +185,14 @@ export class MesaRegalosComponent {
     this.editingTituloId = id;
     const item = this.data.details.find((d: { id: string }) => d.id === id);
     if (item) {
-      this.tempTituloMap[id] = item.titulo; // 🔹 Guardamos el valor original
+      this.tempTituloMap[id] = item.titulo;
     }
   }
 
   restoreTitulo(item: any, element: HTMLElement) {
     const original = this.tempTituloMap[item.id];
     if (original !== undefined) {
-      element.innerText = original; // restaurar en la UI
+      element.innerText = original;
     }
     this.editingTituloId = null;
     element.blur();
@@ -176,7 +201,7 @@ export class MesaRegalosComponent {
   restoreDescripcion(item: any, element: HTMLElement) {
     const original = this.tempDescripcionMap[item.id];
     if (original !== undefined) {
-      element.innerText = original; // restaurar en la UI
+      element.innerText = original;
     }
     this.editingDescripcionId = null;
     element.blur();
@@ -186,7 +211,7 @@ export class MesaRegalosComponent {
     this.editingDescripcionId = id;
     const item = this.data.details.find((d: { id: string }) => d.id === id);
     if (item) {
-      this.tempDescripcionMap[id] = item.descripcion; // 🔹 Guardamos el valor original
+      this.tempDescripcionMap[id] = item.descripcion;
     }
   }
 

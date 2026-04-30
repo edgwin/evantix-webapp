@@ -1,10 +1,10 @@
 export const environment = {
   production: false,
-  coreApiUrl: 'https://partially-thoughts-english-undertake.trycloudflare.com',
-  identityApiUrl: 'http://localhost:53056',
+  coreApiUrl: 'https://mall-kerry-intro-incident.trycloudflare.com',
+  identityApiUrl: 'https://hockey-does-atlas-reservations.trycloudflare.com',
   googleClientId: '579973959669-m41nol7osd3i1rvdb1fhhm5p4alnh71o.apps.googleusercontent.com',
   appId: 1605,
-  homeUrl: 'https://default-march-riding-switch.trycloudflare.com',
+  homeUrl: 'https://conference-para-scenario-creates.trycloudflare.com',
   recaptchaSiteKey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
   pageSize: 10
 };

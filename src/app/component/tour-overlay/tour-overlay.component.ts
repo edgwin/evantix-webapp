@@ -22,6 +22,7 @@ export class TourOverlayComponent implements OnInit, OnDestroy {
   showSpotlight = false;
 
   private subs: Subscription[] = [];
+  private activeScrollContainer: HTMLElement | null = null;
 
   constructor(public tourService: TourService) {}
 
@@ -78,40 +79,63 @@ export class TourOverlayComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Temporarily allow scrolling so scrollIntoView works
+    // Find the scrollable container (e.g., .inv-scroll-container) or fall back to window
+    const scrollContainer = this.getScrollableAncestor(target);
+    this.activeScrollContainer = scrollContainer;
+
+    // Temporarily allow scrolling so scrollTo works
     document.body.style.overflow = '';
-
-    // Scroll element into view with offset based on where tooltip will appear
-    // If tooltip goes above → scroll element to lower part of viewport
-    // If tooltip goes below → scroll element to upper part of viewport
-    const elementRect = target.getBoundingClientRect();
-    const elementAbsoluteTop = elementRect.top + window.scrollY;
-    const vh = window.innerHeight;
-    let scrollTarget: number;
-
-    if (step.position === 'top') {
-      // Tooltip above: place element at ~65% of viewport height
-      scrollTarget = elementAbsoluteTop - vh * 0.65;
-    } else {
-      // Tooltip below: place element at ~25% of viewport height
-      scrollTarget = elementAbsoluteTop - vh * 0.25;
+    if (scrollContainer) {
+      scrollContainer.style.overflow = 'auto';
     }
 
-    window.scrollTo({ top: Math.max(0, scrollTarget), behavior: 'smooth' });
+    // Calculate scroll position
+    const vh = window.innerHeight;
+
+    if (scrollContainer) {
+      // Scroll inside the custom container
+      const containerRect = scrollContainer.getBoundingClientRect();
+      const elementRect = target.getBoundingClientRect();
+      const elementOffsetInContainer = elementRect.top - containerRect.top + scrollContainer.scrollTop;
+      let scrollTarget: number;
+
+      if (step.position === 'top') {
+        scrollTarget = elementOffsetInContainer - vh * 0.65;
+      } else {
+        scrollTarget = elementOffsetInContainer - vh * 0.25;
+      }
+
+      scrollContainer.scrollTo({ top: Math.max(0, scrollTarget), behavior: 'smooth' });
+    } else {
+      // Fall back to window scroll
+      const elementRect = target.getBoundingClientRect();
+      const elementAbsoluteTop = elementRect.top + window.scrollY;
+      let scrollTarget: number;
+
+      if (step.position === 'top') {
+        scrollTarget = elementAbsoluteTop - vh * 0.65;
+      } else {
+        scrollTarget = elementAbsoluteTop - vh * 0.25;
+      }
+
+      window.scrollTo({ top: Math.max(0, scrollTarget), behavior: 'smooth' });
+    }
 
     // Wait for scroll to settle, then position
-    this.waitForScrollEnd(() => {
-      // Re-lock scroll
+    this.waitForScrollEnd(scrollContainer, () => {
+      // Re-lock body scroll (the tour overlay prevents user interaction anyway)
       document.body.style.overflow = 'hidden';
       this.applyPosition(target, step.position);
     });
   }
 
-  private waitForScrollEnd(callback: () => void): void {
-    let lastScrollY = window.scrollY;
+  private waitForScrollEnd(scrollContainer: HTMLElement | null, callback: () => void): void {
+    const getScrollY = () => scrollContainer ? scrollContainer.scrollTop : window.scrollY;
+    let lastScrollY = getScrollY();
     let stableCount = 0;
     const check = () => {
-      if (window.scrollY === lastScrollY) {
+      const currentY = getScrollY();
+      if (currentY === lastScrollY) {
         stableCount++;
         if (stableCount >= 3) {
           // Scroll has settled
@@ -120,12 +144,26 @@ export class TourOverlayComponent implements OnInit, OnDestroy {
         }
       } else {
         stableCount = 0;
-        lastScrollY = window.scrollY;
+        lastScrollY = currentY;
       }
       requestAnimationFrame(check);
     };
     // Start checking after a brief delay to let scroll begin
     setTimeout(() => check(), 100);
+  }
+
+  /** Find the nearest scrollable ancestor (e.g., .inv-scroll-container) */
+  private getScrollableAncestor(el: HTMLElement): HTMLElement | null {
+    let current: HTMLElement | null = el.parentElement;
+    while (current && current !== document.body) {
+      const style = window.getComputedStyle(current);
+      const overflowY = style.overflowY;
+      if ((overflowY === 'auto' || overflowY === 'scroll') && current.scrollHeight > current.clientHeight) {
+        return current;
+      }
+      current = current.parentElement;
+    }
+    return null;
   }
 
   private applyPosition(target: HTMLElement, preferredPosition: 'top' | 'bottom' | 'left' | 'right'): void {

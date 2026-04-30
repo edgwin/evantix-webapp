@@ -1,5 +1,6 @@
-﻿
-import { Component, Input } from '@angular/core';
+
+import { Component, Input, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -8,11 +9,11 @@ import { TemplateService } from '../../../services/template.service';
 
 @Component({
     selector: 'app-hospedaje',
-    imports: [],
+    imports: [CommonModule],
     templateUrl: './hospedaje.component.html',
-    styleUrls: ['./hospedaje.component.css', './../invitacion.component.css']
+    styleUrls: ['./hospedaje.component.css', './../invitacion.component.css', './../focal-point.css']
 })
-export class HospedajeComponent {
+export class HospedajeComponent implements OnInit {
   constructor(private invitationService: InvitationService, private notificationService: NotificationService,
     private dialog: MatDialog, public templateService: TemplateService) { }
   @Input() eventId: string = '';
@@ -25,6 +26,12 @@ export class HospedajeComponent {
   editingTituloId: string | null = null;
   editingDescripcionId: string | null = null;
   tempDescripcionMap: { [id: string]: string } = {};
+  imagenPosicion: string = '50% 50%';
+  adjustingPosition: boolean = false;
+
+  ngOnInit(): void {
+    this.imagenPosicion = this.data?.imagenPosicion || '50% 50%';
+  }
 
   // --- edición de imagen ---
   triggerImageUpload() {
@@ -57,6 +64,31 @@ export class HospedajeComponent {
     });
   }
 
+  // --- Focal point adjustment ---
+  togglePositionAdjust() {
+    this.adjustingPosition = !this.adjustingPosition;
+  }
+
+  onImagePositionClick(event: MouseEvent) {
+    if (!this.adjustingPosition) return;
+    const target = event.currentTarget as HTMLElement;
+    const rect = target.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 100;
+    const y = ((event.clientY - rect.top) / rect.height) * 100;
+    this.imagenPosicion = `${Math.round(x)}% ${Math.round(y)}%`;
+  }
+
+  savePosition() {
+    this.adjustingPosition = false;
+    this.updateBackend('HospedajeMaster', 'IdEvento', this.eventId, 'ImagenPosicion', this.imagenPosicion);
+    this.notificationService.show('success', 'Posición de imagen guardada');
+  }
+
+  cancelPositionAdjust() {
+    this.adjustingPosition = false;
+    this.imagenPosicion = this.data?.imagenPosicion || '50% 50%';
+  }
+
   triggerElementDelete(hospedajeId: string) {
     this.invitationService.deleteHospedaje(hospedajeId).subscribe({
       next: () => {
@@ -79,6 +111,7 @@ export class HospedajeComponent {
     this.invitationService.getHospedaje(this.eventId).subscribe({
       next: (res) => {
         this.data = res;
+        this.imagenPosicion = this.data?.imagenPosicion || '50% 50%';
         this.loading = false;
       },
       error: (err) => {
@@ -95,7 +128,6 @@ export class HospedajeComponent {
     const el = event.target as HTMLElement;
     const text = el.innerText || '';
 
-    // permite borrar, mover cursor, etc.
     const controlKeys = [
       'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight',
       'ArrowUp', 'ArrowDown', 'Tab'
@@ -110,14 +142,12 @@ export class HospedajeComponent {
     const target = event.target as HTMLElement | HTMLInputElement;
     let newText: string;
 
-    // Detectamos si el elemento es un input o un elemento editable
     if (target instanceof HTMLInputElement) {
       newText = target.value.trim();
     } else {
       newText = target.innerText.replace(/\n/g, '<br>').trim();
     }
 
-    // Definimos qué campo se va a modificar
     let modifyField = '';
     switch (field) {
       case 'nombre':
@@ -131,7 +161,6 @@ export class HospedajeComponent {
         return;
     }
 
-    // Llamamos al backend
     this.updateBackend('HospedajeDetail', 'Id', eventId, modifyField, newText);
   }
 
@@ -155,14 +184,14 @@ export class HospedajeComponent {
     this.editingTituloId = id;
     const item = this.data.details.find((d: { id: string }) => d.id === id);
     if (item) {
-      this.tempTituloMap[id] = item.titulo; // 🔹 Guardamos el valor original
+      this.tempTituloMap[id] = item.titulo;
     }
   }
 
   restoreTitulo(item: any, element: HTMLElement) {
     const original = this.tempTituloMap[item.id];
     if (original !== undefined) {
-      element.innerText = original; // restaurar en la UI
+      element.innerText = original;
     }
     this.editingTituloId = null;
     element.blur();
@@ -171,7 +200,7 @@ export class HospedajeComponent {
   restoreDescripcion(item: any, element: HTMLElement) {
     const original = this.tempDescripcionMap[item.id];
     if (original !== undefined) {
-      element.innerText = original; // restaurar en la UI
+      element.innerText = original;
     }
     this.editingDescripcionId = null;
     element.blur();
@@ -181,7 +210,7 @@ export class HospedajeComponent {
     this.editingDescripcionId = id;
     const item = this.data.details.find((d: { id: string }) => d.id === id);
     if (item) {
-      this.tempDescripcionMap[id] = item.descripcion; // 🔹 Guardamos el valor original
+      this.tempDescripcionMap[id] = item.descripcion;
     }
   }
 

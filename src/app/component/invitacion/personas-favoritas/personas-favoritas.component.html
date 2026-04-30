@@ -1,4 +1,4 @@
-﻿<section class="personas-favoritas-section">
+<section class="personas-favoritas-section">
   <div class="section-content">
     <div class="section-header">
       <span class="header-decoration-line"></span>
@@ -27,12 +27,40 @@
             <img [src]="prevImg()" alt="prev" class="side-img" appDisableDownload>
           </div>
           <div class="center">
-            <div class="center-image-wrapper">
-              <img [src]="currentImg()" alt="current" class="center-img" appDisableDownload>
-              @if (!isReadOnly) {
+            <div class="center-image-wrapper" (click)="onImagePositionClick($event)"
+              [class.adjusting-mode]="adjustingPositionId === currentId()">
+              <img [src]="currentImg()" alt="current" class="center-img" appDisableDownload
+                [ngStyle]="{'object-position': getCurrentImagenPosicion()}">
+              @if (!isReadOnly && adjustingPositionId !== currentId()) {
                 <button class="edit-btn" (click)="onOpenPopup()" title="Editar" id="tour-edit-data">
                   <img src="assets/editData.png" alt="editar">
                 </button>
+              }
+
+              @if (adjustingPositionId === currentId()) {
+                <div class="focal-crosshair" [ngStyle]="{
+                  'left': getCurrentImagenPosicion().split(' ')[0],
+                  'top': getCurrentImagenPosicion().split(' ')[1]
+                }">
+                  <div class="crosshair-ring"></div>
+                  <div class="crosshair-dot"></div>
+                </div>
+              }
+
+              <!-- Per-person focal point controls -->
+              @if (!isReadOnly && currentImg()) {
+                <div class="position-controls-item" style="position:absolute;bottom:8px;left:8px;z-index:10;">
+                  @if (adjustingPositionId !== currentId()) {
+                    <button class="position-adjust-btn-bg position-adjust-btn-sm" (click)="togglePositionAdjust(); $event.stopPropagation()" title="Centrar imagen">
+                      <span class="position-icon">⊕</span>
+                    </button>
+                  } @else {
+                    <div class="adjust-actions-compact">
+                      <button class="adjust-save-btn" (click)="savePosition(); $event.stopPropagation()">✓</button>
+                      <button class="adjust-cancel-btn" (click)="cancelPositionAdjust(); $event.stopPropagation()">✕</button>
+                    </div>
+                  }
+                </div>
               }
             </div>
           </div>

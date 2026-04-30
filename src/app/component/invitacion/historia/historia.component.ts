@@ -1,4 +1,4 @@
-﻿import { Component, HostListener, Input } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { CommonModule } from '@angular/common';
@@ -9,9 +9,9 @@ import { AiEditableDirective } from '../../../directives/ai-editable.directive';
     selector: 'app-historia',
     imports: [CommonModule, DisableDownloadDirective, AiEditableDirective],
     templateUrl: './historia.component.html',
-    styleUrls: ['./../invitacion.component.css', './historia.component.css']
+    styleUrls: ['./../invitacion.component.css', './historia.component.css', './../focal-point.css']
 })
-export class HistoriaComponent {
+export class HistoriaComponent implements OnInit {
   constructor(private invitationService: InvitationService, private notificationService: NotificationService) { }
 
   @Input() dataHistoria: any;
@@ -30,6 +30,57 @@ export class HistoriaComponent {
   editingDescHistoriaId: string | null = null;
   tempDescHistoriaMap: { [id: string]: string } = {};
 
+  // Focal point per item
+  adjustingPositionId: string | null = null;  // ID of item being adjusted
+  imagenPosiciones: { [id: string]: string } = {};  // Positions per item
+
+  ngOnInit(): void {
+    this.initPositions();
+  }
+
+  private initPositions() {
+    if (this.dataHistoria?.details) {
+      for (const item of this.dataHistoria.details) {
+        this.imagenPosiciones[item.id] = item.imagenPosicion || '50% 50%';
+      }
+    }
+  }
+
+  getImagenPosicion(id: string): string {
+    return this.imagenPosiciones[id] || '50% 50%';
+  }
+
+  togglePositionAdjust(id: string) {
+    if (this.adjustingPositionId === id) {
+      this.adjustingPositionId = null;
+    } else {
+      this.adjustingPositionId = id;
+    }
+  }
+
+  onImagePositionClick(event: MouseEvent, id: string) {
+    if (this.adjustingPositionId !== id) return;
+    event.stopPropagation();
+    const target = event.currentTarget as HTMLElement;
+    const rect = target.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 100;
+    const y = ((event.clientY - rect.top) / rect.height) * 100;
+    this.imagenPosiciones[id] = `${Math.round(x)}% ${Math.round(y)}%`;
+  }
+
+  savePosition(id: string) {
+    const pos = this.imagenPosiciones[id] || '50% 50%';
+    this.adjustingPositionId = null;
+    this.updateBackend('HistoriaDetail', 'Id', id, 'ImagenPosicion', pos);
+    this.notificationService.show('success', 'Posición de imagen guardada');
+  }
+
+  cancelPositionAdjust(id: string) {
+    this.adjustingPositionId = null;
+    const item = this.dataHistoria?.details?.find((d: any) => d.id === id);
+    this.imagenPosiciones[id] = item?.imagenPosicion || '50% 50%';
+  }
+
   cargarDatosHistoria() {
     this.loading = true;
     if (!this.eventId) return;
@@ -37,6 +88,7 @@ export class HistoriaComponent {
     this.invitationService.getHistoria(this.eventId).subscribe({
       next: (res) => {
         this.dataHistoria = res;
+        this.initPositions();
         this.loading = false;
       },
       error: (err) => {
@@ -51,14 +103,13 @@ export class HistoriaComponent {
 
   onClickTituloHistoria() {
     this.editingTituloHistoria = true;
-    this.tempTituloHistoria = this.dataHistoria.titulo; // 🔹 Guardamos el valor original
+    this.tempTituloHistoria = this.dataHistoria.titulo;
   }
 
   onTituloHistoriaBlur(event: Event) {
     const el = event.target as HTMLElement;
     const nuevoTexto = el.innerText.trim();
 
-    // si cambió, guardamos y llamamos backend
     if (nuevoTexto !== this.dataHistoria.titulo) {
       this.dataHistoria.titulo = nuevoTexto;
       this.updateBackend('HistoriaMaster', 'IdEvento', this.eventId, 'Titulo', this.dataHistoria.titulo);
@@ -86,20 +137,18 @@ export class HistoriaComponent {
     const el = event.target as HTMLElement;
     const nuevoTexto = el.innerText.trim();
 
-    // si cambió, guardamos y llamamos backend
     if (nuevoTexto !== item.fecha) {
       item.fecha = nuevoTexto;
       this.updateBackend('HistoriaDetail', 'Id', item.id, 'Fecha', nuevoTexto);
     }
 
-    // salimos del modo edición
     this.editingFechaHistoriaId = null;
   }
 
   restoreFechaHistoria(item: any, element: HTMLElement) {
     const original = this.tempFechaHistoriaMap[item.id];
     if (original !== undefined) {
-      element.innerText = original; // restaurar en la UI
+      element.innerText = original;
     }
     this.editingFechaHistoriaId = null;
     element.blur();
@@ -117,20 +166,18 @@ export class HistoriaComponent {
     const el = event.target as HTMLElement;
     const nuevoTexto = el.innerText.trim();
 
-    // si cambió, guardamos y llamamos backend
     if (nuevoTexto !== item.fecha) {
       item.descripcion = nuevoTexto;
       this.updateBackend('HistoriaDetail', 'Id', item.id, 'Descripcion', nuevoTexto);
     }
 
-    // salimos del modo edición
     this.editingDescHistoriaId = null;
   }
 
   restoreDescHistoria(item: any, element: HTMLElement) {
     const original = this.tempDescHistoriaMap[item.id];
     if (original !== undefined) {
-      element.innerText = original; // restaurar en la UI
+      element.innerText = original;
     }
     this.editingDescHistoriaId = null;
     element.blur();
@@ -226,20 +273,19 @@ export class HistoriaComponent {
     const key = (event as KeyboardEvent).key;
     if (key === 'Enter' && !(event as KeyboardEvent).shiftKey) {
       event.preventDefault();
-      (event.target as HTMLElement).blur(); // dispara onActividadBlur y guarda
+      (event.target as HTMLElement).blur();
       return;
     }
     const el = event.target as HTMLElement;
     const text = el.innerText || '';
 
-    // permite borrar, mover cursor, etc.
     const controlKeys = [
       'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight',
       'ArrowUp', 'ArrowDown', 'Tab'
     ];
 
     if (text.length >= maxLength && !controlKeys.includes(event.key)) {
-      event.preventDefault(); // bloquea más escritura
+      event.preventDefault();
     }
     (event.target as HTMLElement).click();
   }

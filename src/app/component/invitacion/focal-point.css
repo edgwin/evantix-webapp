@@ -1,0 +1,192 @@
+/* ============================================
+   Shared Focal Point Adjustment Styles
+   For background-image sections
+   ============================================ */
+
+/* Position controls container */
+.position-controls-bg {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Centrar button */
+.position-adjust-btn-bg {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.position-adjust-btn-bg:hover {
+  background: rgba(0, 0, 0, 0.85);
+  transform: scale(1.05);
+}
+
+.position-adjust-btn-bg .position-icon {
+  font-size: 14px;
+}
+
+/* Hint text */
+.adjust-hint {
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  white-space: nowrap;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Save/Cancel buttons */
+.adjust-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.adjust-save-btn,
+.adjust-cancel-btn {
+  padding: 5px 12px;
+  border: none;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.adjust-save-btn {
+  background: #22c55e;
+  color: #fff;
+}
+
+.adjust-save-btn:hover {
+  background: #16a34a;
+}
+
+.adjust-cancel-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.adjust-cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Crosshair indicator */
+.focal-crosshair {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 15;
+  pointer-events: none;
+}
+
+.crosshair-ring {
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  animation: pulseRing 1.5s ease-in-out infinite;
+}
+
+.crosshair-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
+}
+
+@keyframes pulseRing {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.7; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Hide elements during adjustment */
+.hidden-for-adjust {
+  pointer-events: none !important;
+  opacity: 0.15 !important;
+  transition: opacity 0.3s ease;
+}
+
+/* Adjusting mode: cursor */
+.adjusting-mode {
+  cursor: crosshair;
+}
+
+/* Make content transparent to clicks during adjustment */
+.adjusting-mode .indicaciones-content,
+.adjusting-mode .section-content {
+  pointer-events: none;
+  opacity: 0.3;
+  transition: opacity 0.3s ease;
+}
+
+@media screen and (max-width: 480px) {
+  .position-controls-bg {
+    top: 5px;
+    left: 5px;
+  }
+  .adjust-hint {
+    font-size: 11px;
+  }
+}
+
+/* Per-item focal point controls (Historia, Personas Favoritas) */
+.position-controls-item {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  z-index: 10;
+}
+
+.position-adjust-btn-sm {
+  padding: 4px 8px !important;
+  font-size: 11px !important;
+}
+
+.adjust-actions-compact {
+  display: flex;
+  gap: 4px;
+}
+
+.adjust-actions-compact .adjust-save-btn,
+.adjust-actions-compact .adjust-cancel-btn {
+  padding: 4px 10px;
+  font-size: 11px;
+}
+
+/* Story image adjusting mode */
+.story-image-wrapper.adjusting-mode .story-image {
+  cursor: crosshair;
+}
+
+.story-image-wrapper.adjusting-mode .story-card {
+  pointer-events: none;
+  opacity: 0.3;
+}
+

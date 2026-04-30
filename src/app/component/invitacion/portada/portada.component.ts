@@ -44,6 +44,8 @@ export class PortadaComponent implements OnInit, OnDestroy {
   tempTime: string = ''; // formato HH:mm
 
   imagenes: string[] = [];
+  imagenPosicion: string = '50% 50%';  // Default center
+  adjustingPosition: boolean = false;
   currentImageIndex: number = 0;
   nextImageIndex: number = 1;
   private carouselTimeout: any = null;
@@ -70,6 +72,9 @@ export class PortadaComponent implements OnInit, OnDestroy {
   private initCarousel(): void {
     if (this.data?.imagenes && this.data.imagenes.length > 0) {
       this.imagenes = this.data.imagenes;
+    }
+    if (this.data?.imagenPosicion) {
+      this.imagenPosicion = this.data.imagenPosicion;
     }
 
     if (this.imagenes.length > 1) {
@@ -329,6 +334,49 @@ export class PortadaComponent implements OnInit, OnDestroy {
         this.notificationService.show('error', `Error al subir imágenes: ${err.message}`);
       }
     });
+  }
+
+  // --- Ajuste de posición focal ---
+  togglePositionAdjust() {
+    this.adjustingPosition = !this.adjustingPosition;
+    if (this.adjustingPosition) {
+      this.stopCarousel();
+    } else {
+      if (this.imagenes.length > 1) {
+        this.startCarousel();
+      }
+    }
+  }
+
+  onImagePositionClick(event: MouseEvent) {
+    if (!this.adjustingPosition) return;
+    const target = event.currentTarget as HTMLElement;
+    const rect = target.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 100;
+    const y = ((event.clientY - rect.top) / rect.height) * 100;
+    this.imagenPosicion = `${Math.round(x)}% ${Math.round(y)}%`;
+    this.data.imagenPosicion = this.imagenPosicion;
+  }
+
+  savePosition() {
+    this.adjustingPosition = false;
+    this.updateBackend('Portada', 'IdEvento', this.eventId, 'ImagenPosicion', this.imagenPosicion);
+    this.notificationService.show('success', 'Posición de imagen guardada');
+    if (this.imagenes.length > 1) {
+      this.startCarousel();
+    }
+  }
+
+  cancelPositionAdjust() {
+    this.adjustingPosition = false;
+    if (this.data?.imagenPosicion) {
+      this.imagenPosicion = this.data.imagenPosicion;
+    } else {
+      this.imagenPosicion = '50% 50%';
+    }
+    if (this.imagenes.length > 1) {
+      this.startCarousel();
+    }
   }
 
   // --- Guardar en backend ---

@@ -1,4 +1,4 @@
-﻿import { CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, Input, HostListener, signal, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
@@ -11,7 +11,7 @@ import { TemplateService } from '../../../services/template.service';
     selector: 'app-personas-favoritas',
     imports: [CommonModule, PopupHtmlComponent, DisableDownloadDirective, AiEditableDirective],
     templateUrl: './personas-favoritas.component.html',
-    styleUrls: ['./personas-favoritas.component.css']
+    styleUrls: ['./personas-favoritas.component.css', './../focal-point.css']
 })
 export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
@@ -36,6 +36,8 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
   editingFrasePF: boolean = false;
   tempFrasePF: string = '';
   loading: boolean = false;
+  adjustingPositionId: string | null = null;
+  imagenPosiciones: { [id: string]: string } = {};
 
   private _index = signal(0);
 
@@ -61,6 +63,64 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
     if (this.images.length <= 0) {
       this.showGallery = false;
     }
+    this.initPositions();
+  }
+
+  private initPositions() {
+    if (this.data?.details) {
+      for (const item of this.data.details) {
+        this.imagenPosiciones[item.id] = item.imagenPosicion || '50% 50%';
+      }
+    }
+  }
+
+  getImagenPosicion(id: string): string {
+    return this.imagenPosiciones[id] || '50% 50%';
+  }
+
+  getCurrentImagenPosicion(): string {
+    const id = this.currentId();
+    return id ? this.getImagenPosicion(id) : '50% 50%';
+  }
+
+  togglePositionAdjust() {
+    const id = this.currentId();
+    if (!id) return;
+    if (this.adjustingPositionId === id) {
+      this.adjustingPositionId = null;
+    } else {
+      this.adjustingPositionId = id;
+      this.pauseAutoplay();
+    }
+  }
+
+  onImagePositionClick(event: MouseEvent) {
+    const id = this.currentId();
+    if (this.adjustingPositionId !== id || !id) return;
+    const target = event.currentTarget as HTMLElement;
+    const rect = target.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 100;
+    const y = ((event.clientY - rect.top) / rect.height) * 100;
+    this.imagenPosiciones[id] = `${Math.round(x)}% ${Math.round(y)}%`;
+  }
+
+  savePosition() {
+    const id = this.currentId();
+    if (!id) return;
+    const pos = this.imagenPosiciones[id] || '50% 50%';
+    this.adjustingPositionId = null;
+    this.updateBackend('PersonasFavoritasDetail', 'Id', id, 'ImagenPosicion', pos);
+    this.notificationService.show('success', 'Posición de imagen guardada');
+    this.resumeAutoplayWithDelay();
+  }
+
+  cancelPositionAdjust() {
+    const id = this.currentId();
+    if (!id) return;
+    this.adjustingPositionId = null;
+    const item = this.data?.details?.find((d: any) => d.id === id);
+    this.imagenPosiciones[id] = item?.imagenPosicion || '50% 50%';
+    this.resumeAutoplayWithDelay();
   }
 
   cargarDatosPF(gotoNew: boolean = false) {
@@ -71,6 +131,7 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
       next: (res) => {
         this.data = res;
         this.images = this.data?.details || [];
+        this.initPositions();
         this.loading = false;
         if (this.data?.details.length <= 0) {
           this.showGallery = false;
