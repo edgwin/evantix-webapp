@@ -29,9 +29,11 @@ jobs:
           chmod 600 ~/.ssh/id_deploy
           ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
-          SCP="scp -i ~/.ssh/id_deploy"
           SSH="ssh -i ~/.ssh/id_deploy ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}"
+          SCP="scp -i ~/.ssh/id_deploy"
 
-          $SCP -r ./dist/angular17_login_signup_localstorage/browser/* ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/evantix/
-          $SSH "sudo chown -R www-data:www-data /var/www/evantix"
+          # Upload to temp dir first, then move with sudo
+          $SSH "rm -rf /tmp/evantix-frontend && mkdir -p /tmp/evantix-frontend"
+          $SCP -r ./dist/angular17_login_signup_localstorage/browser/* ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/tmp/evantix-frontend/
+          $SSH "sudo rm -rf /var/www/evantix/* && sudo cp -r /tmp/evantix-frontend/* /var/www/evantix/ && sudo chown -R www-data:www-data /var/www/evantix && rm -rf /tmp/evantix-frontend"
           echo "Frontend deployed ✅"
