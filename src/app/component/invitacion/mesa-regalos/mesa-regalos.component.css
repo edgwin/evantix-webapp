@@ -340,12 +340,14 @@
   }
 
   .cards-container {
-    gap: 50px;
+    gap: 65px;
   }
 
   .gift-card {
     width: 100%;
     max-width: 340px;
+    opacity: 1 !important;
+    animation: none !important;
   }
 
   .bg-edit-btn {
