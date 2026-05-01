@@ -33,7 +33,7 @@ const TOUR_STEPS: Record<TourContext, TourStep[]> = {
     {
       targetSelector: '#tour-add-indicacion',
       title: '➕ Agregar Elementos',
-      description: 'Puedes agregar más elementos a cada sección con estos botones. La cantidad máxima depende de tu plan.',
+      description: 'Puedes agregar más elementos a cada sección con estos botones.',
       position: 'bottom'
     },
     {
