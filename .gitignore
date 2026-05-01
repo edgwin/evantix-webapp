@@ -4,3 +4,4 @@ node_modules
 package-lock.json
 dist
 build_errors.txt
+src/environments/environment.development.ts

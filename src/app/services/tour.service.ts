@@ -19,6 +19,12 @@ const TOUR_STEPS: Record<TourContext, TourStep[]> = {
       position: 'bottom'
     },
     {
+      targetSelector: '.position-adjust-btn',
+      title: '⊕ Centrar Imagen',
+      description: 'Ajusta el punto focal de tu imagen. Al activarlo, haz clic en el lugar exacto donde quieres que se centre la imagen. Esto es útil cuando tu foto se recorta y quieres asegurarte de que las caras o elementos importantes se vean correctamente.',
+      position: 'bottom'
+    },
+    {
       targetSelector: '.editablePortadaTitulo',
       title: '✏️ Textos Editables',
       description: 'Los elementos con el ícono de lápiz son editables. Haz clic sobre el texto para modificarlo directamente.',
