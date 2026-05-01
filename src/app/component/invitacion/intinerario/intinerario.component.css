@@ -335,6 +335,8 @@
   .timeline-item,
   .timeline-item.timeline-right {
     flex-direction: row;
+    opacity: 1 !important;
+    animation: none !important;
   }
 
   .timeline-card {
@@ -347,11 +349,6 @@
     left: -20px !important;
     right: auto !important;
     width: 20px;
-  }
-
-  .timeline-item,
-  .timeline-item.timeline-right {
-    animation-name: fadeInRight;
   }
 }
 

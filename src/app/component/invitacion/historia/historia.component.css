@@ -325,6 +325,8 @@
   .story-item,
   .story-item.story-right {
     flex-direction: row;
+    opacity: 1 !important;
+    animation: none !important;
   }
 
   .story-card {
@@ -337,11 +339,6 @@
     left: -30px !important;
     right: auto !important;
     width: 30px;
-  }
-
-  .story-item,
-  .story-item.story-right {
-    animation-name: fadeInRight;
   }
 
   .card-date-badge {
