@@ -131,10 +131,10 @@
                   <button class="action-btn" (click)="onActionHandler({type: 'verInvitacion', row: evento})"
                   title="Ver Invitación">👁️</button>
                 }
-                @if (evento.showCheckIn) {
+                <!-- @if (evento.showCheckIn) {
                   <button class="action-btn checkin-wa" (click)="onEnviarCheckIn(evento)"
                   title="Enviar URL de Check-In por WhatsApp">📲</button>
-                }
+                } -->
                 @if (evento.showPayment !== false) {
                   <button class="action-btn pay" (click)="onActionHandler({type: 'pay', row: evento})"
                   title="Pagar">💳</button>

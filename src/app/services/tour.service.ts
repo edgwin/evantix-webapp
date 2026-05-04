@@ -137,12 +137,6 @@ const TOUR_STEPS: Record<TourContext, TourStep[]> = {
       title: '📊 Lista de Invitados',
       description: 'Aquí puedes ver todos los grupos de invitados. Haz clic en el botón + para expandir y ver a cada invitado del grupo.',
       position: 'top'
-    },
-    {
-      targetSelector: '#tour-wa-section',
-      title: '📨 WhatsApp Masivo',
-      description: 'Envía invitaciones automáticas por WhatsApp a todos tus invitados. Compra paquetes de mensajes según lo que necesites.',
-      position: 'top'
     }
   ],
 

@@ -171,8 +171,8 @@ export class InvitadosComponent implements OnInit {
       next: (grupos) => {
         this.grupos = grupos;
         this.loading = false;
-        this.loadWaCredits();
-        this.loadWaEnvios();
+        // this.loadWaCredits();
+        // this.loadWaEnvios();
 
         setTimeout(() => this.tourService.startIfNeeded('invitados'), 800);
 
@@ -304,8 +304,8 @@ export class InvitadosComponent implements OnInit {
     this.loadGrupos();
     this.loadConfirmacionState();
     this.loadCustomDomainUrl();
-    this.loadWaCredits();
-    this.loadWaEnvios();
+    // this.loadWaCredits();
+    // this.loadWaEnvios();
   }
 
   private loadCustomDomainUrl(): void {
