@@ -1,13 +1,16 @@
 import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { MercadoPagoService } from './mercado-pago.service.service';
 
-import { MercadoPagoServiceService } from './mercado-pago.service.service';
-
-describe('MercadoPagoServiceService', () => {
-  let service: MercadoPagoServiceService;
+describe('MercadoPagoService', () => {
+  let service: MercadoPagoService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(MercadoPagoServiceService);
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [MercadoPagoService]
+    });
+    service = TestBed.inject(MercadoPagoService);
   });
 
   it('should be created', () => {

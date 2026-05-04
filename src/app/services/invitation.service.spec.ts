@@ -6,6 +6,7 @@ import { environment } from '../../environments/environment';
 describe('InvitationService', () => {
   let service: InvitationService;
   let httpMock: HttpTestingController;
+  const baseUrl = environment.coreApiUrl;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -37,7 +38,7 @@ describe('InvitationService', () => {
       expect(images[0]).toContain('RedesSociales');
     });
 
-    const req = httpMock.expectOne(`${environment.apiUrl}/api/assets/images/RedesSociales`);
+    const req = httpMock.expectOne(`${baseUrl}/api/assets/images/RedesSociales`);
     expect(req.request.method).toBe('GET');
     req.flush(mockImages);
   });
@@ -57,7 +58,7 @@ describe('InvitationService', () => {
       expect(data.details[0].red).toBe('Instagram');
     });
 
-    const req = httpMock.expectOne(`${environment.apiUrl}/api/Invitacion/SocialNetworks/evt1`);
+    const req = httpMock.expectOne(`${baseUrl}/api/Invitacion/SocialNetworks/evt1`);
     expect(req.request.method).toBe('GET');
     req.flush(mockData);
   });
@@ -67,7 +68,7 @@ describe('InvitationService', () => {
   it('postNewSocialNetwork should POST to correct endpoint', () => {
     service.postNewSocialNetwork('evt1').subscribe();
 
-    const req = httpMock.expectOne(`${environment.apiUrl}/api/Invitacion/SocialNetwork/evt1`);
+    const req = httpMock.expectOne(`${baseUrl}/api/Invitacion/SocialNetwork/evt1`);
     expect(req.request.method).toBe('POST');
     req.flush({});
   });
@@ -77,7 +78,7 @@ describe('InvitationService', () => {
   it('deleteSocialNetwork should DELETE with correct id', () => {
     service.deleteSocialNetwork('sn-123').subscribe();
 
-    const req = httpMock.expectOne(`${environment.apiUrl}/api/Invitacion/SocialNetwork/sn-123`);
+    const req = httpMock.expectOne(`${baseUrl}/api/Invitacion/SocialNetwork/sn-123`);
     expect(req.request.method).toBe('DELETE');
     req.flush({});
   });
@@ -87,7 +88,7 @@ describe('InvitationService', () => {
   it('updateTableField should PUT with correct payload', () => {
     service.updateTableField('SocialNetworkDetail', 'Id', 'sn-1', 'Imagen', 'assets/RedesSociales/TikTok.png').subscribe();
 
-    const req = httpMock.expectOne(`${environment.apiUrl}/api/Invitacion/UpdateField/sn-1`);
+    const req = httpMock.expectOne(`${baseUrl}/api/Invitacion/UpdateField/sn-1`);
     expect(req.request.method).toBe('PUT');
     expect(req.request.body.tableName).toBe('SocialNetworkDetail');
     expect(req.request.body.fieldName).toBe('Imagen');
@@ -107,7 +108,7 @@ describe('InvitationService', () => {
       expect(data).toBeTruthy();
     });
 
-    const req = httpMock.expectOne(`${environment.apiUrl}/api/Invitacion/evt1`);
+    const req = httpMock.expectOne(`${baseUrl}/api/Invitacion/evt1`);
     expect(req.request.method).toBe('GET');
     req.flush(mockInvitation);
   });

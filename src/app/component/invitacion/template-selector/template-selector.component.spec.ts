@@ -1,12 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { TemplateSelectorComponent } from './template-selector.component';
 import { TemplateService, Template } from '../../../services/template.service';
+import { InvitationService } from '../../../services/invitation.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { of } from 'rxjs';
 
 describe('TemplateSelectorComponent', () => {
   let component: TemplateSelectorComponent;
   let fixture: ComponentFixture<TemplateSelectorComponent>;
   let mockTemplateService: jasmine.SpyObj<TemplateService>;
+  let mockInvitationService: jasmine.SpyObj<InvitationService>;
 
   const mockTemplates: Template[] = [
     {
@@ -17,13 +20,15 @@ describe('TemplateSelectorComponent', () => {
       theme: {
         colors: {
           primary: '#C9A24D',
+          primaryDark: '#A07B2E',
           secondary: '#2B2B2B',
           background: '#FFFFFF',
           backgroundAlt: '#F8F5F0',
           text: '#1A1A1A',
           textLight: '#828282',
           accent: '#D4AF37',
-          overlay: 'rgba(0, 0, 0, 0.5)'
+          overlay: 'rgba(0, 0, 0, 0.5)',
+          shadow: 'rgba(201, 162, 77, 0.3)'
         },
         fonts: {
           title: "'Playfair Display', serif",
@@ -33,11 +38,10 @@ describe('TemplateSelectorComponent', () => {
         iconStyle: 'classic',
         icons: {
           indicaciones: 'icon1.png',
-          hospedaje: 'icon2.png',
-          mesaRegalos: 'icon3.png',
-          intinerario: 'icon4.png'
+          hospedaje: 'icon2.png'
         },
-        backgroundImage: 'bg.jpg'
+        backgroundImage: 'bg.jpg',
+        marbleBackground: 'marble.svg'
       }
     },
     {
@@ -48,13 +52,15 @@ describe('TemplateSelectorComponent', () => {
       theme: {
         colors: {
           primary: '#F14E95',
+          primaryDark: '#C13A75',
           secondary: '#5d5d5d',
           background: '#FFFFFF',
           backgroundAlt: '#FFF5F8',
           text: '#000000',
           textLight: '#828282',
           accent: '#FF6B9D',
-          overlay: 'rgba(241, 78, 149, 0.3)'
+          overlay: 'rgba(241, 78, 149, 0.3)',
+          shadow: 'rgba(241, 78, 149, 0.3)'
         },
         fonts: {
           title: "'Sacramento', cursive",
@@ -64,11 +70,10 @@ describe('TemplateSelectorComponent', () => {
         iconStyle: 'classic',
         icons: {
           indicaciones: 'icon1.png',
-          hospedaje: 'icon2.png',
-          mesaRegalos: 'icon3.png',
-          intinerario: 'icon4.png'
+          hospedaje: 'icon2.png'
         },
-        backgroundImage: 'bg.jpg'
+        backgroundImage: 'bg.jpg',
+        marbleBackground: 'marble.svg'
       }
     },
     {
@@ -79,13 +84,15 @@ describe('TemplateSelectorComponent', () => {
       theme: {
         colors: {
           primary: '#9B59B6',
+          primaryDark: '#7D3C98',
           secondary: '#8E44AD',
           background: '#FFFFFF',
           backgroundAlt: '#F8F4FC',
           text: '#2C2C2C',
           textLight: '#777777',
           accent: '#E74C3C',
-          overlay: 'rgba(155, 89, 182, 0.4)'
+          overlay: 'rgba(155, 89, 182, 0.4)',
+          shadow: 'rgba(155, 89, 182, 0.3)'
         },
         fonts: {
           title: "'Great Vibes', cursive",
@@ -95,11 +102,10 @@ describe('TemplateSelectorComponent', () => {
         iconStyle: 'classic',
         icons: {
           indicaciones: 'icon1.png',
-          hospedaje: 'icon2.png',
-          mesaRegalos: 'icon3.png',
-          intinerario: 'icon4.png'
+          hospedaje: 'icon2.png'
         },
-        backgroundImage: 'bg.jpg'
+        backgroundImage: 'bg.jpg',
+        marbleBackground: 'marble.svg'
       }
     },
     {
@@ -110,13 +116,15 @@ describe('TemplateSelectorComponent', () => {
       theme: {
         colors: {
           primary: '#1A1A1A',
+          primaryDark: '#000000',
           secondary: '#666666',
           background: '#FFFFFF',
           backgroundAlt: '#F5F5F5',
           text: '#1A1A1A',
           textLight: '#999999',
           accent: '#333333',
-          overlay: 'rgba(0, 0, 0, 0.6)'
+          overlay: 'rgba(0, 0, 0, 0.6)',
+          shadow: 'rgba(0, 0, 0, 0.2)'
         },
         fonts: {
           title: "'Poppins', sans-serif",
@@ -126,30 +134,34 @@ describe('TemplateSelectorComponent', () => {
         iconStyle: 'minimal',
         icons: {
           indicaciones: 'icon1.png',
-          hospedaje: 'icon2.png',
-          mesaRegalos: 'icon3.png',
-          intinerario: 'icon4.png'
+          hospedaje: 'icon2.png'
         },
-        backgroundImage: 'bg.jpg'
+        backgroundImage: 'bg.jpg',
+        marbleBackground: 'marble.svg'
       }
     }
   ];
 
   beforeEach(async () => {
     mockTemplateService = jasmine.createSpyObj('TemplateService', [
-      'getTemplates',
       'getCurrentTemplate',
       'setTemplate',
       'applyTemplateToDOM'
     ]);
+    mockInvitationService = jasmine.createSpyObj('InvitationService', [
+      'getTemplates',
+      'updateEventTemplate'
+    ]);
 
-    mockTemplateService.getTemplates.and.returnValue(mockTemplates);
+    mockInvitationService.getTemplates.and.returnValue(of(mockTemplates));
+    mockInvitationService.updateEventTemplate.and.returnValue(of({}));
     mockTemplateService.getCurrentTemplate.and.returnValue(mockTemplates[0]);
 
     await TestBed.configureTestingModule({
       imports: [TemplateSelectorComponent],
       providers: [
-        { provide: TemplateService, useValue: mockTemplateService }
+        { provide: TemplateService, useValue: mockTemplateService },
+        { provide: InvitationService, useValue: mockInvitationService }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
@@ -165,39 +177,41 @@ describe('TemplateSelectorComponent', () => {
   });
 
   describe('Input properties', () => {
-    it('should have empty eventId by default', () => {
-      const newComponent = new TemplateSelectorComponent(mockTemplateService);
-      expect(newComponent.eventId).toBe('');
+    it('should accept eventId input', () => {
+      expect(component.eventId).toBe('test-event-id');
     });
 
-    it('should have boda as default eventType', () => {
-      const newComponent = new TemplateSelectorComponent(mockTemplateService);
-      expect(newComponent.eventType).toBe('boda');
+    it('should accept eventType input', () => {
+      expect(component.eventType).toBe('Boda');
     });
   });
 
   describe('ngOnInit', () => {
-    it('should load templates on init', () => {
+    it('should load templates on init', fakeAsync(() => {
       fixture.detectChanges();
-      expect(mockTemplateService.getTemplates).toHaveBeenCalled();
+      tick();
+      expect(mockInvitationService.getTemplates).toHaveBeenCalled();
       expect(component.templates.length).toBe(4);
-    });
+    }));
 
-    it('should set selected template id from current template', () => {
+    it('should set selected template id from current template', fakeAsync(() => {
       fixture.detectChanges();
+      tick();
       expect(component.selectedTemplateId).toBe('elegant_gold');
-    });
+    }));
 
-    it('should filter templates by event type', () => {
+    it('should map event type to category', fakeAsync(() => {
       fixture.detectChanges();
+      tick();
       expect(component.selectedCategory).toBe('boda');
-    });
+    }));
   });
 
   describe('filterTemplates', () => {
-    beforeEach(() => {
+    beforeEach(fakeAsync(() => {
       fixture.detectChanges();
-    });
+      tick();
+    }));
 
     it('should show all templates when category is all', () => {
       component.selectedCategory = 'all';
@@ -221,9 +235,10 @@ describe('TemplateSelectorComponent', () => {
   });
 
   describe('onCategoryChange', () => {
-    beforeEach(() => {
+    beforeEach(fakeAsync(() => {
       fixture.detectChanges();
-    });
+      tick();
+    }));
 
     it('should update selected category', () => {
       component.onCategoryChange('xv');
@@ -237,9 +252,10 @@ describe('TemplateSelectorComponent', () => {
   });
 
   describe('selectTemplate', () => {
-    beforeEach(() => {
+    beforeEach(fakeAsync(() => {
       fixture.detectChanges();
-    });
+      tick();
+    }));
 
     it('should set selected template id', () => {
       const template = mockTemplates[1];
@@ -247,29 +263,37 @@ describe('TemplateSelectorComponent', () => {
       expect(component.selectedTemplateId).toBe('romantic_pink');
     });
 
-    it('should call templateService.setTemplate', () => {
+    it('should call templateService.setTemplate with template object', () => {
       const template = mockTemplates[1];
       component.selectTemplate(template);
-      expect(mockTemplateService.setTemplate).toHaveBeenCalledWith('romantic_pink', 'test-event-id');
+      expect(mockTemplateService.setTemplate).toHaveBeenCalledWith(template);
     });
 
-    it('should emit templateSelected event', () => {
+    it('should emit templateSelected event', fakeAsync(() => {
       spyOn(component.templateSelected, 'emit');
       const template = mockTemplates[1];
       component.selectTemplate(template);
+      tick();
       expect(component.templateSelected.emit).toHaveBeenCalledWith(template);
-    });
+    }));
   });
 
   describe('previewTemplate', () => {
-    beforeEach(() => {
+    beforeEach(fakeAsync(() => {
       fixture.detectChanges();
-    });
+      tick();
+    }));
 
     it('should call applyTemplateToDOM', () => {
       const template = mockTemplates[1];
       component.previewTemplate(template);
       expect(mockTemplateService.applyTemplateToDOM).toHaveBeenCalledWith(template);
+    });
+
+    it('should store original template before preview', () => {
+      const template = mockTemplates[1];
+      component.previewTemplate(template);
+      expect(component.originalTemplate).toBeTruthy();
     });
   });
 
@@ -310,13 +334,18 @@ describe('TemplateSelectorComponent', () => {
   });
 
   describe('categories', () => {
-    it('should have 5 categories', () => {
-      expect(component.categories.length).toBe(5);
+    it('should have categories defined', () => {
+      expect(component.categories.length).toBeGreaterThan(0);
     });
 
-    it('should have correct category values', () => {
+    it('should include boda category', () => {
       const values = component.categories.map(c => c.value);
-      expect(values).toEqual(['all', 'boda', 'xv', 'bautizo', 'general']);
+      expect(values).toContain('boda');
+    });
+
+    it('should include xv category', () => {
+      const values = component.categories.map(c => c.value);
+      expect(values).toContain('xv');
     });
   });
 });

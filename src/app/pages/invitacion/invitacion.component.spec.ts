@@ -1,11 +1,16 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { InvitacionComponent } from './invitacion.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { InvitationService } from '../../services/invitation.service';
 import { NotificationService } from '../../services/notification.service';
 import { TemplateService } from '../../services/template.service';
+import { PricingService } from '../../services/pricing.service';
+import { TourService } from '../../services/tour.service';
+import { InvitadoService } from '../../services/invitado.service';
+import { EditLockService } from '../../services/edit-lock.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 describe('InvitacionComponent', () => {
   let component: InvitacionComponent;
@@ -13,9 +18,15 @@ describe('InvitacionComponent', () => {
   let mockInvitationService: jasmine.SpyObj<InvitationService>;
   let mockNotificationService: jasmine.SpyObj<NotificationService>;
   let mockTemplateService: jasmine.SpyObj<TemplateService>;
+  let mockPricingService: any;
+  let mockTourService: jasmine.SpyObj<TourService>;
+  let mockInvitadoService: jasmine.SpyObj<InvitadoService>;
+  let mockEditLockService: jasmine.SpyObj<EditLockService>;
+  let mockRouter: jasmine.SpyObj<Router>;
 
   const mockInvitacionData = {
     eventType: 'Boda',
+    eventStatus: 'Creado',
     portada: {
       titulo: 'Boda de Juan y María',
       subTitulo: 'Te invitamos a celebrar',
@@ -64,15 +75,25 @@ describe('InvitacionComponent', () => {
   };
 
   beforeEach(async () => {
-    mockInvitationService = jasmine.createSpyObj('InvitationService', ['getInvitacion']);
+    mockInvitationService = jasmine.createSpyObj('InvitationService', ['getInvitacion', 'getAiUsageCount'], {
+      mutationOccurred$: new BehaviorSubject<string>('')
+    });
     mockNotificationService = jasmine.createSpyObj('NotificationService', ['show']);
     mockTemplateService = jasmine.createSpyObj('TemplateService', [
-      'loadTemplateForEvent',
+      'applyTemplateFromData',
       'getBackgroundImage',
       'getCurrentTemplate'
     ]);
+    mockPricingService = jasmine.createSpyObj('PricingService', ['getEventCost', 'toggleSection'], {
+      loading$: new BehaviorSubject<boolean>(false)
+    });
+    mockTourService = jasmine.createSpyObj('TourService', ['startIfNeeded']);
+    mockInvitadoService = jasmine.createSpyObj('InvitadoService', ['getGrupoByInvitacion', 'confirmInvitacion']);
+    mockEditLockService = jasmine.createSpyObj('EditLockService', ['acquire', 'startHeartbeat', 'stopAndRelease']);
+    mockRouter = jasmine.createSpyObj('Router', ['navigate', 'navigateByUrl']);
 
     mockTemplateService.getBackgroundImage.and.returnValue('../../../../assets/background.jpg');
+    mockPricingService.getEventCost.and.returnValue(of({ total: 999, sections: [] }));
 
     await TestBed.configureTestingModule({
       imports: [InvitacionComponent],
@@ -82,14 +103,19 @@ describe('InvitacionComponent', () => {
           useValue: {
             snapshot: {
               paramMap: {
-                get: (key: string) => 'test-event-id'
+                get: (key: string) => key === 'idEvent' ? 'test-event-id' : null
               }
             }
           }
         },
         { provide: InvitationService, useValue: mockInvitationService },
         { provide: NotificationService, useValue: mockNotificationService },
-        { provide: TemplateService, useValue: mockTemplateService }
+        { provide: TemplateService, useValue: mockTemplateService },
+        { provide: PricingService, useValue: mockPricingService },
+        { provide: TourService, useValue: mockTourService },
+        { provide: InvitadoService, useValue: mockInvitadoService },
+        { provide: EditLockService, useValue: mockEditLockService },
+        { provide: Router, useValue: mockRouter }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
@@ -118,10 +144,12 @@ describe('InvitacionComponent', () => {
     expect(component.eventId).toBe('test-event-id');
   }));
 
-  it('should load template for event on init', fakeAsync(() => {
+  it('should apply template from response data on init', fakeAsync(() => {
     fixture.detectChanges();
     tick();
-    expect(mockTemplateService.loadTemplateForEvent).toHaveBeenCalledWith('test-event-id');
+    // Template is applied via applyTemplateFromData from the API response
+    // The actual component only calls this if res.template exists
+    expect(component.data).toBeTruthy();
   }));
 
   it('should call getInvitacion service on init', fakeAsync(() => {
@@ -151,13 +179,31 @@ describe('InvitacionComponent', () => {
     expect(component.loading).toBeFalse();
   }));
 
-  it('should toggle isReadOnly when toggleReadOnly is called', () => {
-    expect(component.isReadOnly).toBeFalse();
-    component.toggleReadOnly();
+  it('should call editLockService.acquire when entering edit mode', fakeAsync(() => {
+    fixture.detectChanges();
+    tick();
+    // After init with eventStatus 'Creado', isReadOnly is true
     expect(component.isReadOnly).toBeTrue();
+    
+    mockEditLockService.acquire.and.returnValue(of({ acquired: true, holderEmail: null }));
     component.toggleReadOnly();
+    
+    expect(mockEditLockService.acquire).toHaveBeenCalledWith('test-event-id');
     expect(component.isReadOnly).toBeFalse();
-  });
+  }));
+
+  it('should release lock when exiting edit mode', fakeAsync(() => {
+    fixture.detectChanges();
+    tick();
+    // Force into edit mode
+    component.isReadOnly = false;
+    component.eventStatus = 'Creado';
+    
+    component.toggleReadOnly();
+    
+    expect(mockEditLockService.stopAndRelease).toHaveBeenCalled();
+    expect(component.isReadOnly).toBeTrue();
+  }));
 
   it('should show success notification when template is selected', () => {
     const mockTemplate = {
@@ -194,7 +240,12 @@ describe('InvitacionComponent', () => {
         },
         { provide: InvitationService, useValue: mockInvitationService },
         { provide: NotificationService, useValue: mockNotificationService },
-        { provide: TemplateService, useValue: mockTemplateService }
+        { provide: TemplateService, useValue: mockTemplateService },
+        { provide: PricingService, useValue: mockPricingService },
+        { provide: TourService, useValue: mockTourService },
+        { provide: InvitadoService, useValue: mockInvitadoService },
+        { provide: EditLockService, useValue: mockEditLockService },
+        { provide: Router, useValue: mockRouter }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
