@@ -81,7 +81,13 @@ export class DomainResolverComponent implements OnInit {
   }
 
   private resolveHostname(idInvitado: string | null) {
-    const hostname = window.location.hostname;
+    let hostname = window.location.hostname;
+
+    // Normalizar: quitar www. si existe para evitar conflictos de resolución
+    if (hostname.startsWith('www.')) {
+      hostname = hostname.substring(4);
+    }
+
     const homeUrl = new URL(environment.homeUrl);
     const baseDomain = homeUrl.hostname;
 
