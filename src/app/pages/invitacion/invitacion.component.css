@@ -403,8 +403,9 @@
 /* Hecho en Evantix Banner */
 .evantix-banner {
   text-align: center;
-  padding: 18px 16px;
+  padding: 15px 16px;
   background: linear-gradient(135deg, #1a1a2e, #16213e);
+  margin: 0;
 }
 
 .evantix-banner-link {
