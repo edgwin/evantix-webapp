@@ -51,6 +51,7 @@ export class AppComponent implements OnInit {
       host.endsWith('.trycloudflare.com');
 
     const isKnown = knownHosts.includes(hostname) || isPrivateIp(hostname) || isKnownTunnel(hostname);
+    console.log('AppComponent: hostname=', hostname, 'isKnown=', isKnown);
 
     if (!isKnown) {
       // If URL already has a valid route (e.g. /invitacion/...), let Angular handle it
