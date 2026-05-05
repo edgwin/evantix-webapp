@@ -28,7 +28,13 @@ export class AppComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    const hostname = window.location.hostname;
+    let hostname = window.location.hostname;
+
+    // Normalizar para evitar que www. cause falsos negativos en dominios conocidos
+    if (hostname.startsWith('www.')) {
+      hostname = hostname.substring(4);
+    }
+
     const homeUrl = new URL(environment.homeUrl);
     const baseDomain = homeUrl.hostname;
 
