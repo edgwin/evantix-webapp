@@ -3,6 +3,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
+  background-color: #fcfaf7; /* Unifica el fondo para evitar líneas blancas */
 }
 
 /* ── Edit-lock banner ──────────────────────────────────── */
@@ -106,7 +107,8 @@
 }
 
 .bottom-spacer {
-  height: 60px;
+  height: 90px;
+  background: transparent;
 }
 
 @media screen and (max-width: 480px) {
