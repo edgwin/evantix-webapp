@@ -17,6 +17,7 @@ export class MuroFotosComponent implements OnInit {
     @Input() isGuestView: boolean = false;
     @Input() idInvitacion: string | null = null;
     @Input() maxItems: number = 200;
+    @Input() allowUpload: boolean = true;
 
     fotos: any[] = [];
     loading: boolean = false;
@@ -54,7 +55,7 @@ export class MuroFotosComponent implements OnInit {
     }
 
     get canUpload(): boolean {
-        return this.isGuestView;
+        return this.isGuestView && this.allowUpload;
     }
 
     deleteFoto(fotoId: string, event: MouseEvent): void {

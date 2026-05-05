@@ -450,4 +450,34 @@ export class InvitacionComponent implements OnDestroy {
       }
     });
   }
+
+  get isBeforeEvent(): boolean {
+    // El dueño y el administrador nunca ven el bloqueo de fecha
+    if (this.isOwnerPreview || this.isAdmin || !this.isReadOnly) return false;
+    if (!this.data?.fecha) return false;
+
+    const eventDate = new Date(this.data.fecha);
+    const today = new Date();
+    eventDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+    return today < eventDate;
+  }
+
+  get canUploadPhotos(): boolean {
+    // El dueño y el administrador siempre pueden subir fotos para probar
+    if (this.isOwnerPreview || this.isAdmin || !this.isReadOnly) return true;
+    if (!this.data?.fecha) return true;
+
+    const eventDate = new Date(this.data.fecha);
+    const today = new Date();
+    eventDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+    // Permitir desde el día del evento hasta 1 mes después
+    const oneMonthAfter = new Date(eventDate);
+    oneMonthAfter.setMonth(oneMonthAfter.getMonth() + 1);
+
+    return today >= eventDate && today <= oneMonthAfter;
+  }
 }
