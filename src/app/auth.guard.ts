@@ -14,8 +14,10 @@ export class AuthGuard implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     const url = state.url;
 
-    // ✅ Permitir rutas de invitación sin sesión
-    if (url.startsWith('/invitacion')) {
+    // ✅ Permitir rutas públicas de invitación y resolución de dominios
+    if (url.startsWith('/invitacion') || 
+        url.startsWith('/resolve-domain') || 
+        url.startsWith('/i/')) {
       return true;
     }
 
