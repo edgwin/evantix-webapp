@@ -452,25 +452,48 @@ export class InvitacionComponent implements OnDestroy {
   }
 
   get isBeforeEvent(): boolean {
-    // Si no hay fecha, asumimos que es antes del evento para no habilitar funciones prematuramente
-    if (!this.data?.fecha) return true;
+    const fecha = this.data?.portada?.fecha;
+    console.log('[MuroFotos DEBUG] isBeforeEvent check:');
+    console.log('  this.data?.fecha (ROOT - INCORRECTO):', this.data?.fecha);
+    console.log('  this.data?.portada?.fecha (CORRECTO):', fecha);
 
-    const eventTime = new Date(this.data.fecha).getTime();
+    // Si no hay fecha, asumimos que es antes del evento para no habilitar funciones prematuramente
+    if (!fecha) {
+      console.log('  → No hay fecha, retornando true (antes del evento)');
+      return true;
+    }
+
+    const eventTime = new Date(fecha).getTime();
     const now = new Date().getTime();
+
+    console.log('  eventTime:', eventTime, '| now:', now);
+    console.log('  now < eventTime:', now < eventTime);
 
     // Es "antes del evento" si los milisegundos exactos aún no han llegado
     return now < eventTime;
   }
 
   get canUploadPhotos(): boolean {
-    // Si no hay fecha, no se pueden subir fotos
-    if (!this.data?.fecha) return false;
+    const fecha = this.data?.portada?.fecha;
+    console.log('[MuroFotos DEBUG] canUploadPhotos check:');
+    console.log('  this.data?.portada?.fecha:', fecha);
 
-    const eventTime = new Date(this.data.fecha).getTime();
+    // Si no hay fecha, no se pueden subir fotos
+    if (!fecha) {
+      console.log('  → No hay fecha, retornando false');
+      return false;
+    }
+
+    const eventTime = new Date(fecha).getTime();
     const now = new Date().getTime();
     
     // 30 días en milisegundos
     const oneMonthMs = 30 * 24 * 60 * 60 * 1000;
+
+    console.log('  eventTime:', eventTime, '| now:', now);
+    console.log('  now >= eventTime:', now >= eventTime);
+    console.log('  now <= eventTime + 30d:', now <= (eventTime + oneMonthMs));
+    console.log('  → canUpload:', now >= eventTime && now <= (eventTime + oneMonthMs));
 
     // Permitir si la fecha exacta ya llegó (o pasó) y no ha pasado más de 30 días
     return now >= eventTime && now <= (eventTime + oneMonthMs);
