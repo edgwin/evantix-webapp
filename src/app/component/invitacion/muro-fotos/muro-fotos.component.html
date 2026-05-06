@@ -5,8 +5,7 @@
       <h1>📸 Muro de Fotos</h1>
       <span class="header-decoration-line"></span>
     </div>
-    <p class="section-subtitle">¡Comparte tus mejores momentos del evento!<br />Esta funcionalidad estara disponible
-    para los invitados</p>
+    <p class="section-subtitle">¡Comparte tus mejores momentos del evento!</p>
 
     <!-- Loading -->
     @if (loading) {
@@ -23,7 +22,7 @@
             [style.animation-delay]="(i * 0.05) + 's'"
             (click)="openFullScreen(foto.imagen)">
             <img [src]="foto.imagen" alt="Foto de invitado" appDisableDownload loading="lazy">
-            @if (canUpload) {
+            @if (isGuestView) {
               <button class="delete-foto-btn"
                 [style.opacity]="isTouchDevice ? '1' : null"
                 (click)="deleteFoto(foto.id, $event)"
@@ -45,7 +44,17 @@
       </div>
     }
 
-    <!-- Upload button -->
+    <!-- Upload button or Restriction Message -->
+    @if (!canUpload) {
+      <div class="upload-restriction-message" style="text-align:center; padding: 20px; color: #555; background: rgba(255,255,255,0.6); border-radius: 12px; margin-top: 20px;">
+        @if (isBeforeEvent) {
+          <p style="font-weight: 500; margin: 0;">Esta funcionalidad estará disponible el día del evento.</p>
+        } @else {
+          <p style="font-weight: 500; margin: 0;">El periodo para subir fotos ha finalizado.</p>
+        }
+      </div>
+    }
+
     @if (canUpload && !uploading) {
       <div class="upload-container">
         <button class="upload-btn" (click)="triggerUpload()">

@@ -452,8 +452,6 @@ export class InvitacionComponent implements OnDestroy {
   }
 
   get isBeforeEvent(): boolean {
-    // El dueño y el administrador nunca ven el bloqueo de fecha
-    if (this.isOwnerPreview || this.isAdmin || !this.isReadOnly) return false;
     if (!this.data?.fecha) return false;
 
     const eventDate = new Date(this.data.fecha);
@@ -465,8 +463,6 @@ export class InvitacionComponent implements OnDestroy {
   }
 
   get canUploadPhotos(): boolean {
-    // El dueño y el administrador siempre pueden subir fotos para probar
-    if (this.isOwnerPreview || this.isAdmin || !this.isReadOnly) return true;
     if (!this.data?.fecha) return true;
 
     const eventDate = new Date(this.data.fecha);

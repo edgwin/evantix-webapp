@@ -18,6 +18,7 @@ export class MuroFotosComponent implements OnInit {
     @Input() idInvitacion: string | null = null;
     @Input() maxItems: number = 200;
     @Input() allowUpload: boolean = true;
+    @Input() isBeforeEvent: boolean = false;
 
     fotos: any[] = [];
     loading: boolean = false;
