@@ -46,12 +46,17 @@
                 {{ getStatusText(inv.invitacionConfirmada) }}
               </span>
             </div>
-            @if (inv.invitacionConfirmada !== 3) {
+            @if (inv.invitacionConfirmada !== 3 && inv.invitacionConfirmada !== 2) {
               <button class="btn-attendance"
                 (click)="markAttendance(inv)"
                 [disabled]="inv.marking">
                 {{ inv.marking ? '⏳ Registrando...' : '✅ Registrar Asistencia' }}
               </button>
+            }
+            @if (inv.invitacionConfirmada === 2) {
+              <span class="declined-label">
+                ❌ Invitación rechazada
+              </span>
             }
             @if (inv.invitacionConfirmada === 3) {
               <span class="attended-label">
