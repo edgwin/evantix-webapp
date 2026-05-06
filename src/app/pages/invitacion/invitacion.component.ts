@@ -455,27 +455,24 @@ export class InvitacionComponent implements OnDestroy {
     // Si no hay fecha, asumimos que es antes del evento para no habilitar funciones prematuramente
     if (!this.data?.fecha) return true;
 
-    const eventDate = new Date(this.data.fecha);
-    const today = new Date();
-    eventDate.setHours(0, 0, 0, 0);
-    today.setHours(0, 0, 0, 0);
+    const eventTime = new Date(this.data.fecha).getTime();
+    const now = new Date().getTime();
 
-    return today < eventDate;
+    // Es "antes del evento" si los milisegundos exactos aún no han llegado
+    return now < eventTime;
   }
 
   get canUploadPhotos(): boolean {
     // Si no hay fecha, no se pueden subir fotos
     if (!this.data?.fecha) return false;
 
-    const eventDate = new Date(this.data.fecha);
-    const today = new Date();
-    eventDate.setHours(0, 0, 0, 0);
-    today.setHours(0, 0, 0, 0);
+    const eventTime = new Date(this.data.fecha).getTime();
+    const now = new Date().getTime();
+    
+    // 30 días en milisegundos
+    const oneMonthMs = 30 * 24 * 60 * 60 * 1000;
 
-    // Permitir desde el día del evento hasta 1 mes después
-    const oneMonthAfter = new Date(eventDate);
-    oneMonthAfter.setMonth(oneMonthAfter.getMonth() + 1);
-
-    return today >= eventDate && today <= oneMonthAfter;
+    // Permitir si la fecha exacta ya llegó (o pasó) y no ha pasado más de 30 días
+    return now >= eventTime && now <= (eventTime + oneMonthMs);
   }
 }
