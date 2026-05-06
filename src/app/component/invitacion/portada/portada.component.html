@@ -1,5 +1,13 @@
 <header id="fh5co-header" class="fh5co-cover" role="banner" data-stellar-background-ratio="0.5">
-  <div class="carousel-container" (click)="onImagePositionClick($event)">
+  <div class="carousel-container"
+    (mousedown)="onDragStart($event)"
+    (mousemove)="onDragMove($event)"
+    (mouseup)="onDragEnd()"
+    (mouseleave)="onDragEnd()"
+    (touchstart)="onDragStart($event)"
+    (touchmove)="onDragMove($event)"
+    (touchend)="onDragEnd()"
+    [class.dragging]="isDragging">
     @for (img of imagenes; track img; let i = $index) {
       <!-- Fondo blur -->
       <div class="carousel-slide-blur" [ngClass]="{ 'active': i === currentImageIndex }" [ngStyle]="{
@@ -62,7 +70,7 @@
           </button>
         } @else {
           <div class="position-adjust-panel">
-            <p class="adjust-hint">Toca donde quieres el punto focal de tu imagen</p>
+            <p class="adjust-hint">Arrastra la imagen para ajustar el punto focal</p>
             <div class="adjust-actions">
               <button class="adjust-save-btn" (click)="savePosition()">✓ Guardar</button>
               <button class="adjust-cancel-btn" (click)="cancelPositionAdjust()">✕ Cancelar</button>

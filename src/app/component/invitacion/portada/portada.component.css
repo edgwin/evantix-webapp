@@ -60,7 +60,7 @@
   z-index: 3;
 }
 
-/* En móvil usar cover ya que las proporciones suelen coincidir mejor */
+/* En mï¿½vil usar cover ya que las proporciones suelen coincidir mejor */
 @media screen and (max-width: 768px) {
   .carousel-slide {
     background-size: cover;
@@ -240,7 +240,7 @@
 
 .edit-imagePortada-btn {
   width: 40px;
-  /* opcional: tamaño fijo */
+  /* opcional: tamaï¿½o fijo */
   height: 40px;
   /* opcional */
 }
@@ -330,7 +330,7 @@
 
 .edit-imagePortada-btn {
   width: 40px;
-  /* opcional: tamaño fijo */
+  /* opcional: tamaï¿½o fijo */
   height: 40px;
   /* opcional */
 }
@@ -635,12 +635,19 @@
       rgba(0, 0, 0, 0.15) 0%,
       rgba(0, 0, 0, 0.1) 50%,
       rgba(0, 0, 0, 0.15) 100%) !important;
-  cursor: crosshair !important;
+  cursor: grab !important;
 }
 
-/* When adjusting, the carousel container should show crosshair cursor */
+/* When adjusting, the carousel container should show grab cursor */
 .carousel-container:has(.adjusting-overlay) {
-  cursor: crosshair;
+  cursor: grab;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.carousel-container.dragging {
+  cursor: grabbing;
 }
 
 @media screen and (max-width: 480px) {
