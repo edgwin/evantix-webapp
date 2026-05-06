@@ -452,7 +452,8 @@ export class InvitacionComponent implements OnDestroy {
   }
 
   get isBeforeEvent(): boolean {
-    if (!this.data?.fecha) return false;
+    // Si no hay fecha, asumimos que es antes del evento para no habilitar funciones prematuramente
+    if (!this.data?.fecha) return true;
 
     const eventDate = new Date(this.data.fecha);
     const today = new Date();
@@ -463,7 +464,8 @@ export class InvitacionComponent implements OnDestroy {
   }
 
   get canUploadPhotos(): boolean {
-    if (!this.data?.fecha) return true;
+    // Si no hay fecha, no se pueden subir fotos
+    if (!this.data?.fecha) return false;
 
     const eventDate = new Date(this.data.fecha);
     const today = new Date();
