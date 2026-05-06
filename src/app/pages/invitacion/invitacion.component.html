@@ -20,7 +20,8 @@
   <!-- Banner: Invitación bloqueada por otra sesión -->
   @if (editLockedBy && !isGuestView) {
   <div class="edit-lock-banner">
-    🔒 <strong>Edición bloqueada</strong> &mdash; {{ editLockedBy }} está editando esta invitación en este momento. Podrás editarla en unos minutos.
+    🔒 <strong>Edición bloqueada</strong> &mdash; {{ editLockedBy }} está editando esta invitación en este momento.
+    Podrás editarla en unos minutos.
   </div>
   }
   <!-- Barra de costo fixed -->
@@ -117,8 +118,8 @@
     }
     <!-- Muro de Fotos (guest view only: visible solo para invitados, NO en vista previa) -->
     @if (isGuestView && isSectionEnabled('MuroFotos')) {
-      <app-muro-fotos [eventId]="eventId" [isReadOnly]="true" [isGuestView]="true" [idInvitacion]="idInvitacion"
-        [maxItems]="25" [allowUpload]="canUploadPhotos" [isBeforeEvent]="isBeforeEvent"></app-muro-fotos>
+    <app-muro-fotos [eventId]="eventId" [isReadOnly]="true" [isGuestView]="true" [idInvitacion]="idInvitacion"
+      [maxItems]="25" [allowUpload]="true" [isBeforeEvent]="isBeforeEvent"></app-muro-fotos>
     }
     <!-- Confirmación de Invitados -->
     @if (!isReadOnly) {
@@ -183,8 +184,8 @@
         <div class="rsvp-guest-row">
           <div class="rsvp-name-field">
             <label>Invitado {{ i + 1 }}</label>
-            <input type="text" [(ngModel)]="inv.nombre" placeholder="Nombre del invitado"
-              class="rsvp-input" [class.rsvp-input-error]="rsvpFormSubmitted && !inv.nombre?.trim()"
+            <input type="text" [(ngModel)]="inv.nombre" placeholder="Nombre del invitado" class="rsvp-input"
+              [class.rsvp-input-error]="rsvpFormSubmitted && !inv.nombre?.trim()"
               [ngStyle]="{ 'border-color': inv.nombre?.trim() ? templateService.getCurrentTemplate()?.theme?.colors?.primary : '' }" />
             @if (rsvpFormSubmitted && !inv.nombre?.trim()) {
             <small class="rsvp-error">
@@ -210,8 +211,10 @@
         </div>
       </div>
       }
-      @if (rsvpFormSubmitted && guestGroup.invitados?.some(inv => inv.invitacionConfirmada === null || inv.invitacionConfirmada === 0)) {
-        <p class="rsvp-selection-error">⚠️ Por favor selecciona <strong>Asistiré</strong> o <strong>No asistiré</strong> para cada invitado</p>
+      @if (rsvpFormSubmitted && guestGroup.invitados?.some(inv => inv.invitacionConfirmada === null ||
+      inv.invitacionConfirmada === 0)) {
+      <p class="rsvp-selection-error">⚠️ Por favor selecciona <strong>Asistiré</strong> o <strong>No asistiré</strong>
+        para cada invitado</p>
       }
       <button class="rsvp-submit" (click)="submitRsvp()" [disabled]="rsvpSubmitting"
         [ngStyle]="{ 'background': templateService.getCurrentTemplate()?.theme?.colors?.primary }">
