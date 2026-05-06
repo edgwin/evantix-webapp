@@ -119,7 +119,7 @@
     <!-- Muro de Fotos (guest view only: visible solo para invitados, NO en vista previa) -->
     @if (isGuestView && isSectionEnabled('MuroFotos')) {
     <app-muro-fotos [eventId]="eventId" [isReadOnly]="true" [isGuestView]="true" [idInvitacion]="idInvitacion"
-      [maxItems]="25" [allowUpload]="true" [isBeforeEvent]="isBeforeEvent"></app-muro-fotos>
+      [maxItems]="25" [allowUpload]="canUploadPhotos" [isBeforeEvent]="isBeforeEvent"></app-muro-fotos>
     }
     <!-- Confirmación de Invitados -->
     @if (!isReadOnly) {
