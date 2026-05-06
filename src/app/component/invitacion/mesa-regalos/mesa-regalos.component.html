@@ -1,4 +1,4 @@
-<section class="mesa-regalos-section" (click)="onImagePositionClick($event)"
+<section class="mesa-regalos-section" (mousedown)="onDragStart($event)" (mousemove)="onDragMove($event)" (mouseup)="onDragEnd()" (mouseleave)="onDragEnd()" (touchstart)="onDragStart($event)" (touchmove)="onDragMove($event)" (touchend)="onDragEnd()" [class.dragging]="isDragging"
   [class.adjusting-mode]="adjustingPosition"
   [ngStyle]="{'background-image': 'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(' + data.imagen + ')', 'background-position': imagenPosicion}">
 
@@ -21,7 +21,7 @@
           <span class="position-label">Centrar</span>
         </button>
       } @else {
-        <div class="adjust-hint">Toca donde quieres el punto focal</div>
+        <div class="adjust-hint">Arrastra para ajustar el punto focal</div>
         <div class="adjust-actions">
           <button class="adjust-save-btn" (click)="savePosition()">✓ Guardar</button>
           <button class="adjust-cancel-btn" (click)="cancelPositionAdjust()">✕ Cancelar</button>

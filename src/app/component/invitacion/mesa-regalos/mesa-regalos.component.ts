@@ -97,12 +97,34 @@ export class MesaRegalosComponent implements OnInit {
     this.adjustingPosition = !this.adjustingPosition;
   }
 
-  onImagePositionClick(event: MouseEvent) {
+  isDragging = false;
+
+  onDragStart(event: MouseEvent | TouchEvent) {
     if (!this.adjustingPosition) return;
-    const target = event.currentTarget as HTMLElement;
+    event.preventDefault();
+    this.isDragging = true;
+    this.updatePositionFromEvent(event);
+  }
+
+  onDragMove(event: MouseEvent | TouchEvent) {
+    if (!this.adjustingPosition || !this.isDragging) return;
+    event.preventDefault();
+    this.updatePositionFromEvent(event);
+  }
+
+  onDragEnd() {
+    this.isDragging = false;
+  }
+
+  private updatePositionFromEvent(event: MouseEvent | TouchEvent) {
+    const target = (event.currentTarget || event.target) as HTMLElement;
     const rect = target.getBoundingClientRect();
-    const x = ((event.clientX - rect.left) / rect.width) * 100;
-    const y = ((event.clientY - rect.top) / rect.height) * 100;
+    let clientX: number, clientY: number;
+    if ('touches' in event && event.touches.length > 0) { clientX = event.touches[0].clientX; clientY = event.touches[0].clientY; }
+    else if ('clientX' in event) { clientX = event.clientX; clientY = event.clientY; }
+    else { return; }
+    const x = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+    const y = Math.max(0, Math.min(100, ((clientY - rect.top) / rect.height) * 100));
     this.imagenPosicion = `${Math.round(x)}% ${Math.round(y)}%`;
   }
 

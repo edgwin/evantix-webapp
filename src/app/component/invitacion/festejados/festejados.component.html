@@ -12,7 +12,7 @@
           <div class="frame-decoration top-right"></div>
           <div class="frame-decoration bottom-left"></div>
           <div class="frame-decoration bottom-right"></div>
-          <div class="festejados-image-container" (click)="onImagePositionClick($event)"
+          <div class="festejados-image-container" (mousedown)="onDragStart($event)" (mousemove)="onDragMove($event)" (mouseup)="onDragEnd()" (mouseleave)="onDragEnd()" (touchstart)="onDragStart($event)" (touchmove)="onDragMove($event)" (touchend)="onDragEnd()" [class.dragging]="isDragging"
             [class.adjusting]="adjustingPosition">
             <img [src]="data.imagen" alt="Festejados" appDisableDownload class="festejados-image"
               [ngStyle]="{ 'object-position': imagenPosicion, 'pointer-events': adjustingPosition ? 'none' : 'auto' }">
@@ -50,7 +50,7 @@
         <!-- Panel de ajuste de posición -->
         @if (adjustingPosition) {
           <div class="position-adjust-panel-festejados">
-            <p class="adjust-hint">Toca la imagen donde deseas el punto focal</p>
+            <p class="adjust-hint">Arrastra para ajustar el punto focal</p>
             <div class="adjust-actions">
               <button class="adjust-save-btn" (click)="savePosition()">✓ Guardar</button>
               <button class="adjust-cancel-btn" (click)="cancelPositionAdjust()">✕ Cancelar</button>

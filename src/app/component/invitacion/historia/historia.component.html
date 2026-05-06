@@ -17,7 +17,7 @@
         <div class="story-image-wrapper" [class.adjusting-mode]="adjustingPositionId === item.id">
           <div class="story-image"
             [ngStyle]="{'background-image': 'url(' + item.imagen + ')', 'background-position': getImagenPosicion(item.id)}"
-            (click)="onImagePositionClick($event, item.id)"
+            (mousedown)="onDragStart($event, item.id)" (mousemove)="onDragMove($event, item.id)" (mouseup)="onDragEnd()" (mouseleave)="onDragEnd()" (touchstart)="onDragStart($event, item.id)" (touchmove)="onDragMove($event, item.id)" (touchend)="onDragEnd()" [class.dragging]="isDragging"
             appDisableDownload>
 
             <!-- Crosshair for this item -->

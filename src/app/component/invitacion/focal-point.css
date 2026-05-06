@@ -135,7 +135,15 @@
 
 /* Adjusting mode: cursor */
 .adjusting-mode {
-  cursor: crosshair;
+  cursor: grab;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.adjusting-mode.dragging,
+.dragging {
+  cursor: grabbing;
 }
 
 /* Make content transparent to clicks during adjustment */
@@ -188,7 +196,12 @@
 
 /* Story image adjusting mode */
 .story-image-wrapper.adjusting-mode .story-image {
-  cursor: crosshair;
+  cursor: grab;
+  touch-action: none;
+}
+
+.story-image-wrapper.adjusting-mode.dragging .story-image {
+  cursor: grabbing;
 }
 
 .story-image-wrapper.adjusting-mode .story-card {

@@ -94,16 +94,38 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
     }
   }
 
-  onImagePositionClick(event: MouseEvent) {
-    const id = this.currentId();
-    if (this.adjustingPositionId !== id || !id) return;
-    const target = event.currentTarget as HTMLElement;
-    const rect = target.getBoundingClientRect();
-    const x = ((event.clientX - rect.left) / rect.width) * 100;
-    const y = ((event.clientY - rect.top) / rect.height) * 100;
-    this.imagenPosiciones[id] = `${Math.round(x)}% ${Math.round(y)}%`;
+  isDragging = false;
+
+  onDragStart(event: MouseEvent | TouchEvent) {
+    const id = this.adjustingPositionId;
+    if (!id) return;
+    event.preventDefault();
+    this.isDragging = true;
+    this.updatePositionFromDragEvent(event, id);
   }
 
+  onDragMove(event: MouseEvent | TouchEvent) {
+    const id = this.adjustingPositionId;
+    if (!this.isDragging || !id) return;
+    event.preventDefault();
+    this.updatePositionFromDragEvent(event, id);
+  }
+
+  onDragEnd() {
+    this.isDragging = false;
+  }
+
+  private updatePositionFromDragEvent(event: MouseEvent | TouchEvent, id: string) {
+    const target = (event.currentTarget || event.target) as HTMLElement;
+    const rect = target.getBoundingClientRect();
+    let clientX: number, clientY: number;
+    if ('touches' in event && event.touches.length > 0) { clientX = event.touches[0].clientX; clientY = event.touches[0].clientY; }
+    else if ('clientX' in event) { clientX = event.clientX; clientY = event.clientY; }
+    else { return; }
+    const x = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+    const y = Math.max(0, Math.min(100, ((clientY - rect.top) / rect.height) * 100));
+    this.imagenPosiciones[id] = `${Math.round(x)}% ${Math.round(y)}%`;
+  }
   savePosition() {
     const id = this.currentId();
     if (!id) return;

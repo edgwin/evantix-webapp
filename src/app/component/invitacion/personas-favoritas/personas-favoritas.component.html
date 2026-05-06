@@ -27,7 +27,7 @@
             <img [src]="prevImg()" alt="prev" class="side-img" appDisableDownload>
           </div>
           <div class="center">
-            <div class="center-image-wrapper" (click)="onImagePositionClick($event)"
+            <div class="center-image-wrapper" (mousedown)="onDragStart($event)" (mousemove)="onDragMove($event)" (mouseup)="onDragEnd()" (mouseleave)="onDragEnd()" (touchstart)="onDragStart($event)" (touchmove)="onDragMove($event)" (touchend)="onDragEnd()" [class.dragging]="isDragging"
               [class.adjusting-mode]="adjustingPositionId === currentId()">
               <img [src]="currentImg()" alt="current" class="center-img" appDisableDownload
                 [ngStyle]="{'object-position': getCurrentImagenPosicion()}">

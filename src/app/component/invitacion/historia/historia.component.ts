@@ -58,13 +58,37 @@ export class HistoriaComponent implements OnInit {
     }
   }
 
-  onImagePositionClick(event: MouseEvent, id: string) {
+  isDragging = false;
+  draggingItemId: string | null = null;
+
+  onDragStart(event: MouseEvent | TouchEvent, id: string) {
     if (this.adjustingPositionId !== id) return;
-    event.stopPropagation();
-    const target = event.currentTarget as HTMLElement;
+    event.preventDefault();
+    this.isDragging = true;
+    this.draggingItemId = id;
+    this.updatePositionFromEvent(event, id);
+  }
+
+  onDragMove(event: MouseEvent | TouchEvent, id: string) {
+    if (!this.isDragging || this.draggingItemId !== id) return;
+    event.preventDefault();
+    this.updatePositionFromEvent(event, id);
+  }
+
+  onDragEnd() {
+    this.isDragging = false;
+    this.draggingItemId = null;
+  }
+
+  private updatePositionFromEvent(event: MouseEvent | TouchEvent, id: string) {
+    const target = (event.currentTarget || event.target) as HTMLElement;
     const rect = target.getBoundingClientRect();
-    const x = ((event.clientX - rect.left) / rect.width) * 100;
-    const y = ((event.clientY - rect.top) / rect.height) * 100;
+    let clientX: number, clientY: number;
+    if ('touches' in event && event.touches.length > 0) { clientX = event.touches[0].clientX; clientY = event.touches[0].clientY; }
+    else if ('clientX' in event) { clientX = event.clientX; clientY = event.clientY; }
+    else { return; }
+    const x = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+    const y = Math.max(0, Math.min(100, ((clientY - rect.top) / rect.height) * 100));
     this.imagenPosiciones[id] = `${Math.round(x)}% ${Math.round(y)}%`;
   }
 
