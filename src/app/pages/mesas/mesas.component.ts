@@ -27,6 +27,7 @@ export class MesasComponent implements OnInit {
   mesaNombre: string = '';
   mesaCantidad: number = 8;
   mesaOrden: number = 1;
+  minCapacity: number = 1; // Minimum capacity based on assigned guests
   formSubmitted = false;
   saving = false;
 
@@ -141,6 +142,7 @@ export class MesasComponent implements OnInit {
     this.mesaNombre = '';
     this.mesaCantidad = 8;
     this.mesaOrden = this.mesas.length + 1;
+    this.minCapacity = 1;
     this.formSubmitted = false;
   }
 
@@ -150,6 +152,9 @@ export class MesasComponent implements OnInit {
     this.mesaNombre = mesa.nombre;
     this.mesaCantidad = mesa.cantidadLugares;
     this.mesaOrden = mesa.orden;
+    // Minimum capacity = number of currently assigned guests (at least 1)
+    const assignedCount = mesa.invitados?.length || 0;
+    this.minCapacity = Math.max(assignedCount, 1);
     this.formSubmitted = false;
   }
 
@@ -160,7 +165,7 @@ export class MesasComponent implements OnInit {
   }
 
   isFormValid(): boolean {
-    return !!this.mesaNombre?.trim() && this.mesaCantidad > 0 && this.mesaOrden > 0;
+    return !!this.mesaNombre?.trim() && this.mesaCantidad >= this.minCapacity && this.mesaOrden > 0;
   }
 
   saveMesa() {

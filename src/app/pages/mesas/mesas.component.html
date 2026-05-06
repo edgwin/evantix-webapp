@@ -58,8 +58,14 @@
         </div>
         <div class="form-group">
           <label>Cantidad de Lugares <span class="required">*</span></label>
-          <input type="number" [(ngModel)]="mesaCantidad" min="1" class="form-input"
-            [class.input-error]="formSubmitted && mesaCantidad < 1" />
+          <input type="number" [(ngModel)]="mesaCantidad" [min]="minCapacity" class="form-input"
+            [class.input-error]="formSubmitted && mesaCantidad < minCapacity" />
+          @if (formSubmitted && mesaCantidad < minCapacity) {
+          <small class="error-msg">Mínimo {{ minCapacity }} lugar(es) — hay {{ minCapacity }} invitado(s) asignado(s)</small>
+          }
+          @if (editingMesaId && minCapacity > 1) {
+          <small class="hint-msg">💡 Hay {{ minCapacity }} invitado(s) asignado(s) a esta mesa</small>
+          }
         </div>
         <div class="form-group">
           <label>Orden</label>

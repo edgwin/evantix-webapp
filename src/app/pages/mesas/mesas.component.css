@@ -215,6 +215,13 @@
     color: #e74c3c;
 }
 
+.hint-msg {
+    color: #338da2;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+}
+
 .form-actions {
     display: flex;
     gap: 12px;
