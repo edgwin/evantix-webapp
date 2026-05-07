@@ -7,11 +7,11 @@
         <span class="nav-title">Evantix</span>
       </div>
       <div class="nav-links">
-        <a (click)="scrollTo('features')">Características</a>
-        <a (click)="scrollTo('pricing')">Precios</a>
-        <a (click)="scrollTo('how')">¿Cómo funciona?</a>
-        <button class="btn-nav-login" (click)="goToLogin()">Ingresar</button>
-        <button class="btn-nav-register" (click)="goToRegister()">Crear Cuenta</button>
+        <a (click)="scrollTo('features')" title="Ver características de Evantix" aria-label="Características">Características</a>
+        <a (click)="scrollTo('pricing')" title="Ver planes y precios" aria-label="Precios">Precios</a>
+        <a (click)="scrollTo('how')" title="Cómo crear tu invitación" aria-label="¿Cómo funciona?">¿Cómo funciona?</a>
+        <button class="btn-nav-login" (click)="goToLogin()" aria-label="Iniciar sesión">Ingresar</button>
+        <button class="btn-nav-register" (click)="goToRegister()" aria-label="Crear una cuenta nueva">Crear Cuenta</button>
       </div>
     </div>
   </nav>
@@ -24,7 +24,7 @@
       <div class="shape shape-3"></div>
     </div>
     <div class="hero-content">
-      <img src="../../../assets/images/Evantix.png" alt="Evantix" class="hero-logo" />
+      <img src="../../../assets/images/Evantix.png" alt="Plataforma de Invitaciones Digitales Evantix" class="hero-logo" />
       <h1>Crea Invitaciones Digitales <span class="gradient-text">Espectaculares</span> en Solo 3 Minutos</h1>
       <p class="hero-subtitle">
         Diseña, personaliza y envía invitaciones únicas para bodas, XV años, bautizos, graduaciones y cualquier evento
@@ -32,10 +32,10 @@
         Con tecnología de Inteligencia Artificial y envío instantáneo por WhatsApp.
       </p>
       <div class="hero-ctas">
-        <button class="btn-primary-xl" (click)="goToRegister()">
+        <button class="btn-primary-xl" (click)="goToRegister()" title="Empezar a diseñar mi invitación gratis">
           🚀 Crear Mi Invitación Gratis
         </button>
-        <button class="btn-outline-xl" (click)="goToLogin()">
+        <button class="btn-outline-xl" (click)="goToLogin()" title="Entrar a mi panel de control">
           Ya tengo cuenta
         </button>
       </div>
