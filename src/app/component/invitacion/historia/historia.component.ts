@@ -63,7 +63,11 @@ export class HistoriaComponent implements OnInit {
 
   onDragStart(event: MouseEvent | TouchEvent, id: string) {
     if (this.adjustingPositionId !== id) return;
+    const el = event.target as HTMLElement;
+    if (el.closest('button, a, input, .adjust-actions, .adjust-actions-compact, .position-controls-bg, .position-controls-item, .editImage')) return;
+
     event.preventDefault();
+    event.stopPropagation();
     this.isDragging = true;
     this.draggingItemId = id;
     this.updatePositionFromEvent(event, id);
@@ -72,6 +76,7 @@ export class HistoriaComponent implements OnInit {
   onDragMove(event: MouseEvent | TouchEvent, id: string) {
     if (!this.isDragging || this.draggingItemId !== id) return;
     event.preventDefault();
+    event.stopPropagation();
     this.updatePositionFromEvent(event, id);
   }
 

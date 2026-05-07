@@ -99,7 +99,11 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
   onDragStart(event: MouseEvent | TouchEvent) {
     const id = this.adjustingPositionId;
     if (!id) return;
+    const el = event.target as HTMLElement;
+    if (el.closest('button, a, input, .adjust-actions, .adjust-actions-compact, .position-controls-bg, .position-controls-item, .editImage')) return;
+
     event.preventDefault();
+    event.stopPropagation();
     this.isDragging = true;
     this.updatePositionFromDragEvent(event, id);
   }
@@ -108,6 +112,7 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
     const id = this.adjustingPositionId;
     if (!this.isDragging || !id) return;
     event.preventDefault();
+    event.stopPropagation();
     this.updatePositionFromDragEvent(event, id);
   }
 
@@ -261,6 +266,7 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
   // ---------- pointer / swipe handlers ----------
   // In your template you already have: (pointerdown)="onPointerDown($event)" (pointerup)="onPointerUp($event)"
   onPointerDown(ev: PointerEvent) {
+    if (this.adjustingPositionId) return;
     // capture pointer to follow moves reliably
     try {
       (ev.target as Element)?.setPointerCapture?.(ev.pointerId);
@@ -273,6 +279,7 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
   }
 
   onPointerMove(ev: PointerEvent) {
+    if (this.adjustingPositionId) return;
     if (this.pointerId !== ev.pointerId) return;
     this.lastX = ev.clientX;
     if (this.startX == null) return;
@@ -281,6 +288,7 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
   }
 
   onPointerUp(ev: PointerEvent) {
+    if (this.adjustingPositionId) return;
     try {
       (ev.target as Element)?.releasePointerCapture?.(ev.pointerId);
     } catch { }

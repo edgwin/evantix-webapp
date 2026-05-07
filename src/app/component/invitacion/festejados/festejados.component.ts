@@ -162,7 +162,11 @@ export class FestejadosComponent implements OnInit {
 
   onDragStart(event: MouseEvent | TouchEvent) {
     if (!this.adjustingPosition) return;
+    const el = event.target as HTMLElement;
+    if (el.closest('button, a, input, .adjust-actions, .adjust-actions-compact, .position-controls-bg, .position-controls-item, .editImage')) return;
+
     event.preventDefault();
+    event.stopPropagation();
     this.isDragging = true;
     this.updatePositionFromEvent(event);
   }
@@ -170,6 +174,7 @@ export class FestejadosComponent implements OnInit {
   onDragMove(event: MouseEvent | TouchEvent) {
     if (!this.adjustingPosition || !this.isDragging) return;
     event.preventDefault();
+    event.stopPropagation();
     this.updatePositionFromEvent(event);
   }
 
