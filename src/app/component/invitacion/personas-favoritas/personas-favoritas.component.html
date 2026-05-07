@@ -24,13 +24,15 @@
         (mouseleave)="resumeAutoplayWithDelay()">
         <div class="gallery" [ngClass]="animationDirection">
           <div class="side left">
-            <img [src]="prevImg()" alt="prev" class="side-img" appDisableDownload>
+            <div class="side-img" [ngStyle]="{'background-image': 'url(' + prevImg() + ')'}" appDisableDownload></div>
           </div>
           <div class="center">
-            <div class="center-image-wrapper" (pointerdown)="onDragStart($event)" (pointermove)="onDragMove($event)" (pointerup)="onDragEnd($event)" (pointerleave)="onDragEnd($event)" [class.dragging]="isDragging"
+            <div class="center-image-wrapper" 
+              (mousedown)="onDragStart($event)" (mousemove)="onDragMove($event)" (mouseup)="onDragEnd()" (mouseleave)="onDragEnd()"
+              (touchstart)="onDragStart($event)" (touchmove)="onDragMove($event)" (touchend)="onDragEnd()"
+              [class.dragging]="isDragging"
               [class.adjusting-mode]="adjustingPositionId === currentId()">
-              <img [src]="currentImg()" alt="current" class="center-img" appDisableDownload
-                [ngStyle]="{'object-position': getCurrentImagenPosicion()}">
+              <div class="center-img" [ngStyle]="{'background-image': 'url(' + currentImg() + ')', 'background-position': getCurrentImagenPosicion()}" appDisableDownload></div>
               @if (!isReadOnly && adjustingPositionId !== currentId()) {
                 <button class="edit-btn" (click)="onOpenPopup()" title="Editar" id="tour-edit-data">
                   <img src="assets/editData.png" alt="editar">
@@ -65,7 +67,7 @@
             </div>
           </div>
           <div class="side right">
-            <img [src]="nextImg()" alt="next" class="side-img" appDisableDownload>
+            <div class="side-img" [ngStyle]="{'background-image': 'url(' + nextImg() + ')'}" appDisableDownload></div>
           </div>
         </div>
         @if (currentParentesco() || currentNombres()) {

@@ -105,7 +105,7 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
 
   isDragging = false;
 
-  onDragStart(event: PointerEvent) {
+  onDragStart(event: MouseEvent | TouchEvent) {
     const id = this.adjustingPositionId;
     if (!id || this.isReadOnly) return;
     const el = event.target as HTMLElement;
@@ -114,16 +114,11 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
     event.preventDefault();
     event.stopPropagation();
     
-    // Capture pointer to follow moves reliably even outside the element
-    try {
-      el.setPointerCapture(event.pointerId);
-    } catch {}
-
     this.isDragging = true;
     this.updatePositionFromDragEvent(event, id);
   }
 
-  onDragMove(event: PointerEvent) {
+  onDragMove(event: MouseEvent | TouchEvent) {
     const id = this.adjustingPositionId;
     if (!this.isDragging || !id || this.isReadOnly) return;
     event.preventDefault();
@@ -131,23 +126,29 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
     this.updatePositionFromDragEvent(event, id);
   }
 
-  onDragEnd(event?: PointerEvent) {
-    if (event && this.isDragging) {
-      try {
-        (event.target as HTMLElement).releasePointerCapture(event.pointerId);
-      } catch {}
-    }
+  onDragEnd() {
     this.isDragging = false;
   }
 
-  private updatePositionFromDragEvent(event: PointerEvent, id: string) {
-    // We want the rect of the wrapper, which is currentTarget
+  private updatePositionFromDragEvent(event: MouseEvent | TouchEvent, id: string) {
     const target = (event.currentTarget as HTMLElement) || (event.target as HTMLElement).closest('.center-image-wrapper');
     if (!target) return;
     
     const rect = target.getBoundingClientRect();
-    const x = Math.max(0, Math.min(100, ((event.clientX - rect.left) / rect.width) * 100));
-    const y = Math.max(0, Math.min(100, ((event.clientY - rect.top) / rect.height) * 100));
+    let clientX: number, clientY: number;
+
+    if ('touches' in event && event.touches.length > 0) {
+      clientX = event.touches[0].clientX;
+      clientY = event.touches[0].clientY;
+    } else if ('clientX' in event) {
+      clientX = (event as MouseEvent).clientX;
+      clientY = (event as MouseEvent).clientY;
+    } else {
+      return;
+    }
+
+    const x = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+    const y = Math.max(0, Math.min(100, ((clientY - rect.top) / rect.height) * 100));
     this.imagenPosiciones[id] = `${Math.round(x)}% ${Math.round(y)}%`;
   }
   savePosition() {

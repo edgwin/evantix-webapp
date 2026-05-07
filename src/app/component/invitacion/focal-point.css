@@ -209,3 +209,8 @@
   opacity: 0.3;
 }
 
+/* Personas Favoritas specific */
+.center-image-wrapper.adjusting-mode .center-img {
+  pointer-events: none;
+}
+
