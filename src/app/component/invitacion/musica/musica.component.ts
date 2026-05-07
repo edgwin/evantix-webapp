@@ -50,6 +50,8 @@ export class MusicaComponent implements OnInit, OnChanges, OnDestroy {
     this.audio = new Audio();
     this.audio.loop = true;
     this.audio.volume = 0.6;
+    this.audio.autoplay = false;
+    this.audio.preload = 'auto';
 
     this.audio.onended = () => this.isPlaying = false;
     if (this.trackId) {
@@ -128,6 +130,28 @@ export class MusicaComponent implements OnInit, OnChanges, OnDestroy {
     
     const events = ['click', 'touchstart', 'mousedown', 'pointerdown'];
     events.forEach(e => document.addEventListener(e, this.autoplayListener!, { once: true }));
+  }
+
+  /**
+   * Llamado desde fuera (ej. botón "Abrir Invitación") para desbloquear 
+   * el audio en móviles dentro de un gesto del usuario.
+   */
+  unlockAudio() {
+    if (!this.audio) return;
+    
+    // Intento de reproducción "muda" o rápida para desbloquear
+    this.audio.play().then(() => {
+      this.removeAutoplayListener();
+      // Si ya tiene src y debería sonar, lo dejamos sonar.
+      // Si no tiene src o no debería sonar todavía, pausamos.
+      if (!this.audio.src || !this.isReadOnly) {
+        this.audio.pause();
+      } else {
+        this.isPlaying = true;
+      }
+    }).catch(() => {
+      // Falló el desbloqueo, pero al menos lo intentamos en el stack de la interacción
+    });
   }
 
   private removeAutoplayListener() {

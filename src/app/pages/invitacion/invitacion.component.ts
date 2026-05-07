@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, ViewChild, ViewChildren, QueryList } from '@angular/core';
 import { PortadaComponent } from '../../component/invitacion/portada/portada.component'
 import { FestejadosComponent } from '../../component/invitacion/festejados/festejados.component'
 import { IndicacionesComponent } from '../../component/invitacion/indicaciones/indicaciones.component'
@@ -78,11 +78,17 @@ export class InvitacionComponent implements OnDestroy {
   showWelcome: boolean = false;
 
   @ViewChild('invScroll') invScrollRef!: ElementRef<HTMLElement>;
+  @ViewChildren(MusicaComponent) musicaComponents!: QueryList<MusicaComponent>;
 
   closeWelcome(): void {
     this.showWelcome = false;
     // Permitir scroll después de cerrar
     document.body.style.overflow = 'auto';
+
+    // Desbloquear audio en móviles
+    if (this.musicaComponents) {
+      this.musicaComponents.forEach(m => m.unlockAudio());
+    }
   }
 
   toggleReadOnly(): void {
