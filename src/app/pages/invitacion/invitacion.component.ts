@@ -74,7 +74,16 @@ export class InvitacionComponent implements OnDestroy {
   // Track ID actual
   currentTrackId: string = '';
 
+  // Welcome screen for guests
+  showWelcome: boolean = false;
+
   @ViewChild('invScroll') invScrollRef!: ElementRef<HTMLElement>;
+
+  closeWelcome(): void {
+    this.showWelcome = false;
+    // Permitir scroll después de cerrar
+    document.body.style.overflow = 'auto';
+  }
 
   toggleReadOnly(): void {
     if (this.eventStatus === 'Creado' || this.isAdmin) {
@@ -232,6 +241,11 @@ export class InvitacionComponent implements OnDestroy {
     }
 
     this.loading = false;
+
+    if (this.isReadOnly) {
+      this.showWelcome = true;
+      document.body.style.overflow = 'hidden';
+    }
 
     if (!this.isReadOnly && !this.isGuestView) {
       setTimeout(() => this.tourService.startIfNeeded(), 1200);
