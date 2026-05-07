@@ -44,12 +44,11 @@
   top: 0;
   bottom: 0;
   width: 3px;
-  background: linear-gradient(to bottom, 
-    transparent,
-    var(--primary-color, #e91e63) 5%,
-    var(--primary-color, #e91e63) 95%,
-    transparent
-  );
+  background: linear-gradient(to bottom,
+      transparent,
+      var(--primary-color, #e91e63) 5%,
+      var(--primary-color, #e91e63) 95%,
+      transparent);
   transform: translateX(-50%);
 }
 
@@ -72,6 +71,7 @@
     opacity: 0;
     transform: translateX(-40px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -83,6 +83,7 @@
     opacity: 0;
     transform: translateX(40px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -154,7 +155,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .story-card {
@@ -295,7 +298,8 @@
 }
 
 .story-image-wrapper .position-controls-item {
-  left: 30%;
+  left: 20%;
+  top: 80%;
 }
 
 /* Responsive */
@@ -384,6 +388,7 @@
   }
 
   .image-edit-btn {
+    bottom: -10px;
     width: 26px;
     height: 26px;
   }
