@@ -172,6 +172,8 @@ export class InvitacionComponent implements OnDestroy {
     if (!this.isReadOnly) {
       this.editLockService.stopAndRelease();
     }
+    // Asegurar que el scroll se restaure
+    document.body.style.overflow = 'auto';
   }
 
   goToDashboard(): void {

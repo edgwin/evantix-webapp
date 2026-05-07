@@ -455,3 +455,151 @@
   color: #fff;
   font-weight: 700;
 }
+
+/* === Welcome Overlay === */
+.welcome-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.5s ease;
+}
+
+.welcome-content {
+  width: 90%;
+  max-width: 400px;
+  perspective: 1000px;
+}
+
+.welcome-card {
+  background: #fff;
+  padding: 40px 30px;
+  border-radius: 24px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: scaleIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-decoration {
+  font-size: 24px;
+  margin-bottom: 15px;
+}
+
+.welcome-title {
+  font-family: var(--heading-font, 'Playfair Display', serif);
+  font-size: 2.2rem;
+  color: #333;
+  margin: 0 0 10px 0;
+}
+
+.welcome-subtitle {
+  font-family: var(--body-font, 'Work Sans', sans-serif);
+  color: #666;
+  font-size: 0.95rem;
+  margin: 0 0 30px 0;
+  line-height: 1.5;
+}
+
+/* Envelope Animation */
+.welcome-envelope-container {
+  margin-bottom: 35px;
+  display: flex;
+  justify-content: center;
+}
+
+.welcome-envelope {
+  width: 80px;
+  height: 50px;
+  background: #fdf2f8;
+  border: 2px solid #f9a8d4;
+  position: relative;
+  border-radius: 4px;
+}
+
+.envelope-flap {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: 80px;
+  height: 30px;
+  background: #fdf2f8;
+  border: 2px solid #f9a8d4;
+  border-bottom: none;
+  clip-path: polygon(0 0, 50% 100%, 100% 0);
+  z-index: 2;
+  transition: transform 0.4s ease;
+  transform-origin: top;
+}
+
+.welcome-envelope:hover .envelope-flap {
+  transform: rotateX(160deg);
+}
+
+.envelope-paper {
+  position: absolute;
+  top: 5px;
+  left: 10px;
+  width: 60px;
+  height: 40px;
+  background: #fff;
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.4s ease;
+}
+
+.welcome-envelope:hover .envelope-paper {
+  transform: translateY(-20px);
+}
+
+.envelope-heart {
+  color: #f14e95;
+  font-size: 16px;
+}
+
+.welcome-btn {
+  background: var(--primary-color, #F14E95);
+  color: #fff;
+  border: none;
+  padding: 14px 32px;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(241, 78, 149, 0.3);
+}
+
+.welcome-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(241, 78, 149, 0.4);
+  background: #e13d84;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.8) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@media screen and (max-width: 480px) {
+  .welcome-title { font-size: 1.8rem; }
+  .welcome-subtitle { font-size: 0.85rem; }
+  .welcome-card { padding: 30px 20px; }
+}
