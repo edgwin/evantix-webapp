@@ -30,7 +30,7 @@
     </div>
   }
 
-  @if (adjustingPosition) {
+  @if (!isReadOnly && adjustingPosition) {
     <div class="focal-crosshair" [ngStyle]="{
       'left': imagenPosicion.split(' ')[0],
       'top': imagenPosicion.split(' ')[1]

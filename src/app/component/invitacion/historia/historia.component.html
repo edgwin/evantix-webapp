@@ -21,7 +21,7 @@
             appDisableDownload>
 
             <!-- Crosshair for this item -->
-            @if (adjustingPositionId === item.id) {
+            @if (!isReadOnly && adjustingPositionId === item.id) {
               <div class="focal-crosshair" [ngStyle]="{
                 'left': getImagenPosicion(item.id).split(' ')[0],
                 'top': getImagenPosicion(item.id).split(' ')[1]

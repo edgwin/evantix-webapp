@@ -17,7 +17,7 @@
             <img [src]="data.imagen" alt="Festejados" appDisableDownload class="festejados-image"
               [ngStyle]="{ 'object-position': imagenPosicion, 'pointer-events': adjustingPosition ? 'none' : 'auto' }">
             <!-- Crosshair para ajuste de posición -->
-            @if (adjustingPosition) {
+            @if (!isReadOnly && adjustingPosition) {
               <div class="focal-crosshair-festejados" [ngStyle]="{
                 'left': imagenPosicion.split(' ')[0],
                 'top': imagenPosicion.split(' ')[1]
@@ -48,7 +48,7 @@
           }
         </div>
         <!-- Panel de ajuste de posición -->
-        @if (adjustingPosition) {
+        @if (!isReadOnly && adjustingPosition) {
           <div class="position-adjust-panel-festejados">
             <p class="adjust-hint">Arrastra para ajustar el punto focal</p>
             <div class="adjust-actions">

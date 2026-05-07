@@ -27,7 +27,7 @@
             <img [src]="prevImg()" alt="prev" class="side-img" appDisableDownload>
           </div>
           <div class="center">
-            <div class="center-image-wrapper" (mousedown)="onDragStart($event)" (mousemove)="onDragMove($event)" (mouseup)="onDragEnd()" (mouseleave)="onDragEnd()" (touchstart)="onDragStart($event)" (touchmove)="onDragMove($event)" (touchend)="onDragEnd()" [class.dragging]="isDragging"
+            <div class="center-image-wrapper" (pointerdown)="onDragStart($event)" (pointermove)="onDragMove($event)" (pointerup)="onDragEnd($event)" (pointerleave)="onDragEnd($event)" [class.dragging]="isDragging"
               [class.adjusting-mode]="adjustingPositionId === currentId()">
               <img [src]="currentImg()" alt="current" class="center-img" appDisableDownload
                 [ngStyle]="{'object-position': getCurrentImagenPosicion()}">
@@ -37,7 +37,7 @@
                 </button>
               }
 
-              @if (adjustingPositionId === currentId()) {
+              @if (!isReadOnly && adjustingPositionId === currentId()) {
                 <div class="focal-crosshair" [ngStyle]="{
                   'left': getCurrentImagenPosicion().split(' ')[0],
                   'top': getCurrentImagenPosicion().split(' ')[1]

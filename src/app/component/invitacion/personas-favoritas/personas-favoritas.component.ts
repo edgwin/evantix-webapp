@@ -23,7 +23,16 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
   @Input() data: any;
   @Input() height = '60vh';
   @Input() eventType: string = '';
-  @Input() isReadOnly: boolean = false;
+  private _isReadOnly = false;
+  @Input() set isReadOnly(val: boolean) {
+    this._isReadOnly = val;
+    if (val) {
+      this.adjustingPositionId = null;
+      this.isDragging = false;
+    }
+  }
+  get isReadOnly(): boolean { return this._isReadOnly; }
+
   @Input() maxItems: number = 99;
   @Input() aiEnabled: boolean = false;
   images: any[] = [];
@@ -96,39 +105,49 @@ export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDest
 
   isDragging = false;
 
-  onDragStart(event: MouseEvent | TouchEvent) {
+  onDragStart(event: PointerEvent) {
     const id = this.adjustingPositionId;
-    if (!id) return;
+    if (!id || this.isReadOnly) return;
     const el = event.target as HTMLElement;
     if (el.closest('button, a, input, .adjust-actions, .adjust-actions-compact, .position-controls-bg, .position-controls-item, .editImage')) return;
 
     event.preventDefault();
     event.stopPropagation();
+    
+    // Capture pointer to follow moves reliably even outside the element
+    try {
+      el.setPointerCapture(event.pointerId);
+    } catch {}
+
     this.isDragging = true;
     this.updatePositionFromDragEvent(event, id);
   }
 
-  onDragMove(event: MouseEvent | TouchEvent) {
+  onDragMove(event: PointerEvent) {
     const id = this.adjustingPositionId;
-    if (!this.isDragging || !id) return;
+    if (!this.isDragging || !id || this.isReadOnly) return;
     event.preventDefault();
     event.stopPropagation();
     this.updatePositionFromDragEvent(event, id);
   }
 
-  onDragEnd() {
+  onDragEnd(event?: PointerEvent) {
+    if (event && this.isDragging) {
+      try {
+        (event.target as HTMLElement).releasePointerCapture(event.pointerId);
+      } catch {}
+    }
     this.isDragging = false;
   }
 
-  private updatePositionFromDragEvent(event: MouseEvent | TouchEvent, id: string) {
-    const target = (event.currentTarget || event.target) as HTMLElement;
+  private updatePositionFromDragEvent(event: PointerEvent, id: string) {
+    // We want the rect of the wrapper, which is currentTarget
+    const target = (event.currentTarget as HTMLElement) || (event.target as HTMLElement).closest('.center-image-wrapper');
+    if (!target) return;
+    
     const rect = target.getBoundingClientRect();
-    let clientX: number, clientY: number;
-    if ('touches' in event && event.touches.length > 0) { clientX = event.touches[0].clientX; clientY = event.touches[0].clientY; }
-    else if ('clientX' in event) { clientX = event.clientX; clientY = event.clientY; }
-    else { return; }
-    const x = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
-    const y = Math.max(0, Math.min(100, ((clientY - rect.top) / rect.height) * 100));
+    const x = Math.max(0, Math.min(100, ((event.clientX - rect.left) / rect.width) * 100));
+    const y = Math.max(0, Math.min(100, ((event.clientY - rect.top) / rect.height) * 100));
     this.imagenPosiciones[id] = `${Math.round(x)}% ${Math.round(y)}%`;
   }
   savePosition() {

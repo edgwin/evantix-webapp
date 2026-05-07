@@ -33,7 +33,15 @@ export class FestejadosComponent implements OnInit {
   @Input() eventId: string = '';
   @Input() data: any = null;
   @Input() eventType: string = '';
-  @Input() isReadOnly: boolean = false;
+      private _isReadOnly = false;
+  @Input() set isReadOnly(val: boolean) {
+    this._isReadOnly = val;
+    if (val) {
+      this.adjustingPosition = false;
+      this.isDragging = false;
+    }
+  }
+  get isReadOnly(): boolean { return this._isReadOnly; }
   @Input() aiEnabled: boolean = false;
   editingTitle: boolean = false;
   editingFrase: boolean = false;

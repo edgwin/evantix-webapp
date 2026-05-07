@@ -17,7 +17,15 @@ export class HistoriaComponent implements OnInit {
   @Input() dataHistoria: any;
   @Input() eventId: string = '';
   @Input() eventType: string = '';
-  @Input() isReadOnly: boolean = false;
+      private _isReadOnly = false;
+  @Input() set isReadOnly(val: boolean) {
+    this._isReadOnly = val;
+    if (val) {
+      this.adjustingPositionId = null;
+      this.isDragging = false;
+    }
+  }
+  get isReadOnly(): boolean { return this._isReadOnly; }
   @Input() maxItems: number = 99;
   @Input() aiEnabled: boolean = false;
   loadingImgs: { [key: string]: boolean } = {};
