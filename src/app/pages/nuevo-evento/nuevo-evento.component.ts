@@ -156,6 +156,9 @@ export class NuevoEventoComponent implements OnInit {
   }
 
   onSubmit() {
+    if (!this.isFormValid) {
+      return;
+    }
     this.loading = true;
     const fechaISO = new Date(this.evento.fecha).toISOString();
     const formData = new FormData();
@@ -234,11 +237,16 @@ export class NuevoEventoComponent implements OnInit {
 
   aceptaTerminos = false;
   get isFormValid(): boolean {
+    const whatsappRegex = /^[0-9]+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+
     return (
       this.evento.nombre.trim() !== '' &&
       this.evento.fecha !== '' &&
       this.evento.whatsapp.trim() !== '' &&
+      whatsappRegex.test(this.evento.whatsapp) &&
       this.evento.email.trim() !== '' &&
+      emailRegex.test(this.evento.email) &&
       this.evento.tipoEvento.trim() !== '' &&
       this.evento.mensajeInvitacion.trim() !== '' &&
       (this.isEditMode || this.aceptaTerminos)
