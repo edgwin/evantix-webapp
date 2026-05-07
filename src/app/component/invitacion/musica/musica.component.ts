@@ -110,24 +110,30 @@ export class MusicaComponent implements OnInit, OnChanges, OnDestroy {
   private registerAutoplayListener() {
     if (this.autoplayListener) return; // ya registrado
     this.autoplayListener = () => {
-      if (this.pendingAutoplay && this.audio.src) {
-        this.audio.play().then(() => {
-          this.isPlaying = true;
-          this.pendingAutoplay = false;
-        }).catch(() => {
-          this.isPlaying = false;
-        });
-      }
-      this.removeAutoplayListener();
+      // Si no hay src todavía, ignoramos esta interacción pero mantenemos el listener 
+      // (no llamamos a removeAutoplayListener aquí si no hay src)
+      if (!this.audio.src) return;
+
+      this.audio.play().then(() => {
+        this.isPlaying = true;
+        this.pendingAutoplay = false;
+        this.removeAutoplayListener();
+      }).catch(() => {
+        this.isPlaying = false;
+        // Si falla con interacción, removemos para evitar reintentos infinitos, 
+        // pero el usuario podrá dar play manual.
+        this.removeAutoplayListener();
+      });
     };
-    document.addEventListener('click', this.autoplayListener, { once: true });
-    document.addEventListener('touchstart', this.autoplayListener, { once: true });
+    
+    const events = ['click', 'touchstart', 'mousedown', 'pointerdown'];
+    events.forEach(e => document.addEventListener(e, this.autoplayListener!, { once: true }));
   }
 
   private removeAutoplayListener() {
     if (this.autoplayListener) {
-      document.removeEventListener('click', this.autoplayListener);
-      document.removeEventListener('touchstart', this.autoplayListener);
+      const events = ['click', 'touchstart', 'mousedown', 'pointerdown'];
+      events.forEach(e => document.removeEventListener(e, this.autoplayListener!));
       this.autoplayListener = null;
     }
     this.pendingAutoplay = false;
