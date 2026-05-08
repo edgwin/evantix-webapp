@@ -257,8 +257,9 @@ export class NuevoEventoComponent implements OnInit {
     if (event.value.toLowerCase() === "otro") {
       this.tipoEventoTxtHidden = false;
       this.evento.tipoEvento = "";
-      return;
+    } else {
+      this.tipoEventoTxtHidden = true;
+      this.evento.tipoEvento = event.value;
     }
-    this.evento.tipoEvento = event.value;
   }
 }

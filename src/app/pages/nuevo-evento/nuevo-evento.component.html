@@ -53,7 +53,12 @@
               @if (isEditMode) { <span class="field-locked-hint">🔒 No editable</span> }
             </label>
             <input type="text" name="tipoEventoTxt" [(ngModel)]="evento.tipoEvento" required
-              placeholder="Escribe el tipo de evento" class="form-input" [disabled]="isEditMode" maxlength="25" />
+              placeholder="Escribe el tipo de evento" class="form-input" [disabled]="isEditMode" maxlength="20" />
+            <small class="hint">
+              <span [class.char-warn]="evento.tipoEvento.length >= 15">
+                {{ evento.tipoEvento.length }}/20
+              </span>
+            </small>
           </div>
           }
 
