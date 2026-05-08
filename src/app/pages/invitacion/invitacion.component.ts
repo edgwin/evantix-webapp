@@ -30,12 +30,12 @@ import { environment } from '../../../environments/environment';
 import { EditLockService } from '../../services/edit-lock.service';
 
 @Component({
-    selector: 'app-invitacion',
-    templateUrl: './invitacion.component.html',
-    styleUrl: './invitacion.component.css',
-    imports: [PortadaComponent, CommonModule, FestejadosComponent, DondeCuandoComponent, IntinerarioComponent, IndicacionesComponent,
-        MesaRegalosComponent, PersonasFavoritasComponent, HistoriaComponent, GaleriaComponent, HospedajeComponent, RedesSocialesComponent,
-        MusicaComponent, MuroFotosComponent, TemplateSelectorComponent, CostBarComponent, SectionToggleComponent, FormsModule, TourOverlayComponent]
+  selector: 'app-invitacion',
+  templateUrl: './invitacion.component.html',
+  styleUrl: './invitacion.component.css',
+  imports: [PortadaComponent, CommonModule, FestejadosComponent, DondeCuandoComponent, IntinerarioComponent, IndicacionesComponent,
+    MesaRegalosComponent, PersonasFavoritasComponent, HistoriaComponent, GaleriaComponent, HospedajeComponent, RedesSocialesComponent,
+    MusicaComponent, MuroFotosComponent, TemplateSelectorComponent, CostBarComponent, SectionToggleComponent, FormsModule, TourOverlayComponent]
 })
 
 export class InvitacionComponent implements OnDestroy {
@@ -494,11 +494,15 @@ export class InvitacionComponent implements OnDestroy {
 
     const eventTime = new Date(fecha).getTime();
     const now = new Date().getTime();
-    
+
     // 30 días en milisegundos
     const oneMonthMs = 30 * 24 * 60 * 60 * 1000;
 
     // Permitir si la fecha exacta ya llegó (o pasó) y no ha pasado más de 30 días
     return now >= eventTime && now <= (eventTime + oneMonthMs);
+  }
+
+  currentYear() {
+    return new Date().getFullYear();
   }
 }

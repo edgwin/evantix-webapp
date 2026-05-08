@@ -272,11 +272,12 @@
   <!-- Hecho en Evantix Banner (solo vista invitado) -->
   @if (isReadOnly) {
   <div class="evantix-banner">
-    <a [href]="homeUrl" target="_blank" class="evantix-banner-link">¡Quiero una invitación como esta! da click aqui</a>
+    <a [href]="homeUrl" target="_blank" class="evantix-banner-link">¿Quieres una invitación como esta? Da click aqui</a>
     <br />
     <a [href]="homeUrl" target="_blank" class="evantix-banner-link2">
       Powered by <strong>Evantix</strong>
     </a>
+    <div class="evantix-banner-link2">{{currentYear()}}. &#169; Todos los derechos reservados.</div>
   </div>
   }
   <!-- Spacer para evitar contenido oculto debajo de la barra fija (solo editor) -->
