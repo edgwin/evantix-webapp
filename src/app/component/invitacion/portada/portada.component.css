@@ -264,7 +264,8 @@
 
 .editablePortadaTitulo {
   font-size: 150px;
-  line-height: 1.5;
+  line-height: 1.1;
+  margin-top: 80px;
   font-family: "Sacramento", Arial, serif;
   color: white;
   word-wrap: break-word;
@@ -341,13 +342,21 @@
 
 @media screen and (max-width: 768px) {
   .editablePortadaTitulo {
-    font-size: 65px;
+    font-size: 60px;
+    line-height: 1.05;
+    margin-top: 40px;
+  }
+
+  .editablePortadaSubtitulo {
+    margin-top: 20px;
+    margin-bottom: 25px;
+    font-size: 22px;
   }
 
   #fh5co-header .display-tc h2,
   #fh5co-counter .display-tc h2,
   .fh5co-cover .display-tc h2 {
-    font-size: 30px;
+    font-size: 24px;
   }
 }
 
