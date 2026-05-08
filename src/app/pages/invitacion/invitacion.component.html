@@ -272,7 +272,9 @@
   <!-- Hecho en Evantix Banner (solo vista invitado) -->
   @if (isReadOnly) {
   <div class="evantix-banner">
-    <a [href]="homeUrl" target="_blank" class="evantix-banner-link">
+    <a [href]="homeUrl" target="_blank" class="evantix-banner-link">¡Quiero una invitación como esta! da click aqui</a>
+    <br />
+    <a [href]="homeUrl" target="_blank" class="evantix-banner-link2">
       Powered by <strong>Evantix</strong>
     </a>
   </div>
@@ -310,26 +312,26 @@
 
 <!-- Welcome Overlay for Guests -->
 @if (showWelcome) {
-  <div class="welcome-overlay" (click)="closeWelcome()">
-    <div class="welcome-content" (click)="$event.stopPropagation()">
-      <div class="welcome-card">
-        <div class="welcome-decoration top">✨</div>
-        <h1 class="welcome-title">{{ data?.portada?.titulo || '¡Bienvenidos!' }}</h1>
-        <p class="welcome-subtitle">Te invitamos a ser parte de este momento especial</p>
-        
-        <div class="welcome-envelope-container">
-          <div class="welcome-envelope">
-            <div class="envelope-flap"></div>
-            <div class="envelope-paper">
-              <span class="envelope-heart">❤️</span>
-            </div>
+<div class="welcome-overlay" (click)="closeWelcome()">
+  <div class="welcome-content" (click)="$event.stopPropagation()">
+    <div class="welcome-card">
+      <div class="welcome-decoration top">✨</div>
+      <h1 class="welcome-title">{{ data?.portada?.titulo || '¡Bienvenidos!' }}</h1>
+      <p class="welcome-subtitle">Te invitamos a ser parte de este momento especial</p>
+
+      <div class="welcome-envelope-container">
+        <div class="welcome-envelope">
+          <div class="envelope-flap"></div>
+          <div class="envelope-paper">
+            <span class="envelope-heart">❤️</span>
           </div>
         </div>
-
-        <button class="welcome-btn" (click)="closeWelcome()">
-          Abrir Invitación
-        </button>
       </div>
+
+      <button class="welcome-btn" (click)="closeWelcome()">
+        Abrir Invitación
+      </button>
     </div>
   </div>
+</div>
 }
