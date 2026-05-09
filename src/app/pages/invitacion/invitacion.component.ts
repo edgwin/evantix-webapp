@@ -67,6 +67,7 @@ export class InvitacionComponent implements OnDestroy {
   rsvpSubmitted: boolean = false;
   rsvpSubmitting: boolean = false;
   rsvpFormSubmitted: boolean = false;
+  showQrModal: boolean = false;
 
   // Secciones opcionales habilitadas/deshabilitadas
   sections: { [key: string]: { isEnabled: boolean, enableCost: number, sectionName: string, maxItems: number } } = {};
@@ -470,7 +471,30 @@ export class InvitacionComponent implements OnDestroy {
         this.rsvpSubmitting = false;
         console.error('Error confirming RSVP', err);
       }
-    });
+  }
+
+  // AC1 & AC2 logic
+  get hasAcceptedGuests(): boolean {
+    if (!this.guestGroup || !this.guestGroup.invitados) return false;
+    return this.guestGroup.invitados.some((inv: any) => inv.invitacionConfirmada === 1);
+  }
+
+  // AC3 logic
+  openQrModal(): void {
+    this.showQrModal = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeQrModal(): void {
+    this.showQrModal = false;
+    document.body.style.overflow = 'auto';
+  }
+
+  get checkinQrUrl(): string {
+    if (!this.guestGroup) return '';
+    const baseUrl = window.location.origin;
+    const checkinUrl = `${baseUrl}/checkin/${this.guestGroup.grupoId}`;
+    return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(checkinUrl)}`;
   }
 
   get isBeforeEvent(): boolean {

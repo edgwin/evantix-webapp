@@ -229,6 +229,13 @@
         ¡Gracias!
       </h2>
       <p class="rsvp-subtitle">Tu confirmación ha sido registrada exitosamente</p>
+      
+      @if (hasAcceptedGuests) {
+        <button class="rsvp-qr-btn" (click)="openQrModal()" 
+                [ngStyle]="{ 'background': templateService.getCurrentTemplate()?.theme?.colors?.primary }">
+          🎟️ Ver Código QR de la Invitación
+        </button>
+      }
     </div>
     }
   </div>

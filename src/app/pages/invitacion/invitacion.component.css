@@ -641,3 +641,123 @@
     padding: 30px 20px;
   }
 }
+
+/* === QR Code Modal Styles === */
+.rsvp-qr-btn {
+  margin-top: 15px;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 30px;
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--body-font, 'Work Sans', sans-serif);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rsvp-qr-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.qr-modal-content {
+  background: white;
+  padding: 35px 30px;
+  border-radius: 24px;
+  width: 90%;
+  max-width: 380px;
+  text-align: center;
+  position: relative;
+  animation: scaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.qr-modal-title {
+  font-family: var(--heading-font, 'Playfair Display', serif);
+  font-size: 1.6rem;
+  margin: 10px 0 8px 0;
+  color: #1a1a2e;
+}
+
+.qr-modal-desc {
+  font-family: var(--body-font, 'Work Sans', sans-serif);
+  font-size: 0.88rem;
+  color: #666;
+  margin-bottom: 25px;
+  line-height: 1.4;
+}
+
+.qr-container {
+  background: #fff;
+  padding: 12px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  display: inline-block;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f0f0f0;
+}
+
+.qr-image {
+  width: 220px;
+  height: 220px;
+  display: block;
+  border-radius: 8px;
+}
+
+.qr-modal-event {
+  font-family: var(--heading-font, 'Playfair Display', serif);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #1a1a2e;
+  margin: 0;
+}
+
+.qr-modal-family {
+  font-family: var(--body-font, 'Work Sans', sans-serif);
+  color: #888;
+  font-size: 0.9rem;
+  margin: 4px 0 25px 0;
+}
+
+.qr-modal-close {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.qr-modal-close:hover {
+  opacity: 0.9;
+}
+
+.fullscreen-overlay .close-button {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.fullscreen-overlay .close-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
