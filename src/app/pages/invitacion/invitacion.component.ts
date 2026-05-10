@@ -471,6 +471,7 @@ export class InvitacionComponent implements OnDestroy {
         this.rsvpSubmitting = false;
         console.error('Error confirming RSVP', err);
       }
+    });
   }
 
   // AC1 & AC2 logic
