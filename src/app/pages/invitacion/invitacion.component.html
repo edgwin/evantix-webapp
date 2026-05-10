@@ -343,3 +343,27 @@
   </div>
 </div>
 }
+
+<!-- AC3: QR Code Modal -->
+@if (showQrModal) {
+<div class="fullscreen-overlay" (click)="closeQrModal()">
+  <div class="qr-modal-content" (click)="$event.stopPropagation()" 
+       [ngStyle]="{ 'border-top': '8px solid ' + templateService.getCurrentTemplate()?.theme?.colors?.primary }">
+    <h3 class="qr-modal-title">Tu Pase de Acceso</h3>
+    <p class="qr-modal-desc">Presenta este código QR el día del evento para registrar tu llegada:</p>
+    
+    <div class="qr-container">
+      <img [src]="checkinQrUrl" class="qr-image" alt="QR Code" />
+    </div>
+
+    <p class="qr-modal-event">{{ data?.portada?.titulo }}</p>
+    <p class="qr-modal-family">{{ guestGroup?.nombreFamilia }}</p>
+
+    <button class="qr-modal-close" (click)="closeQrModal()"
+            [ngStyle]="{ 'background': templateService.getCurrentTemplate()?.theme?.colors?.primary }">
+      Cerrar
+    </button>
+  </div>
+  <button class="close-button" (click)="closeQrModal()">✕</button>
+</div>
+}
