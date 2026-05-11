@@ -42,6 +42,86 @@
   }
 }
 
+/* ── AI Top Bar ────────────────────────────────────────── */
+.ai-top-bar {
+  position: fixed;
+  top: 54px; /* Justo debajo de la barra de costo */
+  left: 0;
+  right: 0;
+  z-index: 999;
+  background: linear-gradient(90deg, rgba(241, 78, 149, 0.95), rgba(156, 39, 176, 0.95));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #fff;
+  padding: 8px 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  animation: slideDown 0.4s ease;
+  font-family: var(--body-font, 'Work Sans', sans-serif);
+  font-size: 0.82rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.ai-bar-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-bar-icon {
+  font-size: 1.1rem;
+}
+
+.ai-bar-btn {
+  background: #fff;
+  color: #F14E95;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s;
+  text-transform: uppercase;
+}
+
+.ai-bar-btn:hover {
+  transform: scale(1.05);
+  background: #fdf2f8;
+}
+
+.ai-bar-close {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0 5px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.ai-bar-close:hover {
+  color: #fff;
+}
+
+@media screen and (max-width: 480px) {
+  .ai-top-bar {
+    top: 48px;
+    padding: 6px 12px;
+    font-size: 0.75rem;
+  }
+  
+  .ai-bar-btn {
+    padding: 3px 10px;
+    font-size: 0.7rem;
+  }
+}
+
 .preview-toggle-container {
   position: fixed;
   bottom: 0;
