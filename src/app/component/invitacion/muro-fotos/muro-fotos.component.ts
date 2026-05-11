@@ -96,9 +96,15 @@ export class MuroFotosComponent implements OnInit {
         input.type = 'file';
         input.accept = 'image/*';
         input.multiple = true;
+        input.style.display = 'none';
+        document.body.appendChild(input);
+
         input.onchange = (event: any) => {
             let files: File[] = Array.from(event.target.files);
-            if (!files.length) return;
+            if (!files.length) {
+                document.body.removeChild(input);
+                return;
+            }
 
             const slotsAvailable = this.maxItems - this.fotos.length;
 
@@ -107,6 +113,7 @@ export class MuroFotosComponent implements OnInit {
                     'warning',
                     `Ya se alcanzó el límite máximo de ${this.maxItems} fotos.`
                 );
+                document.body.removeChild(input);
                 return;
             }
 
@@ -141,6 +148,7 @@ export class MuroFotosComponent implements OnInit {
                     );
                 }
             });
+            document.body.removeChild(input);
         };
         input.click();
     }

@@ -1,4 +1,4 @@
-﻿import { Component, HostListener, Input } from '@angular/core';
+import { Component, HostListener, Input } from '@angular/core';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { CommonModule } from '@angular/common';
@@ -279,12 +279,16 @@ export class DondeCuandoComponent {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
+    input.style.display = 'none';
+    document.body.appendChild(input);
+
     input.onchange = (event: any) => {
       const file = event.target.files[0];
       if (file) {
         this.loadingImgs[dondeCuandoId] = true;
         this.uploadImage('DondeCuandoDetails', 'Id', dondeCuandoId, 'Imagen', file, dondeCuandoId);
       }
+      document.body.removeChild(input);
     };
     input.click();
   }
@@ -306,12 +310,16 @@ export class DondeCuandoComponent {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
+    input.style.display = 'none';
+    document.body.appendChild(input);
+
     input.onchange = (event: any) => {
       const file = event.target.files[0];
       if (file) {
         this.loadingImg = true;
         this.uploadBKImage('DondeCuandoMaster', 'IdEvento', this.eventId, 'Imagen', file);
       }
+      document.body.removeChild(input);
     };
     input.click();
   }

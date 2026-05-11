@@ -10,6 +10,9 @@ html {
 body {
   overflow-x: hidden;
   overscroll-behavior-x: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 

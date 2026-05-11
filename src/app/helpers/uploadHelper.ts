@@ -14,6 +14,9 @@ triggerImageUpload(
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
+    input.style.display = 'none';
+    document.body.appendChild(input);
+
     input.onchange = (event: any) => {
       const file = event.target.files[0];
       if (file) {
@@ -21,8 +24,9 @@ triggerImageUpload(
           .then(res => resolve(res))
           .catch(err => reject(err));
       } else {
-        reject(new Error('Selección cancelada')); // evita quedarse colgado
+        reject(new Error('Selección cancelada'));
       }
+      document.body.removeChild(input);
     };
     input.click();
   });

@@ -297,6 +297,9 @@ export class PortadaComponent implements OnInit, OnDestroy {
     input.type = 'file';
     input.accept = 'image/*';
     input.multiple = true;
+    input.style.display = 'none';
+    document.body.appendChild(input);
+
     input.onchange = (event: any) => {
       const files: FileList = event.target.files;
       if (files && files.length > 0) {
@@ -315,6 +318,7 @@ export class PortadaComponent implements OnInit, OnDestroy {
         this.loadingImg = true;
         this.uploadPortadaImages(fileArray);
       }
+      document.body.removeChild(input);
     };
     input.click();
   }

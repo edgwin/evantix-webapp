@@ -46,12 +46,16 @@ export class HospedajeComponent implements OnInit {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
+    input.style.display = 'none';
+    document.body.appendChild(input);
+
     input.onchange = (event: any) => {
       const file = event.target.files[0];
       if (file) {
         this.loadingImg = true;
         this.uploadImage('HospedajeMaster', 'IdEvento', this.eventId, 'Imagen', file);
       }
+      document.body.removeChild(input);
     };
     input.click();
   }
