@@ -482,8 +482,6 @@ export class InvitacionComponent implements OnDestroy {
 
   // AC3 logic
   openQrModal(): void {
-    console.log('Abriendo modal de QR...');
-    alert('Abriendo modal de QR...');
     this.showQrModal = true;
     document.body.style.overflow = 'hidden';
   }
