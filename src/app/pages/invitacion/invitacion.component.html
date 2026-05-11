@@ -38,27 +38,18 @@
         @if (isSectionEnabled('AISuggestions')) {
           Sugerencias con IA <b>Activas</b>. Haz clic en los textos para mejorarlos.
         } @else {
-          Mejora tu invitación con <b>Inteligencia Artificial</b>.
+          Mejora tus textos con <b>IA</b>.
         }
       </span>
       @if (!isSectionEnabled('AISuggestions')) {
-        <button class="ai-bar-btn" (click)="onEnableSection('AISuggestions')">Habilitar</button>
+        <button class="ai-bar-btn" (click)="onEnableSection('AISuggestions')">
+          Habilitar +{{ getSectionEnableCost('AISuggestions') | currency:'MXN':'symbol-narrow':'1.0-0' }}
+        </button>
       }
     </div>
     <button class="ai-bar-close" (click)="closeAiBar()" title="Cerrar barra">✕</button>
   </div>
   }
-
-  <!-- Sección de Sugerencias IA (Duplicada arriba por petición) -->
-  <app-section-toggle sectionKey="AISuggestions" [sectionName]="getSectionName('AISuggestions')"
-    [isEnabled]="isSectionEnabled('AISuggestions')" [enableCost]="getSectionEnableCost('AISuggestions')"
-    [enabledByDefault]="false" [isReadOnly]="isReadOnly" [loading]="togglingSection === 'AISuggestions'"
-    (enable)="onEnableSection($event)" (remove)="onRemoveSection($event)" [pricingLoading]="pricingLoading">
-    <div style="text-align:center; padding: 15px; color: #555; background: #fff;">
-      <span style="font-size: 1.5rem;">✨</span>
-      <p style="margin: 5px 0; font-size: 0.9rem;">Mejora tus textos con IA.</p>
-    </div>
-  </app-section-toggle>
   }
   @if (!isReadOnly) {
   <app-template-selector [eventId]="eventId" [eventType]="data.eventType"
