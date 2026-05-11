@@ -120,6 +120,15 @@
     padding: 3px 10px;
     font-size: 0.7rem;
   }
+
+  .top-spacer {
+    height: 48px !important;
+  }
+}
+
+.top-spacer {
+  height: 55px;
+  width: 100%;
 }
 
 .preview-toggle-container {

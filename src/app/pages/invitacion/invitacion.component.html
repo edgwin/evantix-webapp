@@ -26,8 +26,9 @@
   }
   <!-- Barra de costo fixed -->
   <app-cost-bar [isReadOnly]="isReadOnly"></app-cost-bar>
+
   @if (!isReadOnly) {
-  <div style="height: 55px;"></div>
+  <div class="top-spacer"></div>
 
   <!-- Barra Superior de Sugerencias IA (Dismissible) -->
   @if (showAiBar) {
@@ -50,12 +51,12 @@
     <button class="ai-bar-close" (click)="closeAiBar()" title="Cerrar barra">✕</button>
   </div>
   }
-  }
-  @if (!isReadOnly) {
+
   <app-template-selector [eventId]="eventId" [eventType]="data.eventType"
     (templateSelected)="onTemplateSelected($event)">
   </app-template-selector>
   }
+
   <!-- Secciones base (siempre habilitadas) -->
   <app-portada [eventId]="eventId" [data]="data.portada" [eventType]="data.eventType" [isReadOnly]="isReadOnly"
     [maxItems]="getSectionMaxItems('Portada')" [aiEnabled]="isSectionEnabled('AISuggestions')"></app-portada>
