@@ -304,10 +304,44 @@ export class DashboardComponent {
   ];
 
   copyPin(pin: string) {
-    navigator.clipboard.writeText(pin).then(() => {
+    if (!pin) return;
+
+    const onSuccess = () => {
       this.copiedPin = pin;
       setTimeout(() => this.copiedPin = null, 2000);
-    });
+    };
+
+    // Try modern Clipboard API
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(pin)
+        .then(onSuccess)
+        .catch(() => this.copyFallback(pin, onSuccess));
+    } else {
+      this.copyFallback(pin, onSuccess);
+    }
+  }
+
+  private copyFallback(text: string, callback: () => void) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    
+    // Ensure it's not visible but part of DOM
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-9999px';
+    textArea.style.top = '0';
+    document.body.appendChild(textArea);
+    
+    textArea.focus();
+    textArea.select();
+
+    try {
+      const successful = document.execCommand('copy');
+      if (successful) callback();
+    } catch (err) {
+      console.error('Fallback copy failed', err);
+    }
+
+    document.body.removeChild(textArea);
   }
 
   onActionHandler(event: { type: string, row: Evento }) {
