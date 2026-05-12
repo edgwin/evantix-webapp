@@ -173,7 +173,7 @@ export class DashboardComponent {
             const isCancelled = this.callbackStatus === 'cancelled';
             evento.estatus = isCancelled ? 'Revisado' : translated;
             evento.estatusDescripcion = isCancelled ? 'Pago cancelado, puede reintentar' : `Parcialmente ${translated}`;
-            evento.showPayment = isCancelled;
+            evento.showPayment = isCancelled || this.callbackStatus === 'rejected';
             evento.showDelete = isCancelled;
           }
           this.callbackEventId = null;
