@@ -112,7 +112,7 @@
                   {{ evento.estatus }}
                 </span>
               </td>
-              <td class="pin-cell">
+              <td class="pin-cell" [class.no-pin]="!evento.showCheckIn">
                 @if (evento.showCheckIn) {
                   <div class="pin-container">
                     <code class="pin-code">{{ evento.checkInPin }}</code>

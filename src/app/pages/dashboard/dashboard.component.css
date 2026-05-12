@@ -537,6 +537,10 @@
         margin: 10px 0;
     }
 
+    .pin-cell.no-pin {
+        display: none !important;
+    }
+
     .pin-cell:before {
         content: 'PIN Check-In: ';
         font-weight: 600;
