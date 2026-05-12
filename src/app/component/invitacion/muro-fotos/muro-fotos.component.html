@@ -57,10 +57,12 @@
 
     @if (canUpload && !uploading) {
       <div class="upload-container">
-        <button class="upload-btn" (click)="triggerUpload()">
+        <button class="upload-btn" (click)="fileInput.click()">
           <span class="upload-icon">+</span>
           <span>Subir Foto</span>
         </button>
+        <input #fileInput type="file" [multiple]="true" accept="image/*,image/heic,image/heif" 
+               style="display: none" (change)="onFileSelected($event)">
         <p class="upload-hint">{{fotos.length}} / {{maxItems}} fotos</p>
       </div>
     }

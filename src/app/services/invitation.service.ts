@@ -382,7 +382,8 @@ export class InvitationService {
   uploadFotosInvitados(eventId: string, files: File[], idInvitacion?: string) {
     const formData = new FormData();
     files.forEach(file => {
-      formData.append('images', file);
+      // Pass filename explicitly — required on mobile where browser may not include it
+      formData.append('images', file, file.name);
     });
     let url = `${this.apiUrl}${this.getInvitationData}MuroFotos/${eventId}`;
     if (idInvitacion) url += `?idInvitacion=${idInvitacion}`;

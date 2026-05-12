@@ -91,65 +91,53 @@ export class MuroFotosComponent implements OnInit {
         if (this.selectedImage) this.closeFullScreen();
     }
 
-    triggerUpload(): void {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'image/*';
-        input.multiple = true;
-        input.style.display = 'none';
-        document.body.appendChild(input);
+    onFileSelected(event: any): void {
+        let files: File[] = Array.from(event.target.files);
+        if (!files.length) return;
 
-        input.onchange = (event: any) => {
-            let files: File[] = Array.from(event.target.files);
-            if (!files.length) {
-                document.body.removeChild(input);
-                return;
-            }
+        const slotsAvailable = this.maxItems - this.fotos.length;
 
-            const slotsAvailable = this.maxItems - this.fotos.length;
-
-            if (slotsAvailable <= 0) {
-                this.notificationService.show(
-                    'warning',
-                    `Ya se alcanzó el límite máximo de ${this.maxItems} fotos.`
-                );
-                document.body.removeChild(input);
-                return;
-            }
-
-            if (files.length > slotsAvailable) {
-                this.notificationService.show(
-                    'warning',
-                    `⚠️ Solo se subirán ${slotsAvailable} de las ${files.length} fotos seleccionadas (máximo ${this.maxItems}).`
-                );
-                files = files.slice(0, slotsAvailable);
-            }
-
-            this.uploading = true;
+        if (slotsAvailable <= 0) {
             this.notificationService.show(
-                'info',
-                `Subiendo ${files.length} foto(s)... Este proceso puede tardar varios minutos.`
+                'warning',
+                `Ya se alcanzó el límite máximo de ${this.maxItems} fotos.`
             );
+            return;
+        }
 
-            this.invitationService.uploadFotosInvitados(this.eventId, files, this.idInvitacion ?? undefined).subscribe({
-                next: (res) => {
-                    this.fotos = res || [];
-                    this.uploading = false;
-                    this.notificationService.show(
-                        'success',
-                        `¡${files.length} foto(s) subida(s) exitosamente!`
-                    );
-                },
-                error: (err) => {
-                    this.uploading = false;
-                    this.notificationService.show(
-                        'error',
-                        `Error al subir fotos: ${err.message}`
-                    );
-                }
-            });
-            document.body.removeChild(input);
-        };
-        input.click();
+        if (files.length > slotsAvailable) {
+            this.notificationService.show(
+                'warning',
+                `⚠️ Solo se subirán ${slotsAvailable} de las ${files.length} fotos seleccionadas (máximo ${this.maxItems}).`
+            );
+            files = files.slice(0, slotsAvailable);
+        }
+
+        this.uploading = true;
+        this.notificationService.show(
+            'info',
+            `Subiendo ${files.length} foto(s)... Este proceso puede tardar varios minutos.`
+        );
+
+        this.invitationService.uploadFotosInvitados(this.eventId, files, this.idInvitacion ?? undefined).subscribe({
+            next: (res) => {
+                this.fotos = res || [];
+                this.uploading = false;
+                this.notificationService.show(
+                    'success',
+                    `¡${files.length} foto(s) subida(s) exitosamente!`
+                );
+                // Limpiar el input para permitir subir las mismas fotos si se desea
+                event.target.value = '';
+            },
+            error: (err) => {
+                this.uploading = false;
+                this.notificationService.show(
+                    'error',
+                    `Error al subir fotos: ${err.message}`
+                );
+                event.target.value = '';
+            }
+        });
     }
 }
