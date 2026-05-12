@@ -179,7 +179,7 @@
     }
 
     .topbar-inner {
-        padding: 0 12px;
+        padding: 0 calc(15px + env(safe-area-inset-right)) 0 calc(15px + env(safe-area-inset-left));
     }
 
     .brand-name {

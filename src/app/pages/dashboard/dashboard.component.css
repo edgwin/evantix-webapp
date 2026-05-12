@@ -427,7 +427,10 @@
 /* Responsive */
 @media (max-width: 768px) {
     .dashboard-container {
-        padding: 14px;
+        padding: 14px 0;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
     }
 
     .section-header {
