@@ -2,7 +2,9 @@
   padding: 24px;
   padding-bottom: 40px;
   max-width: 700px;
+  width: 100%;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .section-header {
@@ -280,7 +282,7 @@
   }
 
   .form-body {
-    padding: 14px;
+    padding: 16px; /* Reduced from 24px */
   }
 
   .form-row {
@@ -305,7 +307,9 @@
 
 @media (max-width: 480px) {
   .evento-container {
-    padding: 10px;
+    padding: 8px; /* Even smaller padding for very small screens */
+    width: 100%;
+    max-width: 100%;
   }
 
   .section-header h2 {

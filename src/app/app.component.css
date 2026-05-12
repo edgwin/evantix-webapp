@@ -11,9 +11,10 @@
     position: fixed;
     bottom: 65px;
     /* Button is 56px wide. We want 90% hidden → translate by ~50px, keep 6px visible */
-    right: -46px;               /* hidden: 56 - 10 = 46px off the edge */
+    right: 16px;
     width: 56px;
     height: 56px;
+    transform: translateX(46px); /* hide 46px of 56px */
     background: linear-gradient(135deg, #25D366, #128C7E);
     border-radius: 50%;
     display: flex;
@@ -31,15 +32,14 @@
 /* ── Desktop: hover slides fully into view ── */
 @media (hover: hover) and (pointer: fine) {
     .whatsapp-fab:hover {
-        right: 16px;
+        transform: translateX(0) scale(1.05);
         box-shadow: 0 6px 24px rgba(37, 211, 102, 0.5);
-        transform: scale(1.05);
     }
 }
 
 /* ── Mobile / touch: .expanded class slides fully in ── */
 .whatsapp-fab.expanded {
-    right: 16px;
+    transform: translateX(0);
     box-shadow: 0 6px 24px rgba(37, 211, 102, 0.5);
 }
 
@@ -70,7 +70,7 @@
         width: 48px;
         height: 48px;
         bottom: 75px;
-        right: -38px;           /* 48 - 10 = 38px hidden */
+        transform: translateX(38px); /* 48 - 10 = 38px hidden */
     }
 
     .whatsapp-fab svg {
@@ -79,6 +79,6 @@
     }
 
     .whatsapp-fab.expanded {
-        right: 12px;
+        transform: translateX(0);
     }
 }
