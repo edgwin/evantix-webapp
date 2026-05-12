@@ -623,6 +623,8 @@
   gap: 24px;
   justify-content: center;
   margin-bottom: 16px;
+  flex-wrap: wrap;
+  padding: 0 20px;
 }
 
 .footer-links a {

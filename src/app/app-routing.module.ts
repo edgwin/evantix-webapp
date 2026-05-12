@@ -20,6 +20,8 @@ import { TemplateEditorComponent } from './pages/template-editor/template-editor
 
 import { DomainResolverComponent } from './pages/domain-resolver/domain-resolver.component';
 
+import { LegalComponent } from './pages/legal/legal.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -34,6 +36,9 @@ const routes: Routes = [
     path: 'forgotPassword',
     component: ForgotPasswordComponent
   },
+  { path: 'terminos', component: LegalComponent },
+  { path: 'privacidad', component: LegalComponent },
+  { path: 'eliminacion-datos', component: LegalComponent },
   { path: 'invitacion/:name/:idEvent', component: InvitacionComponent },
   { path: 'invitacion/:name/:idEvent/:idInvitado', component: InvitacionComponent },
   { path: 'checkin/:grupoId', component: CheckinComponent },

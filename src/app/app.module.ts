@@ -55,6 +55,7 @@ import { DominioPersonalizadoComponent } from './pages/dominio-personalizado/dom
 import { FotosInvitadosComponent } from './pages/fotos-invitados/fotos-invitados.component';
 
 import { TemplateEditorComponent } from './pages/template-editor/template-editor.component';
+import { LegalComponent } from './pages/legal/legal.component';
 import { TourOverlayComponent } from './component/tour-overlay/tour-overlay.component';
 
 @NgModule({ declarations: [
@@ -83,7 +84,8 @@ import { TourOverlayComponent } from './component/tour-overlay/tour-overlay.comp
         DominioComponent,
         DominioPersonalizadoComponent,
         FotosInvitadosComponent,
-        TemplateEditorComponent
+        TemplateEditorComponent,
+        LegalComponent
     ],
     exports: [UploadImagesComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],

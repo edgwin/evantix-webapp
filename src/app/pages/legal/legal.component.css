@@ -1,0 +1,144 @@
+.legal-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f8fafc;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.legal-nav {
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: #1e293b;
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+.nav-logo {
+    height: 32px;
+}
+
+.legal-content-wrapper {
+    flex: 1;
+    padding: 3rem 1.5rem;
+}
+
+.legal-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 3rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+}
+
+h1 {
+    color: #0f172a;
+    font-size: 2.25rem;
+    margin-bottom: 2rem;
+    font-weight: 800;
+    border-bottom: 4px solid #f1f5f9;
+    padding-bottom: 1rem;
+}
+
+.content-body {
+    color: #475569;
+    line-height: 1.8;
+    font-size: 1.05rem;
+}
+
+.content-body ::ng-deep h2, 
+.content-body ::ng-deep h3 {
+    color: #1e293b;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.content-body ::ng-deep p {
+    margin-bottom: 1.25rem;
+}
+
+.content-body ::ng-deep ul {
+    margin-bottom: 1.5rem;
+    padding-left: 1.5rem;
+}
+
+.legal-footer-info {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #94a3b8;
+    font-size: 0.875rem;
+}
+
+.btn-back {
+    background: #f1f5f9;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    color: #475569;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-back:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+.simple-footer {
+    padding: 2rem;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.875rem;
+}
+
+.loader-container {
+    text-align: center;
+    padding: 5rem 0;
+}
+
+.loader {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #000;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 640px) {
+    .legal-container {
+        padding: 1.5rem;
+    }
+    h1 {
+        font-size: 1.75rem;
+    }
+}

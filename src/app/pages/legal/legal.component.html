@@ -1,0 +1,33 @@
+<div class="legal-page">
+  <nav class="legal-nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">
+        <img src="../../../assets/images/Evantix.png" alt="Evantix" class="nav-logo" />
+        <span>Evantix</span>
+      </a>
+    </div>
+  </nav>
+
+  <main class="legal-content-wrapper">
+    <div class="legal-container">
+      @if (loading) {
+        <div class="loader-container">
+          <div class="loader"></div>
+          <p>Cargando información...</p>
+        </div>
+      } @else {
+        <h1>{{ title }}</h1>
+        <div class="content-body" [innerHTML]="content"></div>
+        
+        <div class="legal-footer-info">
+          <p>Última actualización: 2026</p>
+          <button class="btn-back" routerLink="/">Volver al inicio</button>
+        </div>
+      }
+    </div>
+  </main>
+
+  <footer class="simple-footer">
+    <p>© 2026 Evantix. Todos los derechos reservados.</p>
+  </footer>
+</div>

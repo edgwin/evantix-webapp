@@ -3,10 +3,10 @@ import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrl: './app.component.css',
-    standalone: false
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css',
+  standalone: false
 })
 export class AppComponent implements OnInit {
   title = 'Evantix';
@@ -36,7 +36,7 @@ export class AppComponent implements OnInit {
 
     // 1. Es una ruta de invitación con ID de invitado (/invitacion/nombre/eventId/guestId)
     if (segments[0] === 'invitacion' && segments.length >= 4) return false;
-    
+
     // 2. Es una ruta corta de invitado (/i/slug/guestId)
     if (segments[0] === 'i' && segments.length >= 3) return false;
 
@@ -49,7 +49,7 @@ export class AppComponent implements OnInit {
     return true;
   }
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
     let hostname = window.location.hostname;
@@ -81,7 +81,6 @@ export class AppComponent implements OnInit {
       host.endsWith('.trycloudflare.com');
 
     const isKnown = knownHosts.includes(hostname) || isPrivateIp(hostname) || isKnownTunnel(hostname);
-    console.log('AppComponent: hostname=', hostname, 'isKnown=', isKnown);
 
     if (!isKnown) {
       // If URL already has a valid route (e.g. /invitacion/...), let Angular handle it
