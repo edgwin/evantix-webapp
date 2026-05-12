@@ -217,7 +217,8 @@ export class DashboardComponent {
 
     // Filter by date
     if (this.searchFecha) {
-      data = data.filter((e: any) => e.fecha?.includes(this.searchFecha));
+      // Comparison using ISO date (YYYY-MM-DD)
+      data = data.filter((e: any) => e.fechaISO?.startsWith(this.searchFecha));
     }
 
     // Apply sort

@@ -52,7 +52,7 @@
       </div>
       <div class="search-field">
         <label>Fecha</label>
-        <input type="text" [(ngModel)]="searchFecha" (input)="onSearchChange()" placeholder="Ej: abril, 2026..." class="search-input" />
+        <input type="date" [(ngModel)]="searchFecha" (change)="onSearchChange()" class="search-input" />
       </div>
       @if (searchName || searchEstatus || searchFecha) {
         <button class="btn btn-clear" (click)="clearFilters()">✕ Limpiar</button>

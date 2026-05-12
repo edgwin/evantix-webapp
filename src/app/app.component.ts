@@ -11,6 +11,7 @@ import { environment } from '../environments/environment';
 export class AppComponent implements OnInit {
   title = 'Evantix';
   whatsappExpanded = false;
+  private readonly GUEST_ROUTES = ['/invitacion/', '/i/', '/checkin/'];
 
   toggleWhatsapp(event: Event) {
     // On mobile, tap toggles; on desktop hover handles it via CSS
@@ -23,6 +24,29 @@ export class AppComponent implements OnInit {
         this.whatsappExpanded = false;
       }, 400);
     }
+  }
+
+  /**
+   * Determina si la ruta actual corresponde a una vista de invitado final.
+   * Se oculta el botón de soporte para invitados para no confundirlos.
+   */
+  get showSupportButton(): boolean {
+    const url = this.router.url;
+    const segments = url.split('/').filter(s => s);
+
+    // 1. Es una ruta de invitación con ID de invitado (/invitacion/nombre/eventId/guestId)
+    if (segments[0] === 'invitacion' && segments.length >= 4) return false;
+    
+    // 2. Es una ruta corta de invitado (/i/slug/guestId)
+    if (segments[0] === 'i' && segments.length >= 3) return false;
+
+    // 3. Es la página de check-in para el día del evento
+    if (segments[0] === 'checkin') return false;
+
+    // 4. Es una página de fotos para invitados
+    if (segments[0] === 'fotos-invitados' && !localStorage.getItem('loggedUser')) return false;
+
+    return true;
   }
 
   constructor(private router: Router) {}
