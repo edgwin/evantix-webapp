@@ -471,16 +471,14 @@
         background: none;
         box-shadow: none;
         border: none;
-    }
-
-    .eventos-grid thead {
-        display: none;
+        width: 100%;
     }
 
     .eventos-grid tbody {
         display: flex;
         flex-direction: column;
         gap: 16px;
+        width: 100%;
     }
 
     .evento-row {
@@ -491,6 +489,9 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         border: 1px solid #eee;
         position: relative;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        margin-bottom: 16px;
     }
 
     .eventos-grid tbody td {
@@ -499,6 +500,8 @@
         text-align: left;
         border: none;
         font-size: 14px;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .evento-name-cell {
