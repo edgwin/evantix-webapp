@@ -275,6 +275,12 @@ export class LoginComponent implements AfterViewInit, OnInit {
   }
 
   private redirectAfterLogin(): void {
+    const returnUrl = this.route.snapshot.queryParams['returnUrl'];
+    if (returnUrl) {
+      this.router.navigateByUrl(returnUrl);
+      return;
+    }
+
     const loggedUser = JSON.parse(localStorage.getItem('loggedUser') || '{}');
     const userId = loggedUser.userId || '';
     const storageKey = `evantix_has_logged_in_${userId}`;

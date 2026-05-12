@@ -29,8 +29,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.isMobile = window.innerWidth <= 768;
     if (this.isMobile) {
       this.sidenavOpen = false;
-      // Mostrar banner a menos que el usuario ya lo descartó esta sesión
-      const dismissed = sessionStorage.getItem('mobileBannerDismissed');
+      // Mostrar banner a menos que el usuario ya lo descartó
+      const dismissed = localStorage.getItem('mobileBannerDismissed');
       this.showMobileBanner = !dismissed;
     } else {
       this.sidenavOpen = true;
@@ -39,7 +39,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   dismissMobileBanner() {
-    sessionStorage.setItem('mobileBannerDismissed', '1');
+    localStorage.setItem('mobileBannerDismissed', '1');
     this.showMobileBanner = false;
   }
 
