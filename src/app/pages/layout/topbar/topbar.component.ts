@@ -32,7 +32,8 @@ export class TopbarComponent {
     if (!this.loggedUser.isSocial) {
       this.svgImage = this.sanitizer.bypassSecurityTrustHtml(rawSvg || '');
     } else {
-      const dynamicTag = `<img src="${this.loggedUser?.picture}" style="width:32px; height:32px; border-radius:50%; object-fit:cover;" />`;
+      // Usamos width/height 100% para que llene el contenedor circular del topbar
+      const dynamicTag = `<img src="${this.loggedUser?.picture}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;" />`;
       this.svgImage = this.sanitizer.bypassSecurityTrustHtml(dynamicTag || '');
     }
   }
