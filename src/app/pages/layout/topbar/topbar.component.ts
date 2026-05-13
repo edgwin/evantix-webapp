@@ -13,8 +13,6 @@ declare const FB: any;
 })
 export class TopbarComponent {
   svgImage: SafeHtml | null = null;
-  isSocial: boolean = false;
-
   loggedUser: any;
 
   @Input() showMenuButton = false;
@@ -28,13 +26,16 @@ export class TopbarComponent {
   }
 
   ngOnInit() {
-    const rawSvg = this.loggedUser?.picture;
-    if (!this.loggedUser.isSocial) {
-      this.svgImage = this.sanitizer.bypassSecurityTrustHtml(rawSvg || '');
+    const picture = this.loggedUser?.picture || '';
+    
+    // Verificamos si es una URL (empieza con http) o un SVG (multiavatar)
+    if (picture.startsWith('http')) {
+      // Es una imagen externa (Google, Facebook, etc.)
+      const dynamicTag = `<img src="${picture}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;" />`;
+      this.svgImage = this.sanitizer.bypassSecurityTrustHtml(dynamicTag);
     } else {
-      // Usamos width/height 100% para que llene el contenedor circular del topbar
-      const dynamicTag = `<img src="${this.loggedUser?.picture}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;" />`;
-      this.svgImage = this.sanitizer.bypassSecurityTrustHtml(dynamicTag || '');
+      // Es el SVG generado por multiavatar para cuentas locales
+      this.svgImage = this.sanitizer.bypassSecurityTrustHtml(picture);
     }
   }
 
