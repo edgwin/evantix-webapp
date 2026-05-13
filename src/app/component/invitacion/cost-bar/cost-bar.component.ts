@@ -10,9 +10,16 @@ import { Subscription } from 'rxjs';
     @if (!isReadOnly) {
       <div class="cost-bar">
         <div class="cost-bar-content">
-          <div class="cost-label">
-            <span class="cost-icon">💰</span>
-            <span>Costo de tu invitación</span>
+          <div class="cost-left-group">
+            <div class="cost-label">
+              <span class="cost-icon">💰</span>
+              <span>Costo de tu invitación</span>
+            </div>
+            <a href="https://app.guidde.com/share/playbooks/3EVqqDEkLP7TgUtzNttQ3e?origin=DQHfpKkgpuNy4HQiHD3WmBpVAO12&mode=videoOnly" 
+               target="_blank" class="tutorial-link" title="Ver Video Tutorial">
+              <span class="tutorial-icon">🎬</span>
+              <span class="tutorial-text">Video tutorial</span>
+            </a>
           </div>
           <div class="cost-right">
             @if (isLoading) {
@@ -52,6 +59,12 @@ import { Subscription } from 'rxjs';
       align-items: center;
     }
 
+    .cost-left-group {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
     .cost-label {
       display: flex;
       align-items: center;
@@ -66,6 +79,34 @@ import { Subscription } from 'rxjs';
 
     .cost-icon {
       font-size: 18px;
+    }
+
+    /* Tutorial Link */
+    .tutorial-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #7dd3e8;
+      text-decoration: none;
+      font-family: var(--body-font, 'Work Sans', sans-serif);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 4px 12px;
+      background: rgba(125, 211, 232, 0.12);
+      border: 1px solid rgba(125, 211, 232, 0.3);
+      border-radius: 20px;
+      transition: all 0.2s ease;
+    }
+
+    .tutorial-link:hover {
+      background: rgba(125, 211, 232, 0.25);
+      border-color: rgba(125, 211, 232, 0.6);
+      transform: translateY(-1px);
+      color: #fff;
+    }
+
+    .tutorial-icon {
+      font-size: 16px;
     }
 
     .cost-right {
@@ -122,12 +163,25 @@ import { Subscription } from 'rxjs';
       100% { transform: scale(1); color: #fff; }
     }
 
+    @media screen and (max-width: 600px) {
+      .cost-left-group {
+        gap: 10px;
+      }
+      .tutorial-text {
+        display: none;
+      }
+      .tutorial-link {
+        padding: 4px 8px;
+      }
+    }
+
     @media screen and (max-width: 480px) {
       .cost-bar {
         padding: 8px 15px;
       }
       .cost-label {
-        font-size: 11px;
+        font-size: 10px;
+        letter-spacing: 0.5px;
       }
       .cost-amount {
         font-size: 20px;
@@ -136,7 +190,7 @@ import { Subscription } from 'rxjs';
         display: none;
       }
     }
-  `]
+    `]
 })
 export class CostBarComponent implements OnInit, OnDestroy {
   @Input() isReadOnly: boolean = false;
