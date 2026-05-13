@@ -31,26 +31,6 @@
   <div class="top-spacer"></div>
 
   <!-- Barra Superior de Sugerencias IA (Dismissible) -->
-  @if (showAiBar) {
-  <div class="ai-top-bar">
-    <div class="ai-bar-content">
-      <span class="ai-bar-icon">✨</span>
-      <span>
-        @if (isSectionEnabled('AISuggestions')) {
-          Sugerencias con IA <b>Activas</b>. Haz clic en los textos para mejorarlos.
-        } @else {
-          Mejora tus textos con <b>IA</b>.
-        }
-      </span>
-      @if (!isSectionEnabled('AISuggestions')) {
-        <button class="ai-bar-btn" (click)="onEnableSection('AISuggestions')">
-          Habilitar +{{ getSectionEnableCost('AISuggestions') | currency:'MXN':'symbol-narrow':'1.0-0' }}
-        </button>
-      }
-    </div>
-    <button class="ai-bar-close" (click)="closeAiBar()" title="Cerrar barra">✕</button>
-  </div>
-  }
 
   <app-template-selector [eventId]="eventId" [eventType]="data.eventType"
     (templateSelected)="onTemplateSelected($event)">

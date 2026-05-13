@@ -58,7 +58,6 @@ export class InvitacionComponent implements OnDestroy {
   editLockedBy: string | null = null;  // non-null = blocked by this email
   togglingSection: string = '';
   pricingLoading: boolean = true;
-  showAiBar: boolean = true;
   private mutationSub: Subscription | null = null;
   private pricingLoadingSub: Subscription | null = null;
 
@@ -492,9 +491,6 @@ export class InvitacionComponent implements OnDestroy {
     document.body.style.overflow = 'auto';
   }
 
-  closeAiBar(): void {
-    this.showAiBar = false;
-  }
 
   get checkinQrUrl(): string {
     if (!this.guestGroup) return '';
