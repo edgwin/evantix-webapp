@@ -83,6 +83,21 @@
     background: #ffcdd2;
 }
 
+.btn-tutorial {
+    background: #fff;
+    color: #338da2;
+    border: 1.5px solid #338da2;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.btn-tutorial:hover {
+    background: #f0f7fa;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(51, 141, 162, 0.2);
+    color: #2a7a8d;
+}
+
 .btn-icon {
     font-size: 18px;
     font-weight: 700;
