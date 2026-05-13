@@ -65,6 +65,11 @@ import { CommonModule } from '@angular/common';
       position: relative;
     }
 
+    /* Prevent overlapping cards when multiple sections are disabled */
+    .section-wrapper:has(.section-disabled-curtain) {
+      min-height: 380px;
+    }
+
     /* === Remove bar === */
     .section-remove-bar {
       display: flex;
@@ -245,8 +250,12 @@ import { CommonModule } from '@angular/common';
         padding: 10px 22px;
         font-size: 13px;
       }
+
+      .section-wrapper:has(.section-disabled-curtain) {
+        min-height: 320px;
+      }
     }
-  `]
+    `]
 })
 export class SectionToggleComponent {
   @Input() sectionName: string = '';
