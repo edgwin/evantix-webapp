@@ -10,16 +10,9 @@ import { Subscription } from 'rxjs';
     @if (!isReadOnly) {
       <div class="cost-bar">
         <div class="cost-bar-content">
-          <div class="cost-left-group">
-            <div class="cost-label">
-              <span class="cost-icon">💰</span>
-              <span>Costo de tu invitación</span>
-            </div>
-            <a href="https://app.guidde.com/share/playbooks/3EVqqDEkLP7TgUtzNttQ3e?origin=DQHfpKkgpuNy4HQiHD3WmBpVAO12&mode=videoOnly" 
-               target="_blank" class="tutorial-link" title="Ver Video Tutorial">
-              <span class="tutorial-icon">🎬</span>
-              <span class="tutorial-text">Video tutorial</span>
-            </a>
+          <div class="cost-label">
+            <span class="cost-icon">💰</span>
+            <span>Costo de tu invitación</span>
           </div>
           <div class="cost-right">
             @if (isLoading) {
@@ -31,6 +24,12 @@ import { Subscription } from 'rxjs';
             <div class="cost-amount" [class.cost-changed]="costChanged" [class.cost-dimmed]="isLoading">
               {{ displayCost | currency:'MXN':'symbol-narrow':'1.0-0' }}
             </div>
+            
+            <a href="https://app.guidde.com/share/playbooks/3EVqqDEkLP7TgUtzNttQ3e?origin=DQHfpKkgpuNy4HQiHD3WmBpVAO12&mode=videoOnly" 
+               target="_blank" class="tutorial-link" title="Ver Video Tutorial">
+              <span class="tutorial-icon">🎬</span>
+              <span class="tutorial-text">Video tutorial</span>
+            </a>
           </div>
         </div>
       </div>
@@ -57,12 +56,7 @@ import { Subscription } from 'rxjs';
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-
-    .cost-left-group {
-      display: flex;
-      align-items: center;
-      gap: 20px;
+      gap: 15px;
     }
 
     .cost-label {
@@ -75,6 +69,7 @@ import { Subscription } from 'rxjs';
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 1px;
+      flex-shrink: 0;
     }
 
     .cost-icon {
@@ -91,11 +86,13 @@ import { Subscription } from 'rxjs';
       font-family: var(--body-font, 'Work Sans', sans-serif);
       font-size: 13px;
       font-weight: 600;
-      padding: 4px 12px;
-      background: rgba(125, 211, 232, 0.12);
-      border: 1px solid rgba(125, 211, 232, 0.3);
+      padding: 6px 14px;
+      background: rgba(125, 211, 232, 0.1);
+      border: 1.5px solid rgba(125, 211, 232, 0.25);
       border-radius: 20px;
       transition: all 0.2s ease;
+      white-space: nowrap;
+      margin-left: 10px;
     }
 
     .tutorial-link:hover {
@@ -103,6 +100,7 @@ import { Subscription } from 'rxjs';
       border-color: rgba(125, 211, 232, 0.6);
       transform: translateY(-1px);
       color: #fff;
+      box-shadow: 0 4px 12px rgba(125, 211, 232, 0.2);
     }
 
     .tutorial-icon {
@@ -112,7 +110,7 @@ import { Subscription } from 'rxjs';
     .cost-right {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
     }
 
     .cost-loading {
@@ -164,14 +162,15 @@ import { Subscription } from 'rxjs';
     }
 
     @media screen and (max-width: 600px) {
-      .cost-left-group {
-        gap: 10px;
-      }
       .tutorial-text {
         display: none;
       }
       .tutorial-link {
-        padding: 4px 8px;
+        padding: 6px 10px;
+        margin-left: 5px;
+      }
+      .cost-right {
+        gap: 10px;
       }
     }
 
