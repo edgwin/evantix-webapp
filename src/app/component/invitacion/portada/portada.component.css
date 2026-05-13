@@ -201,9 +201,6 @@
 }
 
 @media screen and (max-width: 768px) {
-  .divFechas {
-    margin-top: 3vh;
-  }
 
   .fechaTxt {
     font-family: "Work Sans", Arial, sans-serif;
@@ -344,13 +341,21 @@
   .editablePortadaTitulo {
     font-size: 60px;
     line-height: 1.05;
-    margin-top: 40px;
+    margin-top: 22vh; /* Bajamos el título para no tapar caras */
   }
 
   .editablePortadaSubtitulo {
-    margin-top: 20px;
-    margin-bottom: 25px;
+    margin-top: 5vh;
+    margin-bottom: 3vh;
     font-size: 22px;
+  }
+
+  .divFechas {
+    margin-top: 5vh; /* Bajamos el contador */
+  }
+
+  .calendar-wrapper {
+    margin-top: 5vh; /* Bajamos el botón de calendario */
   }
 
   #fh5co-header .display-tc h2,
