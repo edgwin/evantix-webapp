@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
     // If expanded, navigate after a short delay so the button is visible
     if (this.whatsappExpanded) {
       setTimeout(() => {
-        window.open('https://wa.me/523314942022?text=Hola%20Evantix%2C%20necesito%20ayuda', '_blank', 'noopener,noreferrer');
+        window.open('https://wa.me/523320108992?text=Hola%20Evantix%2C%20necesito%20ayuda', '_blank', 'noopener,noreferrer');
         this.whatsappExpanded = false;
       }, 400);
     }
