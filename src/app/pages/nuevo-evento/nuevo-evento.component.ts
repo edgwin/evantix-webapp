@@ -159,6 +159,13 @@ export class NuevoEventoComponent implements OnInit {
     if (!this.isFormValid) {
       return;
     }
+
+    if (!this.loggedUser || !this.loggedUser.userId) {
+      this.notificationService.show('error', 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
+      this.router.navigate(['/login']);
+      return;
+    }
+
     this.loading = true;
     const fechaISO = new Date(this.evento.fecha).toISOString();
     const formData = new FormData();

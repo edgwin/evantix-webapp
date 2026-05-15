@@ -36,8 +36,9 @@
         </label>
         @if (showCupon && !cuponAplicado) {
           <div class="cupon-input-row">
-            <input type="text" [(ngModel)]="cuponCodigo" placeholder="Ingresa tu código" maxlength="20"
-              [disabled]="cuponLoading" />
+            <input type="text" [(ngModel)]="cuponCodigo" (input)="cuponCodigo = cuponCodigo.toUpperCase()"
+              placeholder="Ingresa tu código" maxlength="20" [disabled]="cuponLoading"
+              style="text-transform: uppercase;" />
               <button class="btn-aplicar" (click)="aplicarCupon()" [disabled]="cuponLoading || !cuponCodigo.trim()">
                 {{ cuponLoading ? '...' : 'Aplicar' }}
               </button>
@@ -81,16 +82,16 @@
             <span class="stripe-min-notice">⚠️ Mínimo $10 MXN</span>
           }
         </div>
+      }
 
-        <!-- Botón Obtener (cuando el costo es $0) -->
-        @if (cuponAplicado && data.evento.costo <= 0) {
-          <div class="free-claim-section">
-            <p class="free-msg">🎉 ¡Tu evento es completamente gratuito con este cupón!</p>
-            <button class="btn-obtener" (click)="claimFree()" [disabled]="claimingFree">
-              {{ claimingFree ? 'Procesando...' : 'Obtener' }}
-            </button>
-          </div>
-        }
+      <!-- Botón Obtener (cuando el costo es $0) -->
+      @if (cuponAplicado && data.evento.costo <= 0) {
+        <div class="free-claim-section">
+          <p class="free-msg">🎉 ¡Tu evento es completamente gratuito con este cupón!</p>
+          <button class="btn-obtener" (click)="claimFree()" [disabled]="claimingFree">
+            {{ claimingFree ? 'Procesando...' : 'Obtener' }}
+          </button>
+        </div>
       }
   </div>
 </body>

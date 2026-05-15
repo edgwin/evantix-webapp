@@ -48,9 +48,7 @@ export class AuthInterceptor implements HttpInterceptor {
         }
 
         if (err.status === 403 && !isPublic) {
-          this.notificationService.show('info', 'Tu sesión ha expirado, por favor inicia sesión nuevamente.');
-          this.authService.logout();
-          this.router.navigate(['/login']);
+          this.notificationService.show('error', 'No tienes permiso para acceder a este recurso.');
           return EMPTY;
         }
 
