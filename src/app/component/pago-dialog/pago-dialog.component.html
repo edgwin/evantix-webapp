@@ -85,9 +85,13 @@
       }
 
       <!-- Botón Obtener (cuando el costo es $0) -->
-      @if (cuponAplicado && data.evento.costo <= 0) {
+      @if (data.evento.costo <= 0) {
         <div class="free-claim-section">
-          <p class="free-msg">🎉 ¡Tu evento es completamente gratuito con este cupón!</p>
+          @if (cuponAplicado) {
+            <p class="free-msg">🎉 ¡Tu evento es completamente gratuito con este cupón!</p>
+          } @else {
+            <p class="free-msg">🎉 ¡Este evento es gratuito!</p>
+          }
           <button class="btn-obtener" (click)="claimFree()" [disabled]="claimingFree">
             {{ claimingFree ? 'Procesando...' : 'Obtener' }}
           </button>
