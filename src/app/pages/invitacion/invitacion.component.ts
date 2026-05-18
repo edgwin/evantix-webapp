@@ -156,8 +156,9 @@ export class InvitacionComponent implements OnDestroy {
         this.finishInit(res);
       },
       error: (err) => {
-        this.notificationService.show('error', `Hubo un error favor intentar más tarde ${err.message}`);
+        this.notificationService.show('error', `La invitación no existe o ha sido eliminada.`);
         this.loading = false;
+        this.router.navigateByUrl('/');
       }
     });
 
