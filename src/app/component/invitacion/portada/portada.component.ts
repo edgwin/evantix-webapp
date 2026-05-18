@@ -125,6 +125,12 @@ export class PortadaComponent implements OnInit, OnDestroy {
     return this.data?.imagen || '';
   }
 
+  /** Encode spaces in image URLs so CSS url() doesn't break */
+  encodeImageUrl(url: string): string {
+    if (!url) return '';
+    return url.replace(/ /g, '%20');
+  }
+
   // --- edición de título ---
   onTituloBlur(event: Event) {
     const el = event.target as HTMLElement;

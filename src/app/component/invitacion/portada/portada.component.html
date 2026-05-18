@@ -11,12 +11,12 @@
     @for (img of imagenes; track img; let i = $index) {
       <!-- Fondo blur -->
       <div class="carousel-slide-blur" [ngClass]="{ 'active': i === currentImageIndex }" [ngStyle]="{
-          'background-image': 'url(' + img + ')',
+          'background-image': 'url(\'' + encodeImageUrl(img) + '\')',
           'z-index': i === currentImageIndex ? 1 : 0
         }"></div>
       <!-- Imagen principal -->
       <div class="carousel-slide" [ngClass]="{ 'active': i === currentImageIndex }" [ngStyle]="{
-          'background-image': 'url(' + img + ')',
+          'background-image': 'url(\'' + encodeImageUrl(img) + '\')',
           'background-position': imagenPosicion,
           'z-index': i === currentImageIndex ? 2 : 1
         }"></div>
@@ -27,10 +27,10 @@
 
     <!-- Fallback cuando no hay imagenes -->
     @if (imagenes.length === 0) {
-      <div class="carousel-slide-blur active" [ngStyle]="{ 'background-image': 'url(' + (data?.imagen || '') + ')' }">
+      <div class="carousel-slide-blur active" [ngStyle]="{ 'background-image': 'url(\'' + encodeImageUrl(data?.imagen || '') + '\')' }">
       </div>
       <div class="carousel-slide active" [ngStyle]="{
-        'background-image': 'url(' + (data?.imagen || '') + ')',
+        'background-image': 'url(\'' + encodeImageUrl(data?.imagen || '') + '\')',
         'background-position': imagenPosicion
       }"></div>
       <div class="carousel-overlay" [class.adjusting-overlay]="adjustingPosition"

@@ -11,6 +11,7 @@ import { TourService } from '../../services/tour.service';
 import { TourOverlayComponent } from '../../component/tour-overlay/tour-overlay.component';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { ImpersonationService } from '../../services/impersonation.service';
 
 interface Evento {
   nombre: string;
@@ -108,9 +109,27 @@ export class DashboardComponent {
     { flag: '🇪🇸', name: 'España',               dialCode: '+34'  },
   ];
 
+  // ─── Impersonation ───────────────────────────────────────────────────────
+  showImpersonateDialog = false;
+  impersonateLoading = false;
+  impersonateSearch = '';
+  impersonateUsers: any[] = [];
+  impersonatingUserId: string | null = null;
+
+  get filteredImpersonateUsers(): any[] {
+    if (!this.impersonateSearch.trim()) return this.impersonateUsers;
+    const term = this.impersonateSearch.toLowerCase().trim();
+    return this.impersonateUsers.filter((u: any) =>
+      u.email?.toLowerCase().includes(term) ||
+      u.firstName?.toLowerCase().includes(term) ||
+      u.lastName?.toLowerCase().includes(term)
+    );
+  }
+
   constructor(private eventService: EventService, private notificationService: NotificationService, private mercadoPago: MercadoPagoService,
     private stripeService: StripeService, private route: ActivatedRoute, private localStorageService: LocalStorageService,
-    private router: Router, private dialog: MatDialog, private tourService: TourService, private http: HttpClient) {
+    private router: Router, private dialog: MatDialog, private tourService: TourService, private http: HttpClient,
+    private impersonationService: ImpersonationService) {
     const localUser = localStorage.getItem('loggedUser');
     if (localUser != null) {
       this.loggedUser = JSON.parse(localUser);
@@ -487,6 +506,53 @@ export class DashboardComponent {
       error: () => {
         this.checkInSending = false;
         this.checkInError = 'Error al enviar. Verifica que el servicio de WhatsApp esté activo.';
+      }
+    });
+  }
+
+  // ─── Impersonation Methods ───────────────────────────────────────────────
+  openImpersonateDialog(): void {
+    this.showImpersonateDialog = true;
+    this.impersonateSearch = '';
+    this.impersonatingUserId = null;
+    this.impersonateLoading = true;
+
+    this.impersonationService.getAllUsers().subscribe({
+      next: (users) => {
+        // Exclude current admin from the list
+        this.impersonateUsers = users.filter((u: any) => u.userId !== this.loggedUser?.userId);
+        this.impersonateLoading = false;
+      },
+      error: (err) => {
+        this.impersonateLoading = false;
+        this.notificationService.show('error', 'Error al obtener la lista de usuarios.');
+        this.showImpersonateDialog = false;
+      }
+    });
+  }
+
+  closeImpersonateDialog(): void {
+    if (this.impersonatingUserId) return; // Don't close while impersonating
+    this.showImpersonateDialog = false;
+  }
+
+  onImpersonateUser(user: any): void {
+    if (this.impersonatingUserId) return;
+    this.impersonatingUserId = user.userId;
+
+    this.impersonationService.impersonate(user.userId).subscribe({
+      next: (response) => {
+        this.impersonationService.startImpersonation(response);
+        this.showImpersonateDialog = false;
+        this.impersonatingUserId = null;
+        this.notificationService.show('info', `👁️ Ahora estás viendo como ${user.email}`);
+        // Reload the page to reflect the impersonated user's data
+        this.router.navigate(['/dashboard']).then(() => window.location.reload());
+      },
+      error: (err) => {
+        this.impersonatingUserId = null;
+        const msg = err.error || 'Error al impersonar usuario.';
+        this.notificationService.show('error', typeof msg === 'string' ? msg : 'Error al impersonar usuario.');
       }
     });
   }

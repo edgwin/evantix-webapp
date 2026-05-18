@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
+import { ImpersonationService } from './services/impersonation.service';
 
 @Component({
   selector: 'app-root',
@@ -49,7 +50,12 @@ export class AppComponent implements OnInit {
     return true;
   }
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, public impersonationService: ImpersonationService) { }
+
+  stopImpersonation(): void {
+    this.impersonationService.stopImpersonation();
+    this.router.navigate(['/dashboard']).then(() => window.location.reload());
+  }
 
   ngOnInit(): void {
     let hostname = window.location.hostname;

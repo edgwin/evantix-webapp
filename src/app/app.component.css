@@ -1,3 +1,68 @@
+/* ── Impersonation Bar ──────────────────────────────────────────────── */
+
+.impersonation-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 99999;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #1a1a1a;
+    padding: 0;
+    box-shadow: 0 2px 12px rgba(245, 158, 11, 0.4);
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+.impersonation-bar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.impersonation-icon {
+    font-size: 18px;
+}
+
+.impersonation-bar strong {
+    font-weight: 700;
+}
+
+.impersonation-stop-btn {
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    color: #1a1a1a;
+    padding: 5px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+    margin-left: 8px;
+}
+
+.impersonation-stop-btn:hover {
+    background: rgba(0, 0, 0, 0.25);
+    transform: scale(1.02);
+}
+
+.impersonation-stop-btn:active {
+    transform: scale(0.97);
+}
+
+@media (max-width: 480px) {
+    .impersonation-bar-inner {
+        font-size: 12px;
+        gap: 8px;
+        padding: 8px 12px;
+    }
+}
+
+/* ── END Impersonation Bar ─────────────────────────────────────────── */
+
 /* WhatsApp Floating Action Button — Peek & Slide */
 
 /*

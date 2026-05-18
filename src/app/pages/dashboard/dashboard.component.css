@@ -835,3 +835,238 @@
         justify-content: center;
     }
 }
+
+/* ─── Impersonation Button & Dialog ──────────────────────────────────────── */
+
+.btn-impersonate {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #fff;
+    border: none;
+    font-weight: 600;
+}
+
+.btn-impersonate:hover {
+    background: linear-gradient(135deg, #d97706, #b45309);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+}
+
+.impersonate-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    padding: 16px;
+}
+
+.impersonate-dialog {
+    background: #fff;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 80vh;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.22);
+    animation: impersonateSlideIn 0.25s ease;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes impersonateSlideIn {
+    from { transform: translateY(-20px) scale(0.97); opacity: 0; }
+    to   { transform: translateY(0) scale(1);        opacity: 1; }
+}
+
+.impersonate-dialog-header {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.impersonate-dialog-header h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.impersonate-dialog-close {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: #fff;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+}
+
+.impersonate-dialog-close:hover {
+    background: rgba(255,255,255,0.35);
+}
+
+.impersonate-dialog-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.impersonate-info {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.5;
+    margin: 0 0 16px;
+    padding: 10px 14px;
+    background: #fffbeb;
+    border-radius: 8px;
+    border-left: 3px solid #f59e0b;
+}
+
+.impersonate-search-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #333;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+    margin-bottom: 14px;
+}
+
+.impersonate-search-input:focus {
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12);
+}
+
+.impersonate-search-input::placeholder {
+    color: #bbb;
+}
+
+.impersonate-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 30px;
+}
+
+.impersonate-loading p {
+    color: #888;
+    font-size: 13px;
+    margin: 0;
+}
+
+.impersonate-user-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+.impersonate-user-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.impersonate-user-item:hover {
+    background: #fffbeb;
+    border-color: #f59e0b;
+}
+
+.impersonate-user-item.impersonating {
+    background: #fef3c7;
+    border-color: #f59e0b;
+    pointer-events: none;
+}
+
+.impersonate-user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+}
+
+.impersonate-user-info strong {
+    font-size: 14px;
+    color: #1a1a1a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.impersonate-user-email {
+    font-size: 12px;
+    color: #888;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btn-impersonate-action {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    flex-shrink: 0;
+    margin-left: 10px;
+}
+
+.btn-impersonate-action:hover {
+    background: linear-gradient(135deg, #d97706, #b45309);
+    transform: scale(1.03);
+}
+
+.impersonate-spinner {
+    font-size: 18px;
+    animation: spin 1s linear infinite;
+}
+
+.impersonate-no-results {
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+    padding: 24px;
+}
+
+@media (max-width: 480px) {
+    .impersonate-dialog {
+        max-height: 90vh;
+    }
+
+    .impersonate-user-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .btn-impersonate-action {
+        width: 100%;
+        text-align: center;
+        margin-left: 0;
+    }
+}

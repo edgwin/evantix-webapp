@@ -1,3 +1,13 @@
+<!-- Impersonation Banner -->
+@if (impersonationService.isImpersonating()) {
+<div class="impersonation-bar">
+  <div class="impersonation-bar-inner">
+    <span class="impersonation-icon">👁️</span>
+    <span>Estás viendo como: <strong>{{ impersonationService.getImpersonatedUser()?.email }}</strong></span>
+    <button class="impersonation-stop-btn" (click)="stopImpersonation()">✕ Dejar de Impersonar</button>
+  </div>
+</div>
+}
 <app-notification></app-notification>
 <router-outlet></router-outlet>
 
