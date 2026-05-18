@@ -1,6 +1,6 @@
 <section class="indicaciones-section" (mousedown)="onDragStart($event)" (mousemove)="onDragMove($event)" (mouseup)="onDragEnd()" (mouseleave)="onDragEnd()" (touchstart)="onDragStart($event)" (touchmove)="onDragMove($event)" (touchend)="onDragEnd()" [class.dragging]="isDragging"
   [class.adjusting-mode]="adjustingPosition">
-  <div class="background-image" [ngStyle]="{'background-image': 'url(' + data.imagen + ')', 'background-position': imagenPosicion}"></div>
+  <div class="background-image" [ngStyle]="{'background-image': 'url(\'' + encodeImageUrl(data.imagen) + '\')', 'background-position': imagenPosicion}"></div>
   <div class="background-overlay" [style.pointer-events]="adjustingPosition ? 'none' : 'auto'"></div>
 
   @if (!isReadOnly) {

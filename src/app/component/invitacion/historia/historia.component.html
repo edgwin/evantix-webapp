@@ -16,7 +16,7 @@
       <div class="story-item" [ngClass]="{'story-right': i % 2 !== 0}" [style.animation-delay]="(i * 0.2) + 's'">
         <div class="story-image-wrapper" [class.adjusting-mode]="adjustingPositionId === item.id">
           <div class="story-image"
-            [ngStyle]="{'background-image': 'url(' + item.imagen + ')', 'background-position': getImagenPosicion(item.id)}"
+            [ngStyle]="{'background-image': 'url(\'' + encodeImageUrl(item.imagen) + '\')', 'background-position': getImagenPosicion(item.id)}"
             (mousedown)="onDragStart($event, item.id)" (mousemove)="onDragMove($event, item.id)" (mouseup)="onDragEnd()" (mouseleave)="onDragEnd()" (touchstart)="onDragStart($event, item.id)" (touchmove)="onDragMove($event, item.id)" (touchend)="onDragEnd()" [class.dragging]="isDragging"
             appDisableDownload>
 

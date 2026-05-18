@@ -1,4 +1,4 @@
-﻿@if (!loading) {
+@if (!loading) {
   <section class="donde-cuando-section">
     <div class="section-background"></div>
     <div class="section-content">
@@ -12,7 +12,7 @@
         @for (item of data.details; track trackById(i, item); let i = $index) {
           <div class="event-card" [style.animation-delay]="(i * 0.15) + 's'">
             <div class="card-image-section">
-              <div class="card-image" [ngStyle]="{'background-image': 'url(' + item.imagen + ')'}"></div>
+              <div class="card-image" [ngStyle]="{'background-image': 'url(\'' + encodeImageUrl(item.imagen) + '\')'}"></div>
               <div class="card-image-overlay"></div>
               @if (!isReadOnly) {
                 <div class="card-actions">

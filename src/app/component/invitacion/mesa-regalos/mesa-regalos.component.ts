@@ -14,6 +14,8 @@ import { AiEditableDirective } from '../../../directives/ai-editable.directive';
 })
 
 export class MesaRegalosComponent implements OnInit {
+  /** Encode spaces in image URLs so CSS url() doesn't break */
+  encodeImageUrl(url: string): string { return url ? url.replace(/ /g, '%20') : ''; }
   constructor(private invitationService: InvitationService, private notificationService: NotificationService) { }
 
   @Input() eventId: string = '';

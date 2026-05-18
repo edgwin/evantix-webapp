@@ -14,6 +14,8 @@ import { TemplateService } from '../../../services/template.service';
     styleUrls: ['./hospedaje.component.css', './../invitacion.component.css', './../focal-point.css']
 })
 export class HospedajeComponent implements OnInit {
+  /** Encode spaces in image URLs so CSS url() doesn't break */
+  encodeImageUrl(url: string): string { return url ? url.replace(/ /g, '%20') : ''; }
   constructor(private invitationService: InvitationService, private notificationService: NotificationService,
     private dialog: MatDialog, public templateService: TemplateService) { }
   @Input() eventId: string = '';

@@ -1,6 +1,6 @@
 <section class="hospedaje-section" (mousedown)="onDragStart($event)" (mousemove)="onDragMove($event)" (mouseup)="onDragEnd()" (mouseleave)="onDragEnd()" (touchstart)="onDragStart($event)" (touchmove)="onDragMove($event)" (touchend)="onDragEnd()" [class.dragging]="isDragging"
   [class.adjusting-mode]="adjustingPosition"
-  [ngStyle]="{'background-image': 'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(' + data.imagen + ')', 'background-position': imagenPosicion}">
+  [ngStyle]="{'background-image': 'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(\'' + encodeImageUrl(data.imagen) + '\')', 'background-position': imagenPosicion}">
 
   @if (!isReadOnly && !loadingImg && !adjustingPosition) {
     <button class="bg-edit-btn" (click)="triggerImageUpload()" title="Cambiar fondo">

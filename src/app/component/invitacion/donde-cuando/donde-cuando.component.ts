@@ -15,6 +15,8 @@ import { MapaModalComponent } from '../../mapa-modal/mapa-modal.component';
   imports: [CommonModule, FormsModule, MatInputModule]
 })
 export class DondeCuandoComponent {
+  /** Encode spaces in image URLs so CSS url() doesn't break */
+  encodeImageUrl(url: string): string { return url ? url.replace(/ /g, '%20') : ''; }
   constructor(
     private invitationService: InvitationService,
     private notificationService: NotificationService,

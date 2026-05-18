@@ -1,4 +1,4 @@
-﻿<section class="itinerario-section">
+<section class="itinerario-section">
   <div class="section-content">
     <div class="section-header">
       <span class="header-decoration-line"></span>
@@ -20,7 +20,7 @@
         <div class="timeline-item"
           [ngClass]="{'timeline-right': i % 2 !== 0}" [style.animation-delay]="(i * 0.15) + 's'">
           <div class="timeline-icon-wrapper">
-            <div class="timeline-icon" [ngStyle]="{'background-image': 'url(' + item.imagen + ')'}">
+            <div class="timeline-icon" [ngStyle]="{'background-image': 'url(\'' + encodeImageUrl(item.imagen) + '\')'}">
               @if (!isReadOnly) {
                 <button class="icon-edit-btn" (click)="openPopup(i)" title="Cambiar icono">
                   <img src="assets/editarImagen.png" alt="editar">

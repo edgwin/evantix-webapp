@@ -14,6 +14,8 @@ import { TemplateService } from '../../../services/template.service';
     styleUrls: ['./personas-favoritas.component.css', './../focal-point.css']
 })
 export class PersonasFavoritasComponent implements OnInit, AfterViewInit, OnDestroy {
+  /** Encode spaces in image URLs so CSS url() doesn't break */
+  encodeImageUrl(url: string): string { return url ? url.replace(/ /g, '%20') : ''; }
   constructor(
     private invitationService: InvitationService,
     private notificationService: NotificationService,

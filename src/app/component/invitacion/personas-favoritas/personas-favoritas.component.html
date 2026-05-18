@@ -24,7 +24,7 @@
         (mouseleave)="resumeAutoplayWithDelay()">
         <div class="gallery" [ngClass]="animationDirection">
           <div class="side left">
-            <div class="side-img" [ngStyle]="{'background-image': 'url(' + prevImg() + ')'}" appDisableDownload></div>
+            <div class="side-img" [ngStyle]="{'background-image': 'url(\'' + encodeImageUrl(prevImg()) + '\')'}" appDisableDownload></div>
           </div>
           <div class="center">
             <div class="center-image-wrapper" 
@@ -32,7 +32,7 @@
               (touchstart)="onDragStart($event)" (touchmove)="onDragMove($event)" (touchend)="onDragEnd()"
               [class.dragging]="isDragging"
               [class.adjusting-mode]="adjustingPositionId === currentId()">
-              <div class="center-img" [ngStyle]="{'background-image': 'url(' + currentImg() + ')', 'background-position': getCurrentImagenPosicion()}" appDisableDownload></div>
+              <div class="center-img" [ngStyle]="{'background-image': 'url(\'' + encodeImageUrl(currentImg()) + '\')', 'background-position': getCurrentImagenPosicion()}" appDisableDownload></div>
               @if (!isReadOnly && adjustingPositionId !== currentId()) {
                 <button class="edit-btn" (click)="onOpenPopup()" title="Editar" id="tour-edit-data">
                   <img src="assets/editData.png" alt="editar">
@@ -67,7 +67,7 @@
             </div>
           </div>
           <div class="side right">
-            <div class="side-img" [ngStyle]="{'background-image': 'url(' + nextImg() + ')'}" appDisableDownload></div>
+            <div class="side-img" [ngStyle]="{'background-image': 'url(\'' + encodeImageUrl(nextImg()) + '\')'}" appDisableDownload></div>
           </div>
         </div>
         @if (currentParentesco() || currentNombres()) {

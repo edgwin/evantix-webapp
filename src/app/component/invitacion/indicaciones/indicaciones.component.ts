@@ -12,6 +12,8 @@ import { TemplateService } from '../../../services/template.service';
     styleUrls: ['./indicaciones.component.css', './../focal-point.css']
 })
 export class IndicacionesComponent {
+  /** Encode spaces in image URLs so CSS url() doesn't break */
+  encodeImageUrl(url: string): string { return url ? url.replace(/ /g, '%20') : ''; }
   constructor(private invitationService: InvitationService, private notificationService: NotificationService,
     public templateService: TemplateService) { }
 

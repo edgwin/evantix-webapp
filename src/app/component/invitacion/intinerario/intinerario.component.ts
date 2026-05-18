@@ -1,4 +1,4 @@
-﻿import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { InvitationService } from '../../../services/invitation.service';
 import { NotificationService } from '../../../services/notification.service';
 import { CommonModule } from '@angular/common';
@@ -12,6 +12,8 @@ import { AiEditableDirective } from '../../../directives/ai-editable.directive';
     styleUrls: ['./intinerario.component.css']
 })
 export class IntinerarioComponent implements OnInit {
+  /** Encode spaces in image URLs so CSS url() doesn't break */
+  encodeImageUrl(url: string): string { return url ? url.replace(/ /g, '%20') : ''; }
   constructor(private invitationService: InvitationService,
     private notificationService: NotificationService) { }
 
